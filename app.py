@@ -306,7 +306,7 @@ if "generated_audio" not in st.session_state:
 # --- SIDEBAR: MISSION CONTROL (FLUID EXECUTIVE LIBRARY) ---
 with st.sidebar:
     # 1. HEADER & SYSTEM STATUS
-    st.markdown("### ⚡ BASIN::NEXUS")
+    st.markdown("### ▲ BASIN::NEXUS")
     st.caption("v4.2 | REVENUE ARCHITECT OS")
     st.markdown("---")
     
@@ -382,8 +382,8 @@ with st.sidebar:
 # ═══════════════════════════════════════════════════════════════
 
 # Header - BASIN::NEXUS Command Center
-st.markdown('<h1 class="nexus-header">⚡ BASIN::NEXUS</h1>', unsafe_allow_html=True)
-st.markdown('<p class="nexus-subtitle">Director of GTM Systems & Revenue Architecture • I Build the "Revenue OS"</p>', unsafe_allow_html=True)
+st.markdown('<h1 class="nexus-header">▲ BASIN::NEXUS</h1>', unsafe_allow_html=True)
+st.markdown('<p class="nexus-subtitle">Director of GTM Systems & Revenue Architecture | I Build the "Revenue OS" (Python/AI)</p>', unsafe_allow_html=True)
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
 # Two-column layout
@@ -1304,11 +1304,11 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
 # 🖥️ SYSTEM STATUS FOOTER
 # ==============================================================================
 st.markdown("---")
-f1, f2, f3 = st.columns([1, 1, 2])
+f1, f2, f3 = st.columns([1, 1, 1])
 
 with f1:
-    st.caption("SYSTEM STATUS: **ONLINE**")
+    st.caption("SYSTEM PROTOCOL: **ACTIVE**")
 with f2:
-    st.caption("OPERATOR: **LEON BASIN**")
+    st.caption("ARCHITECT: **LEON BASIN**")
 with f3:
-    st.caption("BUILD: **BASIN::NEXUS v4.1 (Revenue Architect Edition)**")
+    st.caption("ASSET: **REVENUE OS**")
