@@ -447,37 +447,36 @@ with st.sidebar:
     if "STRATEGIC RECON" in mission_phase:
         st.caption("Focus: Finding Market Fit & Targets")
         selected_tool_label = st.radio("Select Tool:", 
-            ["Omni-Agent (Intel)", "Black Ops (Hunt)", "Swipe Mode", "Company Intel", "Boardroom (Sim)", "Analytics (Scoreboard)"],
+            ["📄 Omni-Agent (Intel)", "🎯 Black Ops (Hunt)", "🔥 Swipe Mode", "🔬 Company Intel", "🥊 Boardroom (Sim)", "📊 Analytics"],
             label_visibility="collapsed")
             
     elif "EXECUTION OPS" in mission_phase:
         st.caption("Focus: Scaling the Narrative & Team")
         selected_tool_label = st.radio("Select Tool:", 
-            ["Pipeline CRM", "Boardroom (Sim)", "Live Assist", "Objection Bank", "Voice", "Talent Signal (Recruiter)"],
+            ["📈 Pipeline CRM", "🥊 Boardroom (Sim)", "🎙️ Live Assist", "🛡️ Objection Bank", "🎤 Voice", "🔍 Talent Signal"],
             label_visibility="collapsed")
             
     elif "ARCHITECT DECK" in mission_phase:
         st.caption("Focus: High-Level Strategy & Governance")
         selected_tool_label = st.radio("Select Tool:", 
-            ["First 90 Days (Closer)", "Pipeline CRM", "Boardroom (Sim)", "Live Assist", "Analytics (Scoreboard)"],
+            ["🚀 First 90 Days", "📈 Pipeline CRM", "🥊 Boardroom (Sim)", "🎙️ Live Assist", "📊 Analytics"],
             label_visibility="collapsed")
 
     # MAPPING TO SYSTEM KERNEL (Connecting UX to Logic)
     # This maps the "Cool Executive Names" to the internal "Functional Names"
     tool_map = {
-        "Omni-Agent (Intel)": "📄 Intel",
-        "Black Ops (Hunt)": "🎯 Hunt",
-        "Swipe Mode": "🔥 Swipe Mode",
-        "Analytics (Scoreboard)": "📊 Analytics",
-        "Boardroom (Sim)": "🥊 Practice (Dojo)",
-        "Practice (Dojo)": "🥊 Practice (Dojo)",
-        "Voice": "🎤 Voice",
-        "Talent Signal (Recruiter)": "🔍 Talent Signal",
-        "First 90 Days (Closer)": "🚀 First 90 Days",
-        "Pipeline CRM": "📈 Pipeline CRM",
-        "Objection Bank": "🛡️ Objection Bank",
-        "Company Intel": "🔬 Company Intel",
-        "Live Assist": "🎙️ Live Assist"
+        "📄 Omni-Agent (Intel)": "📄 Intel",
+        "🎯 Black Ops (Hunt)": "🎯 Hunt",
+        "🔥 Swipe Mode": "🔥 Swipe Mode",
+        "📊 Analytics": "📊 Analytics",
+        "🥊 Boardroom (Sim)": "🥊 Practice (Dojo)",
+        "🎤 Voice": "🎤 Voice",
+        "🔍 Talent Signal": "🔍 Talent Signal",
+        "🚀 First 90 Days": "🚀 First 90 Days",
+        "📈 Pipeline CRM": "📈 Pipeline CRM",
+        "🛡️ Objection Bank": "🛡️ Objection Bank",
+        "🔬 Company Intel": "🔬 Company Intel",
+        "🎙️ Live Assist": "🎙️ Live Assist"
     }
     
     input_mode = tool_map.get(selected_tool_label, "📄 Intel")
@@ -532,53 +531,109 @@ if show_dashboard:
     
     st.markdown("---")
     
-    # Quick Actions
+    # Quick Actions - Row 1
     st.markdown("### ⚡ QUICK START")
+    st.caption("Select a mode from the sidebar, or choose your phase above")
     
-    qa1, qa2, qa3 = st.columns(3)
+    qa1, qa2, qa3, qa4 = st.columns(4)
     with qa1:
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #333; border-radius: 10px; padding: 20px;">
-            <h4 style="color: #00d4ff; margin: 0;">🎯 HUNT MODE</h4>
-            <p style="color: #8892b0; font-size: 0.9rem;">7-vector job search across LinkedIn, VC portfolios, and ATSs</p>
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #00d4ff33; border-radius: 12px; padding: 20px; min-height: 120px;">
+            <h4 style="color: #00d4ff; margin: 0 0 8px 0; font-size: 1rem;">🎯 HUNT MODE</h4>
+            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">7-vector job search</p>
         </div>
         """, unsafe_allow_html=True)
     with qa2:
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #333; border-radius: 10px; padding: 20px;">
-            <h4 style="color: #ff6b6b; margin: 0;">🔥 SWIPE MODE</h4>
-            <p style="color: #8892b0; font-size: 0.9rem;">Tinder-style job swiping. Build your pipeline fast.</p>
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #ff6b6b33; border-radius: 12px; padding: 20px; min-height: 120px;">
+            <h4 style="color: #ff6b6b; margin: 0 0 8px 0; font-size: 1rem;">🔥 SWIPE MODE</h4>
+            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Tinder for jobs</p>
         </div>
         """, unsafe_allow_html=True)
     with qa3:
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #333; border-radius: 10px; padding: 20px;">
-            <h4 style="color: #ffd700; margin: 0;">🥊 BOARDROOM</h4>
-            <p style="color: #8892b0; font-size: 0.9rem;">Multi-agent interview simulator with swarm analysis</p>
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #ffd70033; border-radius: 12px; padding: 20px; min-height: 120px;">
+            <h4 style="color: #ffd700; margin: 0 0 8px 0; font-size: 1rem;">🥊 BOARDROOM</h4>
+            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Interview simulator</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with qa4:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #00ff8833; border-radius: 12px; padding: 20px; min-height: 120px;">
+            <h4 style="color: #00ff88; margin: 0 0 8px 0; font-size: 1rem;">📈 PIPELINE</h4>
+            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Track opportunities</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Row 2
+    qa5, qa6, qa7, qa8 = st.columns(4)
+    with qa5:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #9966ff33; border-radius: 12px; padding: 20px; min-height: 120px;">
+            <h4 style="color: #9966ff; margin: 0 0 8px 0; font-size: 1rem;">🎙️ LIVE ASSIST</h4>
+            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Real-time coaching</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with qa6:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #ff66b233; border-radius: 12px; padding: 20px; min-height: 120px;">
+            <h4 style="color: #ff66b2; margin: 0 0 8px 0; font-size: 1rem;">📊 ANALYTICS</h4>
+            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Oracle dashboard</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with qa7:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #66ccff33; border-radius: 12px; padding: 20px; min-height: 120px;">
+            <h4 style="color: #66ccff; margin: 0 0 8px 0; font-size: 1rem;">🔬 COMPANY</h4>
+            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Intel & research</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with qa8:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #ffcc6633; border-radius: 12px; padding: 20px; min-height: 120px;">
+            <h4 style="color: #ffcc66; margin: 0 0 8px 0; font-size: 1rem;">🚀 FIRST 90</h4>
+            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Onboarding plan</p>
         </div>
         """, unsafe_allow_html=True)
     
     st.markdown("---")
     
-    # System Status
-    st.markdown("### 🛠️ SYSTEM STATUS")
-    status_col1, status_col2 = st.columns(2)
-    with status_col1:
+    # Getting Started Section
+    st.markdown("### � GETTING STARTED")
+    
+    gs1, gs2 = st.columns(2)
+    with gs1:
         st.markdown("""
-        **LLM Fleet:**
-        - Llama 3.3 70B (Groq) → Fast reasoning
-        - Mixtral 8x7B → Code analysis  
-        - Gemini Pro → Synthesis
-        - Claude 3.5 Sonnet → Strategy
-        """)
-    with status_col2:
+        <div style="background: rgba(255, 191, 0, 0.05); border: 1px solid rgba(255, 191, 0, 0.2); border-radius: 12px; padding: 20px;">
+            <h4 style="color: #FFBF00; margin: 0 0 12px 0;">1️⃣ Configure API</h4>
+            <p style="color: #8892b0; font-size: 0.9rem; margin: 0;">Add your Groq API key in the sidebar to enable LLM features. Get one free at console.groq.com</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with gs2:
         st.markdown("""
-        **Modes Available:**
-        - Intel, Hunt, Swipe, Analytics
-        - Boardroom, Voice, Live Assist
-        - Pipeline CRM, Objection Bank
-        - Company Intel, First 90 Days, Talent Signal
-        """)
+        <div style="background: rgba(255, 191, 0, 0.05); border: 1px solid rgba(255, 191, 0, 0.2); border-radius: 12px; padding: 20px;">
+            <h4 style="color: #FFBF00; margin: 0 0 12px 0;">2️⃣ Select Phase</h4>
+            <p style="color: #8892b0; font-size: 0.9rem; margin: 0;">Choose your mission phase (Strategic Recon, Execution Ops, or Architect Deck) to see relevant tools.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("")
+    
+    gs3, gs4 = st.columns(2)
+    with gs3:
+        st.markdown("""
+        <div style="background: rgba(255, 191, 0, 0.05); border: 1px solid rgba(255, 191, 0, 0.2); border-radius: 12px; padding: 20px;">
+            <h4 style="color: #FFBF00; margin: 0 0 12px 0;">3️⃣ Upload Resume</h4>
+            <p style="color: #8892b0; font-size: 0.9rem; margin: 0;">Go to Intel mode and upload your resume to the Career Vault for AI-powered analysis.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with gs4:
+        st.markdown("""
+        <div style="background: rgba(255, 191, 0, 0.05); border: 1px solid rgba(255, 191, 0, 0.2); border-radius: 12px; padding: 20px;">
+            <h4 style="color: #FFBF00; margin: 0 0 12px 0;">4️⃣ Start Hunting</h4>
+            <p style="color: #8892b0; font-size: 0.9rem; margin: 0;">Use Hunt Mode or Swipe Mode to find opportunities, then track them in Pipeline CRM.</p>
+        </div>
+        """, unsafe_allow_html=True)
     
     # Add st.stop() to prevent rest of app from rendering when dashboard is shown
     st.stop()
