@@ -341,19 +341,19 @@ with st.sidebar:
     if "STRATEGIC RECON" in mission_phase:
         st.caption("Focus: Finding Market Fit & Targets")
         selected_tool_label = st.radio("Select Tool:", 
-            ["Omni-Agent (Intel)", "Black Ops (Hunt)", "Analytics (Scoreboard)"],
+            ["Omni-Agent (Intel)", "Black Ops (Hunt)", "Boardroom (Sim)", "Analytics (Scoreboard)"],
             label_visibility="collapsed")
             
     elif "EXECUTION OPS" in mission_phase:
         st.caption("Focus: Scaling the Narrative & Team")
         selected_tool_label = st.radio("Select Tool:", 
-            ["Practice (Dojo)", "Voice", "Talent Signal (Recruiter)"],
+            ["Boardroom (Sim)", "Voice", "Talent Signal (Recruiter)"],
             label_visibility="collapsed")
             
     elif "ARCHITECT DECK" in mission_phase:
         st.caption("Focus: High-Level Strategy & Governance")
         selected_tool_label = st.radio("Select Tool:", 
-            ["First 90 Days (Closer)", "Analytics (Scoreboard)", "Talent Signal (Recruiter)"],
+            ["First 90 Days (Closer)", "Boardroom (Sim)", "Analytics (Scoreboard)"],
             label_visibility="collapsed")
 
     # MAPPING TO SYSTEM KERNEL (Connecting UX to Logic)
@@ -362,7 +362,8 @@ with st.sidebar:
         "Omni-Agent (Intel)": "📄 Intel",
         "Black Ops (Hunt)": "🎯 Hunt",
         "Analytics (Scoreboard)": "📊 Analytics",
-        "Practice (Dojo)": "🥊 Practice (Dojo)",
+        "Boardroom (Sim)": "🥊 Practice (Dojo)",
+        "Practice (Dojo)": "🥊 Practice (Dojo)", # Fallback
         "Voice": "🎤 Voice",
         "Talent Signal (Recruiter)": "🔍 Talent Signal",
         "First 90 Days (Closer)": "🚀 First 90 Days"
