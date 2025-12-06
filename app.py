@@ -603,7 +603,7 @@ with col1:
         st.caption("PROTOCOL: Generate high-precision search vectors. Bypass noise.")
         
         # 1. THE FREQUENCY SELECTOR
-        tab_linked, tab_xray, tab_social, tab_blackops = st.tabs(["LINKEDIN VECTORS", "ATS X-RAY", "SOCIAL SIGNAL", "🏴‍☠️ BLACK OPS"])
+        tab_linked, tab_xray, tab_social, tab_blackops, tab_workforce = st.tabs(["LINKEDIN VECTORS", "ATS X-RAY", "SOCIAL SIGNAL", "🏴‍☠️ BLACK OPS", "💼 WORKFORCE INTEL"])
         
         # ------------------------------------------------------------------
         # TAB 1: LINKEDIN VECTORS (THE MASTER KEY)
@@ -736,6 +736,46 @@ with col1:
                 
                 if st.button("✌️ WELLFOUND (AngelList)"):
                     st.markdown("[🚀 **SCAN STARTUPS**](https://wellfound.com/jobs)", unsafe_allow_html=True)
+
+    # ------------------------------------------------------------------
+    # TAB 5: WORKFORCE INTEL (HR/STAFFING ECOSYSTEM)
+    # ------------------------------------------------------------------
+    with tab_workforce:
+        st.markdown("#### 💼 WORKFORCE INTELLIGENCE ARRAY")
+        st.caption("PROTOCOL: Target roles WITHIN HR Tech & Staffing Agencies.")
+        
+        # 1. HR TECH COMPANY SEARCH (TARGET: GREENHOUSE, WORKDAY, RIPPLING)
+        st.markdown("##### 1. HR TECH FIRM TARGETING")
+        c1, c2 = st.columns(2)
+        with c1:
+            hr_role = st.selectbox("ROLE LEVEL", ["Director of Partnerships", "Head of GTM Ops", "Enterprise AE"], key="hr_role")
+        with c2:
+            hr_companies = st.multiselect("HR TECH COMPANIES", ["Greenhouse", "Lever", "Rippling", "Workday", "ADP", "BambooHR"], default=["Greenhouse", "Rippling"])
+
+        if st.button("GENERATE HR TECH STRING", use_container_width=True):
+            company_str = " OR ".join([f'"{c}"' for c in hr_companies])
+            query = f'("{hr_role}") AND ({company_str})'
+            st.code(query, language="text")
+            st.markdown(f"[🚀 **EXECUTE LINKEDIN SEARCH**](https://www.linkedin.com/jobs/search/?keywords={query.replace(' ', '%20').replace('"', '%22')})", unsafe_allow_html=True)
+
+        st.markdown("---")
+        
+        # 2. STAFFING/RECRUITMENT AGENCY SEARCH (TARGET: HIGH-LEVEL CONTACTS)
+        st.markdown("##### 2. HIGH-LEVEL RECRUITER/STAFFING INTEL")
+        
+        d1, d2 = st.columns(2)
+        with d1:
+            staff_role = st.selectbox("AGENCY TARGET ROLE", ["VP Talent", "Director of Sales"], key="staff_role")
+        with d2:
+            staff_companies = st.multiselect("STAFFING FIRMS", ["Robert Half", "TEKsystems", "Aerotek", "Insight Global"], default=["Robert Half"])
+
+        if st.button("GENERATE AGENCY INTEL STRING", use_container_width=True):
+            agency_str = " OR ".join([f'"{c}"' for c in staff_companies])
+            # Search for people (not jobs) at these firms who are high-level decision makers
+            query = f'("{staff_role}") AND ({agency_str})'
+            st.code(query, language="text")
+            # Uses LinkedIn People Search URL
+            st.markdown(f"[🚀 **EXECUTE PEOPLE SEARCH**](https://www.linkedin.com/search/results/people/?keywords={query.replace(' ', '%20').replace('"', '%22')})", unsafe_allow_html=True)
 
     # ==============================================================================
     # 📊 MODE 6: COMMAND CENTER (CAREER OS)
