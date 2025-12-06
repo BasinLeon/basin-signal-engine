@@ -435,9 +435,9 @@ with col1:
     # Input Mode Toggle - FULL ARSENAL
     input_mode = st.radio(
         "Mission Mode",
-        ["📄 Intel", "� Hunt", "🎤 Voice", "🥊 Practice"],
+        ["📄 Intel", "🎯 Hunt", "🎤 Voice", "📹 Video", "🥊 Practice"],
         horizontal=True,
-        help="Intel (Resume+JD), Hunt (Find targets), Voice (Audio input), Practice (Interview sim)"
+        help="Intel (Resume+JD), Hunt (Boolean search), Voice (Audio), Video (Pitch analysis), Practice (Interview sim)"
     )
     
     st.markdown("")
