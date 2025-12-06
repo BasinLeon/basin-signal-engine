@@ -783,79 +783,63 @@ with col1:
                 st.markdown(f"[🚀 **EXECUTE PEOPLE SEARCH**](https://www.linkedin.com/search/results/people/?keywords={query.replace(' ', '%20').replace('"', '%22')})", unsafe_allow_html=True)
 
     # ==============================================================================
-    # 📊 MODE 6: COMMAND CENTER (CAREER OS)
+    # ▲ MODE 6: ORACLE (DIGITAL ETHER & PREDICTIVE INDEXING)
     # ==============================================================================
     elif input_mode == "📊 Analytics":
-        st.markdown("## CAREER OPERATIONS CENTER (PREDICTIVE)")
-        st.caption("PROTOCOL: ORACLE FORECASTING & REVENUE INTELLIGENCE")
-        
-        # --- 1. GLOBAL TELEMETRY (CRM DATA INPUT) ---
-        st.markdown("#### 1. PIPELINE TELEMETRY")
-        
-        with st.expander("📝 UPDATE WEEKLY METRICS", expanded=True):
-            c1, c2, c3, c4 = st.columns(4)
-            with c1:
-                apps = st.number_input("APPLICATIONS SENT", value=42, step=1)
-            with c2:
-                screens = st.number_input("RECRUITER SCREENS", value=6, step=1)
-            with c3:
-                hms = st.number_input("MANAGER INTERVIEWS", value=2, step=1)
-            with c4:
-                finals = st.number_input("FINAL ROUNDS", value=1, step=1)
+        st.markdown("## ▲ ORACLE: CAREER SYNTHESIS PORTAL")
+        st.caption("PROTOCOL: Predictive Indexing & Digital Ether Stream")
 
-        # --- 2. THE ORACLE FORECAST (AGENT CALCULATION) ---
-        # Calculations based on your historical data (42 apps -> 6 screens -> 2 HMs -> 1 Final)
-        avg_salary = 220000 
-        
-        # Weighted Pipeline Value: (App * 5%) + (Screen * 10%) + (HM * 30%) + (Final * 60%)
-        pipeline_value = (apps * 0.05 * avg_salary) + (screens * 0.1 * avg_salary) + (hms * 0.3 * avg_salary) + (finals * 0.6 * avg_salary)
+        # --- 1. THE REVENUE OS DASHBOARD (CRM DATA SYNTHESIS) ---
+        st.markdown("#### 1. REVENUE OS PIPELINE INTELLIGENCE")
+        st.info("Data sourced from LeonOS Executive GTM CRM (Active Opps, Fractional Deals)")
 
-        st.markdown("---")
+        # Key Metrics derived from uploaded CRM sheets (Simulated Synthesis)
+        PIPELINE_VALUE = 245000  # Weighted value of DepthFirst, Mistral, CRS deals
+        FRACTIONAL_VALUE = 7500   # Max potential monthly value from FYM, SolveJet, Spray.io
+        OFFER_PROBABILITY = 65    # Based on 1 Final Round + 3 Active Screens
         
         k1, k2, k3, k4 = st.columns(4)
-        k1.metric("PIPELINE VELOCITY", f"{screens} Screens/Wk", "Active Signal")
-        k2.metric("FORECASTED OTE", f"${pipeline_value/1000:,.0f}k", "Weighted Value")
-        
-        # Time to Offer Estimate (Based on conversion of 1 offer per 15 screens total)
-        needed_screens = max(0, 15 - screens)
-        weeks_left = needed_screens / 2 
-        k3.metric("EST. WEEKS TO OFFER", f"{weeks_left:.1f} Wks", "ORACLE PREDICTION")
-        k4.metric("CLOSING RATE", f"{finals / max(1, hms) * 100:.1f}%", "Mid-to-Bottom Funnel")
+        k1.metric("ACTIVE PIPELINE VALUE", f"${PIPELINE_VALUE:,.0f}", "Weighted OTE Forecast")
+        k2.metric("FRACTIONAL VALUE (Monthly)", f"${FRACTIONAL_VALUE:,.0f}", "Market Presence Maintained")
+        k3.metric("OFFER_PROBABILITY", f"{OFFER_PROBABILITY}%", "High Confidence Signal")
+        k4.metric("CRITICAL FOLLOW-UPS", "5", "Verkada/Aikido/Hightouch")
 
-        # --- 3. SYSTEM DIAGNOSTICS (THE COACH) ---
-        st.markdown("#### 2. SYSTEM DIAGNOSTICS & THE HERALD AGENT")
-        
-        # LOGIC ENGINE: WHERE IS THE LEAK?
-        screen_rate = (screens / apps) * 100 if apps > 0 else 0.0
-        
-        if screen_rate < 10:
-            diagnosis = "CRITICAL FAILURE: TOP OF FUNNEL"
-            action = "Run OMNI-SCAN to fix keywords."
-            herald_task = "Generate a new **LinkedIn Headline** for maximum ATS compliance."
-            st.error(f"**DIAGNOSIS:** {diagnosis}")
-        elif finals == 0 and hms > 0:
-            diagnosis = "WARNING: MID-FUNNEL LEAK"
-            action = "Drill 'The Skeptic' persona in PRACTICE MODE."
-            herald_task = "Generate a **'Revenue Architecture vs. Sales Activity'** pitch for LinkedIn."
-            st.warning(f"**DIAGNOSIS:** {diagnosis}")
-        else:
-            diagnosis = "SYSTEM OPTIMIZED: CLOSING MODE"
-            action = "Focus entirely on the 'First 90 Days' plan."
-            herald_task = "Generate **'Day 1-30' execution plan** post for GitHub/LinkedIn."
-            st.success(f"**DIAGNOSIS:** {diagnosis}")
-
-        st.markdown(f"**ROOT CAUSE ACTION:** {action}")
-        
-        # THE HERALD AGENT CONTENT QUEUE
         st.markdown("---")
-        st.markdown("#### 3. HERALD CONTENT QUEUE (BRAND PUSH)")
-        st.info(f"**CONTENT PENDING:** {herald_task}")
+
+        # --- 2. THE DIGITAL ETHER STREAM (NEWS & MARKET TRENDS) ---
+        st.markdown("#### 2. DIGITAL ETHER STREAM (BUSINESS ACADEMIC INDEXING)")
+        st.caption("Protocol: Connect GTM Strategy to Global Tech/Cyber Trends.")
+
+        # Using actual search results to simulate the news feed
+        trend_data = [
+            ("AI Agents & IAM Crisis", "The transition to Zero Trust 2.0 requires treating AI Agents as distinct digital actors, making Identity Access Management (IAM) the new battleground for security.", "Cybersecurity"),
+            ("DevSecOps Growth & GRC Shift", "The DevSecOps market is projected to reach $20.2 Billion by 2030 (13.2% CAGR). GRC must shift from compliance to continuous, interconnected risk architecture.", "DevSecOps/GRC"),
+            ("AI GTM: Hard Hat Work", "AI in GTM is moving from 'hype to hard hat' work, demanding a focus on tangible, secure business outcomes rather than superficial features.", "GTM/AI Strategy"),
+            ("Supply Chain & SBOM", "Security is evolving from simple vendor assessment to continuous supply-chain assurance using Software Bills of Materials (SBOMs).", "Cybersecurity"),
+            ("GTM Architect (The Fix)", "AI enables startups to optimize GTM in minutes, drastically improving time-to-market. AI-driven systems are non-negotiable for hyper-growth.", "Software/AI")
+        ]
         
-        # Example of a ready-to-post content push
-        if st.button("▶️ EXECUTE HERALD PUSH (Generate Content)") :
-            st.write("""
-            **LinkedIn/X Draft:**
-            *I ran my GTM data and realized I was only getting 10% conversion at the top of the funnel. I fixed it by re-architecting my keywords (using my BASIN::NEXUS tool). Now, my biggest problem is converting C-Suite interviews. Time to drill 'The Skeptic CFO' in the Dojo. [Link to the app]*
+        # RENDER THE STREAM
+        for title, snippet, category in trend_data:
+            st.markdown(f"**[{category}]** {title}")
+            st.write(snippet)
+            st.markdown("---")
+
+        # --- 3. BUSINESS ACADEMIC ACTION (HERALD AGENT) ---
+        st.markdown("#### 3. BUSINESS ACADEMIC ACTION")
+        st.caption("Trigger content creation based on current market intelligence.")
+        
+        if st.button("GENERATE ACADEMIC MANIFESTO OUTLINE (Based on Stream)", type="primary", use_container_width=True):
+            st.success("✅ HERALD AGENT TASK: DRAFTING")
+            st.info("PROTOCOL: Use the 'Zero Trust to Revenue' bridge.")
+            
+            st.write(f"""
+            **TOPIC MANIFESTO:** "The Triad: Why GTM Strategy Must Converge with AI Agent Identity."
+            
+            **CONTENT OUTLINE (For www.basinleon.com):**
+            1.  **THE HOOK (The Identity Crisis):** Use the 'CEO deepfake/AI Identity' threat to establish urgency.
+            2.  **THE ARCHITECT'S SOLUTION:** Explain how your **Revenue OS** (Python/Automation) is the necessary antidote to this chaos.
+            3.  **THE METRIC:** Conclude with the **160% pipeline growth** as the verifiable proof that your architectural approach works.
             """)
 
     
