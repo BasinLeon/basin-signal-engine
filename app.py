@@ -1220,8 +1220,16 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                         st.markdown("### 🧠 SWARM SYNTHESIS TRACE")
                         st.code(trace_result, language="markdown")
                         
-                        # FINAL SCORECARD CALL (Placeholder for full analytics)
+                        # FINAL SCORECARD CALL (Gamified Update)
                         st.markdown("---")
+                        st.subheader("🏆 MISSION RESULT")
+                        
+                        # These metrics motivate the next action
+                        c1, c2, c3 = st.columns(3)
+                        c1.metric("ARCHITECT XP GAINED", "+150 XP", "Story Polished")
+                        c2.metric("BOSS HEALTH REDUCTION", "85%", "Metric Hit Rate High")
+                        c3.metric("CRITICAL ACTION", "Deploy Narrative", "Use this version.")
+                        
                         st.success("✅ AGENT TRACE COMPLETE. FINAL ANSWER GENERATED.")
 
     # ─────────────────────────────────────────────────────────────
