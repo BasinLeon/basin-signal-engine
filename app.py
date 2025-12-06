@@ -303,118 +303,78 @@ if "generated_audio" not in st.session_state:
 # SIDEBAR: CONFIGURATION
 # ═══════════════════════════════════════════════════════════════
 
+# --- SIDEBAR: MISSION CONTROL (FLUID EXECUTIVE LIBRARY) ---
 with st.sidebar:
-    st.markdown("## ⚙️ Configuration")
+    # 1. HEADER & SYSTEM STATUS
+    st.markdown("### ⚡ BASIN::NEXUS")
+    st.caption("v4.2 | REVENUE ARCHITECT OS")
     st.markdown("---")
     
-    # System Status
-    col_status1, col_status2 = st.columns(2)
-    with col_status1:
-        if MOCK_MODE:
-            st.markdown('<span class="status-badge mock">🔧 MOCK</span>', unsafe_allow_html=True)
-        else:
-            st.markdown('<span class="status-badge">🟢 LIVE</span>', unsafe_allow_html=True)
-    with col_status2:
-        st.markdown('<span class="status-badge voice">🎤 VOICE</span>', unsafe_allow_html=True)
+    # 2. SYSTEM CORE & CONFIGURATION (Terminal Style)
+    st.markdown("#### ⚙️ SYSTEM CORE")
     
-    st.markdown("")
-    
-    # Model Selection FIRST (to determine which API key is needed)
-    model_options = get_model_options()
-    selected_model = st.selectbox(
-        "🤖 LLM Model",
-        options=[m[1] for m in model_options],
-        format_func=lambda x: next((m[0] for m in model_options if m[1] == x), x),
-        help="Choose between OpenAI GPT or Google Gemini models."
-    )
-    
-    # Determine provider
-    is_groq = selected_model.startswith("groq:")
-    is_ollama = selected_model.startswith("ollama:")
-    is_gemini = selected_model.startswith("gemini")
-    is_openai = selected_model.startswith("gpt")
-    
-    st.markdown("")
-    
-    # API Key Input - Dynamic based on model
-    if is_ollama:
-        st.success("✓ Local Model - No API Key Needed!")
-        st.caption("Running on your Mac via Ollama")
-    elif is_groq:
-        st.markdown("##### ⚡ Groq API Key (FREE)")
-        api_key_input = st.text_input(
-            "Groq API Key",
-            type="password",
-            placeholder="gsk_...",
-            help="Get FREE key at console.groq.com",
-            label_visibility="collapsed"
-        )
-        if api_key_input:
-            os.environ["GROQ_API_KEY"] = api_key_input
-            st.success("✓ Groq API Key Set")
-        elif os.environ.get("GROQ_API_KEY"):
-            st.success("✓ Groq API Key Loaded")
-        elif not MOCK_MODE:
-            st.warning("⚠ Groq API Key Required")
-            st.caption("[Get FREE Key →](https://console.groq.com)")
-    elif is_gemini:
-        st.markdown("##### 🔑 Google API Key")
-        api_key_input = st.text_input(
-            "Google API Key",
-            type="password",
-            placeholder="AIza...",
-            help="Get your key at https://aistudio.google.com/apikey",
-            label_visibility="collapsed"
-        )
-        if api_key_input:
-            os.environ["GOOGLE_API_KEY"] = api_key_input
-            st.success("✓ Google API Key Set")
-        elif os.environ.get("GOOGLE_API_KEY"):
-            st.success("✓ Google API Key Loaded")
-        elif not MOCK_MODE:
-            st.warning("⚠ Google API Key Required")
-            st.caption("[Get API Key →](https://aistudio.google.com/apikey)")
+    api_key = st.text_input("GROQ API KEY", type="password", placeholder="sk-...", label_visibility="collapsed")
+    if api_key:
+        st.session_state['groq_api_key'] = api_key # Persist
+        st.caption("✅ LINK: SECURE")
     else:
-        st.markdown("##### 🔑 OpenAI API Key")
-        api_key_input = st.text_input(
-            "OpenAI API Key",
-            type="password",
-            placeholder="sk-proj-...",
-            help="Required for GPT-4o, Whisper, and TTS.",
-            label_visibility="collapsed"
-        )
-        if api_key_input:
-            os.environ["OPENAI_API_KEY"] = api_key_input
-            st.success("✓ OpenAI API Key Set")
-        elif os.environ.get("OPENAI_API_KEY"):
-            st.success("✓ OpenAI API Key Loaded")
-        elif not MOCK_MODE:
-            st.warning("⚠ OpenAI API Key Required")
+        st.caption("⚠️ LINK: OFFLINE")
+        st.markdown("[Get Key](https://console.groq.com)")
+    
+    # Simplified Model Selector
+    st.selectbox("LLM ENGINE", ["Llama 3.3 70B (Speed)", "Mixtral 8x7B (Logic)"], label_visibility="collapsed")
     
     st.markdown("---")
+
+    # 3. THE EXECUTIVE LIBRARY (STARTUP LIFECYCLE MAPPING)
+    st.markdown("#### 🧭 MISSION PROTOCOL")
     
-    # Voice Selection for TTS
-    voice_options = get_voice_options()
-    selected_voice = st.selectbox(
-        "TTS Voice",
-        options=[v[1] for v in voice_options],
-        format_func=lambda x: next((v[0] for v in voice_options if v[1] == x), x),
-        help="Voice for audio cover letter generation."
+    # Lifecycle Phase Selector (The "Executive" View)
+    mission_phase = st.selectbox("OPERATIONAL PHASE", 
+        ["I. STRATEGIC RECON (Pre-A)", "II. EXECUTION OPS (Series A-C)", "III. ARCHITECT DECK (IPO+)"],
+        label_visibility="collapsed"
     )
     
-    st.markdown("---")
+    # Dynamic Tool Selection based on Phase
+    selected_tool_label = ""
     
-    # Philosophy Reminder
-    st.markdown("### 📐 The Basin Protocol")
-    st.markdown("""
-    - **Systems > Hires**
-    - **Signal > Noise**
-    - **Architecture > Activity**
-    """)
+    if "STRATEGIC RECON" in mission_phase:
+        st.caption("Focus: Finding Market Fit & Targets")
+        selected_tool_label = st.radio("Select Tool:", 
+            ["Omni-Agent (Intel)", "Black Ops (Hunt)", "Analytics (Scoreboard)"],
+            label_visibility="collapsed")
+            
+    elif "EXECUTION OPS" in mission_phase:
+        st.caption("Focus: Scaling the Narrative & Team")
+        selected_tool_label = st.radio("Select Tool:", 
+            ["Practice (Dojo)", "Voice", "Talent Signal (Recruiter)"],
+            label_visibility="collapsed")
+            
+    elif "ARCHITECT DECK" in mission_phase:
+        st.caption("Focus: High-Level Strategy & Governance")
+        selected_tool_label = st.radio("Select Tool:", 
+            ["First 90 Days (Closer)", "Analytics (Scoreboard)", "Talent Signal (Recruiter)"],
+            label_visibility="collapsed")
+
+    # MAPPING TO SYSTEM KERNEL (Connecting UX to Logic)
+    # This maps the "Cool Executive Names" to the internal "Functional Names"
+    tool_map = {
+        "Omni-Agent (Intel)": "📄 Intel",
+        "Black Ops (Hunt)": "🎯 Hunt",
+        "Analytics (Scoreboard)": "📊 Analytics",
+        "Practice (Dojo)": "🥊 Practice (Dojo)",
+        "Voice": "🎤 Voice",
+        "Talent Signal (Recruiter)": "🔍 Talent Signal",
+        "First 90 Days (Closer)": "🚀 First 90 Days"
+    }
     
+    input_mode = tool_map.get(selected_tool_label, "📄 Intel")
+
     st.markdown("---")
-    st.caption("Basin & Associates © 2024")
-    st.caption("Voice-First Career Intelligence")
+
+    # 4. FINAL FOOTER
+    st.markdown("`OPERATOR: LEON BASIN`")
+    st.markdown("`STATUS: ONLINE`")
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -438,12 +398,8 @@ with col1:
     st.markdown("### 📥 Ingest Data (The Signal)")
     
     # Input Mode Toggle - FULL ARSENAL
-    input_mode = st.radio(
-        "Mission Mode",
-        ["📄 Intel", "🎯 Hunt", "📊 Analytics", "🔍 Talent Signal", "🎤 Voice", "🥊 Practice (Dojo)", "🚀 First 90 Days"],
-        horizontal=True,
-        help="Intel (Recon), Hunt (Search), Signal (Screen), Voice (Audio), Dojo (Interview), 90 Days (Plan)"
-    )
+    # Input Mode Controlled by Sidebar
+    st.info(f"🧬 SYSTEM MODE: **{input_mode}**")
     
     st.markdown("")
     
