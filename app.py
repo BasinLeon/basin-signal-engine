@@ -307,7 +307,7 @@ if "generated_audio" not in st.session_state:
 with st.sidebar:
     # 1. HEADER & SYSTEM STATUS
     st.markdown("### ▲ BASIN::NEXUS")
-    st.caption("v11:11 | QUANTUM LEAP PROTOCOL")
+    st.caption("v11:11 | REVENUE ARCHITECT OS")
     st.markdown("---")
     
     # 2. SYSTEM CORE & CONFIGURATION (Terminal Style)
@@ -358,13 +358,13 @@ with st.sidebar:
     elif "EXECUTION OPS" in mission_phase:
         st.caption("Focus: Scaling the Narrative & Team")
         selected_tool_label = st.radio("Select Tool:", 
-            ["Pipeline CRM", "Boardroom (Sim)", "Objection Bank", "Voice", "Talent Signal (Recruiter)"],
+            ["Pipeline CRM", "Boardroom (Sim)", "Live Assist", "Objection Bank", "Voice", "Talent Signal (Recruiter)"],
             label_visibility="collapsed")
             
     elif "ARCHITECT DECK" in mission_phase:
         st.caption("Focus: High-Level Strategy & Governance")
         selected_tool_label = st.radio("Select Tool:", 
-            ["First 90 Days (Closer)", "Pipeline CRM", "Boardroom (Sim)", "Analytics (Scoreboard)"],
+            ["First 90 Days (Closer)", "Pipeline CRM", "Boardroom (Sim)", "Live Assist", "Analytics (Scoreboard)"],
             label_visibility="collapsed")
 
     # MAPPING TO SYSTEM KERNEL (Connecting UX to Logic)
@@ -380,7 +380,8 @@ with st.sidebar:
         "First 90 Days (Closer)": "🚀 First 90 Days",
         "Pipeline CRM": "📈 Pipeline CRM",
         "Objection Bank": "🛡️ Objection Bank",
-        "Company Intel": "🔬 Company Intel"
+        "Company Intel": "🔬 Company Intel",
+        "Live Assist": "🎙️ Live Assist"
     }
     
     input_mode = tool_map.get(selected_tool_label, "📄 Intel")
@@ -1521,6 +1522,165 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
             if st.session_state.get('company_intel'):
                 st.markdown(st.session_state['company_intel'])
 
+    # ==============================================================================
+    # 🎙️ MODE 11: LIVE ASSIST (DIGITAL TWIN PROTOCOL)
+    # ==============================================================================
+    elif input_mode == "🎙️ Live Assist":
+        st.markdown("## 🎙️ LIVE ASSIST (DIGITAL TWIN)")
+        st.caption("PROTOCOL: Real-time coaching during live interviews. The Oracle speaks with you.")
+        
+        st.warning("⚡ **ACTIVE MODE:** Use during actual interviews for real-time narrative support.")
+        
+        # PHASE SELECTOR
+        assist_phase = st.radio("INTERVIEW PHASE", 
+            ["🎯 Pre-Call Prep", "🔴 LIVE (Recording)", "📊 Post-Call Debrief"],
+            horizontal=True
+        )
+        
+        st.markdown("---")
+        
+        # === PRE-CALL PREP ===
+        if assist_phase == "🎯 Pre-Call Prep":
+            st.markdown("### 🎯 PRE-CALL INTELLIGENCE")
+            
+            c1, c2 = st.columns(2)
+            with c1:
+                company = st.text_input("Company Name", placeholder="e.g., Verkada")
+                interviewer = st.text_input("Interviewer Name/Role", placeholder="e.g., VP of Sales")
+                interview_type = st.selectbox("Interview Type", ["Recruiter Screen", "Hiring Manager", "Final Round / CEO", "Panel"])
+                
+            with c2:
+                # Quick Objection Reminders
+                st.markdown("#### 🛡️ OBJECTION QUICK-LOAD")
+                if st.session_state.get('objection_bank'):
+                    for obj in list(st.session_state['objection_bank'].keys())[:3]:
+                        st.caption(f"❓ {obj}")
+                else:
+                    st.info("Load objections from Objection Bank first.")
+            
+            if st.button("📋 GENERATE CALL BRIEFING", type="primary", use_container_width=True):
+                from logic.generator import generate_plain_text
+                
+                with st.spinner("Generating briefing..."):
+                    brief_prompt = f"""
+                    Generate a 30-second pre-call briefing for Leon Basin.
+                    
+                    INTERVIEW: {interview_type} at {company} with {interviewer}
+                    
+                    Include:
+                    1. **OPENING LINE:** A confident, specific opener that shows you know the company.
+                    2. **KEY METRIC TO DROP:** When to naturally mention 160% pipeline growth.
+                    3. **PREDICTED QUESTION:** One likely question based on the interview type.
+                    4. **POWER PHRASE:** One sentence to use if asked "Why you?"
+                    
+                    Keep it punchy - this is a quick refresh before the call.
+                    """
+                    model_id = st.session_state.get('selected_model_id', "groq:llama-3.3-70b-versatile")
+                    briefing = generate_plain_text(brief_prompt, model_name=model_id)
+                    st.markdown(briefing)
+        
+        # === LIVE RECORDING ===
+        elif assist_phase == "🔴 LIVE (Recording)":
+            st.markdown("### 🔴 LIVE INTERVIEW ASSISTANT")
+            st.error("**RECORDING ACTIVE** - Speak clearly. The Oracle is listening.")
+            
+            # Live Telemetry Display
+            tel1, tel2, tel3, tel4 = st.columns(4)
+            tel1.metric("🎤 STATUS", "RECORDING", "Live")
+            tel2.metric("⏱️ DURATION", "00:00", "Minutes")
+            tel3.metric("📊 AGENCY SCORE", "--", "Pending")
+            tel4.metric("🚨 OBJECTION ALERT", "STANDBY", "Monitoring")
+            
+            st.markdown("---")
+            
+            # Objection Trigger Keywords
+            st.markdown("#### 🚨 OBJECTION TRIGGER KEYWORDS")
+            st.caption("If you hear these from the interviewer, your scripted response will appear:")
+            
+            trigger_keywords = {
+                "cost": "My systems reduce CAC by 40%. The ROI is measurable.",
+                "risk": "I've successfully scaled GTM at 5+ early-stage startups. The playbook is proven.",
+                "consultant": "I'm not a consultant—I'm a builder. I wrote the code that drives the pipeline.",
+                "experience": "My 15 years span Google operations, startup scaling, and technical GTM. I've seen both sides.",
+                "why should we": "Because I don't just run campaigns—I build the revenue engine that runs them at scale."
+            }
+            
+            for keyword, response in trigger_keywords.items():
+                with st.expander(f"🔑 If they say: '{keyword.upper()}'"):
+                    st.success(f"**YOUR RESPONSE:** {response}")
+            
+            st.markdown("---")
+            
+            # Post-recording transcript
+            st.markdown("#### 📝 LIVE TRANSCRIPT / POST-CALL PASTE")
+            call_transcript = st.text_area(
+                "Paste your call transcript or notes here after the interview:",
+                height=200,
+                placeholder="[After the call, paste the transcript here for analysis...]"
+            )
+            
+            if call_transcript and st.button("🧠 ANALYZE CALL PERFORMANCE"):
+                from logic.generator import generate_plain_text
+                import re
+                
+                # Calculate metrics
+                word_count = len(call_transcript.split())
+                filler_words = len(re.findall(r'\b(um|uh|like|you know|basically|actually|literally)\b', call_transcript.lower()))
+                metrics_mentioned = len(re.findall(r'\d+%|\$\d+|\d+[xX]|\d+\+', call_transcript))
+                
+                # Estimate WPM (assume 10 min call)
+                estimated_wpm = word_count // 10
+                
+                st.session_state['live_assist_analysis'] = {
+                    "word_count": word_count,
+                    "filler_words": filler_words,
+                    "metrics_mentioned": metrics_mentioned,
+                    "wpm": estimated_wpm
+                }
+                
+                st.success("✅ Analysis complete! Go to Post-Call Debrief.")
+        
+        # === POST-CALL DEBRIEF ===
+        elif assist_phase == "📊 Post-Call Debrief":
+            st.markdown("### 📊 POST-CALL DEBRIEF")
+            
+            if st.session_state.get('live_assist_analysis'):
+                analysis = st.session_state['live_assist_analysis']
+                
+                # Scorecard
+                d1, d2, d3, d4 = st.columns(4)
+                d1.metric("WORDS SPOKEN", analysis['word_count'])
+                d2.metric("FILLER WORDS", analysis['filler_words'], "Lower is better" if analysis['filler_words'] < 5 else "⚠️ Practice needed")
+                d3.metric("METRICS DROPPED", analysis['metrics_mentioned'], "🎯 Good" if analysis['metrics_mentioned'] >= 2 else "Add more!")
+                d4.metric("EST. WPM", analysis['wpm'], "Ideal: 130-150" if 130 <= analysis['wpm'] <= 150 else "Adjust pacing")
+                
+                st.markdown("---")
+                
+                # Performance Grade
+                score = 50
+                score += min(analysis['metrics_mentioned'] * 15, 30)
+                score -= analysis['filler_words'] * 5
+                score += 20 if 130 <= analysis['wpm'] <= 150 else 0
+                
+                if score >= 80:
+                    grade = "A"
+                    feedback = "🏆 EXCELLENT. You're interview-ready."
+                elif score >= 60:
+                    grade = "B"
+                    feedback = "✅ SOLID. Polish the pacing in the Boardroom."
+                else:
+                    grade = "C"
+                    feedback = "⚠️ NEEDS WORK. Practice filler word elimination."
+                
+                st.markdown(f"## PERFORMANCE GRADE: **{grade}** ({score}/100)")
+                st.info(feedback)
+                
+                # Update Pipeline CRM suggestion
+                st.markdown("---")
+                st.markdown("#### 📈 PIPELINE UPDATE SUGGESTION")
+                st.caption("Based on this call, update your Pipeline CRM with the new stage and follow-up action.")
+            else:
+                st.info("Complete a LIVE recording session first to see your debrief.")
 
 
 # ==============================================================================
