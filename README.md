@@ -1,137 +1,125 @@
-# ⚡ BASIN::NEXUS
+# ▲ BASIN::NEXUS | v11:11 | Revenue Architect OS
 
-> *The Revenue Architect's Command Center*
-
-**I build the systems that build revenue.**
-
-[![Python](https://img.shields.io/badge/Python-3.9+-blue)](https://python.org)
-[![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red)](https://streamlit.io)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
+> **The Revenue Architect builds systems, not pitches.**
 
 ---
 
-## 🎯 What This Is
+## 🎯 The Revenue Architect (Ex-Fudo Security, Google, Hewlett Packard, NetApp, SurveyMonkey & Sense)
 
-**BASIN::NEXUS** is an AI-powered GTM Intelligence Platform that I built to operationalize my 15 years of revenue experience into code.
+I build data-driven GTM systems that bridge engineering complexity with commercial velocity. My focus is on scaling revenue by eliminating operational friction.
 
-This isn't a "job search tool." It's a **Reverse-ATS** — a system that finds the hidden market, coaches your narrative, and eliminates operational friction from the job hunt.
+### 📈 Key Architectural Wins & Metrics
 
-**Creator:** [Leon Basin](https://linkedin.com/in/leonbasin) | Technical GTM Architect
-
----
-
-## ⚡ The Arsenal
-
-### 📄 **Intel Mode** — Resume × JD Analysis
-
-- Pain Point Extraction from job descriptions
-- Evidence Mapping from your resume
-- Persona Targeting (Operator, Visionary, Technologist)
-- Gap Analysis with market context
-
-### 🎯 **Hunt Mode** — The Headhunter
-
-- **Boolean Generator** — Precision LinkedIn targeting strings
-- **ATS Breaker** — Search Lever, Greenhouse, Ashby DIRECTLY
-- **Whisper Search** — Find stealth startups & first hires
-- **Startup Radar** — Wellfound/AngelList advanced filters
-- **Headhunter Critique** — AI recruiter feedback (3 personas)
-- **Teleprompter Scripts** — 60-second Loom pitch generator
-
-### 🎤 **Voice Mode** — Audio Intelligence
-
-- Record resume/JD via microphone
-- Whisper STT transcription
-- Audio cover letter generation (OpenAI TTS)
-
-### 📹 **Video Mode** — Pitch Coaching
-
-- Upload video pitches
-- AI analysis of delivery, content, presence
-- Async video script generator
-
-### 🥊 **Practice Mode** — The War Room
-
-- AI-powered interview simulation
-- Real-time conversation practice
-- Performance scoring & feedback
-
----
-
-## 📈 What I've Delivered (The Metrics)
+These are the verifiable systems I built and scaled, demonstrating the blend of technical rigor and commercial strategy:
 
 | Role | Architectural Win | Metric |
-|------|------------------|--------|
-| **Fudo Security** | Re-architected Americas GTM & partner channel | **160% YoY Pipeline Increase** |
-| **Sense** | BDR leadership & sales automation framework | **$10M Pipeline Generated** |
-| **Basin & Associates** | Zero-to-One GTM engines for AI/Cyber clients | **$621k Active Pipeline** |
+| :--- | :--- | :--- |
+| **Fudo Security** | Re-architected global outbound motion & partner channel. | **160%** YoY Pipeline Increase |
+| **Sense (Workforce AI)** | BDR team leadership & sales automation framework. | Generated **$10M in pipeline** & reduced customer churn by **12%**. |
+| **Basin & Associates** | Zero-to-One GTM engines for AI/DevSecOps clients. | **$621k** Active Pipeline Generated. |
 
 ---
 
-## 🤖 Multi-LLM Support
+### 🧱 Foundational Rigor & Scale (Google Ops, MBA, Field Leadership)
 
-| Provider | Models | Cost |
-|----------|--------|------|
-| ⚡ **Groq** | Llama 3.3 70B, Mixtral | **FREE** |
-| 🦙 **Ollama** | Llama 3.2, DeepSeek | **FREE (local)** |
-| ☁️ **OpenAI** | GPT-4o, GPT-4o Mini | Paid |
-| ☁️ **Google** | Gemini 1.5 Flash/Pro | Free tier |
+My methods are grounded in process rigor and early leadership development:
+
+| Foundation | Core Focus | Insight |
+| :--- | :--- | :--- |
+| **SurveyMonkey** | **Enterprise Portfolio Management.** | Managed a **$300M+ enterprise portfolio** & closed **$300K** in expansion revenue. |
+| **Sense (Enablement)** | **Social Selling Program Design.** | Increased sales team response rates by **125%**. |
+| **Google** / **NetApp** | Operations Rigor & Process Optimization. | Drove a **15% increase** in operational efficiency (Google Shopping launch). |
+| **HP / Early Career** | Field Sales Leadership & Player-Coach DNA. | Managed and trained a team of **20 associates** in product demonstration. |
 
 ---
 
-## 🚀 Quick Start
+## 💻 What This Is: BASIN::NEXUS (v11:11)
+
+This repository is my live GTM Signal Architect platform. Built with Python and Streamlit, it demonstrates how I think about career intelligence as a **Revenue OS**—a closed-loop system that turns data into action.
+
+### System Architecture
+
+```
+▲ BASIN::NEXUS v11:11
+│
+├── 📄 INTEL MODE (Omni-Agent HUD)
+│   └── Career Vault + GTM Swarm (5 Agents)
+│
+├── 🎯 HUNT MODE (Prescient Targeting)
+│   └── Single-Button 5-Vector Sweep
+│
+├── 🥊 BOARDROOM SIMULATOR (Swarm Synthesis)
+│   ├── Real-Time XP Scoring
+│   ├── Session History
+│   └── LinkedIn Post Generator
+│
+├── 📈 PIPELINE CRM
+├── 🛡️ OBJECTION BANK
+├── 🔬 COMPANY INTEL
+├── 🎙️ LIVE ASSIST (Digital Twin)
+└── 🚀 FIRST 90 DAYS (Closer)
+```
+
+### LLM Fleet (Multi-Provider)
+
+| Engine | Provider | Purpose |
+|--------|----------|---------|
+| Llama 3.3 70B | Groq | Speed & Daily Hunt |
+| Mixtral 8x7B | Groq | Logic & Structuring |
+| Gemini Pro | Google | Deep Reasoning |
+| Claude 3.5 Sonnet | Anthropic | Narrative Excellence |
+
+### Quick Start
 
 ```bash
-# Clone
+# Clone the repository
 git clone https://github.com/BasinLeon/basin-signal-engine.git
 cd basin-signal-engine
 
-# Setup
-python -m venv venv
-source venv/bin/activate
+# Install dependencies
 pip install -r requirements.txt
 
-# Configure (optional - can use sidebar)
-cp .env.example .env
-
-# Run
+# Run the application
 streamlit run app.py
+```
+
+### Environment Variables
+
+```bash
+export GROQ_API_KEY="your-groq-key"
+export GOOGLE_API_KEY="your-google-key"  # For Gemini
+export ANTHROPIC_API_KEY="your-anthropic-key"  # For Claude
 ```
 
 ---
 
-## 🧠 The Stack
+## 🗂️ Tech Stack
 
-- **Languages:** Python, SQL
-- **Frameworks:** Streamlit, Next.js
-- **AI/LLM:** Llama 3.3, OpenAI API, Groq, Google Gemini
-- **Voice:** OpenAI Whisper (STT), OpenAI TTS
-
----
-
-## 🎯 The Philosophy
-
-> *"Algorithms sort talent. Systems scale revenue. Stories connect them."*
-
-I am a **Technical Revenue Architect** who operates at the intersection of Enterprise Sales Strategy and GTM Engineering.
-
-For 15 years, I led sales teams and built revenue engines. Today, I don't just manage the GTM process — **I code it.**
+- **Frontend:** Streamlit
+- **LLM Orchestration:** Groq, Google Gemini, Anthropic Claude
+- **Data Processing:** Python, Pandas
+- **Voice:** Whisper API
+- **Architecture:** 1617 lines of production code
 
 ---
 
-## 🤝 Connect
+## 🤝 How to Connect
 
-- **LinkedIn:** [linkedin.com/in/leonbasin](https://linkedin.com/in/leonbasin)
-- **Portfolio:** [basinleon.com](https://basinleon.com)
-- **X:** [@basin_leon](https://twitter.com/basin_leon)
-- **Email:** <lbasin23@gmail.com>
+| Channel | Link |
+|---------|------|
+| **LinkedIn** | [linkedin.com/in/leonbasin](https://www.linkedin.com/in/leonbasin/) |
+| **Portfolio** | [basinleon.github.io](https://basinleon.github.io/) |
+| **X (Twitter)** | [@basin_leon](https://x.com/basin_leon) |
 
 ---
 
 ## 📜 License
 
-MIT License — Build with it, learn from it, make it yours.
+MIT License - Use it, learn from it, build your own Revenue OS.
 
 ---
 
-Built with 🔥 by Leon Basin | Mountain View, CA | 2024-2025
+**Built at 1:40 AM by someone who started coding at 40.**
+**This is the builder's path.**
+
+*—▲ BASIN::NEXUS*
