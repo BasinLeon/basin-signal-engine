@@ -742,13 +742,153 @@ Tip: Include the FULL JD for best results - the more context, the better the out
         st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
         
         # ═══════════════════════════════════════════════════════════════
+        # THE ATS BREAKER - Direct ATS Search
+        # ═══════════════════════════════════════════════════════════════
+        st.markdown("#### 💣 THE ATS BREAKER")
+        st.caption("Search job boards DIRECTLY - see roles days before they hit LinkedIn")
+        
+        ats_role = st.text_input(
+            "Role to hunt:",
+            placeholder='e.g., "Head of Partnerships" OR "GTM Operations"',
+            key="ats_role"
+        )
+        
+        st.markdown("**🎯 Target ATS Platforms:**")
+        col_ats1, col_ats2, col_ats3 = st.columns(3)
+        
+        with col_ats1:
+            if st.button("🟢 Lever Jobs", use_container_width=True):
+                if ats_role:
+                    google_lever = f"https://www.google.com/search?q=site%3Alever.co+{ats_role.replace(' ', '+')}"
+                    st.markdown(f"[🔗 Open Lever Search]({google_lever})")
+                    st.code(f'site:lever.co "{ats_role}"', language="text")
+        
+        with col_ats2:
+            if st.button("🌿 Greenhouse", use_container_width=True):
+                if ats_role:
+                    google_greenhouse = f"https://www.google.com/search?q=site%3Agreenhouse.io+{ats_role.replace(' ', '+')}"
+                    st.markdown(f"[🔗 Open Greenhouse Search]({google_greenhouse})")
+                    st.code(f'site:greenhouse.io "{ats_role}"', language="text")
+        
+        with col_ats3:
+            if st.button("⚡ Ashby", use_container_width=True):
+                if ats_role:
+                    google_ashby = f"https://www.google.com/search?q=site%3Aashbyhq.com+{ats_role.replace(' ', '+')}"
+                    st.markdown(f"[🔗 Open Ashby Search]({google_ashby})")
+                    st.code(f'site:ashbyhq.com "{ats_role}"', language="text")
+        
+        st.markdown("")
+        
+        # Combined Nuclear Option
+        if st.button("☢️ NUCLEAR OPTION - Search ALL ATS", use_container_width=True, type="primary"):
+            if ats_role:
+                nuclear_query = f'(site:lever.co OR site:greenhouse.io OR site:ashbyhq.com OR site:jobs.lever.co) "{ats_role}"'
+                nuclear_url = f"https://www.google.com/search?q={nuclear_query.replace(' ', '+').replace(':', '%3A')}"
+                st.session_state.nuclear_result = nuclear_query
+                st.markdown(f"[🔗 **OPEN NUCLEAR SEARCH**]({nuclear_url})")
+        
+        if "nuclear_result" in st.session_state and st.session_state.nuclear_result:
+            st.code(st.session_state.nuclear_result, language="text")
+            st.success("💡 **Pro tip:** Add `daterange:` to Google to filter by posting date")
+        
+        st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+        
+        # ═══════════════════════════════════════════════════════════════
+        # STARTUP RADAR - Wellfound Advanced
+        # ═══════════════════════════════════════════════════════════════
+        st.markdown("#### 🚀 STARTUP RADAR")
+        st.caption("Advanced Wellfound (AngelList) filters for Series A/B roles")
+        
+        col_stage, col_remote = st.columns(2)
+        with col_stage:
+            startup_stage = st.selectbox(
+                "Funding Stage:",
+                ["Any", "Seed", "Series A", "Series B", "Series C+"],
+                key="startup_stage"
+            )
+        with col_remote:
+            startup_remote = st.selectbox(
+                "Location:",
+                ["Any", "Remote", "San Francisco", "New York", "Los Angeles"],
+                key="startup_remote"
+            )
+        
+        startup_role = st.selectbox(
+            "Role Type:",
+            ["Operations", "Sales", "Business Development", "Partnerships", "Strategy", "Marketing", "Product"],
+            key="startup_role"
+        )
+        
+        if st.button("🎯 BUILD WELLFOUND LINK", use_container_width=True):
+            # Build Wellfound URL with filters
+            wellfound_base = "https://wellfound.com/jobs"
+            params = []
+            if startup_role:
+                params.append(f"role={startup_role.lower().replace(' ', '-')}")
+            if startup_remote != "Any":
+                params.append(f"locations[]={startup_remote.replace(' ', '%20')}")
+            
+            wellfound_url = wellfound_base + ("?" + "&".join(params) if params else "")
+            st.markdown(f"[🔗 **OPEN WELLFOUND SEARCH**]({wellfound_url})")
+            st.info(f"Filtering: {startup_stage} startups | {startup_remote} | {startup_role} roles")
+        
+        st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+        
+        # ═══════════════════════════════════════════════════════════════
         # THE HEADHUNTER CRITIQUE - AI Recruiter Feedback
         # ═══════════════════════════════════════════════════════════════
         st.markdown("#### 🎭 THE HEADHUNTER CRITIQUE")
         st.caption("Get ruthless feedback as if you were being screened by a top recruiter")
         
+        # === RECRUITER PERSONA ===
+        st.markdown("**🎭 Recruiter Persona:**")
+        critique_persona = st.radio(
+            "Who's reviewing you?",
+            ["🚪 The Gatekeeper (HR Director)", "📊 The Hiring Manager (CRO/VP)", "🚀 The Founder (CEO)"],
+            horizontal=True,
+            key="critique_persona"
+        )
+        
+        # Persona descriptions
+        persona_context = {
+            "🚪 The Gatekeeper (HR Director)": {
+                "description": "Filters by keywords, years of experience, job hopping. 6-second scan.",
+                "instructions": """You are a strict HR Director doing initial screening. You care about:
+- Exact keyword matches to the JD
+- Years of experience requirements
+- Employment gaps and job hopping (red flags if <18 months per role)
+- Education and certifications
+- Format and ATS-friendliness
+You reject 90% of resumes. Be harsh about formatting and missing keywords."""
+            },
+            "📊 The Hiring Manager (CRO/VP)": {
+                "description": "Ignores fluff. Hunts for METRICS, outcomes, and 'Builder' language.",
+                "instructions": """You are a CRO/VP Sales reviewing for your team. You care about:
+- METRICS: Revenue numbers, % increases, pipeline built
+- OUTCOMES: What did they actually SHIP?
+- Builder language: 'Built', 'Scaled', 'Architected' not 'Helped', 'Assisted'
+- Relevance to YOUR pain points
+- Would you want this person in your war room?
+You ignore job titles and education. You only care about PROOF of impact."""
+            },
+            "🚀 The Founder (CEO)": {
+                "description": "Seeks AGENCY, speed, and 'Zero-to-One' proof. Hates corporate speak.",
+                "instructions": """You are a Series A/B CEO hiring your first GTM leader. You care about:
+- AGENCY: Did they drive things or just execute orders?
+- Zero-to-One: Have they built something from nothing?
+- Speed: Can they move FAST without waiting for approval?
+- Anti-corporate: Hate words like 'stakeholder', 'synergy', 'cross-functional alignment'
+- Hunger: Do they sound like they WANT it?
+You're very picky. You'd rather leave the role open than hire wrong."""
+            }
+        }
+        
+        st.caption(persona_context[critique_persona]["description"])
+        
+        st.markdown("")
+        
         critique_company = st.selectbox(
-            "Simulate recruiter from:",
+            "Target company:",
             ["Deel (Global Payroll)", "Rippling (HR Tech)", "Vanta (Security)", "OpenAI (AI)", "Stripe (Payments)", "Custom..."],
             key="critique_company"
         )
@@ -774,29 +914,32 @@ Tip: Include the FULL JD for best results - the more context, the better the out
                 with st.spinner("The Headhunter is reviewing your materials..."):
                     try:
                         company_context = custom_company if critique_company == "Custom..." else critique_company
+                        persona_instructions = persona_context[critique_persona]["instructions"]
                         
-                        critique_prompt = f"""You are a ruthless Head of Talent at {company_context}. 
-You are screening candidates for the role of {critique_role}.
+                        critique_prompt = f"""You are reviewing a candidate for {critique_role} at {company_context}.
+
+YOUR PERSONA: {critique_persona}
+{persona_instructions}
 
 CANDIDATE'S RESUME/SUMMARY:
 {critique_resume[:1500]}
 
-Be BRUTALLY honest. You only have 6 seconds to review this. 
+Be BRUTALLY honest based on YOUR persona's priorities. 
 Give feedback in this format:
 
 **VERDICT**: [PASS TO INTERVIEW / MAYBE / REJECT]
 
 **6-SECOND SCAN**: What I noticed in the first 6 seconds
 
-**KILLER MISTAKE**: The ONE thing that would make me reject this
+**KILLER MISTAKE**: The ONE thing that would make me reject this (based on my persona's priorities)
 
 **MISSING SIGNAL**: What keyword/proof is missing for {company_context}?
 
-**THE FIX**: Exactly how to rewrite the first 2 sentences to get my attention
+**THE FIX**: Exactly how to rewrite the first 2 sentences to get MY attention
 
 **INSIDER TIP**: What would actually make me excited about this candidate?
 
-Be harsh. Be specific. No fluff."""
+Be harsh. Be specific. No fluff. Stay in character as your persona."""
 
                         # Use Groq for speed
                         from groq import Groq
