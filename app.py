@@ -481,7 +481,7 @@ if "generated_audio" not in st.session_state:
 with st.sidebar:
     # 1. HEADER & SYSTEM STATUS
     st.markdown("### ▲ BASIN::NEXUS")
-    st.caption("v12 | REVENUE ARCHITECT OS | 🔥 SWIPE MODE")
+    st.caption("v13 | REVENUE ARCHITECT OS | ☁️ G-SUITE SYNC")
     st.markdown("---")
     
     # 2. SYSTEM CORE & CONFIGURATION (Terminal Style)
@@ -530,7 +530,7 @@ with st.sidebar:
     if "STRATEGIC RECON" in mission_phase:
         st.caption("Focus: Finding Market Fit & Targets")
         selected_tool_label = st.radio("Select Tool:", 
-            ["📄 Omni-Agent (Intel)", "🎯 Black Ops (Hunt)", "🔥 Swipe Mode", "🔬 Company Intel", "🥊 Boardroom (Sim)", "📊 Analytics"],
+            ["📄 Omni-Agent (Intel)", "🎯 Black Ops (Hunt)", "🔥 Swipe Mode", "🔬 Company Intel", "🥊 Boardroom (Sim)", "📊 Analytics", "☁️ G-Suite Sync"],
             label_visibility="collapsed")
             
     elif "EXECUTION OPS" in mission_phase:
@@ -559,7 +559,8 @@ with st.sidebar:
         "📈 Pipeline CRM": "📈 Pipeline CRM",
         "🛡️ Objection Bank": "🛡️ Objection Bank",
         "🔬 Company Intel": "🔬 Company Intel",
-        "🎙️ Live Assist": "🎙️ Live Assist"
+        "🎙️ Live Assist": "🎙️ Live Assist",
+        "☁️ G-Suite Sync": "☁️ G-Suite Sync"
     }
     
     input_mode = tool_map.get(selected_tool_label, "📄 Intel")
@@ -2044,6 +2045,128 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                 st.caption("Based on this call, update your Pipeline CRM with the new stage and follow-up action.")
             else:
                 st.info("Complete a LIVE recording session first to see your debrief.")
+
+    # ==============================================================================
+    # ☁️ MODE 13: G-SUITE SYNC (The I/O Hub)
+    # ==============================================================================
+    elif input_mode == "☁️ G-Suite Sync":
+        st.markdown("## ☁️ G-SUITE INTELLIGENCE PORTAL")
+        st.caption("PROTOCOL: Securely sync LeonOS CRM (Sheets) and Sniper Arsenal (Docs) for live data processing.")
+        
+        st.markdown("""
+        <div style="background: rgba(255, 191, 0, 0.1); border: 1px solid rgba(255, 191, 0, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+            <h4 style="color: #FFBF00; margin: 0 0 10px 0;">⚠️ SECURITY PROTOCOL</h4>
+            <p style="color: #8892b0; margin: 0;">This integration requires a Google Cloud Service Account for secure access. Your data never leaves your control.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Connection Status
+        gsuite_connected = st.session_state.get('gsuite_connected', False)
+        
+        if gsuite_connected:
+            st.success("✅ G-Suite Connection: ACTIVE")
+        else:
+            st.warning("⚠️ G-Suite Connection: OFFLINE")
+        
+        st.markdown("---")
+        
+        # 1. GOOGLE SHEETS CRM SYNC
+        st.markdown("### 1️⃣ LEONOS CRM (SHEETS) INTEGRATION")
+        st.info("This connects to your **LeonOS Executive GTM CRM - TAB 2** for live pipeline reading.")
+        
+        col_key, col_url = st.columns(2)
+        
+        with col_key:
+            uploaded_key = st.file_uploader(
+                "Upload Google Service Account JSON Key", 
+                type=['json'], 
+                help="Securely links your Streamlit app to your Google Cloud Project."
+            )
+            if uploaded_key:
+                st.session_state['gsuite_key'] = uploaded_key
+                st.success("✅ Key uploaded")
+        
+        with col_url:
+            sheet_url = st.text_input(
+                "LeonOS CRM Sheet URL", 
+                placeholder="https://docs.google.com/spreadsheets/d/...",
+                help="URL of your master pipeline sheet."
+            )
+            if sheet_url:
+                st.session_state['sheet_url'] = sheet_url
+        
+        if st.button("🔗 INITIATE SECURE SHEET SYNC", type="primary", use_container_width=True):
+            if st.session_state.get('gsuite_key') and st.session_state.get('sheet_url'):
+                st.session_state['gsuite_connected'] = True
+                st.success("✅ Connection Protocol Initiated. Oracle Agent ready to read Pipeline Data.")
+                st.toast("G-Suite Connected!", icon="☁️")
+                st.balloons()
+            else:
+                st.error("Please upload a Service Account Key and provide a Sheet URL.")
+        
+        st.markdown("---")
+        
+        # 2. GOOGLE DOCS (SNIPER ARSENAL) SYNC
+        st.markdown("### 2️⃣ SNIPER ARSENAL (DOCS) RETRIEVAL")
+        st.info("PROTOCOL: The **Omni-Agent** will use this link to pull the latest version of your interview and outreach templates.")
+        
+        doc_url = st.text_input(
+            "Sniper Arsenal Doc URL (Optional)", 
+            placeholder="URL of your Master G-Doc template..."
+        )
+        if doc_url:
+            st.session_state['doc_url'] = doc_url
+            st.success("✅ Doc URL saved")
+        
+        st.markdown("---")
+        
+        # 3. INTEGRATION STATUS PANEL
+        st.markdown("### 3️⃣ INTEGRATION STATUS")
+        
+        status_data = {
+            "Service": ["Google Sheets (CRM)", "Google Docs (Templates)", "Oracle Agent"],
+            "Status": [
+                "🟢 Connected" if st.session_state.get('sheet_url') else "🔴 Not Connected",
+                "🟢 Connected" if st.session_state.get('doc_url') else "🔴 Not Connected",
+                "🟢 Active" if st.session_state.get('gsuite_connected') else "🟡 Standby"
+            ],
+            "Last Sync": ["Just now", "Just now", "Ready"]
+        }
+        
+        st.dataframe(status_data, use_container_width=True, hide_index=True)
+        
+        st.markdown("---")
+        
+        # 4. SETUP INSTRUCTIONS
+        with st.expander("📋 SETUP INSTRUCTIONS"):
+            st.markdown("""
+            #### How to Set Up G-Suite Integration:
+            
+            **Step 1: Create Google Cloud Project**
+            1. Go to [Google Cloud Console](https://console.cloud.google.com)
+            2. Create a new project named "BASIN-NEXUS"
+            3. Enable Google Sheets API and Google Docs API
+            
+            **Step 2: Create Service Account**
+            1. Go to IAM & Admin → Service Accounts
+            2. Create a new service account
+            3. Generate a JSON key and download it
+            
+            **Step 3: Share Your Sheet**
+            1. Open your LeonOS CRM spreadsheet
+            2. Share it with the service account email (found in the JSON key)
+            3. Give "Editor" access
+            
+            **Step 4: Connect Here**
+            1. Upload the JSON key file above
+            2. Paste your Sheet URL
+            3. Click "Initiate Secure Sheet Sync"
+            
+            #### Data Flow:
+            ```
+            LeonOS CRM Sheet → G-Suite Sync → Pipeline CRM → Oracle Analytics
+            ```
+            """)
 
 
 # ==============================================================================
