@@ -1622,173 +1622,129 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
     # ==============================================================================
     # 🥊 MODE 7: BOARDROOM (SWARM SYNTHESIS) - FINAL ARCHITECTURE
     # ==============================================================================
+    # ==============================================================================
+    # 🥊 MODE 5: BOARDROOM SIMULATOR v2.0 (THE NEURAL DOJO)
+    # ==============================================================================
     elif input_mode == "🥊 Practice (Dojo)":
-        st.markdown("## ▲ BOARDROOM SIMULATOR (SWARM SYNTHESIS)")
-        st.caption("PROTOCOL: Develop executive narrative, coding, and board presentation skills.")
+        st.markdown("## ▲ BOARDROOM SIMULATOR v2.0")
+        st.caption("PROTOCOL: High-Fidelity Company Simulation & Speech Telemetry.")
         
-        # SESSION HISTORY VIEWER
-        if st.session_state.get('session_history'):
-            with st.expander(f"📜 SESSION HISTORY ({len(st.session_state['session_history'])} sessions)"):
-                total_xp = sum(s.get('xp_gained', 0) for s in st.session_state['session_history'])
-                st.metric("TOTAL XP EARNED", f"{total_xp} XP", "Lifetime")
-                
-                for i, session in enumerate(reversed(st.session_state['session_history'][-5:])):  # Last 5
-                    st.markdown(f"**Session {len(st.session_state['session_history']) - i}:** {session.get('opponent', 'Unknown')} | +{session.get('xp_gained', 0)} XP")
-                    st.caption(f"Q: {session.get('question', '')[:100]}...")
-                st.markdown("---")
+        # 1. MISSION CONFIGURATION
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            target_company = st.selectbox("🎯 TARGET LOCK", 
+                ["NVIDIA (AI/Arch)", "LinkedIn (Values)", "eBay (Scale/Ops)", "Generic Series B"],
+                help="Configures the AI's personality and question logic.")
+        with c2:
+            interviewer_style = st.selectbox("🗣️ INTERVIEWER STYLE", 
+                ["The Skeptic (Drill Down)", "The Visionary (Big Picture)", "The Bar Raiser (Behavioral)"])
+        with c3:
+            artifact_focus = st.selectbox("📂 ARTIFACT DEFENSE", 
+                ["160% Pipeline Growth", "Revenue OS Architecture", "Leadership/Management"])
+
+        # 2. THE SIMULATION LOOP
+        st.markdown("---")
         
-        # 1. SETUP
-        col1, col2 = st.columns([1, 2])
-        with col1:
-            # User is practicing for a high-stakes scenario
-            opponent = st.selectbox("INTERVIEW TARGET", 
-                ["CEO / Founder", "Board Member / Investor (The Skeptic CFO)", "Technical VP (Coding)", "Head of Partnerships (Story)"])
-            artifact = st.selectbox("TOPIC ARTIFACT", ["Behavioral Story (STAR)", "Systems Design Question (Code)", "Board/CEO Presentation (Strategy)"])
-            
-            st.info("💡 Context: Omni-Agent is RAG-ing your entire Vault.")
-            
-        # 2. QUESTION GENERATION
-        with col2:
-            if st.button(f"GENERATE {artifact.upper()} CHALLENGE"):
+        if st.button("🔴 INITIATE SIMULATION", type="primary", use_container_width=True):
+            with st.spinner(f"Loading {target_company} Neural Profile..."):
                 from logic.generator import generate_plain_text
+                
+                # Company-Specific Logic Injection
+                company_context = ""
+                if "NVIDIA" in target_company:
+                    company_context = "Focus heavily on 'First Principles' thinking, technical architecture of the GTM system, and speed of execution. Be intense but logical."
+                elif "LinkedIn" in target_company:
+                    company_context = "Focus on 'Members First' value, 'Intelligent Risk Taking', and navigating complex matrixed organizations. Be collaborative."
+                elif "eBay" in target_company:
+                    company_context = "Focus on operational efficiency, marketplaces, and data-driven decision making (Google Ops DNA)."
+                
+                # Generate the Question
                 q_prompt = f"""
-                ROLE: You are interviewing a 'Director of GTM Systems' (Leon Basin).
-                Generate one highly challenging, scenario-based question related to {artifact} suitable for a {opponent}.
-                If {artifact} is 'Systems Design Question', include a constraint (e.g., must be Python/Streamlit based).
+                ACT AS: A Senior Hiring Manager at {target_company}. Style: {interviewer_style}.
+                CONTEXT: {company_context}
+                CANDIDATE CLAIM: {artifact_focus} (Leon Basin).
+                
+                TASK: Ask ONE challenging, open-ended question to stress-test this claim. Do not be polite. Go for the root cause.
                 """
-                # PASS THE SELECTED MODEL ID
+                # Use existing generator function
                 model_id = st.session_state.get('selected_model_id', "groq:llama-3.3-70b-versatile")
                 st.session_state['current_q'] = generate_plain_text(q_prompt, model_name=model_id)
-                st.session_state['opponent'] = opponent
-                st.session_state['artifact'] = artifact
+                st.session_state['sim_active'] = True
 
-        # 3. LIVE SWARM INTERACTION
-        if 'current_q' in st.session_state:
-            st.markdown("---")
-            st.warning(f"🗣️ **{st.session_state['opponent'].upper()}:** {st.session_state['current_q']}")
+        # 3. INTERACTION LAYER
+        if st.session_state.get('sim_active'):
+            # A. THE QUESTION
+            st.info(f"🗣️ **INTERVIEWER:** {st.session_state['current_q']}")
             
-            user_answer = st.text_area("🎙️ YOUR RESPONSE (Draft or Voice Transcript)", height=200, placeholder="Speak your answer or draft your presentation summary...")
-            
-            if st.button("DEPLOY SWARM ANALYSIS"):
-                if user_answer:
-                    from logic.generator import generate_plain_text
-                    with st.spinner("INITIATING MULTI-AGENT TRACE..."):
-                        
-                        # LLM TRACE: SIMULATE AGENT CONVERSATION
-                        swarm_trace_prompt = f"""
-                        ROLEPLAY THE FOUR AGENTS: ARCHITECT, ORACLE, SCRIBE, CODER.
-                        
-                        CONTEXT: Leon's metrics are: 160% Pipeline Growth, $10M ARR, Google Ops Rigor, MBA.
-                        
-                        QUESTION: {st.session_state['current_q']}
-                        USER RESPONSE: {user_answer}
+            # Audio Playback (Text-to-Speech)
+            try:
+                from gtts import gTTS
+                from io import BytesIO
+                tts = gTTS(st.session_state['current_q'], lang='en', tld='us') # 'us' accent
+                audio_bytes = BytesIO()
+                tts.write_to_fp(audio_bytes)
+                st.audio(audio_bytes, format='audio/mp3')
+            except ImportError:
+                st.warning("⚠️ Install 'gTTS' (`pip install gTTS`) to hear the interviewer speak.")
+            except Exception as e:
+                st.caption(f"Audio generation skipped: {str(e)}")
 
-                        OUTPUT MUST BE A TRACE OF THEIR CONVERSATION:
+            # B. THE RESPONSE (Voice Input Simulation)
+            st.markdown("#### 🎙️ YOUR RESPONSE")
+            st.caption("Instructions: Use your system's dictation tool (Fn+Fn on Mac) to speak into the box below.")
+            user_transcript = st.text_area("Transcript Input", height=200, placeholder="[ Speak Answer Here ]")
 
-                        **▲ ARCHITECT (SYSTEMS/GTM):** (Critique the solution's alignment with GTM Methodology - MEDDICC, Outbound, Partner Architecture. Define the structural goal.)
+            # C. SPEECH TELEMETRY ENGINE
+            if st.button("🛑 END & ANALYZE PERFORMANCE", use_container_width=True):
+                if user_transcript:
+                    with st.spinner("CALCULATING TELEMETRY..."):
+                        from logic.generator import generate_plain_text
                         
-                        **▲ ORACLE (DATA/SALES):** (Pull the single best metric or historical fact from Leon's vault to support the solution. Verify its ROI.)
+                        # 1. LOGIC: WPM CALCULATION
+                        word_count = len(user_transcript.split())
+                        # Assuming average answer time is 90 seconds for a text block of this size
+                        est_wpm = int(word_count / 1.5) 
                         
-                        **▲ SCRIBE (NARRATIVE/CEO PITCH):** (Translate the answer into board-level, high-agency language. Advise on tone and presentation structure.)
+                        # 2. LOGIC: FILLER WORD SCAN
+                        fillers = ['um', 'uh', 'like', 'you know', 'sort of', 'kind of', 'basically']
+                        filler_count = sum(user_transcript.lower().count(f) for f in fillers)
+                        filler_density = (filler_count / word_count) * 100 if word_count > 0 else 0
                         
-                        **▲ CODER (VALIDATION/TECH):** (If it's a coding/systems question, validate the Python/Streamlit approach. If behavioral, suggest a GTM tool to automate the story.)
+                        # 3. LLM: CONTENT ANALYSIS
+                        analysis_prompt = f"""
+                        ACT AS: Executive Communication Coach.
+                        CONTEXT: Company: {target_company}. Question: {st.session_state['current_q']}.
+                        TRANSCRIPT: "{user_transcript}"
                         
-                        ---
+                        METRICS:
+                        - WPM: {est_wpm} (Target: 130-150)
+                        - Filler Density: {filler_density:.1f}% (Target: < 3%)
                         
-                        **FINAL SYNTHESIS (THE WINNING ANSWER):** (Write the final, polished response, incorporating all four points.)
+                        TASK:
+                        1. Grade the answer (A-F) based on {target_company} culture.
+                        2. Did they mention the "160% Growth" or "$10M" metric?
+                        3. Rewrite the "Hook" (First 2 sentences) to be 2x more executive.
                         """
-                        
-                        # PASS THE SELECTED MODEL ID
+                        # Use existing generator function
                         model_id = st.session_state.get('selected_model_id', "groq:llama-3.3-70b-versatile")
-                        trace_result = generate_plain_text(swarm_trace_prompt, model_name=model_id)
+                        feedback = generate_plain_text(analysis_prompt, model_name=model_id)
                         
-                        st.markdown("### 🧠 SWARM SYNTHESIS TRACE")
-                        st.code(trace_result, language="markdown")
+                        # D. THE SCOREBOARD
+                        st.markdown("### 📊 TELEMETRY REPORT")
                         
-                        # ====== REAL-TIME XP CALCULATION ======
-                        word_count = len(user_answer.split())
+                        m1, m2, m3, m4 = st.columns(4)
+                        m1.metric("WORD COUNT", word_count)
+                        m2.metric("PACE (Est. WPM)", est_wpm, "Target: 140")
+                        m3.metric("FILLER WORDS", filler_count, "Target: 0", delta_color="inverse")
+                        m4.metric("METRIC DENSITY", "High" if "$" in user_transcript or "%" in user_transcript else "Low", "Critical")
                         
-                        # Check for metrics (numbers, percentages, dollar signs)
-                        import re
-                        metrics_found = len(re.findall(r'\d+%|\$\d+|\d+[xX]|\d+\+', user_answer))
+                        st.success("✅ ANALYSIS COMPLETE")
+                        st.markdown(feedback)
                         
-                        # Check for STAR keywords
-                        star_keywords = ['situation', 'task', 'action', 'result', 'impact', 'outcome', 'achieved', 'delivered', 'built', 'led', 'grew']
-                        star_hits = sum(1 for kw in star_keywords if kw.lower() in user_answer.lower())
-                        
-                        # Calculate XP
-                        base_xp = 50
-                        word_bonus = min(word_count // 20, 50)  # Max 50 XP for length
-                        metric_bonus = metrics_found * 25  # 25 XP per metric
-                        star_bonus = star_hits * 15  # 15 XP per STAR keyword
-                        total_xp = base_xp + word_bonus + metric_bonus + star_bonus
-                        
-                        # Boss Health (inverse of your score quality)
-                        boss_damage = min(95, 20 + (metrics_found * 15) + (star_hits * 10))
-                        
-                        # Determine critical action
-                        if metrics_found == 0:
-                            critical_action = "ADD METRICS!"
-                            critical_tip = "Include numbers (%, $, x growth)"
-                        elif star_hits < 2:
-                            critical_action = "Use STAR Format"
-                            critical_tip = "Structure: Situation → Action → Result"
-                        elif word_count < 100:
-                            critical_action = "Expand Story"
-                            critical_tip = "Add more context and detail"
-                        else:
-                            critical_action = "DEPLOY NOW"
-                            critical_tip = "Answer is interview-ready!"
-                        
-                        # FINAL SCORECARD CALL (Gamified Update)
-                        st.markdown("---")
-                        st.subheader("🏆 MISSION RESULT")
-                        
-                        c1, c2, c3 = st.columns(3)
-                        c1.metric("ARCHITECT XP GAINED", f"+{total_xp} XP", f"Words: {word_count}")
-                        c2.metric("BOSS HEALTH REDUCTION", f"{boss_damage}%", f"Metrics: {metrics_found} | STAR: {star_hits}")
-                        c3.metric("CRITICAL ACTION", critical_action, critical_tip)
-                        
-                        st.success("✅ AGENT TRACE COMPLETE. FINAL ANSWER GENERATED.")
-                        
-                        # ====== SESSION HISTORY SAVE ======
-                        if 'session_history' not in st.session_state:
-                            st.session_state['session_history'] = []
-                        
-                        session_entry = {
-                            "timestamp": "2024-12-06",
-                            "opponent": st.session_state.get('opponent', 'Unknown'),
-                            "artifact": st.session_state.get('artifact', 'Unknown'),
-                            "question": st.session_state.get('current_q', ''),
-                            "answer": user_answer,
-                            "xp_gained": total_xp,
-                            "trace": trace_result[:500]  # Truncate for storage
-                        }
-                        st.session_state['session_history'].append(session_entry)
-                        st.info(f"📁 Session saved! Total sessions: {len(st.session_state['session_history'])}")
-                        
-                        # ====== LINKEDIN POST GENERATOR ======
-                        st.markdown("---")
-                        with st.expander("📱 GENERATE LINKEDIN POST (Herald V2)"):
-                            if st.button("🚀 CREATE LINKEDIN POST"):
-                                linkedin_prompt = f"""
-                                Convert this interview answer into a compelling LinkedIn post:
-                                
-                                ORIGINAL ANSWER: {user_answer}
-                                
-                                RULES:
-                                1. Start with a hook (question or bold statement)
-                                2. Keep it under 200 words
-                                3. Include the key metric (160% growth, $10M, etc.)
-                                4. End with a call-to-action or insight
-                                5. Use line breaks for readability
-                                6. Add 3-5 relevant hashtags
-                                
-                                Make it sound like a thought leader, not a job seeker.
-                                """
-                                linkedin_post = generate_plain_text(linkedin_prompt, model_name=model_id)
-                                st.text_area("📋 COPY THIS:", linkedin_post, height=250)
-                                st.caption("💡 Post this to build your 'Business Academic' brand!")
+                        # Gamification Update
+                        st.toast(f"📈 +50 XP GAINED: {target_company} SIMULATION")
+                else:
+                    st.error("⚠️ No audio transcript detected. Speak your answer!")
 
     # ─────────────────────────────────────────────────────────────
     # FIRST 90 DAYS MODE (THE CLOSER)
