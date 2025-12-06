@@ -617,120 +617,128 @@ with col1:
                 st.error("⚠️ MISSING DATA: Please ensure 'Master Profile' is selected/loaded and a JD is pasted.")
     
     # ==============================================================================
-    # 🎯 MODE 2: HUNT (GLOBAL TARGETING RADAR)
+    # 🎯 MODE 2: HUNT (TARGET ACQUISITION SYSTEM)
     # ==============================================================================
     elif input_mode == "🎯 Hunt":
-        st.markdown("## GLOBAL TARGETING RADAR")
+        st.markdown("## TARGET ACQUISITION SYSTEM")
+        st.caption("PROTOCOL: Generate high-precision search vectors. Bypass noise.")
         
-        # SYSTEM TABS (The Frequency Selector)
-        tab_sonar, tab_xray, tab_whisper = st.tabs(["📡 SONAR (LINKEDIN)", "☢️ X-RAY (GOOGLE ATS)", "🐦 WHISPER (SOCIAL SIGNAL)"])
+        # 1. THE FREQUENCY SELECTOR (CLEAN TABS)
+        tab_linked, tab_xray, tab_social = st.tabs(["LINKEDIN VECTORS", "ATS X-RAY", "SOCIAL SIGNAL"])
         
         # ------------------------------------------------------------------
-        # TAB 1: SONAR (LINKEDIN PRECISION)
+        # TAB 1: LINKEDIN VECTORS (THE MASTER KEY)
         # ------------------------------------------------------------------
-        with tab_sonar:
-            st.markdown("#### 1. CONFIGURE TARGET VECTORS")
+        with tab_linked:
+            st.markdown("#### 1. CONFIGURE SEARCH VECTOR")
             
-            # Row 1: Core Targeting
-            c1, c2, c3 = st.columns(3)
+            c1, c2 = st.columns(2)
             with c1:
-                target_role = st.selectbox("PRIMARY OBJECTIVE", 
-                    ["Director of GTM", "Head of Partnerships", "RevOps Lead", "Founding Sales", "Chief of Staff"], 
-                    help="The specific title cluster to hunt.")
+                # Strategies from your "Master Boolean Library"
+                search_strategy = st.selectbox("STRATEGY PROTOCOL", 
+                    ["The 'HR Tech' Strike (Home Turf)", 
+                     "The 'GTM Operations' Strike (Builder)", 
+                     "The 'Partnerships' Strike (Ecosystem)", 
+                     "The 'Chief of Staff' Strike (Wildcard)"])
             with c2:
-                target_sector = st.selectbox("SECTOR ENVIRONMENT", 
-                    ["HR Tech / EOR (Deel)", "Cybersecurity (Zero Trust)", "AI Infrastructure", "Vertical SaaS"],
-                    help="The industry vertical.")
-            with c3:
-                seniority = st.multiselect("CLEARANCE LEVEL", 
-                    ["Senior", "Manager", "Director", "Head of", "VP"], 
-                    default=["Director", "Head of"],
-                    help="Seniority levels to include.")
+                geo_lock = st.selectbox("GEOGRAPHIC LOCK", ["Remote", "San Francisco Bay Area", "New York", "Global"])
 
-            # Row 2: Fine Tuning
             st.markdown("#### 2. SIGNAL REFINEMENT")
-            f1, f2 = st.columns([3, 1])
-            with f1:
-                keywords = st.text_input("MUST-HAVE KEYWORDS (Optional)", placeholder="e.g. 'Python' AND 'Strategy' AND 'Remote'")
-            with f2:
-                noise_filter = st.checkbox("ACTIVATE NOISE FILTER", value=True, help="Removes Interns, SDRs, and Entry Level roles.")
+            k1, k2 = st.columns([3, 1])
+            with k1:
+                keywords = st.text_input("MUST-HAVE KEYWORDS", placeholder="e.g. 'Zero Trust' OR 'Python'")
+            with k2:
+                exclude_noise = st.checkbox("NOISE FILTER", value=True, help="Removes Interns/Entry Level")
 
-            # LOGIC ENGINE
+            # LOGIC ENGINE (Based on your Uploaded Boolean Library)
             if st.button("GENERATE SEARCH STRING", type="primary", use_container_width=True):
-                with st.spinner("CALCULATING BOOLEAN LOGIC..."):
-                    # Base Logic
-                    role_logic = f'("{target_role}" OR "{target_role.replace("Director", "Head")}" OR "{target_role.replace("Head", "VP")}")'
-                    
-                    # Sector Logic
-                    if "HR" in target_sector:
-                        sector_logic = 'AND ("HR Tech" OR "Payroll" OR "Compliance" OR "Workforce")'
-                    elif "Cyber" in target_sector:
-                        sector_logic = 'AND ("Cybersecurity" OR "Zero Trust" OR "Identity")'
-                    elif "AI" in target_sector:
-                        sector_logic = 'AND ("AI" OR "LLM" OR "Infrastructure" OR "Compute")'
-                    else:
-                        sector_logic = 'AND ("SaaS" OR "B2B" OR "Enterprise")'
-                    
-                    # Level Logic
-                    level_str = " OR ".join([f'"{L}"' for L in seniority])
-                    level_logic = f'AND ({level_str})'
-                    
-                    # Noise Filter
-                    noise_logic = 'AND NOT ("Intern" OR "Entry Level" OR "Part Time" OR "SDR")' if noise_filter else ""
-                    
-                    # Final Assembly
-                    final_boolean = f"{role_logic} {sector_logic} {level_logic} {noise_logic}"
-                    if keywords:
-                        final_boolean += f" AND ({keywords})"
-                    
-                    st.markdown("---")
-                    st.caption("🎯 TARGETING STRING GENERATED")
-                    st.code(final_boolean, language="text")
-                    st.success("📋 COPY TO CLIPBOARD & EXECUTE IN LINKEDIN")
+                
+                base_string = ""
+                
+                # LOGIC MAP [Source: Master Boolean Library]
+                if "HR Tech" in search_strategy:
+                    # Target: Deel, Rippling types
+                    base_string = '("Head of" OR "Senior Manager" OR "Director") AND ("Partnerships" OR "GTM" OR "Business Development" OR "Alliances") AND ("HR Tech" OR "Workforce" OR "Payroll" OR "People Ops" OR "Compliance")'
+                
+                elif "GTM Operations" in search_strategy:
+                    # Target: Architect roles, not Sellers
+                    base_string = '("GTM Operations" OR "Revenue Operations" OR "Sales Strategy" OR "Go-to-Market Strategy") AND ("Manager" OR "Head of" OR "Lead") AND ("SaaS" OR "Tech")'
+                    # Explicitly filtering out sales reps per strategy
+                    base_string += ' AND NOT ("Account Executive" OR "SDR" OR "Cold Call")'
+                
+                elif "Partnerships" in search_strategy:
+                    # Target: Channel/Ecosystem
+                    base_string = '("Head of Partnerships" OR "Senior Partner Manager" OR "Head of Channel" OR "Strategic Alliances") AND ("SaaS" OR "Cybersecurity" OR "AI")'
+                
+                elif "Chief of Staff" in search_strategy:
+                    # Target: Right-Hand to CRO
+                    base_string = '("Chief of Staff") AND ("Revenue" OR "Sales" OR "CRO" OR "GTM" OR "Strategy") AND ("Tech" OR "Startup")'
+
+                # GEOGRAPHIC MODIFIER
+                if geo_lock != "Global":
+                    base_string += f' AND ("{geo_lock}")'
+
+                # NOISE FILTER
+                if exclude_noise:
+                    base_string += ' AND NOT ("Intern" OR "Entry Level" OR "Part Time")'
+
+                # KEYWORD INJECTION
+                if keywords:
+                    base_string += f' AND ({keywords})'
+
+                st.markdown("---")
+                st.caption("🎯 PRECISION VECTOR GENERATED")
+                st.code(base_string, language="text")
+                
+                # DYNAMIC LINK GENERATION
+                # Creates a clickable link to open LinkedIn Search directly
+                encoded_string = base_string.replace('"', '%22').replace(' ', '%20').replace('(', '%28').replace(')', '%29')
+                st.markdown(f"[🚀 **EXECUTE MISSION (OPEN LINKEDIN)**](https://www.linkedin.com/jobs/search/?keywords={encoded_string})")
 
         # ------------------------------------------------------------------
-        # TAB 2: X-RAY (ATS DATABASE PENETRATION)
+        # TAB 2: ATS X-RAY (DATABASE PENETRATION)
         # ------------------------------------------------------------------
         with tab_xray:
-            st.info("PROTOCOL: Bypasses LinkedIn. Pings Lever/Greenhouse/Ashby databases directly for unlisted roles.")
+            st.markdown("#### ☢️ DATABASE PENETRATION (GOOGLE)")
+            st.caption("PROTOCOL: Direct query of ATS subdomains. Bypasses LinkedIn algorithm.")
             
             x1, x2 = st.columns([2, 1])
             with x1:
-                ats_target = st.text_input("TARGET ROLE KEYWORDS", value=target_role, label_visibility="collapsed")
+                ats_role = st.text_input("TARGET ROLE", value="Director of GTM", label_visibility="collapsed", placeholder="Role Title")
             with x2:
-                ats_source = st.multiselect("TARGET DATABASE", ["Lever", "Greenhouse", "Ashby"], default=["Lever", "Greenhouse", "Ashby"], label_visibility="collapsed")
+                ats_target = st.multiselect("TARGET SYSTEM", ["Lever", "Greenhouse", "Ashby"], default=["Lever", "Greenhouse", "Ashby"], label_visibility="collapsed")
             
-            if st.button("INITIATE X-RAY SCAN"):
-                # Enhanced Domain Logic
-                domains = []
-                for s in ats_source:
-                    if "Lever" in s: domains.append("site:jobs.lever.co")
-                    elif "Greenhouse" in s: domains.append("site:boards.greenhouse.io")
-                    elif "Ashby" in s: domains.append("site:jobs.ashbyhq.com")
+            if st.button("INITIATE X-RAY SCAN", use_container_width=True):
+                # Construct the Site Logic
+                sites = []
+                if "Lever" in ats_target: sites.append("site:lever.co")
+                if "Greenhouse" in ats_target: sites.append("site:greenhouse.io")
+                if "Ashby" in ats_target: sites.append("site:ashbyhq.com")
                 
-                site_str = " OR ".join(domains)
-                xray_query = f'({site_str}) "{ats_target}" "Remote"'
+                site_logic = " OR ".join(sites)
+                query = f'{site_logic} "{ats_role}"'
                 
-                st.code(xray_query, language="text")
-                st.markdown(f"[🚀 **EXECUTE GOOGLE SEARCH**](https://www.google.com/search?q={xray_query.replace(' ', '+')})")
+                st.code(query, language="text")
+                st.markdown(f"[🚀 **EXECUTE GOOGLE SEARCH**](https://www.google.com/search?q={query.replace(' ', '+').replace('"', '%22')})")
 
         # ------------------------------------------------------------------
-        # TAB 3: WHISPER (SOCIAL SIGNAL)
+        # TAB 3: SOCIAL SIGNAL (THE WHISPER)
         # ------------------------------------------------------------------
-        with tab_whisper:
-            st.warning("PROTOCOL: Detects 'Hiring Signal' tweets before official job posts.")
+        with tab_social:
+            st.markdown("#### 🐦 SIGNAL INTERCEPT (X/TWITTER)")
+            st.caption("PROTOCOL: Detect 'Hiring' signals before job boards.")
             
-            w1, w2 = st.columns(2)
-            with w1:
-                whisper_role = st.text_input("ROLE", value="GTM Operations")
-            with w2:
-                signal_strength = st.slider("MINIMUM SIGNAL (LIKES)", 0, 50, 5)
-            
-            whisper_query = f'("{whisper_role}") AND ("hiring" OR "join my team" OR "dm me") min_faves:{signal_strength} -filter:retweets'
-            
-            st.markdown("#### 🐦 SIGNAL STRING")
-            st.code(whisper_query, language="text")
-            st.caption("Paste into X.com Search Bar")
+            s1, s2 = st.columns([3, 1])
+            with s1:
+                social_role = st.text_input("ROLE KEYWORD", value="Revenue Operations", label_visibility="collapsed")
+            with s2:
+                min_likes = st.number_input("MIN SIGNAL (LIKES)", value=5, label_visibility="collapsed")
+                
+            if st.button("GENERATE SIGNAL STRING", use_container_width=True):
+                # Based on your prompt to find "Leaders tweeting"
+                query = f'("{social_role}") AND ("hiring" OR "join my team" OR "dm me") min_faves:{min_likes} -filter:retweets'
+                st.code(query, language="text")
+                st.markdown(f"[🚀 **EXECUTE INTERCEPT**](https://twitter.com/search?q={query.replace(' ', '%20')}&src=typed_query)")
 
     
     # ─────────────────────────────────────────────────────────────
