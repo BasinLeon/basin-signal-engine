@@ -435,9 +435,9 @@ with col1:
     # Input Mode Toggle - FULL ARSENAL
     input_mode = st.radio(
         "Mission Mode",
-        ["📄 Intel", "🎯 Hunt", "👔 Recruiter", "🎤 Voice", "🥊 Practice"],
+        ["📄 Intel", "🎯 Hunt", "🔍 Talent Signal", "🎤 Voice", "🥊 Practice"],
         horizontal=True,
-        help="Intel (Resume+JD), Hunt (Find jobs), Recruiter (Screen candidates), Voice (Audio), Practice (Interview)"
+        help="Intel (Resume+JD), Hunt (Find jobs), Talent Signal (Screen candidates), Voice (Audio), Practice (Interview)"
     )
     
     st.markdown("")
@@ -1038,10 +1038,10 @@ Keep each section to 2-3 sentences max. Write it exactly as they should SAY it o
         job_description = ""
     
     # ─────────────────────────────────────────────────────────────
-    # RECRUITER MODE - SCREEN CANDIDATES
+    # TALENT SIGNAL MODE - SCREEN CANDIDATES
     # ─────────────────────────────────────────────────────────────
-    elif input_mode == "👔 Recruiter":
-        st.markdown("#### 👔 THE RECRUITER'S EYE")
+    elif input_mode == "� Talent Signal":
+        st.markdown("#### � TALENT SIGNAL DETECTOR")
         st.caption("Screen candidates using 15 years of hiring instinct, codified into AI")
         
         st.info("💡 **Use Case:** You're helping a company screen candidates, or building your portfolio as a hiring consultant.")
