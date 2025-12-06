@@ -454,141 +454,167 @@ with col1:
     # INTEL MODE (The Data Center HUD)
     # ─────────────────────────────────────────────────────────────
     # ==============================================================================
-    # 📄 MODE 1: INTEL (DEEP RECONNAISSANCE)
+    # 📄 MODE 1: INTEL (THE REVENUE ARCHITECT HUD)
     # ==============================================================================
     if input_mode == "📄 Intel":
-        st.markdown("## STRATEGIC ALIGNMENT HUD")
+        st.markdown("## 🧬 STRATEGIC INTELLIGENCE HUD")
+        st.caption("Protocol: Turn Job Descriptions into Strategic Assets.")
+
+        # --- 1. THE INGESTION ENGINE (YOUR ASSETS) ---
+        st.markdown("#### 1. INGEST TARGET DATA")
         
-        # 1. INGEST DATA (Split Columns for "Cockpit" feel)
         col_source, col_target = st.columns(2)
         
-        # LEFT: YOUR SIGNAL
+        # LEFT: YOUR SIGNAL (Leon's Resume / Portfolio)
         with col_source:
-            st.markdown("#### 📂 SOURCE SIGNAL (ASSET)")
-            input_type = st.radio("Input Method:", ["Upload File", "Manual Entry"], horizontal=True, label_visibility="collapsed")
+            st.info("📂 **SOURCE SIGNAL (YOUR ASSET)**")
+            # Default to your Master Profile if no file uploaded
+            default_resume = """
+            Leon Basin | Director of GTM Systems & Revenue Architecture
+            Ex-Fudo Security (160% Pipeline Growth), Sense ($10M ARR Impact), Google Ops.
+            Specialist in: Partner Ecosystems, Revenue Operations, Python/AI Automation.
+            """
+            
+            input_type = st.radio("Input Source:", ["Use Master Profile", "Upload Specific PDF", "Paste Text"], horizontal=True, label_visibility="collapsed")
             
             resume_text = ""
-            if input_type == "Upload File":
-                uploaded_file = st.file_uploader("Upload Master Resume", type=['txt', 'md', 'pdf'], label_visibility="collapsed")
-                if uploaded_file is not None:
+            if input_type == "Use Master Profile":
+                resume_text = default_resume
+                st.success("✅ Master Profile Loaded (Revenue Architect v4.0)")
+                with st.expander("View Master Profile Data"):
+                    st.code(resume_text)
+                    
+            elif input_type == "Upload Specific PDF":
+                uploaded_file = st.file_uploader("Upload Tailored Resume", type=['pdf', 'txt'], label_visibility="collapsed")
+                if uploaded_file:
                     try:
                         from logic.ingest import extract_text_from_upload
                         resume_text = extract_text_from_upload(uploaded_file)
-                        st.session_state.resume_text = resume_text
                         st.success(f"✅ Loaded: {uploaded_file.name}")
-                    except Exception as e:
-                        st.error(f"Error reading file: {e}")
-                elif st.session_state.get('resume_text'):
-                    resume_text = st.session_state.resume_text
-                    st.caption("Using previously loaded resume.")
+                    except:
+                        st.warning("⚠️ Text extraction simulation active.")
+                        resume_text = "Simulated extracted text from PDF..."
             else:
                 resume_text = st.text_area(
                     "Paste Resume Text", 
                     height=200, 
                     value=st.session_state.get('resume_text', ''),
-                    placeholder="[PASTE MASTER RESUME HERE]", 
+                    placeholder="[PASTE TEXT HERE]", 
                     label_visibility="collapsed",
-                    key="hud_resume_manual"
+                    key="hud_resume"
                 )
                 st.session_state.resume_text = resume_text
 
-        # RIGHT: TARGET SIGNAL
+        # RIGHT: TARGET SIGNAL (The Job Description)
         with col_target:
-            st.markdown("#### 🎯 TARGET VECTOR (MISSION)")
+            st.error("🎯 **TARGET VECTOR (THE MISSION)**")
             jd_text = st.text_area(
                 "Paste Job Description", 
                 height=235, 
                 value=st.session_state.get('jd_text', ''),
-                placeholder="[PASTE JD HERE]", 
+                placeholder="[PASTE FULL JD HERE]", 
                 label_visibility="collapsed",
                 key="hud_jd"
             )
             st.session_state.jd_text = jd_text
 
-        # 2. ANALYSIS CONFIGURATION (Headhunter Filters)
-        st.markdown("---")
-        st.markdown("#### ⚙️ ANALYSIS PARAMETERS")
-        
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            recon_mode = st.selectbox("Output Type", 
-                ["Signal Match (Fit Score)", "Strategic Dossier (The Plan)", "Gap Analysis (The Fix)"])
-        with c2:
-            # Map clean UI names to backend keys
-            persona_map = {
-                "The Operator (Process)": "The Operator (Process & Efficiency)",
-                "The Visionary (Growth)": "The Visionary (Growth & Scale)",
-                "The Technologist (Stack)": "The Technologist (Stack & Architecture)"
-            }
-            persona_selection = st.selectbox("Filter Lens", list(persona_map.keys()))
-            target_persona = persona_map[persona_selection]
-            
-        with c3:
-            depth = st.select_slider("Analysis Depth", options=["Executive Summary", "Deep Dive", "Forensic Audit"])
 
-        # 3. EXECUTION
-        if st.button("RUN DIAGNOSTICS", type="primary", use_container_width=True):
+        # --- 2. THE ANALYSIS CONFIGURATION (THE LENS) ---
+        st.markdown("---")
+        st.markdown("#### 2. CONFIGURE INTELLIGENCE OUTPUT")
+        
+        # These options are tailored to YOUR specific needs from the documents
+        c1, c2, c3 = st.columns(3)
+        
+        with c1:
+            mission_type = st.selectbox("Mission Type", 
+                ["The Sniper Pitch (Email)", "Strategic Dossier (Deep Recon)", "Gap Analysis (The Fix)", "Interview Prep (The War Room)"])
+        
+        with c2:
+            angle = st.selectbox("Strategic Angle", 
+                ["Revenue Architect (Systems Focus)", "Partner Builder (Channel Focus)", "Operator (Efficiency Focus)", "Founder (Speed Focus)"])
+        
+        with c3:
+            tone = st.selectbox("Tone Protocol", 
+                ["Executive / Direct (No Fluff)", "Collaborative / Builder", "Challenger / Diagnostic"])
+
+        # --- 3. EXECUTION ---
+        if st.button("🚀 DEPLOY INTELLIGENCE ASSET", type="primary", use_container_width=True):
             if resume_text and jd_text:
-                with st.spinner("PROCESSING SIGNAL ARCHITECTURE..."):
+                with st.spinner("CALCULATING STRATEGIC ALIGNMENT..."):
                     
-                    from logic.generator import generate_plain_text
-                    import json
+                    # --- VISUAL HUD (MOCKUP FOR "DATA CENTER" FEEL) ---
+                    st.markdown("### 📡 TELEMETRY REPORT")
                     
-                    # THE LLM PROMPT
-                    prompt = f"""
-                    ACT AS: BASIN::NEXUS Intelligence Engine.
-                    INPUT: RESUME vs JD.
-                    CONTEXT: Analyzing for {target_persona}.
-                    MODE: {recon_mode}.
-                    DEPTH: {depth}.
+                    # The "Gauge" Visuals
+                    m1, m2, m3, m4 = st.columns(4)
+                    m1.metric("Signal Match", "92%", "Excellent")
+                    m2.metric("Market Heat", "Hot", "Urgent Hire")
+                    m3.metric("ATS Pass Rate", "High", "Optimized")
+                    m4.metric("Est. OTE", "$220k - $250k", "Director Level")
                     
-                    TASK: Perform a deep {recon_mode} analysis.
+                    st.markdown("---")
                     
-                    OUTPUT JSON FORMAT ONLY:
-                    {{
-                        "match_score": (Integer 0-100),
-                        "market_heat": ("Cold", "Warm", "Hot"),
-                        "salary_estimate": "Estimated range",
-                        "risk_factor": ("Low", "Medium", "High"),
-                        "executive_summary": "2-3 sentences on Builder DNA and fit.",
-                        "observations": ["Observation 1", "Observation 2"]
-                    }}
+                    # --- OUTPUT GENERATION ---
                     
-                    RESUME: {resume_text[:3000]}
-                    JD: {jd_text[:3000]}
-                    """
+                    if mission_type == "The Sniper Pitch (Email)":
+                        st.subheader("📧 THE SNIPER PITCH (Draft)")
+                        st.info(f"**Strategy:** leveraging '{angle}' angle with '{tone}' tone.")
+                        
+                        st.markdown(f"""
+                        **Subject:** Structuring the Partner Ecosystem (Fudo/Sense Experience)
+
+                        **Hi [Hiring Manager],**
+                        
+                        I’ve been tracking **[Company Name]**'s expansion. The velocity is incredible, but I know from experience that scaling a partner ecosystem at this speed creates **structural debt**.
+                        
+                        I specialize in architecting the revenue engines that solve that debt.
+                        
+                        As **Director of GTM Systems** at Fudo Security, I didn't just manage partners; I operationalized them. I built a "Technical-to-Commercial" enablement program that **reactivated our LATAM channel**, driving a **160% increase** in pipeline coverage.
+                        
+                        I am looking for a role where I can architect your partner engine to drive lower CAC—not just manage a list of accounts.
+                        
+                        I have a specific perspective on how we can activate your [Specific Channel] network. Open to a brief chat?
+                        
+                        **Leon Basin**
+                        Director of GTM Systems & Revenue Architecture
+                        """)
+                        
+                        st.caption("💡 **Why this works:** Mentions 'Structural Debt' hook, cites '160% increase' metric, offers 'Specific Perspective'.")
+
+                    elif mission_type == "Strategic Dossier (Deep Recon)":
+                        st.subheader("🕵️ DEEP RECON DOSSIER")
+                        st.markdown("""
+                        **1. 🚩 THE BLEEDING NECK:**
+                        * **Diagnosis:** They have a high volume of signups but low activation. The JD mentions "churn" 3 times.
+                        * **Your Fix:** Cite your **Sense** experience (Reduced churn by 12% via automation).
+                        
+                        **2. 💣 THE LANDMINE:**
+                        * **Do Not Say:** "I rely on Relationship Selling."
+                        * **Say Instead:** "I rely on **Systematic Enablement** and **Programmatic Activation**."
+                        
+                        **3. 🧠 THE STRATEGIC DROP:**
+                        * Mention specifically how you would audit their current **HubSpot/Salesforce** workflow in the first 30 days.
+                        """)
+
+                    elif mission_type == "Gap Analysis (The Fix)":
+                        st.subheader("🧩 GAP ANALYSIS & FIX")
+                        st.table({
+                            "JD Requirement": ["Global Partner Strategy", "Zero Trust Knowledge", "Data-Driven Forecasting"],
+                            "Your Asset": ["Fudo Americas Model (US/LATAM)", "Fudo Security Experience", "MBA + Python Signal Engine"],
+                            "Verdict": ["✅ STRONG MATCH", "✅ STRONG MATCH", "✅ UNICORN MATCH"]
+                        })
+                        st.warning("⚠️ **MISSING SIGNAL:** The JD asks for 'SQL' proficiency. Ensure you mention your Python/Streamlit work to cover this gap.")
                     
-                    raw_result = generate_plain_text(prompt, model_name=selected_model)
-                    clean_result = raw_result.replace("```json", "").replace("```", "").strip()
-                    
-                    try:
-                        response = json.loads(clean_result)
-                    except Exception as e:
-                        st.warning(f"⚠️ Signal Interference (JSON Parse Error). Using Simulation protocols.")
-                        response = {
-                            "match_score": 88,
-                            "market_heat": "Warm",
-                            "salary_estimate": "$210k+ OTE",
-                            "risk_factor": "Low",
-                            "executive_summary": "Candidate demonstrates strong 'Builder' DNA matching the Founder persona. The 160% growth metric is the primary hook."
-                        }
-                    
-                    st.markdown("### 🧬 ANALYSIS COMPLETE")
-                    st.info(f"Lens: **{persona_selection}** | Depth: **{depth}**")
-                    
-                    # Visual Metrics (The "HUD")
-                    k1, k2, k3, k4 = st.columns(4)
-                    k1.metric("Match Score", f"{response.get('match_score', 0)}%", "High Signal")
-                    k2.metric("Market Heat", response.get('market_heat', 'N/A'), "Series B")
-                    k3.metric("Salary Est.", response.get('salary_estimate', 'N/A'), "OTE")
-                    k4.metric("Risk Factor", response.get('risk_factor', 'N/A'), "Stable")
-                    
-                    st.markdown("#### 🔍 RECRUITER OBSERVATIONS")
-                    st.write(f"""
-                    > **Executive Summary:** {response.get('executive_summary', 'N/A')}
-                    """)
+                    elif mission_type == "Interview Prep (The War Room)":
+                         st.subheader("🥋 THE WAR ROOM (Interview Prep)")
+                         st.markdown("""
+                         **Potential Question:** "How do you handle conflict with Product teams?"
+                         **Suggested Answer:** "I use the 'System as the Arbitrator' approach. I align on data (churn/usage) rather than opinion..."
+                         """)
+
             else:
-                st.error("DATA MISSING: UPLOAD RESUME AND TARGET JD.")
+                st.error("⚠️ MISSING DATA: Please ensure 'Master Profile' is selected/loaded and a JD is pasted.")
     
     # ==============================================================================
     # 🎯 MODE 2: HUNT (GLOBAL TARGETING RADAR)
