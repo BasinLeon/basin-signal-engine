@@ -273,6 +273,97 @@ st.markdown("""
         background: rgba(255, 191, 0, 0.1);
         border-left: 4px solid #FFBF00;
     }
+    
+    /* === PREMIUM CARD CONTAINERS === */
+    
+    .nexus-card {
+        background: linear-gradient(135deg, #0d0d1a 0%, #0a0a0f 100%);
+        border: 1px solid rgba(255, 191, 0, 0.15);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 16px 0;
+        transition: all 0.3s ease;
+    }
+    
+    .nexus-card:hover {
+        border-color: rgba(255, 191, 0, 0.4);
+        box-shadow: 0 8px 32px rgba(255, 191, 0, 0.1);
+    }
+    
+    .nexus-card-title {
+        color: #FFBF00;
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+    
+    .nexus-card-body {
+        color: #8892b0;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    /* === METRIC CARDS === */
+    
+    [data-testid="stMetric"] {
+        background: linear-gradient(135deg, #0d0d1a 0%, #0a0a0f 100%);
+        border: 1px solid rgba(255, 191, 0, 0.15);
+        border-radius: 10px;
+        padding: 16px;
+    }
+    
+    [data-testid="stMetricValue"] {
+        color: #FFBF00 !important;
+        font-weight: 700;
+    }
+    
+    [data-testid="stMetricDelta"] {
+        color: #00ff88 !important;
+    }
+    
+    /* === BUTTONS === */
+    
+    .stButton > button {
+        background: linear-gradient(135deg, #FFBF00 0%, #FFD700 100%);
+        color: #000;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(255, 191, 0, 0.3);
+    }
+    
+    /* === FILE UPLOADER === */
+    
+    [data-testid="stFileUploader"] {
+        background: rgba(255, 191, 0, 0.05);
+        border: 2px dashed rgba(255, 191, 0, 0.3);
+        border-radius: 12px;
+        padding: 16px;
+    }
+    
+    /* === SCROLLBAR === */
+    
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: #0a0a0a;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: rgba(255, 191, 0, 0.3);
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 191, 0, 0.5);
+    }
 
 </style>
 """, unsafe_allow_html=True)
