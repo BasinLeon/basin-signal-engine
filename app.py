@@ -684,6 +684,212 @@ Tip: Include the FULL JD for best results - the more context, the better the out
                 - Too few results? Remove seniority filters
                 """)
         
+        st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+        
+        # ═══════════════════════════════════════════════════════════════
+        # THE WHISPER SEARCH - Stealth Job Detection
+        # ═══════════════════════════════════════════════════════════════
+        st.markdown("#### 🕵️ THE WHISPER SEARCH")
+        st.caption("Detect stealth jobs, first hires, and opportunities before they go public")
+        
+        whisper_keywords = st.text_input(
+            "Target keywords (companies, leaders, signals)",
+            placeholder='e.g., "Rippling" OR "Matt MacInnis" OR "first GTM hire"',
+            key="whisper_keywords"
+        )
+        
+        col_whisper1, col_whisper2, col_whisper3 = st.columns(3)
+        
+        with col_whisper1:
+            if st.button("🔥 X/Twitter Search", use_container_width=True):
+                if whisper_keywords:
+                    twitter_query = f'{whisper_keywords} ("hiring" OR "looking for" OR "join my team" OR "scaling" OR "first hire")'
+                    twitter_url = f"https://twitter.com/search?q={twitter_query.replace(' ', '%20')}&f=live"
+                    st.session_state.whisper_twitter = twitter_url
+                    st.markdown(f"[🔗 Open Twitter Search]({twitter_url})")
+        
+        with col_whisper2:
+            if st.button("💼 LinkedIn <24h", use_container_width=True):
+                if whisper_keywords:
+                    # LinkedIn recent jobs
+                    linkedin_url = f"https://www.linkedin.com/jobs/search/?keywords={whisper_keywords.replace(' ', '%20')}&f_TPR=r86400"
+                    st.markdown(f"[🔗 LinkedIn Jobs (Last 24h)]({linkedin_url})")
+        
+        with col_whisper3:
+            if st.button("🚀 Wellfound Startups", use_container_width=True):
+                if whisper_keywords:
+                    wellfound_url = f"https://wellfound.com/jobs?q={whisper_keywords.replace(' ', '%20')}"
+                    st.markdown(f"[🔗 Wellfound Startup Jobs]({wellfound_url})")
+        
+        st.markdown("")
+        
+        # Stealth detection presets
+        st.markdown("**⚡ Quick Whisper Presets:**")
+        col_preset1, col_preset2, col_preset3 = st.columns(3)
+        
+        with col_preset1:
+            if st.button("🥷 Stealth Startups", use_container_width=True):
+                st.code('"stealth mode" OR "stealth startup" AND ("GTM" OR "Operations" OR "Partnerships") AND "hiring"', language="text")
+        
+        with col_preset2:
+            if st.button("🎯 First Hires", use_container_width=True):
+                st.code('"first hire" OR "founding" OR "0 to 1" AND ("GTM" OR "Sales" OR "Revenue") AND NOT "intern"', language="text")
+        
+        with col_preset3:
+            if st.button("💸 Just Raised", use_container_width=True):
+                st.code('"just raised" OR "Series A" OR "Series B" AND "hiring" AND ("GTM" OR "Growth" OR "Ops")', language="text")
+        
+        st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+        
+        # ═══════════════════════════════════════════════════════════════
+        # THE HEADHUNTER CRITIQUE - AI Recruiter Feedback
+        # ═══════════════════════════════════════════════════════════════
+        st.markdown("#### 🎭 THE HEADHUNTER CRITIQUE")
+        st.caption("Get ruthless feedback as if you were being screened by a top recruiter")
+        
+        critique_company = st.selectbox(
+            "Simulate recruiter from:",
+            ["Deel (Global Payroll)", "Rippling (HR Tech)", "Vanta (Security)", "OpenAI (AI)", "Stripe (Payments)", "Custom..."],
+            key="critique_company"
+        )
+        
+        if critique_company == "Custom...":
+            custom_company = st.text_input("Enter company name and focus", placeholder="e.g., Anthropic (AI Safety)")
+        
+        critique_role = st.text_input(
+            "Role you're applying for:",
+            placeholder="e.g., Head of GTM Operations",
+            key="critique_role"
+        )
+        
+        critique_resume = st.text_area(
+            "Paste your resume/summary to critique:",
+            height=150,
+            placeholder="Paste the first 500 chars of your resume or professional summary...",
+            key="critique_resume"
+        )
+        
+        if st.button("🔥 GET BRUTALLY HONEST FEEDBACK", use_container_width=True):
+            if critique_resume and critique_role:
+                with st.spinner("The Headhunter is reviewing your materials..."):
+                    try:
+                        company_context = custom_company if critique_company == "Custom..." else critique_company
+                        
+                        critique_prompt = f"""You are a ruthless Head of Talent at {company_context}. 
+You are screening candidates for the role of {critique_role}.
+
+CANDIDATE'S RESUME/SUMMARY:
+{critique_resume[:1500]}
+
+Be BRUTALLY honest. You only have 6 seconds to review this. 
+Give feedback in this format:
+
+**VERDICT**: [PASS TO INTERVIEW / MAYBE / REJECT]
+
+**6-SECOND SCAN**: What I noticed in the first 6 seconds
+
+**KILLER MISTAKE**: The ONE thing that would make me reject this
+
+**MISSING SIGNAL**: What keyword/proof is missing for {company_context}?
+
+**THE FIX**: Exactly how to rewrite the first 2 sentences to get my attention
+
+**INSIDER TIP**: What would actually make me excited about this candidate?
+
+Be harsh. Be specific. No fluff."""
+
+                        # Use Groq for speed
+                        from groq import Groq
+                        client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+                        response = client.chat.completions.create(
+                            model="llama-3.3-70b-versatile",
+                            messages=[{"role": "user", "content": critique_prompt}],
+                            temperature=0.7
+                        )
+                        critique_result = response.choices[0].message.content
+                        st.session_state.critique_result = critique_result
+                    except Exception as e:
+                        st.error(f"Error: {str(e)}")
+        
+        if "critique_result" in st.session_state and st.session_state.critique_result:
+            st.markdown("---")
+            st.markdown("##### 🎯 HEADHUNTER VERDICT")
+            st.markdown(st.session_state.critique_result)
+        
+        st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TELEPROMPTER SCRIPT GENERATOR
+        # ═══════════════════════════════════════════════════════════════
+        st.markdown("#### 📹 TELEPROMPTER SCRIPT")
+        st.caption("Generate a 60-second video pitch script to send via Loom")
+        
+        script_context = st.text_area(
+            "Paste the JD or describe the role:",
+            height=100,
+            placeholder="Paste the job description or describe: 'Head of Partnerships at Series B HR Tech startup...'",
+            key="script_context"
+        )
+        
+        script_tone = st.radio(
+            "Tone:",
+            ["🎯 Executive (Confident)", "🤝 Collaborative (Warm)", "⚡ Startup (High Energy)"],
+            horizontal=True,
+            key="script_tone"
+        )
+        
+        if st.button("🎬 GENERATE TELEPROMPTER SCRIPT", use_container_width=True):
+            if script_context:
+                with st.spinner("Writing your 60-second script..."):
+                    try:
+                        tone_instruction = {
+                            "🎯 Executive (Confident)": "Sound like a peer, not a candidate. Use 'I built' not 'I helped'. No filler words.",
+                            "🤝 Collaborative (Warm)": "Be approachable but credible. Show you've done your research on THEM.",
+                            "⚡ Startup (High Energy)": "Show urgency and hunger. Use action verbs. Sound like a builder."
+                        }
+                        
+                        script_prompt = f"""Write a 60-second video pitch script for someone applying to this role:
+
+ROLE/CONTEXT:
+{script_context[:1000]}
+
+TONE: {script_tone}
+INSTRUCTION: {tone_instruction.get(script_tone, "")}
+
+FORMAT YOUR OUTPUT AS:
+
+**[0-10 sec] THE HOOK**
+(Grab attention immediately. Start with a result, not your name.)
+
+**[10-30 sec] THE PROOF**
+(One specific story that shows you can do THIS job. Use numbers.)
+
+**[30-50 sec] THE BRIDGE**
+(Why THIS company, THIS role? Show you've researched them.)
+
+**[50-60 sec] THE CLOSE**
+(Clear next step. Don't ask 'if' - assume the meeting.)
+
+Keep each section to 2-3 sentences max. Write it exactly as they should SAY it out loud."""
+
+                        from groq import Groq
+                        client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+                        response = client.chat.completions.create(
+                            model="llama-3.3-70b-versatile",
+                            messages=[{"role": "user", "content": script_prompt}],
+                            temperature=0.7
+                        )
+                        script_result = response.choices[0].message.content
+                        st.session_state.script_result = script_result
+                    except Exception as e:
+                        st.error(f"Error: {str(e)}")
+        
+        if "script_result" in st.session_state and st.session_state.script_result:
+            st.markdown("---")
+            st.markdown("##### 🎬 YOUR 60-SECOND SCRIPT")
+            st.markdown(st.session_state.script_result)
+            st.info("💡 **Pro tip:** Record this in Loom and send directly to the hiring manager's LinkedIn DM.")
+        
         # Set empty values for Intel mode compatibility
         resume_text = ""
         job_description = ""
