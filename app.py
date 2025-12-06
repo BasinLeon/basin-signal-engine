@@ -307,7 +307,7 @@ if "generated_audio" not in st.session_state:
 with st.sidebar:
     # 1. HEADER & SYSTEM STATUS
     st.markdown("### ▲ BASIN::NEXUS")
-    st.caption("v11:11 | REVENUE ARCHITECT OS")
+    st.caption("v12 | REVENUE ARCHITECT OS | 🔥 SWIPE MODE")
     st.markdown("---")
     
     # 2. SYSTEM CORE & CONFIGURATION (Terminal Style)
@@ -356,7 +356,7 @@ with st.sidebar:
     if "STRATEGIC RECON" in mission_phase:
         st.caption("Focus: Finding Market Fit & Targets")
         selected_tool_label = st.radio("Select Tool:", 
-            ["Omni-Agent (Intel)", "Black Ops (Hunt)", "Company Intel", "Boardroom (Sim)", "Analytics (Scoreboard)"],
+            ["Omni-Agent (Intel)", "Black Ops (Hunt)", "Swipe Mode", "Company Intel", "Boardroom (Sim)", "Analytics (Scoreboard)"],
             label_visibility="collapsed")
             
     elif "EXECUTION OPS" in mission_phase:
@@ -376,6 +376,7 @@ with st.sidebar:
     tool_map = {
         "Omni-Agent (Intel)": "📄 Intel",
         "Black Ops (Hunt)": "🎯 Hunt",
+        "Swipe Mode": "🔥 Swipe Mode",
         "Analytics (Scoreboard)": "📊 Analytics",
         "Boardroom (Sim)": "🥊 Practice (Dojo)",
         "Practice (Dojo)": "🥊 Practice (Dojo)",
@@ -739,6 +740,109 @@ with col1:
                 st.markdown(f"[Google News: {target_sector.split()[0]}](https://news.google.com/search?q={target_sector.split()[0]}%20hiring)", unsafe_allow_html=True)
             
             st.success("✅ ALL 7 VECTORS DEPLOYED. Execute each link to initiate sweep.")
+
+    # ==============================================================================
+    # 🔥 MODE 12: SWIPE MODE (JOB TINDER)
+    # ==============================================================================
+    elif input_mode == "🔥 Swipe Mode":
+        st.markdown("## 🔥 SWIPE MODE: JOB TINDER")
+        st.caption("PROTOCOL: Swipe through opportunities. Build your pipeline fast.")
+        
+        # Sample job data - In production, this would come from Hunt Mode vectors
+        if 'swipe_jobs' not in st.session_state:
+            st.session_state.swipe_jobs = [
+                {"id": 1, "title": "Director of GTM Strategy", "company": "Mistral AI", "location": "San Francisco, CA", "salary": "$220k-280k", "match": 95, "signal": "Series B, $600M raised, hiring 50+ in GTM"},
+                {"id": 2, "title": "VP of Revenue Operations", "company": "Anthropic", "location": "San Francisco, CA", "salary": "$250k-320k", "match": 92, "signal": "AI Leader, aggressive expansion, ex-OpenAI team"},
+                {"id": 3, "title": "Head of Partnerships", "company": "Verkada", "location": "San Mateo, CA", "salary": "$200k-260k", "match": 88, "signal": "Physical security + AI, strong channel program"},
+                {"id": 4, "title": "Director of Sales Strategy", "company": "Wiz", "location": "Palo Alto, CA", "salary": "$230k-300k", "match": 91, "signal": "Cloud security unicorn, $1B ARR run rate"},
+                {"id": 5, "title": "GTM Lead - Enterprise", "company": "Notion", "location": "San Francisco, CA", "salary": "$190k-240k", "match": 85, "signal": "Productivity + AI features, PLG motion"},
+                {"id": 6, "title": "Director of Channel Sales", "company": "CrowdStrike", "location": "Austin, TX (Remote OK)", "salary": "$210k-270k", "match": 89, "signal": "Cybersecurity leader, expanding partner ecosystem"},
+                {"id": 7, "title": "VP GTM Operations", "company": "Figma", "location": "San Francisco, CA", "salary": "$240k-300k", "match": 87, "signal": "Adobe acquisition fell through, independent growth mode"},
+            ]
+            st.session_state.swipe_index = 0
+            st.session_state.swiped_right = []
+            st.session_state.swiped_priority = []
+        
+        # Current job
+        jobs = st.session_state.swipe_jobs
+        idx = st.session_state.swipe_index
+        
+        if idx < len(jobs):
+            job = jobs[idx]
+            
+            # Job Card Display
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 100%); 
+                        border: 2px solid #00d4ff; border-radius: 20px; padding: 30px; 
+                        margin: 20px 0; text-align: center;">
+                <p style="color: #00d4ff; font-size: 0.9rem;">JOB {idx + 1} of {len(jobs)}</p>
+                <h1 style="color: white; margin: 10px 0;">{job['title']}</h1>
+                <h2 style="color: #00d4ff; margin: 5px 0;">{job['company']}</h2>
+                <p style="color: #8892b0;">📍 {job['location']} | 💰 {job['salary']}</p>
+                <div style="background: #00d4ff22; padding: 15px; border-radius: 10px; margin: 20px 0;">
+                    <p style="color: #00d4ff; font-weight: bold;">🎯 MATCH SCORE: {job['match']}%</p>
+                    <p style="color: #8892b0; font-size: 0.9rem;">📡 SIGNAL: {job['signal']}</p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Swipe Buttons
+            st.markdown("### MAKE YOUR MOVE")
+            
+            col_left, col_up, col_right = st.columns([1, 1, 1])
+            
+            with col_left:
+                if st.button("❌ SKIP", use_container_width=True, key="swipe_left"):
+                    st.session_state.swipe_index += 1
+                    st.rerun()
+            
+            with col_up:
+                if st.button("⭐ PRIORITY 1", use_container_width=True, key="swipe_up"):
+                    st.session_state.swiped_priority.append(job)
+                    st.session_state.swipe_index += 1
+                    st.toast(f"🌟 {job['company']} added to PRIORITY 1!", icon="⭐")
+                    st.rerun()
+            
+            with col_right:
+                if st.button("✅ ADD TO CRM", use_container_width=True, key="swipe_right"):
+                    st.session_state.swiped_right.append(job)
+                    st.session_state.swipe_index += 1
+                    st.toast(f"✅ {job['company']} added to Pipeline!", icon="✅")
+                    st.rerun()
+            
+            st.markdown("---")
+            
+            # Progress bar
+            progress = (idx + 1) / len(jobs)
+            st.progress(progress)
+            st.caption(f"Swiped: {idx} | Saved: {len(st.session_state.swiped_right)} | Priority: {len(st.session_state.swiped_priority)}")
+            
+        else:
+            # All jobs swiped
+            st.success("🎉 ALL JOBS REVIEWED!")
+            
+            st.markdown("### 📈 YOUR SELECTIONS")
+            
+            if st.session_state.swiped_priority:
+                st.markdown("#### ⭐ PRIORITY 1 (Apply Now)")
+                for j in st.session_state.swiped_priority:
+                    st.markdown(f"- **{j['title']}** @ {j['company']} ({j['match']}% match)")
+            
+            if st.session_state.swiped_right:
+                st.markdown("#### ✅ PIPELINE (Follow Up)")
+                for j in st.session_state.swiped_right:
+                    st.markdown(f"- **{j['title']}** @ {j['company']} ({j['match']}% match)")
+            
+            # Reset button
+            if st.button("🔄 RESET & SWIPE AGAIN"):
+                st.session_state.swipe_index = 0
+                st.session_state.swiped_right = []
+                st.session_state.swiped_priority = []
+                st.rerun()
+            
+            # Export to Pipeline CRM
+            st.markdown("---")
+            st.info("💡 TIP: Go to Pipeline CRM to add these opportunities with full tracking.")
 
     # ==============================================================================
     # ▲ MODE 6: ORACLE (DIGITAL ETHER & PREDICTIVE INDEXING)
