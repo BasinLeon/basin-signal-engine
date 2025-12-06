@@ -781,114 +781,77 @@ with col1:
     # 📊 MODE 6: COMMAND CENTER (CAREER OS)
     # ==============================================================================
     elif input_mode == "📊 Analytics":
-        st.markdown("## CAREER OPERATIONS CENTER")
-        st.caption("PROTOCOL: PIPELINE FORECASTING & REVENUE INTELLIGENCE")
+        st.markdown("## CAREER OPERATIONS CENTER (PREDICTIVE)")
+        st.caption("PROTOCOL: ORACLE FORECASTING & REVENUE INTELLIGENCE")
         
-        # --- 1. GLOBAL TELEMETRY (THE NUMBERS) ---
+        # --- 1. GLOBAL TELEMETRY (CRM DATA INPUT) ---
         st.markdown("#### 1. PIPELINE TELEMETRY")
         
-        # User Inputs (Simulating CRM Data Entry)
         with st.expander("📝 UPDATE WEEKLY METRICS", expanded=True):
             c1, c2, c3, c4 = st.columns(4)
             with c1:
-                apps = st.number_input("APPLICATIONS SENT", value=42, step=1, help="Total outbound volume")
+                apps = st.number_input("APPLICATIONS SENT", value=42, step=1)
             with c2:
-                screens = st.number_input("RECRUITER SCREENS", value=6, step=1, help="Top of Funnel conversion")
+                screens = st.number_input("RECRUITER SCREENS", value=6, step=1)
             with c3:
-                hms = st.number_input("MANAGER INTERVIEWS", value=2, step=1, help="Mid Funnel conversion")
+                hms = st.number_input("MANAGER INTERVIEWS", value=2, step=1)
             with c4:
-                finals = st.number_input("FINAL ROUNDS", value=1, step=1, help="Bottom Funnel conversion")
+                finals = st.number_input("FINAL ROUNDS", value=1, step=1)
 
-        # METRIC CALCULATIONS
-        screen_rate = (screens / apps) * 100 if apps > 0 else 0.0
-        hm_rate = (hms / screens) * 100 if screens > 0 else 0.0
-        close_rate = (finals / hms) * 100 if hms > 0 else 0.0
+        # --- 2. THE ORACLE FORECAST (AGENT CALCULATION) ---
+        # Calculations based on your historical data (42 apps -> 6 screens -> 2 HMs -> 1 Final)
+        avg_salary = 220000 
         
-        # PIPELINE VALUE (The "Apollo" Feature)
-        avg_salary = 220000 # Your Target OTE
-        pipeline_value = (screens * 0.1 * avg_salary) + (hms * 0.3 * avg_salary) + (finals * 0.6 * avg_salary)
-        
+        # Weighted Pipeline Value: (App * 5%) + (Screen * 10%) + (HM * 30%) + (Final * 60%)
+        pipeline_value = (apps * 0.05 * avg_salary) + (screens * 0.1 * avg_salary) + (hms * 0.3 * avg_salary) + (finals * 0.6 * avg_salary)
+
         st.markdown("---")
         
-        # --- 2. THE DASHBOARD (VISUALS) ---
-        
-        # ROW 1: HEALTH METRICS
         k1, k2, k3, k4 = st.columns(4)
-        k1.metric("PIPELINE VELOCITY", f"{screens} Leads/Wk", "Active Signal")
-        k2.metric("FORECASTED REVENUE", f"${pipeline_value/1000:,.0f}k", "Weighted Value")
-        k3.metric("CONVERSION (APP > SCREEN)", f"{screen_rate:.1f}%", f"{screen_rate-10:.1f}% vs Benchmark")
-        k4.metric("OFFER PROBABILITY", f"{min(finals*25, 95)}%", "Based on Finals")
+        k1.metric("PIPELINE VELOCITY", f"{screens} Screens/Wk", "Active Signal")
+        k2.metric("FORECASTED OTE", f"${pipeline_value/1000:,.0f}k", "Weighted Value")
         
-        # ROW 2: FUNNEL DIAGNOSTICS (THE COACH)
-        st.markdown("#### 2. SYSTEM DIAGNOSTICS")
+        # Time to Offer Estimate (Based on conversion of 1 offer per 15 screens total)
+        needed_screens = max(0, 15 - screens)
+        weeks_left = needed_screens / 2 
+        k3.metric("EST. WEEKS TO OFFER", f"{weeks_left:.1f} Wks", "ORACLE PREDICTION")
+        k4.metric("CLOSING RATE", f"{finals / max(1, hms) * 100:.1f}%", "Mid-to-Bottom Funnel")
+
+        # --- 3. SYSTEM DIAGNOSTICS (THE COACH) ---
+        st.markdown("#### 2. SYSTEM DIAGNOSTICS & THE HERALD AGENT")
         
-        d1, d2 = st.columns([2, 1])
+        # LOGIC ENGINE: WHERE IS THE LEAK?
+        screen_rate = (screens / apps) * 100 if apps > 0 else 0.0
         
-        with d1:
-            # LOGIC ENGINE: WHERE IS THE LEAK?
-            if screen_rate < 10:
-                status_color = "error"
-                diagnosis = "CRITICAL FAILURE: TOP OF FUNNEL"
-                fix = "Your Resume/Outreach is not converting. The Market is rejecting your 'Signal'."
-                action = "GO TO 'INTEL MODE' -> RUN 'OMNI-SCAN' TO FIX KEYWORDS."
-            elif hm_rate < 30:
-                status_color = "warning"
-                diagnosis = "WARNING: MID-FUNNEL LEAK"
-                fix = "You are passing the Recruiter but failing the Hiring Manager. Your narrative lacks 'Builder' authority."
-                action = "GO TO 'PRACTICE MODE' -> DRILL 'THE SKEPTIC' PERSONA."
-            elif finals > 0:
-                status_color = "success"
-                diagnosis = "SYSTEM OPTIMIZED: CLOSING MODE"
-                fix = "You are in the kill zone. Focus entirely on the 'First 90 Days' plan."
-                action = "GO TO 'FIRST 90 DAYS' -> GENERATE EXECUTION PLAN."
-            else:
-                status_color = "info"
-                diagnosis = "SYSTEM CALIBRATING..."
-                fix = "Increase outbound volume to generate statistically significant data."
-                action = "GO TO 'HUNT MODE' -> EXECUTE 'BLACK OPS' SEARCH."
+        if screen_rate < 10:
+            diagnosis = "CRITICAL FAILURE: TOP OF FUNNEL"
+            action = "Run OMNI-SCAN to fix keywords."
+            herald_task = "Generate a new **LinkedIn Headline** for maximum ATS compliance."
+            st.error(f"**DIAGNOSIS:** {diagnosis}")
+        elif finals == 0 and hms > 0:
+            diagnosis = "WARNING: MID-FUNNEL LEAK"
+            action = "Drill 'The Skeptic' persona in PRACTICE MODE."
+            herald_task = "Generate a **'Revenue Architecture vs. Sales Activity'** pitch for LinkedIn."
+            st.warning(f"**DIAGNOSIS:** {diagnosis}")
+        else:
+            diagnosis = "SYSTEM OPTIMIZED: CLOSING MODE"
+            action = "Focus entirely on the 'First 90 Days' plan."
+            herald_task = "Generate **'Day 1-30' execution plan** post for GitHub/LinkedIn."
+            st.success(f"**DIAGNOSIS:** {diagnosis}")
 
-            # RENDER DIAGNOSTIC CARD
-            if status_color == "error":
-                st.error(f"**DIAGNOSIS:** {diagnosis}")
-            elif status_color == "warning":
-                st.warning(f"**DIAGNOSIS:** {diagnosis}")
-            elif status_color == "success":
-                st.success(f"**DIAGNOSIS:** {diagnosis}")
-            else:
-                st.info(f"**DIAGNOSIS:** {diagnosis}")
-                
-            st.markdown(f"**ROOT CAUSE:** {fix}")
-            st.caption(f"**RECOMMENDED PROTOCOL:** {action}")
-
-        with d2:
-            # MOMENTUM GAUGE
-            st.markdown("**MOMENTUM SCORE**")
-            momentum = min((apps * 1) + (screens * 5) + (hms * 10), 100)
-            st.progress(momentum / 100)
-            st.caption(f"Current Load: {momentum}% Capacity")
-            
-            # TIME TO OFFER ESTIMATOR
-            needed_screens = max(0, 15 - screens) # Assume 15 screens = 1 offer
-            weeks_left = needed_screens / 2 # Assume 2 screens/week velocity
-            if finals > 0:
-                st.metric("EST. TIME TO OFFER", "2 Weeks", "In Final Rounds")
-            else:
-                st.metric("EST. TIME TO OFFER", f"{weeks_left:.1f} Weeks", "Based on Velocity")
-
-        # --- 3. STRATEGIC ACTIONS ---
+        st.markdown(f"**ROOT CAUSE ACTION:** {action}")
+        
+        # THE HERALD AGENT CONTENT QUEUE
         st.markdown("---")
-        st.markdown("#### 3. DEPLOY COUNTER-MEASURES")
+        st.markdown("#### 3. HERALD CONTENT QUEUE (BRAND PUSH)")
+        st.info(f"**CONTENT PENDING:** {herald_task}")
         
-        b1, b2, b3 = st.columns(3)
-        with b1:
-            if st.button("🚀 LAUNCH 'BLACK OPS' HUNT", use_container_width=True):
-                st.toast("Redirecting to Search Arrays...")
-        with b2:
-            if st.button("🧬 RUN RESUME DIAGNOSTIC", use_container_width=True):
-                st.toast("Loading Omni-Agent...")
-        with b3:
-            if st.button("⚔️ ENTER THE DOJO", use_container_width=True):
-                st.toast("Initializing Combat Simulator...")
+        # Example of a ready-to-post content push
+        if st.button("▶️ EXECUTE HERALD PUSH (Generate Content)") :
+            st.write("""
+            **LinkedIn/X Draft:**
+            *I ran my GTM data and realized I was only getting 10% conversion at the top of the funnel. I fixed it by re-architecting my keywords (using my BASIN::NEXUS tool). Now, my biggest problem is converting C-Suite interviews. Time to drill 'The Skeptic CFO' in the Dojo. [Link to the app]*
+            """)
 
     
     # ─────────────────────────────────────────────────────────────
