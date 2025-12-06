@@ -29,85 +29,251 @@ from audio_recorder_streamlit import audio_recorder
 # ═══════════════════════════════════════════════════════════════
 
 st.set_page_config(
-    page_title="Basin Signal Engine",
-    page_icon="🏗️",
+    page_title="BASIN::NEXUS",
+    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 
 # ═══════════════════════════════════════════════════════════════
-# CUSTOM STYLING
+# BASIN::NEXUS - PREMIUM STYLING
 # ═══════════════════════════════════════════════════════════════
 
 st.markdown("""
 <style>
-    /* Dark mode optimizations */
+    /* === BASIN::NEXUS DARK PROTOCOL === */
+    
+    /* Core Background - Void Black */
     .stApp {
-        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+        background: #000000;
     }
     
-    /* Header styling */
-    .main-header {
-        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    /* Main container */
+    .main .block-container {
+        padding-top: 2rem;
+        max-width: 1400px;
+    }
+    
+    /* === TYPOGRAPHY === */
+    
+    /* Header - Signal Amber gradient */
+    .nexus-header {
+        font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+        background: linear-gradient(90deg, #FFBF00 0%, #FFD700 50%, #FFBF00 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-size: 2.5rem;
-        font-weight: 700;
+        font-size: 2.8rem;
+        font-weight: 800;
+        letter-spacing: -1px;
         margin-bottom: 0;
+        text-shadow: 0 0 40px rgba(255, 191, 0, 0.3);
     }
     
-    .sub-header {
-        color: #888;
-        font-style: italic;
-        margin-top: 0;
+    .nexus-subtitle {
+        color: #708090;
+        font-family: 'SF Mono', monospace;
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-top: 5px;
     }
     
-    /* Status badge */
-    .status-badge {
-        background: linear-gradient(135deg, #00c853 0%, #00e676 100%);
+    /* === STATUS INDICATORS === */
+    
+    .status-live {
+        background: linear-gradient(135deg, #FFBF00 0%, #FFD700 100%);
         color: #000;
-        padding: 4px 12px;
-        border-radius: 20px;
+        padding: 6px 16px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        font-family: 'SF Mono', monospace;
+        letter-spacing: 1px;
+        display: inline-block;
+        box-shadow: 0 0 20px rgba(255, 191, 0, 0.4);
+    }
+    
+    .status-ready {
+        background: transparent;
+        border: 1px solid #FFBF00;
+        color: #FFBF00;
+        padding: 6px 16px;
+        border-radius: 4px;
         font-size: 0.75rem;
         font-weight: 600;
+        font-family: 'SF Mono', monospace;
+        letter-spacing: 1px;
         display: inline-block;
     }
     
-    .status-badge.mock {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+    /* === CARDS & CONTAINERS === */
+    
+    .nexus-card {
+        background: rgba(255, 191, 0, 0.03);
+        border: 1px solid rgba(255, 191, 0, 0.2);
+        border-radius: 8px;
+        padding: 24px;
+        margin: 12px 0;
+        backdrop-filter: blur(10px);
     }
     
-    .status-badge.voice {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: #fff;
+    .nexus-card:hover {
+        border-color: rgba(255, 191, 0, 0.4);
+        box-shadow: 0 0 30px rgba(255, 191, 0, 0.1);
     }
     
-    /* Card styling */
+    /* Output card - highlighted */
     .output-card {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
+        background: rgba(255, 191, 0, 0.05);
+        border: 1px solid rgba(255, 191, 0, 0.3);
+        border-radius: 8px;
         padding: 20px;
         margin: 10px 0;
     }
     
-    /* Voice indicator */
-    .voice-active {
-        animation: pulse 1.5s infinite;
+    /* === BUTTONS === */
+    
+    .stButton > button {
+        background: linear-gradient(135deg, #FFBF00 0%, #E6AC00 100%);
+        color: #000 !important;
+        font-weight: 700;
+        font-family: 'SF Mono', monospace;
+        letter-spacing: 1px;
+        border: none;
+        border-radius: 6px;
+        padding: 12px 24px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(255, 191, 0, 0.3);
     }
     
-    @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 25px rgba(255, 191, 0, 0.5);
     }
     
-    /* Divider */
+    .stButton > button[kind="primary"] {
+        background: linear-gradient(135deg, #FFBF00 0%, #FFD700 100%);
+    }
+    
+    /* === INPUTS === */
+    
+    .stTextInput > div > div > input,
+    .stTextArea > div > div > textarea,
+    .stSelectbox > div > div > div {
+        background: rgba(0, 0, 0, 0.8) !important;
+        border: 1px solid rgba(255, 191, 0, 0.3) !important;
+        border-radius: 6px !important;
+        color: #fff !important;
+    }
+    
+    .stTextInput > div > div > input:focus,
+    .stTextArea > div > div > textarea:focus {
+        border-color: #FFBF00 !important;
+        box-shadow: 0 0 10px rgba(255, 191, 0, 0.2) !important;
+    }
+    
+    /* === DIVIDERS === */
+    
     .divider {
         height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        background: linear-gradient(90deg, transparent, rgba(255, 191, 0, 0.3), transparent);
+        margin: 24px 0;
+    }
+    
+    .divider-solid {
+        height: 1px;
+        background: rgba(255, 191, 0, 0.2);
         margin: 20px 0;
     }
+    
+    /* === METRICS & SCORES === */
+    
+    .score-high {
+        color: #00D67E;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+    
+    .score-mid {
+        color: #FFBF00;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+    
+    .score-low {
+        color: #FF4B4B;
+        font-weight: 700;
+        font-size: 1.5rem;
+    }
+    
+    /* === SIDEBAR === */
+    
+    [data-testid="stSidebar"] {
+        background: #0a0a0a;
+        border-right: 1px solid rgba(255, 191, 0, 0.1);
+    }
+    
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 {
+        color: #FFBF00 !important;
+    }
+    
+    /* === EXPANDERS === */
+    
+    .streamlit-expanderHeader {
+        background: rgba(255, 191, 0, 0.05);
+        border: 1px solid rgba(255, 191, 0, 0.2);
+        border-radius: 6px;
+    }
+    
+    /* === TABS === */
+    
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    
+    .stTabs [data-baseweb="tab"] {
+        background: transparent;
+        border: 1px solid rgba(255, 191, 0, 0.3);
+        border-radius: 6px;
+        color: #FFBF00;
+    }
+    
+    .stTabs [aria-selected="true"] {
+        background: rgba(255, 191, 0, 0.2) !important;
+        border-color: #FFBF00 !important;
+    }
+    
+    /* === ANIMATIONS === */
+    
+    @keyframes pulse-amber {
+        0%, 100% { box-shadow: 0 0 20px rgba(255, 191, 0, 0.3); }
+        50% { box-shadow: 0 0 40px rgba(255, 191, 0, 0.6); }
+    }
+    
+    .pulse-active {
+        animation: pulse-amber 2s infinite;
+    }
+    
+    /* === SUCCESS/ERROR STATES === */
+    
+    .stSuccess {
+        background: rgba(0, 214, 126, 0.1);
+        border-left: 4px solid #00D67E;
+    }
+    
+    .stError {
+        background: rgba(255, 75, 75, 0.1);
+        border-left: 4px solid #FF4B4B;
+    }
+    
+    .stWarning {
+        background: rgba(255, 191, 0, 0.1);
+        border-left: 4px solid #FFBF00;
+    }
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -250,9 +416,9 @@ with st.sidebar:
 # MAIN INTERFACE
 # ═══════════════════════════════════════════════════════════════
 
-# Header
-st.markdown('<h1 class="main-header">🏗️ Basin Signal Engine</h1>', unsafe_allow_html=True)
-st.markdown('<p class="sub-header">Voice-First Career Intelligence Platform</p>', unsafe_allow_html=True)
+# Header - BASIN::NEXUS Command Center
+st.markdown('<h1 class="nexus-header">⚡ BASIN::NEXUS</h1>', unsafe_allow_html=True)
+st.markdown('<p class="nexus-subtitle">GTM Intelligence Command Center • January 2026 Protocol</p>', unsafe_allow_html=True)
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
 # Two-column layout
