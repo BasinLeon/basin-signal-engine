@@ -130,6 +130,16 @@ def generate_plain_text(prompt: str, model_name: str = "groq:llama-3.3-70b-versa
             )
             return response['message']['content']
             
+        elif provider == "google":
+            import google.generativeai as genai
+            api_key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+            if not api_key: return "Error: Missing GOOGLE_API_KEY or GEMINI_API_KEY"
+            
+            genai.configure(api_key=api_key)
+            gemini_model = genai.GenerativeModel(model_name)
+            response = gemini_model.generate_content(prompt)
+            return response.text
+            
         return "Error: Provider not supported for plain text yet."
         
     except Exception as e:
