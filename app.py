@@ -1040,8 +1040,8 @@ Keep each section to 2-3 sentences max. Write it exactly as they should SAY it o
     # ─────────────────────────────────────────────────────────────
     # TALENT SIGNAL MODE - SCREEN CANDIDATES
     # ─────────────────────────────────────────────────────────────
-    elif input_mode == "� Talent Signal":
-        st.markdown("#### � TALENT SIGNAL DETECTOR")
+    elif input_mode == "🔍 Talent Signal":
+        st.markdown("#### 🔍 TALENT SIGNAL DETECTOR")
         st.caption("Screen candidates using 15 years of hiring instinct, codified into AI")
         
         st.info("💡 **Use Case:** You're helping a company screen candidates, or building your portfolio as a hiring consultant.")
