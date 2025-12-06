@@ -612,186 +612,102 @@ with col1:
             st.error("⚠️ MISSING DATA: Upload assets to Vault and Paste JD.")
     
     # ==============================================================================
-    # 🎯 MODE 2: HUNT (TARGET ACQUISITION SYSTEM)
+    # 🎯 MODE 2: HUNT (PRESCIENT TARGETING SYSTEM)
     # ==============================================================================
     elif input_mode == "🎯 Hunt":
-        st.markdown("## TARGET ACQUISITION SYSTEM")
-        st.caption("PROTOCOL: Generate high-precision search vectors. Bypass noise.")
+        st.markdown("## ▲ PRESCIENT TARGETING SYSTEM")
+        st.caption("PROTOCOL: Execute simultaneous sweeps across ATS, VC, and Social backchannels.")
+
+        st.markdown("---")
         
-        # 1. THE FREQUENCY SELECTOR
-        tab_linked, tab_xray, tab_social, tab_blackops, tab_workforce = st.tabs(["LINKEDIN VECTORS", "ATS X-RAY", "SOCIAL SIGNAL", "🏴‍☠️ BLACK OPS", "💼 WORKFORCE INTEL"])
-        
-        # ------------------------------------------------------------------
-        # TAB 1: LINKEDIN VECTORS (THE MASTER KEY)
-        # ------------------------------------------------------------------
-        with tab_linked:
-            st.markdown("#### 1. CONFIGURE SEARCH VECTOR")
+        # 1. MASTER QUERY INPUT
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            target_role = st.selectbox("PRIMARY OBJECTIVE (Role Cluster)", 
+                ["Director of GTM / RevOps", "Head of Partnerships", "Chief of Staff (Revenue)", "Founding GTM"])
+        with c2:
+            target_sector = st.selectbox("SECTOR ENVIRONMENT", 
+                ["HR Tech / EOR (Deel)", "Cybersecurity / Zero Trust", "AI & DevTools", "Workforce / Staffing"])
+        with c3:
+            target_keywords = st.text_input("KEYWORD INJECTION (Optional)", placeholder="e.g. Python OR Zero Trust")
+
+        st.markdown("---")
+
+        # 2. THE MASTER QUERY ENGINE (Generates 5 simultaneous vectors)
+        if st.button("🚀 INITIATE PRESCIENT SCAN (EXECUTE ALL VECTORS)", type="primary", use_container_width=True):
             
-            c1, c2 = st.columns(2)
-            with c1:
-                # Strategies from your "Master Boolean Library"
-                search_strategy = st.selectbox("STRATEGY PROTOCOL", 
-                    ["The 'HR Tech' Strike (Home Turf)", 
-                     "The 'GTM Operations' Strike (Builder)", 
-                     "The 'Partnerships' Strike (Ecosystem)", 
-                     "The 'Chief of Staff' Strike (Wildcard)"])
-            with c2:
-                geo_lock = st.selectbox("GEOGRAPHIC LOCK", ["Remote", "San Francisco Bay Area", "New York", "Global"])
-
-            st.markdown("#### 2. SIGNAL REFINEMENT")
-            k1, k2 = st.columns([3, 1])
-            with k1:
-                keywords = st.text_input("MUST-HAVE KEYWORDS", placeholder="e.g. 'Zero Trust' OR 'Python'")
-            with k2:
-                exclude_noise = st.checkbox("NOISE FILTER", value=True, help="Removes Interns/Entry Level")
-
-            # LOGIC ENGINE
-            if st.button("GENERATE SEARCH STRING", type="primary", use_container_width=True):
-                
-                base_string = ""
-                
-                # LOGIC MAP
-                if "HR Tech" in search_strategy:
-                    base_string = '("Head of" OR "Senior Manager" OR "Director") AND ("Partnerships" OR "GTM" OR "Business Development" OR "Alliances") AND ("HR Tech" OR "Workforce" OR "Payroll" OR "People Ops" OR "Compliance")'
-                elif "GTM Operations" in search_strategy:
-                    base_string = '("GTM Operations" OR "Revenue Operations" OR "Sales Strategy" OR "Go-to-Market Strategy") AND ("Manager" OR "Head of" OR "Lead") AND ("SaaS" OR "Tech")'
-                    base_string += ' AND NOT ("Account Executive" OR "SDR" OR "Cold Call")'
-                elif "Partnerships" in search_strategy:
-                    base_string = '("Head of Partnerships" OR "Senior Partner Manager" OR "Head of Channel" OR "Strategic Alliances") AND ("SaaS" OR "Cybersecurity" OR "AI")'
-                elif "Chief of Staff" in search_strategy:
-                    base_string = '("Chief of Staff") AND ("Revenue" OR "Sales" OR "CRO" OR "GTM" OR "Strategy") AND ("Tech" OR "Startup")'
-
-                if geo_lock != "Global":
-                    base_string += f' AND ("{geo_lock}")'
-
-                if exclude_noise:
-                    base_string += ' AND NOT ("Intern" OR "Entry Level" OR "Part Time")'
-
-                if keywords:
-                    base_string += f' AND ({keywords})'
-
-                st.markdown("---")
-                st.caption("🎯 PRECISION VECTOR GENERATED")
-                st.code(base_string, language="text")
-                
-                encoded_string = base_string.replace('"', '%22').replace(' ', '%20').replace('(', '%28').replace(')', '%29')
-                st.markdown(f"[🚀 **EXECUTE MISSION (OPEN LINKEDIN)**](https://www.linkedin.com/jobs/search/?keywords={encoded_string})", unsafe_allow_html=True)
-
-        # ------------------------------------------------------------------
-        # TAB 2: ATS X-RAY
-        # ------------------------------------------------------------------
-        with tab_xray:
-            st.markdown("#### ☢️ DATABASE PENETRATION (GOOGLE)")
-            st.caption("PROTOCOL: Direct query of ATS subdomains. Bypasses LinkedIn algorithm.")
+            # --- LOGIC ENGINE FOR CONSOLIDATION ---
             
-            x1, x2 = st.columns([2, 1])
-            with x1:
-                ats_role = st.text_input("TARGET ROLE", value="Director of GTM", label_visibility="collapsed", placeholder="Role Title")
-            with x2:
-                ats_target = st.multiselect("TARGET SYSTEM", ["Lever", "Greenhouse", "Ashby"], default=["Lever", "Greenhouse", "Ashby"], label_visibility="collapsed")
+            # Base Logic (Adapted from Master Boolean Library)
+            if target_role == "Director of GTM / RevOps":
+                role_logic = '("Director" OR "Head of" OR "GTM Operations" OR "RevOps")'
+            elif target_role == "Head of Partnerships":
+                role_logic = '("Head of Partnerships" OR "Director of Alliances" OR "Channel Chief")'
+            elif target_role == "Chief of Staff (Revenue)":
+                role_logic = '("Chief of Staff") AND ("Revenue" OR "Sales" OR "CRO")'
+            elif target_role == "Founding GTM":
+                role_logic = '("Founding AE" OR "First Sales Hire")'
+            else:
+                role_logic = '("Director" OR "Head of")'
+
+            if "HR Tech" in target_sector:
+                sector_logic = 'AND ("HR Tech" OR "Payroll" OR "EOR")'
+            elif "Cybersecurity" in target_sector:
+                sector_logic = 'AND ("Cybersecurity" OR "Zero Trust" OR "PAM")'
+            elif "Workforce" in target_sector:
+                sector_logic = 'AND ("Staffing" OR "Recruitment" OR "Rippling" OR "Greenhouse")'
+            else:
+                sector_logic = 'AND ("AI" OR "DevTools" OR "SaaS")'
+                
+            keyword_logic = f' AND ({target_keywords})' if target_keywords else ''
+            noise_filter = 'AND NOT ("Intern" OR "SDR" OR "BDR" OR "Part-Time")'
+
+            # 1. LINKEDIN VECTOR
+            linkedin_query = f'{role_logic} {sector_logic} {keyword_logic} {noise_filter}'
+            encoded_linkedin = linkedin_query.replace('"', '%22').replace(' ', '%20').replace('(', '%28').replace(')', '%29')
+
+            # 2. ATS X-RAY VECTOR
+            ats_systems = "site:lever.co OR site:greenhouse.io OR site:ashbyhq.com"
+            ats_query = f'{ats_systems} "{target_role}" {keyword_logic}'
+            encoded_ats = ats_query.replace(' ', '+').replace('"', '%22')
+
+            # 3. SOCIAL WHISPER VECTOR
+            whisper_role = target_role.split(' ')[0]
+            whisper_query = f'("{whisper_role}" OR "{target_sector.split()[0]}") AND ("hiring" OR "join my team") min_faves:5'
+            encoded_whisper = whisper_query.replace(' ', '%20').replace('"', '%22')
+
+            # 4. VC BLACK OPS VECTOR
+            vc_query = f'site:jobs.sequoiacap.com OR site:jobs.a16z.com OR site:wellfound.com "{target_role}"'
+            encoded_vc = vc_query.replace(' ', '+').replace('"', '%22')
+
+
+            # --- OUTPUT: THE DEPLOYMENT ARRAY ---
+            st.markdown("### 📡 DEPLOYMENT ARRAY (5 VECTORS LAUNCHED)")
             
-            if st.button("INITIATE X-RAY SCAN", use_container_width=True):
-                sites = []
-                if "Lever" in ats_target: sites.append("site:lever.co")
-                if "Greenhouse" in ats_target: sites.append("site:greenhouse.io")
-                if "Ashby" in ats_target: sites.append("site:ashbyhq.com")
-                
-                site_logic = " OR ".join(sites)
-                query = f'{site_logic} "{ats_role}"'
-                
-                st.code(query, language="text")
-                st.markdown(f"[🚀 **EXECUTE GOOGLE SEARCH**](https://www.google.com/search?q={query.replace(' ', '+').replace('"', '%22')})", unsafe_allow_html=True)
+            st.markdown("#### 1. PRIMARY TARGETING (VOLUME & QUALITY)")
+            st.code(linkedin_query, language="text")
+            st.markdown(f"[🚀 **LINKEDIN VECTORS (EXECUTE MISSION)**](https://www.linkedin.com/jobs/search/?keywords={encoded_linkedin})", unsafe_allow_html=True)
 
-        # ------------------------------------------------------------------
-        # TAB 3: SOCIAL SIGNAL
-        # ------------------------------------------------------------------
-        with tab_social:
-            st.markdown("#### 🐦 SIGNAL INTERCEPT (X/TWITTER)")
-            st.caption("PROTOCOL: Detect 'Hiring' signals before job boards.")
+            st.markdown("#### 2. ATS PENETRATION (STEALTH JOBS)")
+            st.code(ats_query, language="text")
+            st.markdown(f"[☢️ **ATS X-RAY (EXECUTE GOOGLE SCAN)**](https://www.google.com/search?q={encoded_ats})", unsafe_allow_html=True)
             
-            s1, s2 = st.columns([3, 1])
-            with s1:
-                social_role = st.text_input("ROLE KEYWORD", value="Revenue Operations", label_visibility="collapsed")
-            with s2:
-                min_likes = st.number_input("MIN SIGNAL (LIKES)", value=5, label_visibility="collapsed")
-                
-            if st.button("GENERATE SIGNAL STRING", use_container_width=True):
-                query = f'("{social_role}") AND ("hiring" OR "join my team" OR "dm me") min_faves:{min_likes} -filter:retweets'
-                st.code(query, language="text")
-                st.markdown(f"[🚀 **EXECUTE INTERCEPT**](https://twitter.com/search?q={query.replace(' ', '%20')}&src=typed_query)", unsafe_allow_html=True)
-
-        # ------------------------------------------------------------------
-        # TAB 4: BLACK OPS (THE INDUSTRY BACKBONE)
-        # ------------------------------------------------------------------
-        with tab_blackops:
-            st.markdown("#### 🏴‍☠️ SILICON VALLEY BACKCHANNELS")
-            st.caption("PROTOCOL: Tap into VC Portfolios and Engineering Aggregators.")
-            
-            c1, c2 = st.columns(2)
-            
-            with c1:
-                st.markdown("##### 🏦 VC PORTFOLIOS (THE MONEY)")
-                st.markdown("*Direct access to portfolio job boards. High signal, low noise.*")
-                
-                if st.button("🍊 Y COMBINATOR (Work at a Startup)"):
-                    st.markdown("[🚀 **OPEN YC JOBS**](https://www.workatastartup.com/companies?roles=Sales&roles=Operations)", unsafe_allow_html=True)
-                
-                if st.button("🌲 SEQUOIA CAPITAL (Portfolio)"):
-                    st.markdown("[🚀 **OPEN SEQUOIA JOBS**](https://jobs.sequoiacap.com/jobs)", unsafe_allow_html=True)
-                
-                if st.button("🚀 ANDREESSEN HOROWITZ (Portfolio)"):
-                    st.markdown("[🚀 **OPEN A16Z JOBS**](https://jobs.a16z.com/)", unsafe_allow_html=True)
-
-            with c2:
-                st.markdown("##### 🕵️ STEALTH AGGREGATORS")
-                st.markdown("*Where the engineers and founders hang out.*")
-                
-                if st.button("👾 HACKER NEWS ('Who is Hiring')"):
-                    hn_query = "hiring GTM OR Sales OR Operations"
-                    st.markdown(f"[🚀 **SCAN HACKER NEWS**](https://hn.algolia.com/?q={hn_query.replace(' ', '+')})", unsafe_allow_html=True)
-                
-                if st.button("✌️ WELLFOUND (AngelList)"):
-                    st.markdown("[🚀 **SCAN STARTUPS**](https://wellfound.com/jobs)", unsafe_allow_html=True)
-
-        # ------------------------------------------------------------------
-        # TAB 5: WORKFORCE INTEL (HR/STAFFING ECOSYSTEM)
-        # ------------------------------------------------------------------
-        with tab_workforce:
-            st.markdown("#### 💼 WORKFORCE INTELLIGENCE ARRAY")
-            st.caption("PROTOCOL: Target roles WITHIN HR Tech & Staffing Agencies.")
-            
-            # 1. HR TECH COMPANY SEARCH (TARGET: GREENHOUSE, WORKDAY, RIPPLING)
-            st.markdown("##### 1. HR TECH FIRM TARGETING")
-            c1, c2 = st.columns(2)
-            with c1:
-                hr_role = st.selectbox("ROLE LEVEL", ["Director of Partnerships", "Head of GTM Ops", "Enterprise AE"], key="hr_role")
-            with c2:
-                hr_companies = st.multiselect("HR TECH COMPANIES", ["Greenhouse", "Lever", "Rippling", "Workday", "ADP", "BambooHR"], default=["Greenhouse", "Rippling"])
-
-            if st.button("GENERATE HR TECH STRING", use_container_width=True):
-                company_str = " OR ".join([f'"{c}"' for c in hr_companies])
-                query = f'("{hr_role}") AND ({company_str})'
-                st.code(query, language="text")
-                st.markdown(f"[🚀 **EXECUTE LINKEDIN SEARCH**](https://www.linkedin.com/jobs/search/?keywords={query.replace(' ', '%20').replace('"', '%22')})", unsafe_allow_html=True)
-
             st.markdown("---")
-            
-            # 2. STAFFING/RECRUITMENT AGENCY SEARCH (TARGET: HIGH-LEVEL CONTACTS)
-            st.markdown("##### 2. HIGH-LEVEL RECRUITER/STAFFING INTEL")
-            
-            d1, d2 = st.columns(2)
-            with d1:
-                staff_role = st.selectbox("AGENCY TARGET ROLE", ["VP Talent", "Director of Sales"], key="staff_role")
-            with d2:
-                staff_companies = st.multiselect("STAFFING FIRMS", ["Robert Half", "TEKsystems", "Aerotek", "Insight Global"], default=["Robert Half"])
 
-            if st.button("GENERATE AGENCY INTEL STRING", use_container_width=True):
-                agency_str = " OR ".join([f'"{c}"' for c in staff_companies])
-                # Search for people (not jobs) at these firms who are high-level decision makers
-                query = f'("{staff_role}") AND ({agency_str})'
-                st.code(query, language="text")
-                # Uses LinkedIn People Search URL
-                st.markdown(f"[🚀 **EXECUTE PEOPLE SEARCH**](https://www.linkedin.com/search/results/people/?keywords={query.replace(' ', '%20').replace('"', '%22')})", unsafe_allow_html=True)
+            st.markdown("#### 3. BLACK OPS & SOCIAL SIGNAL (PRESENCE)")
+            
+            st.markdown("**VC BLACK OPS (Hidden Market)**")
+            st.code(vc_query, language="text")
+            st.markdown(f"[🏴‍☠️ **VC PORTFOLIO SCAN**](https://www.google.com/search?q={encoded_vc})", unsafe_allow_html=True)
+
+            st.markdown("**SOCIAL WHISPER (Signal Detection)**")
+            st.code(whisper_query, language="text")
+            st.markdown(f"[🐦 **EXECUTE X/TWITTER INTERCEPT**](https://twitter.com/search?q={encoded_whisper})", unsafe_allow_html=True)
+
+            st.markdown("#### 5. WORKFORCE INTEL (Ecosystem Backchannel)")
+            st.markdown(f"[💼 **OPEN YC JOB BOARDS (High-Yield Manual Check)**](https://www.ycombinator.com/jobs?role=Sales&role=Operations)", unsafe_allow_html=True)
+            
+            st.success("✅ ALL 5 VECTORS DEPLOYED. Execute each link to initiate sweep.")
 
     # ==============================================================================
     # ▲ MODE 6: ORACLE (DIGITAL ETHER & PREDICTIVE INDEXING)
