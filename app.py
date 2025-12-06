@@ -402,14 +402,100 @@ with st.sidebar:
 # MAIN INTERFACE
 # ═══════════════════════════════════════════════════════════════
 
-# Header - BASIN::NEXUS Command Center
-st.markdown('<h1 class="nexus-header">▲ BASIN::NEXUS</h1>', unsafe_allow_html=True)
-st.markdown('<p class="nexus-subtitle">Director of GTM Systems & Revenue Architecture | I Build the "Revenue OS" (Python/AI)</p>', unsafe_allow_html=True)
+# Minimal Header - No redundancy with sidebar
+col_header, col_status = st.columns([3, 1])
+with col_header:
+    st.markdown('<p style="color: #708090; font-size: 0.85rem; margin: 0;">REVENUE ARCHITECT OS</p>', unsafe_allow_html=True)
+with col_status:
+    if st.session_state.get('groq_api_key'):
+        st.markdown('<span style="color: #00ff88; font-size: 0.85rem;">● ONLINE</span>', unsafe_allow_html=True)
+    else:
+        st.markdown('<span style="color: #ff6b6b; font-size: 0.85rem;">● OFFLINE</span>', unsafe_allow_html=True)
+
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
-# Two-column layout
-col1, col2 = st.columns([1, 1], gap="large")
+# Check if we should show Dashboard (default on first load)
+show_dashboard = input_mode == "📄 Intel" and not st.session_state.get('resume_vault') and not st.session_state.resume_text
 
+if show_dashboard:
+    # ═══════════════════════════════════════════════════════════════
+    # DASHBOARD: WELCOME VIEW
+    # ═══════════════════════════════════════════════════════════════
+    st.markdown("## 🎯 COMMAND CENTER")
+    st.caption("Welcome back, Revenue Architect. Select a mode from the sidebar to begin.")
+    
+    st.markdown("---")
+    
+    # Quick Stats
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("SYSTEM VERSION", "v12", "🔥 Swipe Mode")
+    with col2:
+        st.metric("MODES ACTIVE", "12", "All Online")
+    with col3:
+        vault_count = len(st.session_state.get('resume_vault', {}))
+        st.metric("VAULT ASSETS", str(vault_count), "Upload to begin")
+    with col4:
+        pipeline_count = len(st.session_state.get('pipeline_crm', []))
+        st.metric("PIPELINE DEALS", str(pipeline_count), "Add opportunities")
+    
+    st.markdown("---")
+    
+    # Quick Actions
+    st.markdown("### ⚡ QUICK START")
+    
+    qa1, qa2, qa3 = st.columns(3)
+    with qa1:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #333; border-radius: 10px; padding: 20px;">
+            <h4 style="color: #00d4ff; margin: 0;">🎯 HUNT MODE</h4>
+            <p style="color: #8892b0; font-size: 0.9rem;">7-vector job search across LinkedIn, VC portfolios, and ATSs</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with qa2:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #333; border-radius: 10px; padding: 20px;">
+            <h4 style="color: #ff6b6b; margin: 0;">🔥 SWIPE MODE</h4>
+            <p style="color: #8892b0; font-size: 0.9rem;">Tinder-style job swiping. Build your pipeline fast.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with qa3:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #333; border-radius: 10px; padding: 20px;">
+            <h4 style="color: #ffd700; margin: 0;">🥊 BOARDROOM</h4>
+            <p style="color: #8892b0; font-size: 0.9rem;">Multi-agent interview simulator with swarm analysis</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # System Status
+    st.markdown("### 🛠️ SYSTEM STATUS")
+    status_col1, status_col2 = st.columns(2)
+    with status_col1:
+        st.markdown("""
+        **LLM Fleet:**
+        - Llama 3.3 70B (Groq) → Fast reasoning
+        - Mixtral 8x7B → Code analysis  
+        - Gemini Pro → Synthesis
+        - Claude 3.5 Sonnet → Strategy
+        """)
+    with status_col2:
+        st.markdown("""
+        **Modes Available:**
+        - Intel, Hunt, Swipe, Analytics
+        - Boardroom, Voice, Live Assist
+        - Pipeline CRM, Objection Bank
+        - Company Intel, First 90 Days, Talent Signal
+        """)
+    
+    # Add st.stop() to prevent rest of app from rendering when dashboard is shown
+    st.stop()
+
+# ═══════════════════════════════════════════════════════════════
+# NORMAL MODE FLOW (Two-column layout)
+# ═══════════════════════════════════════════════════════════════
+col1, col2 = st.columns([1, 1], gap="large")
 
 # ═══════════════════════════════════════════════════════════════
 # INPUT COLUMN
@@ -424,9 +510,6 @@ with col1:
     
     st.markdown("")
     
-    # ─────────────────────────────────────────────────────────────
-    # INTEL MODE (Text/File Input)
-    # ─────────────────────────────────────────────────────────────
     # ─────────────────────────────────────────────────────────────
     # INTEL MODE (The Data Center HUD)
     # ─────────────────────────────────────────────────────────────
