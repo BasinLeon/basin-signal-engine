@@ -1138,101 +1138,78 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
     # VIDEO MODE - THE GAME CHANGER
     # ─────────────────────────────────────────────────────────────
 
+    # ==============================================================================
+    # 🥊 MODE 7: BOARDROOM (SWARM SYNTHESIS)
+    # ==============================================================================
     elif input_mode == "🥊 Practice (Dojo)":
-        st.markdown("####  INTERVIEW ANALYTICS & SCOREBOARD")
-        st.info("💡 **PROTOCOL:** Use your system Mic (Office/Mac Dictation) to speak into the text box. We measure speech patterns.")
+        st.markdown("## ▲ BOARDROOM SIMULATOR (SWARM SYNTHESIS)")
+        st.caption("PROTOCOL: Develop executive narrative and presentation skills.")
         
-        col_dojo1, col_dojo2 = st.columns([1, 1])
-        
-        with col_dojo1:
-            opponent = st.selectbox("Choose Interviewer Persona", 
-                ["💀 The Skeptic (CFO - Wants ROI)", 
-                 "🚀 The Founder (Series A - Wants Speed)", 
-                 "🛡️ The Gatekeeper (HR - Wants Keywords)"])
+        # 1. SETUP
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            # User is practicing for a high-stakes scenario
+            opponent = st.selectbox("INTERVIEW TARGET", 
+                ["CEO / Founder", "Board Member / Investor", "Skeptic CFO", "Technical VP (Coding)"])
+            artifact = st.selectbox("TOPIC ARTIFACT", ["Behavioral Story", "Systems Design Question", "90-Day Presentation Outline"])
             
-            q_type = st.selectbox("Question Type", ["Behavioral (Conflict)", "Strategic (GTM)", "Operational (Failure)"])
+            # Load the unified context from the Career Vault
+            st.info("💡 Context: Omni-Agent is RAG-ing your entire Vault.")
             
-            # Setup context from other modes
-            jd_context = st.session_state.get('jd_text', "")
-            resume_context = st.session_state.get('resume_text', "")
-            
-        with col_dojo2:
-             if st.button("🔥 GENERATE PRESSURE QUESTION", use_container_width=True, type="primary"):
-                # Use plain text generator
+        # 2. QUESTION GENERATION
+        with col2:
+            if st.button(f"GENERATE {artifact.upper()} CHALLENGE"):
                 from logic.generator import generate_plain_text
-                
-                with st.spinner(f"{opponent} is preparing the interrogation..."):
+                with st.spinner(f"Simulating {opponent}..."):
                     q_prompt = f"""
-                    ACT AS: {opponent}.
-                    CONTEXT: Interviewing a candidate for a Director of Revenue Architecture role.
-                    JD CONTEXT: {jd_context[:500]}
-                    RESUME CONTEXT: {resume_context[:500]}
-                    TASK: Generate one HARD {q_type} interview question. Keep it short and punchy.
+                    ACT AS: {opponent}. You are interviewing a 'Director of GTM Systems' (Leon Basin) who builds the 'Revenue OS'. 
+                    Generate one highly challenging, scenario-based question related to {artifact}. 
+                    If the artifact is 'Systems Design Question', include a coding/architecture constraint.
                     """
-                    question = generate_plain_text(q_prompt)
-                    st.session_state['war_room_q'] = question
-                    st.session_state['dojo_transcript'] = "" # Reset transcript
-                    st.session_state['dojo_score'] = None
-        
-        # Display Question & Input
-        if st.session_state.get('war_room_q'):
+                    st.session_state['current_q'] = generate_plain_text(q_prompt)
+                    st.session_state['opponent'] = opponent
+
+        # 3. LIVE SWARM INTERACTION
+        if 'current_q' in st.session_state:
             st.markdown("---")
-            st.markdown(f"### 🗣️ {st.session_state['war_room_q']}")
+            st.warning(f"🗣️ **{st.session_state['opponent'].upper()}:** {st.session_state['current_q']}")
             
-            st.markdown("##### 🎙️ SPEAK YOUR ANSWER (Dictation)")
-            user_transcript = st.text_area(
-                "Activate Mic (Fn+Fn on Mac) then speak...", 
-                height=150,
-                key="dojo_voice_input",
-                placeholder="[System Dictation] Speak here..."
-            )
+            user_answer = st.text_area("🎙️ YOUR RESPONSE", height=200, placeholder="Speak your answer or draft your presentation summary...")
             
-            if st.button("� ANALYZE PERFORMANCE", use_container_width=True):
-                if user_transcript and len(user_transcript) > 5:
+            if st.button("DEPLOY SWARM ANALYSIS"):
+                if user_answer:
                     from logic.generator import generate_plain_text
-                    
-                    with st.spinner("Calculating Telemetry..."):
-                        # ANALYTICS LOGIC
-                        word_count = len(user_transcript.split())
+                    with st.spinner("INITIATING MULTI-AGENT TRACE..."):
                         
-                        prompt = f"""
-                        ACT AS: A Speech Coach and GTM Executive.
-                        CONTEXT: Question: "{st.session_state['war_room_q']}".
-                        TRANSCRIPT: "{user_transcript}"
+                        # --- LLM TRACE: SIMULATE AGENT CONVERSATION ---
+                        swarm_trace_prompt = f"""
+                        ROLEPLAY THE FOUR AGENTS: ARCHITECT, ORACLE, SCRIBE, CODER.
                         
-                        TASK: Analyze this spoken answer.
+                        TASK: Analyze the user's response ({user_answer}) to the question ({st.session_state['current_q']}). Develop the best possible counter-answer based on Leon's metrics (160% growth, Revenue OS, MBA).
                         
-                        OUTPUT MARKDOWN FORMAT:
-                        # 📊 THE SCOREBOARD
-                        - **🏆 SCORE:** [0-100]
-                        - **🗣️ CONFIDENCE:** [Low/Med/High]
-                        - **🧱 METRIC DENSITY:** [Low/High - did they use numbers?]
-                        - **⭐ STAR ALIGNMENT:** [Yes/No]
+                        OUTPUT MUST BE A TRACE:
+
+                        **▲ ARCHITECT (STRATEGY):** (Critique the structural integrity of the answer. Define the GTM goal.)
                         
-                        ### 🚩 THE DIAGNOSIS
-                        [One sentence on what went wrong or right]
+                        **▲ ORACLE (DATA):** (Pull the single best metric or historical fact from Leon's file to support the answer. Verify its relevance.)
                         
-                        ### ✅ THE FIX
-                        [Rewrite the 'Action' part of the answer to be more Executive]
+                        **▲ SCRIBE (NARRATIVE):** (Translate the data into executive-level language, focusing on tone and board-readiness.)
+                        
+                        **▲ CODER (VALIDATION):** (If it's a technical/coding question, confirm the solution is viable. If behavioral, suggest a relevant GTM tool.)
+                        
+                        ---
+                        
+                        **FINAL SYNTHESIS (THE BEST ANSWER):** (Write the final, polished response for Leon to use.)
                         """
-                        result = generate_plain_text(prompt)
-                        st.session_state['dojo_score'] = result
-                        st.session_state['dojo_word_count'] = word_count
-                else:
-                    st.warning("Please dictate an answer first.")
-                    
-            # Result Display
-            if st.session_state.get('dojo_score'):
-                st.markdown("---")
-                st.markdown(st.session_state['dojo_score'])
-                
-                # Simple Metrics
-                wc = st.session_state.get('dojo_word_count', 0)
-                st.info(f"**Word Count:** {wc} (Target: 150-250)")
-                if wc > 300:
-                    st.warning("⚠️ Rambling detected. Tighten the narrative.")
-                elif wc < 50:
-                    st.warning("⚠️ Too thin. Add more context.")
+                        
+                        trace_result = generate_plain_text(swarm_trace_prompt)
+                        
+                        st.markdown("### 🧠 SWARM SYNTHESIS TRACE")
+                        st.code(trace_result, language="markdown")
+                        
+                        # FINAL SCORECARD CALL (Placeholder for full analytics)
+                        st.markdown("---")
+                        st.success("✅ AGENT TRACE COMPLETE. FINAL ANSWER GENERATED.")
 
     # ─────────────────────────────────────────────────────────────
     # FIRST 90 DAYS MODE (THE CLOSER)
