@@ -321,13 +321,8 @@ with st.sidebar:
         st.caption("⚠️ LINK: OFFLINE")
         st.markdown("[Get Key](https://console.groq.com)")
     
-    # Simplified Model Selector
-    st.selectbox("LLM FLEET", [
-        "Gemini Pro (Oracle/Reasoning)", 
-        "Mixtral 8x7B (Herald/Speed)", 
-        "Claude 3.5 Sonnet (Sentinel/Structure)",
-        "Mistral 7B (Code/Dev)"
-    ], label_visibility="collapsed")
+    # LLM FLEET SELECTOR (Highlighting Groq/Llama as primary speed engine)
+    st.selectbox("LLM ENGINE", ["Llama 3.3 70B (Speed)", "Mixtral 8x7B (Logic)", "Gemini Pro (Reasoning)"], label_visibility="collapsed")
     
     st.markdown("---")
 
