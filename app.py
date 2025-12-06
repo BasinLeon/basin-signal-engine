@@ -453,17 +453,18 @@ with col1:
     # ─────────────────────────────────────────────────────────────
     # INTEL MODE (The Data Center HUD)
     # ─────────────────────────────────────────────────────────────
+    # ==============================================================================
+    # 📄 MODE 1: INTEL (DEEP RECONNAISSANCE)
+    # ==============================================================================
     if input_mode == "📄 Intel":
         st.markdown("## STRATEGIC ALIGNMENT HUD")
         
-        # 1. DATA INGESTION (CLEAN TABS)
-        st.markdown("#### 1. INGEST DATA")
-        
+        # 1. INGEST DATA (Split Columns for "Cockpit" feel)
         col_source, col_target = st.columns(2)
         
-        # LEFT COLUMN: YOUR SIGNAL
+        # LEFT: YOUR SIGNAL
         with col_source:
-            st.caption("SOURCE SIGNAL (YOUR ASSET)")
+            st.markdown("#### 📂 SOURCE SIGNAL (ASSET)")
             input_type = st.radio("Input Method:", ["Upload File", "Manual Entry"], horizontal=True, label_visibility="collapsed")
             
             resume_text = ""
@@ -474,7 +475,7 @@ with col1:
                         from logic.ingest import extract_text_from_upload
                         resume_text = extract_text_from_upload(uploaded_file)
                         st.session_state.resume_text = resume_text
-                        st.success("✅ Asset Loaded")
+                        st.success(f"✅ Loaded: {uploaded_file.name}")
                     except Exception as e:
                         st.error(f"Error reading file: {e}")
                 elif st.session_state.get('resume_text'):
@@ -491,9 +492,9 @@ with col1:
                 )
                 st.session_state.resume_text = resume_text
 
-        # RIGHT COLUMN: TARGET SIGNAL
+        # RIGHT: TARGET SIGNAL
         with col_target:
-            st.caption("TARGET VECTOR (THE MISSION)")
+            st.markdown("#### 🎯 TARGET VECTOR (MISSION)")
             jd_text = st.text_area(
                 "Paste Job Description", 
                 height=235, 
@@ -504,21 +505,28 @@ with col1:
             )
             st.session_state.jd_text = jd_text
 
-        # 2. ANALYSIS CONFIGURATION (THE HEADHUNTER VIEW)
-        st.markdown("#### 2. CONFIGURE ANALYSIS")
+        # 2. ANALYSIS CONFIGURATION (Headhunter Filters)
+        st.markdown("---")
+        st.markdown("#### ⚙️ ANALYSIS PARAMETERS")
         
         c1, c2, c3 = st.columns(3)
         with c1:
-            recon_mode = st.selectbox("Intelligence Type", 
+            recon_mode = st.selectbox("Output Type", 
                 ["Signal Match (Fit Score)", "Strategic Dossier (The Plan)", "Gap Analysis (The Fix)"])
         with c2:
-            persona = st.selectbox("Headhunter Filter", 
-                ["Strict Gatekeeper (HR)", "Velocity Founder (CEO)", "Technical Bar Raiser (CTO)"])
+            # Map clean UI names to backend keys
+            persona_map = {
+                "The Operator (Process)": "The Operator (Process & Efficiency)",
+                "The Visionary (Growth)": "The Visionary (Growth & Scale)",
+                "The Technologist (Stack)": "The Technologist (Stack & Architecture)"
+            }
+            persona_selection = st.selectbox("Filter Lens", list(persona_map.keys()))
+            target_persona = persona_map[persona_selection]
+            
         with c3:
-            depth = st.slider("Analysis Depth", 0, 100, 100)
+            depth = st.select_slider("Analysis Depth", options=["Executive Summary", "Deep Dive", "Forensic Audit"])
 
         # 3. EXECUTION
-        st.markdown("---")
         if st.button("RUN DIAGNOSTICS", type="primary", use_container_width=True):
             if resume_text and jd_text:
                 with st.spinner("PROCESSING SIGNAL ARCHITECTURE..."):
@@ -526,21 +534,13 @@ with col1:
                     from logic.generator import generate_plain_text
                     import json
                     
-                    # Persona Mapping
-                    persona_map = {
-                        "Strict Gatekeeper (HR)": "The Operator (Process & Efficiency)",
-                        "Velocity Founder (CEO)": "The Visionary (Growth & Scale)",
-                        "Technical Bar Raiser (CTO)": "The Technologist (Stack & Architecture)"
-                    }
-                    target_persona = persona_map.get(persona, "The Visionary (Growth & Scale)")
-
                     # THE LLM PROMPT
                     prompt = f"""
                     ACT AS: BASIN::NEXUS Intelligence Engine.
                     INPUT: RESUME vs JD.
                     CONTEXT: Analyzing for {target_persona}.
                     MODE: {recon_mode}.
-                    DEPTH: {depth}%.
+                    DEPTH: {depth}.
                     
                     TASK: Perform a deep {recon_mode} analysis.
                     
@@ -573,12 +573,12 @@ with col1:
                             "executive_summary": "Candidate demonstrates strong 'Builder' DNA matching the Founder persona. The 160% growth metric is the primary hook."
                         }
                     
-                    st.markdown(f"### 🧬 ANALYSIS COMPLETE: {recon_mode.upper()}")
-                    st.info(f"Viewing through lens: **{persona}**")
+                    st.markdown("### 🧬 ANALYSIS COMPLETE")
+                    st.info(f"Lens: **{persona_selection}** | Depth: **{depth}**")
                     
-                    # VISUALIZATION
+                    # Visual Metrics (The "HUD")
                     k1, k2, k3, k4 = st.columns(4)
-                    k1.metric("Match Score", f"{response.get('match_score', 0)}%", "High")
+                    k1.metric("Match Score", f"{response.get('match_score', 0)}%", "High Signal")
                     k2.metric("Market Heat", response.get('market_heat', 'N/A'), "Series B")
                     k3.metric("Salary Est.", response.get('salary_estimate', 'N/A'), "OTE")
                     k4.metric("Risk Factor", response.get('risk_factor', 'N/A'), "Stable")
