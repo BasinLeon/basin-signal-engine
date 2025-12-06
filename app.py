@@ -1134,67 +1134,69 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
     # ─────────────────────────────────────────────────────────────
 
     # ==============================================================================
-    # 🥊 MODE 7: BOARDROOM (SWARM SYNTHESIS)
+    # 🥊 MODE 7: BOARDROOM (SWARM SYNTHESIS) - FINAL ARCHITECTURE
     # ==============================================================================
     elif input_mode == "🥊 Practice (Dojo)":
         st.markdown("## ▲ BOARDROOM SIMULATOR (SWARM SYNTHESIS)")
-        st.caption("PROTOCOL: Develop executive narrative and presentation skills.")
+        st.caption("PROTOCOL: Develop executive narrative, coding, and board presentation skills.")
         
         # 1. SETUP
         col1, col2 = st.columns([1, 2])
         with col1:
             # User is practicing for a high-stakes scenario
             opponent = st.selectbox("INTERVIEW TARGET", 
-                ["CEO / Founder", "Board Member / Investor", "Skeptic CFO", "Technical VP (Coding)"])
-            artifact = st.selectbox("TOPIC ARTIFACT", ["Behavioral Story", "Systems Design Question", "90-Day Presentation Outline"])
+                ["CEO / Founder", "Board Member / Investor (The Skeptic CFO)", "Technical VP (Coding)", "Head of Partnerships (Story)"])
+            artifact = st.selectbox("TOPIC ARTIFACT", ["Behavioral Story (STAR)", "Systems Design Question (Code)", "Board/CEO Presentation (Strategy)"])
             
-            # Load the unified context from the Career Vault
             st.info("💡 Context: Omni-Agent is RAG-ing your entire Vault.")
             
         # 2. QUESTION GENERATION
         with col2:
             if st.button(f"GENERATE {artifact.upper()} CHALLENGE"):
                 from logic.generator import generate_plain_text
-                with st.spinner(f"Simulating {opponent}..."):
-                    q_prompt = f"""
-                    ACT AS: {opponent}. You are interviewing a 'Director of GTM Systems' (Leon Basin) who builds the 'Revenue OS'. 
-                    Generate one highly challenging, scenario-based question related to {artifact}. 
-                    If the artifact is 'Systems Design Question', include a coding/architecture constraint.
-                    """
-                    st.session_state['current_q'] = generate_plain_text(q_prompt)
-                    st.session_state['opponent'] = opponent
+                q_prompt = f"""
+                ROLE: You are interviewing a 'Director of GTM Systems' (Leon Basin).
+                Generate one highly challenging, scenario-based question related to {artifact} suitable for a {opponent}.
+                If {artifact} is 'Systems Design Question', include a constraint (e.g., must be Python/Streamlit based).
+                """
+                st.session_state['current_q'] = generate_plain_text(q_prompt)
+                st.session_state['opponent'] = opponent
+                st.session_state['artifact'] = artifact
 
         # 3. LIVE SWARM INTERACTION
         if 'current_q' in st.session_state:
             st.markdown("---")
             st.warning(f"🗣️ **{st.session_state['opponent'].upper()}:** {st.session_state['current_q']}")
             
-            user_answer = st.text_area("🎙️ YOUR RESPONSE", height=200, placeholder="Speak your answer or draft your presentation summary...")
+            user_answer = st.text_area("🎙️ YOUR RESPONSE (Draft or Voice Transcript)", height=200, placeholder="Speak your answer or draft your presentation summary...")
             
             if st.button("DEPLOY SWARM ANALYSIS"):
                 if user_answer:
                     from logic.generator import generate_plain_text
                     with st.spinner("INITIATING MULTI-AGENT TRACE..."):
                         
-                        # --- LLM TRACE: SIMULATE AGENT CONVERSATION ---
+                        # LLM TRACE: SIMULATE AGENT CONVERSATION
                         swarm_trace_prompt = f"""
                         ROLEPLAY THE FOUR AGENTS: ARCHITECT, ORACLE, SCRIBE, CODER.
                         
-                        TASK: Analyze the user's response ({user_answer}) to the question ({st.session_state['current_q']}). Develop the best possible counter-answer based on Leon's metrics (160% growth, Revenue OS, MBA).
+                        CONTEXT: Leon's metrics are: 160% Pipeline Growth, $10M ARR, Google Ops Rigor, MBA.
                         
-                        OUTPUT MUST BE A TRACE:
+                        QUESTION: {st.session_state['current_q']}
+                        USER RESPONSE: {user_answer}
 
-                        **▲ ARCHITECT (STRATEGY):** (Critique the structural integrity of the answer. Define the GTM goal.)
+                        OUTPUT MUST BE A TRACE OF THEIR CONVERSATION:
+
+                        **▲ ARCHITECT (SYSTEMS/GTM):** (Critique the solution's alignment with GTM Methodology - MEDDICC, Outbound, Partner Architecture. Define the structural goal.)
                         
-                        **▲ ORACLE (DATA):** (Pull the single best metric or historical fact from Leon's file to support the answer. Verify its relevance.)
+                        **▲ ORACLE (DATA/SALES):** (Pull the single best metric or historical fact from Leon's vault to support the solution. Verify its ROI.)
                         
-                        **▲ SCRIBE (NARRATIVE):** (Translate the data into executive-level language, focusing on tone and board-readiness.)
+                        **▲ SCRIBE (NARRATIVE/CEO PITCH):** (Translate the answer into board-level, high-agency language. Advise on tone and presentation structure.)
                         
-                        **▲ CODER (VALIDATION):** (If it's a technical/coding question, confirm the solution is viable. If behavioral, suggest a relevant GTM tool.)
+                        **▲ CODER (VALIDATION/TECH):** (If it's a coding/systems question, validate the Python/Streamlit approach. If behavioral, suggest a GTM tool to automate the story.)
                         
                         ---
                         
-                        **FINAL SYNTHESIS (THE BEST ANSWER):** (Write the final, polished response for Leon to use.)
+                        **FINAL SYNTHESIS (THE WINNING ANSWER):** (Write the final, polished response, incorporating all four points.)
                         """
                         
                         trace_result = generate_plain_text(swarm_trace_prompt)
