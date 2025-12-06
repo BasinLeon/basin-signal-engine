@@ -498,87 +498,146 @@ with col1:
         st.markdown("#### 2. TARGET VECTOR (THE MISSION)")
         jd_text = st.text_area("Paste Job Description", height=150, placeholder="[PASTE JD HERE]", label_visibility="collapsed")
 
-        # --- 3. EXECUTION (The Teal-Style Matcher) ---
-        st.markdown("---")
+    # --- 2. THE WAR ROOM (MULTI-AGENT CONFIG) ---
+    st.markdown("---")
+    st.markdown("#### 3. DEPLOY GTM SWARM (MULTI-AGENT)")
+    
+    c1, c2 = st.columns([1, 2])
+    
+    with c1:
+        st.caption("🧠 GLOBAL STRATEGY SETTINGS")
+        # Global settings that apply to ALL agents
+        strategic_angle = st.selectbox("Strategic Angle", 
+            ["Revenue Architect (Systems Focus)", "Partner Builder (Channel Focus)", "Operator (Efficiency Focus)", "Founder (Speed Focus)"])
         
-        c1, c2 = st.columns([1, 4])
-        with c1:
-            if st.button("🚀 RUN OMNI-SCAN", type="primary", use_container_width=True):
-                if active_assets and jd_text:
-                    with st.spinner("OMNI-AGENT: Scanning all historical assets for signal matches..."):
+        tone = st.selectbox("Tone Protocol", 
+            ["Executive / Direct (No Fluff)", "Collaborative / Builder", "Challenger / Diagnostic"])
+            
+    with c2:
+        st.caption("🤖 ACTIVATE AGENTS (SELECT OUTPUTS)")
+        # This allows you to run multiple agents at once
+        active_agents = st.multiselect("Deploy Specialized Agents:",
+            [
+                "📧 The Sniper (Cold Email)",
+                "📱 The Closer (Phone/Voicemail Scripts)",
+                "🔗 The Networker (LinkedIn DM)",
+                "🛡️ The Devil's Advocate (Objection Handling)",
+                "🏗️ The Architect (30-60-90 Day Outline)"
+            ],
+            default=["📧 The Sniper (Cold Email)", "📱 The Closer (Phone/Voicemail Scripts)"]
+        )
+
+    # --- 3. EXECUTION (THE SWARM) ---
+    st.markdown("---")
+    
+    if st.button("🚀 DEPLOY SWARM INTELLIGENCE", type="primary", use_container_width=True):
+        if active_assets and jd_text:
+            
+            # TABS FOR OUTPUT (Clean Workspace)
+            # Create tabs dynamically based on selected agents
+            tabs = st.tabs([agent.split(" ")[1] + " OUTPUT" for agent in active_agents])
+            
+            for i, agent in enumerate(active_agents):
+                with tabs[i]:
+                    with st.spinner(f"Agent {agent} is working..."):
                         
-                        # COMBINE ALL SELECTED RESUMES INTO ONE "SUPER PROFILE"
-                        combined_history = ""
-                        for name in active_assets:
-                            combined_history += f"\n--- SOURCE: {name} ---\n{st.session_state['resume_vault'][name]}"
+                        # ==========================================
+                        # AGENT 1: THE SNIPER (EMAIL)
+                        # ==========================================
+                        if "Sniper" in agent:
+                            st.subheader("📧 THE SNIPER PITCH")
+                            st.info(f"Strategy: {strategic_angle} | Tone: {tone}")
+                            
+                            # Simulated LLM Output based on your "Sniper Arsenal"
+                            st.markdown(f"""
+                            **Subject:** Structuring the Partner Ecosystem (Fudo/Sense Experience)
+
+                            **Hi [Hiring Manager],**
+
+                            I’ve been tracking **[Company]**'s expansion. The velocity is incredible, but I know from experience that scaling at this speed creates **structural debt**.
+                            
+                            I specialize in fixing that debt.
+                            
+                            As **Director of GTM Systems** (Ex-Fudo/Sense), I re-architected revenue engines to drive **160% pipeline growth** and **$10M in new ARR**.
+                            
+                            I have a specific perspective on how we can activate your [Channel/Vertical] to lower CAC.
+                            
+                            Open to a brief chat?
+                            
+                            **Leon Basin**
+                            Director of GTM Systems
+                            """)
+                            st.caption("💡 **Agent Note:** I used the 'Structural Debt' hook because it resonates with the 'Founder' persona.")
+
+                        # ==========================================
+                        # AGENT 2: THE CLOSER (PHONE)
+                        # ==========================================
+                        elif "Closer" in agent:
+                            st.subheader("📱 COLD CALL & VOICEMAIL SCRIPTS")
+                            
+                            c_col1, c_col2 = st.columns(2)
+                            with c_col1:
+                                st.markdown("**📞 LIVE CALL OPENER**")
+                                st.markdown(f"""
+                                "Hi [Name], this is Leon Basin.
+                                
+                                I'm not calling to sell you software. I'm calling because I've been tracking your expansion into **[Region/Vertical]**, and I noticed a gap in your partner activation layer.
+                                
+                                I built the fix for this at **Fudo Security** (160% growth). I have an idea for [Company]—do you have 30 seconds, or should I send it via email?"
+                                """)
+                            with c_col2:
+                                st.markdown("**📼 VOICEMAIL DROP**")
+                                st.markdown(f"""
+                                "Hi [Name], Leon Basin here. Former Director of GTM at Fudo.
+                                
+                                I have a specific strategy to help you fix the **Partner Activation** bottleneck I'm seeing in your JD. It involves a 'Technical-to-Commercial' shift that drove $10M pipeline for me at Sense.
+                                
+                                Sending you the 1-pager now. Check your inbox."
+                                """)
+
+                        # ==========================================
+                        # AGENT 3: THE NETWORKER (LINKEDIN)
+                        # ==========================================
+                        elif "Networker" in agent:
+                            st.subheader("🔗 LINKEDIN CONNECTION SEQUENCING")
+                            st.markdown("**CONNECTION REQUEST (300 CHARS)**")
+                            st.code(f"""
+                            Hi [Name], following [Company]'s growth. I see you're scaling the Partner team. I previously built the GTM engine at Fudo (160% growth) and Sense ($10M pipe). I have a perspective on your LATAM expansion. Would love to connect. - Leon
+                            """, language="text")
+                            
+                            st.markdown("**FOLLOW-UP DM (VALUE DROP)**")
+                            st.markdown("""
+                            "Thanks for connecting. I wrote a quick 'Gap Analysis' on [Company]'s current partner ecosystem vs. the 'Revenue OS' model I built at Fudo. Thought it might be useful as you scale Q3. [Link]"
+                            """)
+
+                        # ==========================================
+                        # AGENT 4: THE DEVIL'S ADVOCATE (OBJECTIONS)
+                        # ==========================================
+                        elif "Devil" in agent:
+                            st.subheader("🛡️ OBJECTION HANDLING (THE PRE-MORTEM)")
+                            st.error("🚩 RED FLAG DETECTED: 'You've been a consultant recently.'")
+                            st.markdown(f"""
+                            **THE OBJECTION:** "We need a long-term builder, not a consultant."
+                            
+                            **THE SCRIPTED REBUTTAL:**
+                            "I understand. I operated as a consultant specifically to build **'Zero-to-One'** engines for multiple startups quickly. 
+                            
+                            But my core DNA is **Ownership**. I spent 2 years at Fudo and 2 years at Sense building the foundations. I'm looking for my next 5-year home to scale what I build."
+                            """)
                         
-                        # LLM PROMPT (The "Teal" Logic)
-                        prompt = f"""
-                        ACT AS: BASIN::NEXUS Omni-Agent.
-                        
-                        INPUT:
-                        1. CANDIDATE VAULT (Combined History): {combined_history[:3000]}...
-                        2. TARGET JD: {jd_text[:2000]}...
-                        
-                        MISSION: 
-                        Perform a "TealHQ-Style" Gap Analysis. Look at the JD, then scan the ENTIRE Candidate Vault to find matches, even if they are in old resumes.
-                        
-                        OUTPUT JSON FORMAT:
-                        {{
-                            "match_score": (0-100),
-                            "hard_skills_match": ["Python", "GTM", "Salesforce"],
-                            "missing_keywords": ["SQL", "Looker"],
-                            "found_in_archive": "Found 'Staffing' experience in 'Resume_2015.pdf' - Suggest adding this to current profile.",
-                            "resume_fix_suggestion": "Rewrite bullet 3 to include 'SQL' keyword."
-                        }}
-                        """
-                        
-                        # SIMULATED RESPONSE (Integration Point: from logic.generator import generate_json)
-                        response = {
-                            "match_score": 91,
-                            "hard_skills_match": ["GTM Strategy", "Partnerships", "Zero Trust"],
-                            "missing_keywords": ["Looker", "dbt"],
-                            "found_in_archive": "⚠️ **RECOVERED SIGNAL:** JD asks for 'Staffing'. Found deep experience in *'Slingshot_Resume_2015.pdf'*. Add this to your active application.",
-                            "resume_fix_suggestion": "👉 **FIX:** Your current summary ignores 'Data Quality'. Add 'Managed Data Integrity' from your Google Ops experience."
-                        }
-                        
-                        # --- THE VISUAL DISPLAY (Teal-Style) ---
-                        st.markdown("### 🧬 OMNI-AGENT ANALYSIS")
-                        
-                        # 1. SCOREBOARD
-                        k1, k2, k3 = st.columns(3)
-                        k1.metric("OMNI-MATCH SCORE", f"{response['match_score']}%", "Including Archive Data")
-                        k2.metric("HARD SKILLS", f"{len(response['hard_skills_match'])} Matches", "Strong")
-                        k3.metric("MISSING", f"{len(response['missing_keywords'])} Critical", "Action Required", delta_color="inverse")
-                        
-                        # 2. KEYWORD CHECKLIST (Teal-Style)
-                        st.markdown("#### 🔍 KEYWORD MATCHING")
-                        
-                        # MATCHED (Green Chips)
-                        st.caption("✅ MATCHED SKILLS (From Vault)")
-                        valid_html = ""
-                        for kw in response['hard_skills_match']:
-                            valid_html += f"<span style='background-color:#0e3616; padding:4px 8px; margin:2px; border-radius:4px; border:1px solid #28a745; color:#28a745; font-size:0.8em'>{kw}</span>"
-                        st.markdown(valid_html, unsafe_allow_html=True)
-                        
-                        # MISSING (Red Chips)
-                        st.caption("❌ MISSING KEYWORDS (Add These)")
-                        missing_html = ""
-                        for kw in response['missing_keywords']:
-                            missing_html += f"<span style='background-color:#380e0e; padding:4px 8px; margin:2px; border-radius:4px; border:1px solid #dc3545; color:#dc3545; font-size:0.8em'>{kw}</span>"
-                        st.markdown(missing_html, unsafe_allow_html=True)
-                        
-                        st.markdown("---")
-                        
-                        # 3. THE OMNI-AGENT INSIGHT (The "Magic")
-                        st.info(response['found_in_archive'])
-                        st.write(f"**Action Item:** {response['resume_fix_suggestion']}")
-                
-                else:
-                    st.error("⚠️ DATA MISSING: Upload assets to Vault and Paste JD.")
-        
-        with c2:
-            pass
+                        # ==========================================
+                        # AGENT 5: THE ARCHITECT (90 DAY PLAN)
+                        # ==========================================
+                        elif "Architect" in agent:
+                            st.subheader("🏗️ 30-60-90 DAY MICRO-PLAN")
+                            st.markdown("""
+                            * **Day 1-30 (Audit):** Audit the HubSpot/Salesforce instance for 'Signal Decay'. Interview top 5 performing reps to map the 'Winning Path'.
+                            * **Day 31-60 (Build):** Deploy the 'Revenue OS' framework. Automate the 'Technical-to-Commercial' handoff to reduce friction.
+                            * **Day 61-90 (Scale):** Launch the LATAM Partner Activation campaign. Target: 15% increase in partner-sourced pipeline.
+                            """)
+
+        else:
+            st.error("⚠️ MISSING DATA: Upload assets to Vault and Paste JD.")
     
     # ==============================================================================
     # 🎯 MODE 2: HUNT (TARGET ACQUISITION SYSTEM)
