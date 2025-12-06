@@ -440,7 +440,7 @@ with col1:
     # Input Mode Toggle - FULL ARSENAL
     input_mode = st.radio(
         "Mission Mode",
-        ["📄 Intel", "🎯 Hunt", "🔍 Talent Signal", "🎤 Voice", "🥊 Practice (Dojo)", "🚀 First 90 Days"],
+        ["📄 Intel", "🎯 Hunt", "📊 Analytics", "🔍 Talent Signal", "🎤 Voice", "🥊 Practice (Dojo)", "🚀 First 90 Days"],
         horizontal=True,
         help="Intel (Recon), Hunt (Search), Signal (Screen), Voice (Audio), Dojo (Interview), 90 Days (Plan)"
     )
@@ -623,8 +623,8 @@ with col1:
         st.markdown("## TARGET ACQUISITION SYSTEM")
         st.caption("PROTOCOL: Generate high-precision search vectors. Bypass noise.")
         
-        # 1. THE FREQUENCY SELECTOR (CLEAN TABS)
-        tab_linked, tab_xray, tab_social = st.tabs(["LINKEDIN VECTORS", "ATS X-RAY", "SOCIAL SIGNAL"])
+        # 1. THE FREQUENCY SELECTOR
+        tab_linked, tab_xray, tab_social, tab_blackops = st.tabs(["LINKEDIN VECTORS", "ATS X-RAY", "SOCIAL SIGNAL", "🏴‍☠️ BLACK OPS"])
         
         # ------------------------------------------------------------------
         # TAB 1: LINKEDIN VECTORS (THE MASTER KEY)
@@ -650,39 +650,28 @@ with col1:
             with k2:
                 exclude_noise = st.checkbox("NOISE FILTER", value=True, help="Removes Interns/Entry Level")
 
-            # LOGIC ENGINE (Based on your Uploaded Boolean Library)
+            # LOGIC ENGINE
             if st.button("GENERATE SEARCH STRING", type="primary", use_container_width=True):
                 
                 base_string = ""
                 
-                # LOGIC MAP [Source: Master Boolean Library]
+                # LOGIC MAP
                 if "HR Tech" in search_strategy:
-                    # Target: Deel, Rippling types
                     base_string = '("Head of" OR "Senior Manager" OR "Director") AND ("Partnerships" OR "GTM" OR "Business Development" OR "Alliances") AND ("HR Tech" OR "Workforce" OR "Payroll" OR "People Ops" OR "Compliance")'
-                
                 elif "GTM Operations" in search_strategy:
-                    # Target: Architect roles, not Sellers
                     base_string = '("GTM Operations" OR "Revenue Operations" OR "Sales Strategy" OR "Go-to-Market Strategy") AND ("Manager" OR "Head of" OR "Lead") AND ("SaaS" OR "Tech")'
-                    # Explicitly filtering out sales reps per strategy
                     base_string += ' AND NOT ("Account Executive" OR "SDR" OR "Cold Call")'
-                
                 elif "Partnerships" in search_strategy:
-                    # Target: Channel/Ecosystem
                     base_string = '("Head of Partnerships" OR "Senior Partner Manager" OR "Head of Channel" OR "Strategic Alliances") AND ("SaaS" OR "Cybersecurity" OR "AI")'
-                
                 elif "Chief of Staff" in search_strategy:
-                    # Target: Right-Hand to CRO
                     base_string = '("Chief of Staff") AND ("Revenue" OR "Sales" OR "CRO" OR "GTM" OR "Strategy") AND ("Tech" OR "Startup")'
 
-                # GEOGRAPHIC MODIFIER
                 if geo_lock != "Global":
                     base_string += f' AND ("{geo_lock}")'
 
-                # NOISE FILTER
                 if exclude_noise:
                     base_string += ' AND NOT ("Intern" OR "Entry Level" OR "Part Time")'
 
-                # KEYWORD INJECTION
                 if keywords:
                     base_string += f' AND ({keywords})'
 
@@ -690,13 +679,11 @@ with col1:
                 st.caption("🎯 PRECISION VECTOR GENERATED")
                 st.code(base_string, language="text")
                 
-                # DYNAMIC LINK GENERATION
-                # Creates a clickable link to open LinkedIn Search directly
                 encoded_string = base_string.replace('"', '%22').replace(' ', '%20').replace('(', '%28').replace(')', '%29')
-                st.markdown(f"[🚀 **EXECUTE MISSION (OPEN LINKEDIN)**](https://www.linkedin.com/jobs/search/?keywords={encoded_string})")
+                st.markdown(f"[🚀 **EXECUTE MISSION (OPEN LINKEDIN)**](https://www.linkedin.com/jobs/search/?keywords={encoded_string})", unsafe_allow_html=True)
 
         # ------------------------------------------------------------------
-        # TAB 2: ATS X-RAY (DATABASE PENETRATION)
+        # TAB 2: ATS X-RAY
         # ------------------------------------------------------------------
         with tab_xray:
             st.markdown("#### ☢️ DATABASE PENETRATION (GOOGLE)")
@@ -709,7 +696,6 @@ with col1:
                 ats_target = st.multiselect("TARGET SYSTEM", ["Lever", "Greenhouse", "Ashby"], default=["Lever", "Greenhouse", "Ashby"], label_visibility="collapsed")
             
             if st.button("INITIATE X-RAY SCAN", use_container_width=True):
-                # Construct the Site Logic
                 sites = []
                 if "Lever" in ats_target: sites.append("site:lever.co")
                 if "Greenhouse" in ats_target: sites.append("site:greenhouse.io")
@@ -719,10 +705,10 @@ with col1:
                 query = f'{site_logic} "{ats_role}"'
                 
                 st.code(query, language="text")
-                st.markdown(f"[🚀 **EXECUTE GOOGLE SEARCH**](https://www.google.com/search?q={query.replace(' ', '+').replace('"', '%22')})")
+                st.markdown(f"[🚀 **EXECUTE GOOGLE SEARCH**](https://www.google.com/search?q={query.replace(' ', '+').replace('"', '%22')})", unsafe_allow_html=True)
 
         # ------------------------------------------------------------------
-        # TAB 3: SOCIAL SIGNAL (THE WHISPER)
+        # TAB 3: SOCIAL SIGNAL
         # ------------------------------------------------------------------
         with tab_social:
             st.markdown("#### 🐦 SIGNAL INTERCEPT (X/TWITTER)")
@@ -735,10 +721,92 @@ with col1:
                 min_likes = st.number_input("MIN SIGNAL (LIKES)", value=5, label_visibility="collapsed")
                 
             if st.button("GENERATE SIGNAL STRING", use_container_width=True):
-                # Based on your prompt to find "Leaders tweeting"
                 query = f'("{social_role}") AND ("hiring" OR "join my team" OR "dm me") min_faves:{min_likes} -filter:retweets'
                 st.code(query, language="text")
-                st.markdown(f"[🚀 **EXECUTE INTERCEPT**](https://twitter.com/search?q={query.replace(' ', '%20')}&src=typed_query)")
+                st.markdown(f"[🚀 **EXECUTE INTERCEPT**](https://twitter.com/search?q={query.replace(' ', '%20')}&src=typed_query)", unsafe_allow_html=True)
+
+        # ------------------------------------------------------------------
+        # TAB 4: BLACK OPS (THE INDUSTRY BACKBONE)
+        # ------------------------------------------------------------------
+        with tab_blackops:
+            st.markdown("#### 🏴‍☠️ SILICON VALLEY BACKCHANNELS")
+            st.caption("PROTOCOL: Tap into VC Portfolios and Engineering Aggregators.")
+            
+            c1, c2 = st.columns(2)
+            
+            with c1:
+                st.markdown("##### 🏦 VC PORTFOLIOS (THE MONEY)")
+                st.markdown("*Direct access to portfolio job boards. High signal, low noise.*")
+                
+                if st.button("🍊 Y COMBINATOR (Work at a Startup)"):
+                    st.markdown("[🚀 **OPEN YC JOBS**](https://www.workatastartup.com/companies?roles=Sales&roles=Operations)", unsafe_allow_html=True)
+                
+                if st.button("🌲 SEQUOIA CAPITAL (Portfolio)"):
+                    st.markdown("[🚀 **OPEN SEQUOIA JOBS**](https://jobs.sequoiacap.com/jobs)", unsafe_allow_html=True)
+                
+                if st.button("🚀 ANDREESSEN HOROWITZ (Portfolio)"):
+                    st.markdown("[🚀 **OPEN A16Z JOBS**](https://jobs.a16z.com/)", unsafe_allow_html=True)
+
+            with c2:
+                st.markdown("##### 🕵️ STEALTH AGGREGATORS")
+                st.markdown("*Where the engineers and founders hang out.*")
+                
+                if st.button("👾 HACKER NEWS ('Who is Hiring')"):
+                    hn_query = "hiring GTM OR Sales OR Operations"
+                    st.markdown(f"[🚀 **SCAN HACKER NEWS**](https://hn.algolia.com/?q={hn_query.replace(' ', '+')})", unsafe_allow_html=True)
+                
+                if st.button("✌️ WELLFOUND (AngelList)"):
+                    st.markdown("[🚀 **SCAN STARTUPS**](https://wellfound.com/jobs)", unsafe_allow_html=True)
+
+    # ==============================================================================
+    # 📊 MODE 5: ANALYTICS (THE SCOREBOARD & COACH)
+    # ==============================================================================
+    elif input_mode == "📊 Analytics":
+        st.markdown("## 📈 CAREER VELOCITY SCOREBOARD")
+        st.caption("PROTOCOL: Measure Output. Forecast Offer Date.")
+        
+        # 1. INPUT METRICS
+        st.markdown("#### 1. WEEKLY TELEMETRY")
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            apps_sent = st.number_input("Applications Sent", value=12, step=1)
+        with c2:
+            screens = st.number_input("Recruiter Screens", value=2, step=1)
+        with c3:
+            hms = st.number_input("Hiring Manager Interviews", value=1, step=1)
+        with c4:
+            offers = st.number_input("Offers Received", value=0, step=1)
+            
+        # 2. THE FORECAST ENGINE
+        st.markdown("---")
+        st.markdown("#### 2. VELOCITY FORECAST")
+        
+        # Simple conversion math
+        screen_rate = (screens / apps_sent) * 100 if apps_sent > 0 else 0
+        offer_rate = (offers / hms) * 100 if hms > 0 else 0
+        
+        m1, m2, m3 = st.columns(3)
+        with m1:
+            st.metric("CONVERSION (App -> Screen)", f"{screen_rate:.1f}%", "Target: 15%")
+        with m2:
+            st.metric("PIPELINE VELOCITY", f"{screens} Screens/Wk", "Active")
+        with m3:
+            # Fun calculation: If 10 screens = 1 offer, how many weeks left?
+            needed_screens = 10 - screens
+            weeks_to_offer = max(1, needed_screens / 2) # Assuming 2 screens/week velocity
+            st.metric("EST. WEEKS TO OFFER", f"{weeks_to_offer:.1f} Wks", "Based on Velocity")
+
+        # 3. THE COACH
+        st.markdown("---")
+        st.markdown("#### 🧠 TACTICAL COACHING")
+        if screen_rate < 10:
+            st.error("🚨 **COACHING ALERT:** Your App-to-Screen rate is low (<10%).")
+            st.write("👉 **FIX:** Your resume is not passing the ATS or 'Gatekeeper'. Go to **Intel Mode** and run a 'Gap Analysis' on your resume vs. the JD.")
+        elif hms > 0 and offers == 0:
+            st.warning("⚠️ **COACHING ALERT:** You are getting interviews but not closing.")
+            st.write("👉 **FIX:** Your narrative is failing in the room. Go to **Practice Mode** and drill 'The Skeptic' persona.")
+        else:
+            st.success("✅ **SYSTEM HEALTHY:** Pipeline velocity is strong. Maintain outbound pressure.")
 
     
     # ─────────────────────────────────────────────────────────────
