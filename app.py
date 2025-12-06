@@ -266,12 +266,12 @@ col1, col2 = st.columns([1, 1], gap="large")
 with col1:
     st.markdown("### 📥 Ingest Data (The Signal)")
     
-    # Input Mode Toggle - NOW WITH VIDEO!
+    # Input Mode Toggle - NOW WITH PRACTICE!
     input_mode = st.radio(
         "Input Mode",
-        ["📄 Text/File", "🎤 Voice", "📹 Video"],
+        ["📄 Text/File", "🎤 Voice", "📹 Video", "🎯 Practice"],
         horizontal=True,
-        help="Choose: Text/File, Voice recording, or Video pitch analysis."
+        help="Choose: Text/File, Voice, Video pitch, or Interview Practice."
     )
     
     st.markdown("")
@@ -575,10 +575,233 @@ Tip: Include the FULL JD for best results - the more context, the better the out
         resume_text = st.session_state.resume_text or "[Video Mode - Resume not required]"
         job_description = video_context if uploaded_video else ""
     
+    # ─────────────────────────────────────────────────────────────
+    # PRACTICE MODE - INTERVIEW ROLEPLAY
+    # ─────────────────────────────────────────────────────────────
+    elif input_mode == "🎯 Practice":
+        st.markdown("#### 🎯 Interview Practice Mode")
+        st.caption("Practice with AI-powered interview questions based on your resume and target role")
+        
+        # Initialize practice session state
+        if "practice_messages" not in st.session_state:
+            st.session_state.practice_messages = []
+        if "practice_started" not in st.session_state:
+            st.session_state.practice_started = False
+        if "practice_resume" not in st.session_state:
+            st.session_state.practice_resume = ""
+        if "practice_jd" not in st.session_state:
+            st.session_state.practice_jd = ""
+        
+        # Step 1: Load Resume
+        st.markdown("##### 📄 Step 1: Load Your Resume")
+        practice_resume_method = st.radio(
+            "Resume source",
+            ["📁 Upload", "📝 Paste", "🔄 Use from Text/File mode"],
+            horizontal=True,
+            key="practice_resume_method"
+        )
+        
+        if practice_resume_method == "📁 Upload":
+            practice_resume_file = st.file_uploader(
+                "Upload resume", 
+                type=['pdf', 'md', 'txt'],
+                key="practice_resume_upload"
+            )
+            if practice_resume_file:
+                st.session_state.practice_resume = extract_text_from_upload(practice_resume_file)
+                st.success(f"✓ Resume loaded ({len(st.session_state.practice_resume)} chars)")
+        elif practice_resume_method == "📝 Paste":
+            st.session_state.practice_resume = st.text_area(
+                "Paste resume",
+                value=st.session_state.practice_resume,
+                height=200,
+                key="practice_resume_paste"
+            )
+        else:  # Use from Text/File mode
+            if st.session_state.resume_text:
+                st.session_state.practice_resume = st.session_state.resume_text
+                st.success(f"✓ Using resume from Text/File mode ({len(st.session_state.practice_resume)} chars)")
+            else:
+                st.warning("No resume found. Upload one in Text/File mode first.")
+        
+        # Step 2: Load JD
+        st.markdown("##### 📋 Step 2: Target Job Description")
+        st.session_state.practice_jd = st.text_area(
+            "Paste Job Description",
+            value=st.session_state.practice_jd or st.session_state.jd_text,
+            height=200,
+            placeholder="Paste the job description to practice for...",
+            key="practice_jd_input"
+        )
+        
+        st.markdown("---")
+        
+        # Step 3: Practice Options
+        st.markdown("##### 🎭 Step 3: Practice Type")
+        practice_type = st.selectbox(
+            "What would you like to practice?",
+            [
+                "🎤 Behavioral Questions (STAR method)",
+                "💼 Technical/Role Questions",
+                "🤝 Tell me about yourself",
+                "💡 Why this company/role?",
+                "🔥 Tough Questions (weaknesses, gaps, failures)",
+                "💰 Salary Negotiation",
+                "❓ Random Mix"
+            ],
+            key="practice_type"
+        )
+        
+        # Start Practice Session
+        col_start, col_reset = st.columns(2)
+        with col_start:
+            if st.button("🚀 Start Practice Session", use_container_width=True, type="primary"):
+                if st.session_state.practice_resume and st.session_state.practice_jd:
+                    st.session_state.practice_started = True
+                    st.session_state.practice_messages = []
+                    
+                    # Generate first question
+                    system_prompt = f"""You are an expert interview coach conducting a mock interview.
+
+CANDIDATE'S RESUME:
+{st.session_state.practice_resume[:3000]}
+
+TARGET JOB DESCRIPTION:
+{st.session_state.practice_jd[:2000]}
+
+PRACTICE TYPE: {practice_type}
+
+Your role:
+1. Ask ONE interview question at a time
+2. After the candidate responds, provide brief feedback (1-2 sentences)
+3. Then ask a follow-up or new question
+4. Be encouraging but honest
+5. Reference specific details from their resume and the JD
+6. For STAR questions, prompt for Situation, Task, Action, Result if they miss parts
+
+Start by introducing yourself as the interviewer and asking your first question."""
+
+                    st.session_state.practice_messages.append({
+                        "role": "system",
+                        "content": system_prompt
+                    })
+                    
+                    # Get first AI question
+                    try:
+                        from logic.generator import generate_signal_output, get_provider
+                        import google.generativeai as genai
+                        from groq import Groq
+                        
+                        if selected_model.startswith("groq:"):
+                            client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+                            response = client.chat.completions.create(
+                                model=selected_model.replace("groq:", ""),
+                                messages=st.session_state.practice_messages,
+                                temperature=0.8
+                            )
+                            ai_response = response.choices[0].message.content
+                        elif selected_model.startswith("ollama:"):
+                            import ollama
+                            response = ollama.chat(
+                                model=selected_model.replace("ollama:", ""),
+                                messages=st.session_state.practice_messages
+                            )
+                            ai_response = response['message']['content']
+                        else:
+                            from openai import OpenAI
+                            client = OpenAI()
+                            response = client.chat.completions.create(
+                                model=selected_model,
+                                messages=st.session_state.practice_messages
+                            )
+                            ai_response = response.choices[0].message.content
+                        
+                        st.session_state.practice_messages.append({
+                            "role": "assistant",
+                            "content": ai_response
+                        })
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Error starting practice: {str(e)}")
+                else:
+                    st.warning("Please load your resume and job description first!")
+        
+        with col_reset:
+            if st.button("🔄 Reset Session", use_container_width=True):
+                st.session_state.practice_started = False
+                st.session_state.practice_messages = []
+                st.rerun()
+        
+        # Display conversation
+        if st.session_state.practice_started and st.session_state.practice_messages:
+            st.markdown("---")
+            st.markdown("##### 💬 Interview Conversation")
+            
+            # Show messages (skip system prompt)
+            for msg in st.session_state.practice_messages[1:]:
+                if msg["role"] == "assistant":
+                    st.markdown(f"**🎯 Interviewer:** {msg['content']}")
+                else:
+                    st.markdown(f"**👤 You:** {msg['content']}")
+                st.markdown("")
+            
+            # User input
+            user_response = st.text_area(
+                "Your response:",
+                height=150,
+                placeholder="Type your answer here... Be specific, use examples from your experience.",
+                key="practice_user_input"
+            )
+            
+            if st.button("📤 Send Response", use_container_width=True):
+                if user_response:
+                    st.session_state.practice_messages.append({
+                        "role": "user",
+                        "content": user_response
+                    })
+                    
+                    # Get AI follow-up
+                    try:
+                        if selected_model.startswith("groq:"):
+                            client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+                            response = client.chat.completions.create(
+                                model=selected_model.replace("groq:", ""),
+                                messages=st.session_state.practice_messages,
+                                temperature=0.8
+                            )
+                            ai_response = response.choices[0].message.content
+                        elif selected_model.startswith("ollama:"):
+                            import ollama
+                            response = ollama.chat(
+                                model=selected_model.replace("ollama:", ""),
+                                messages=st.session_state.practice_messages
+                            )
+                            ai_response = response['message']['content']
+                        else:
+                            from openai import OpenAI
+                            client = OpenAI()
+                            response = client.chat.completions.create(
+                                model=selected_model,
+                                messages=st.session_state.practice_messages
+                            )
+                            ai_response = response.choices[0].message.content
+                        
+                        st.session_state.practice_messages.append({
+                            "role": "assistant",
+                            "content": ai_response
+                        })
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Error: {str(e)}")
+        
+        # Set values for the rest of the app
+        resume_text = st.session_state.practice_resume or ""
+        job_description = st.session_state.practice_jd or ""
+    
     st.markdown("")
     
-    # C. The Persona Selector (always visible for text/voice modes)
-    if input_mode != "📹 Video":
+    # C. The Persona Selector (hidden for video and practice modes)
+    if input_mode not in ["📹 Video", "🎯 Practice"]:
         persona_options = get_persona_options()
         target_persona = st.selectbox(
             "Target Persona (The Lens)",
@@ -596,7 +819,7 @@ Tip: Include the FULL JD for best results - the more context, the better the out
             estimated_tokens = estimate_tokens(messages)
             st.caption(f"📊 Estimated input: ~{estimated_tokens:,} tokens")
     else:
-        target_persona = "The Operator (Process & Efficiency)"  # Default for video mode
+        target_persona = "The Operator (Process & Efficiency)"  # Default for video/practice mode
 
 
 # ═══════════════════════════════════════════════════════════════
