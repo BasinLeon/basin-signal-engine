@@ -456,95 +456,141 @@ with col1:
     if input_mode == "📄 Intel":
         st.markdown("### 🧬 STRATEGIC ALIGNMENT HUD")
         
-        # THE DASHBOARD LAYOUT
-        col1, col2, col3 = st.columns([1, 1, 2])
-        
-        with col1:
-            st.subheader("📂 ASSET")
-            # Sync with session state
-            resume_text = st.text_area(
-                "Resume Data", 
-                height=200, 
-                value=st.session_state.get('resume_text', ''), 
-                placeholder="Paste Resume...", 
-                help="Your Source Code",
-                key="hud_resume"
-            )
-            st.session_state.resume_text = resume_text
-            
-        with col2:
-            st.subheader("🎯 TARGET")
-            jd_text = st.text_area(
-                "Job Description", 
-                height=200, 
-                value=st.session_state.get('jd_text', ''), 
-                placeholder="Paste JD...", 
-                help="The Mission Specs",
-                key="hud_jd"
-            )
-            st.session_state.jd_text = jd_text
-        
-        with col3:
-            st.subheader("⚙️ ANALYSIS ENGINE")
-            recon_type = st.radio("Select Intelligence Output:", 
-                ["📊 Signal Match Score (The Gauge)", 
-                 "🕵️ Deep Recon Dossier (The Strategy)", 
-                 "🧩 Gap Analysis (The Fix)"])
-            
-            if st.button("🚀 DEPLOY SIGNAL ARCHITECTURE", use_container_width=True):
-                if resume_text and jd_text:
-                    with st.spinner("Calculating Revenue OS Fit..."):
-                        
+        # 1. DATA INGESTION (THE FEED)
+        with st.expander("📂 SOURCE DATA (Resume & Target)", expanded=True):
+            c1, c2 = st.columns(2)
+            with c1:
+                resume_text = st.text_area(
+                    "Your Signal (Resume)", 
+                    height=150, 
+                    value=st.session_state.get('resume_text', ''),
+                    placeholder="Paste your Master Resume...", 
+                    help="The Asset",
+                    key="hud_resume"
+                )
+                st.session_state.resume_text = resume_text
+            with c2:
+                jd_text = st.text_area(
+                    "Target Signal (JD)", 
+                    height=150, 
+                    value=st.session_state.get('jd_text', ''),
+                    placeholder="Paste the Job Description...", 
+                    help="The Mission",
+                    key="hud_jd"
+                )
+                st.session_state.jd_text = jd_text
 
-                        # 1. SIGNAL MATCH SCORE (VISUAL GAUGE)
-                        if recon_type == "📊 Signal Match Score (The Gauge)":
-                            from logic.generator import generate_plain_text
-                            with st.spinner("Calculating Fit Algorithm..."):
-                                prompt = f"""
-                                ACT AS: Hiring Manager & ATS.
-                                TASK: Rate the match between candidate and role (0-100).
-                                CRITERIA: Hard Skills, Years of Experience, Leadership, Metrics.
-                                INPUT: 
-                                JD: {jd_text[:1500]}
-                                RESUME: {resume_text[:1500]}
-                                
-                                OUTPUT FORMAT:
-                                LINE 1: SCORE: [Integer]
-                                LINE 2: [Short verdict phrase, e.g. "Strong Match"]
-                                LINE 3: KEYWORDS_MISSING: [Comma separated list of 3 critical missing skills]
-                                """
-                                result = generate_plain_text(prompt, model_name=selected_model)
-                                st.success("✅ Analysis Complete")
-                                st.markdown(f"### 🤖 ATS VERDICT\n{result}")
+        # 2. THE ANALYSIS ENGINE
+        if st.button("🚀 RUN SIGNAL DIAGNOSTICS", type="primary", use_container_width=True):
+            if resume_text and jd_text:
+                with st.spinner("Encrypting connection... Analyzing Signal Strength..."):
+                    
+                    from logic.generator import generate_plain_text
+                    import json
+                    
+                    # THE LLM PROMPT (STRUCTURED JSON OUTPUT)
+                    prompt = f"""
+                    ACT AS: BASIN::NEXUS Intelligence Engine.
+                    INPUT: RESUME vs JD.
+                    
+                    TASK: Perform a deep gap analysis.
+                    
+                    OUTPUT JSON FORMAT ONLY:
+                    {{
+                        "match_score": (Integer 0-100),
+                        "ats_probability": (Integer 0-100, estimate of passing automated screen),
+                        "market_temperature": ("Cold", "Warm", "Hot" based on urgency of JD),
+                        "missing_keywords": ["keyword1", "keyword2", "keyword3"],
+                        "key_strengths": ["strength1", "strength2"],
+                        "bleeding_neck": "The #1 expensive problem detailed in the JD",
+                        "hiring_manager_persona": "Description of the buyer psychology",
+                        "salary_estimate": "Estimated range based on level/title"
+                    }}
+                    
+                    RESUME: {resume_text[:3000]}
+                    JD: {jd_text[:3000]}
+                    """
+                    
+                    raw_result = generate_plain_text(prompt, model_name=selected_model)
+                    
+                    # Clean the output (strip markdown code blocks if present)
+                    clean_result = raw_result.replace("```json", "").replace("```", "").strip()
+                    
+                    try:
+                        response = json.loads(clean_result)
+                    except Exception as e:
+                        st.warning(f"⚠️ Signal Interference (JSON Parse Error). Using Simulation protocols. Error: {e}")
+                        # Fallback Mock Data
+                        response = {
+                            "match_score": 85,
+                            "ats_probability": 90,
+                            "market_temperature": "Warm",
+                            "missing_keywords": ["Strategic Planning", "P&L Management", "Team Building"],
+                            "key_strengths": ["Technical Architecture", "System Design"],
+                            "bleeding_neck": "Operational inefficiency and lack of scalable systems.",
+                            "hiring_manager_persona": "Results-oriented leader seeking immediate impact.",
+                            "salary_estimate": "$160k - $220k"
+                        }
 
-                        # 2. DEEP RECON (THE STRATEGY)
-                        elif recon_type == "🕵️ Deep Recon Dossier (The Strategy)":
-                            from logic.generator import generate_plain_text
-                            with st.spinner("Compiling Dossier..."):
-                                prompt = f"""
-                                ACT AS: Corporate Strategy Consultant.
-                                INPUT: RESUME: {resume_text[:3000]} | JD: {jd_text[:3000]}
-                                OUTPUT: Strategic Dossier identifying the 'Bleeding Neck' problem and a 'Sniper Pitch' email.
-                                Output as MARKDOWN.
-                                """
-                                result = generate_plain_text(prompt, model_name=selected_model)
-                                st.info("🧠 REVENUE ARCHITECT INSIGHT GENERATED")
-                                st.markdown(result)
+                    # 3. THE VISUAL DASHBOARD (THE DATA CENTER)
+                    st.markdown("---")
+                    
+                    # ROW 1: TOP LEVEL TELEMETRY
+                    m1, m2, m3, m4 = st.columns(4)
+                    with m1:
+                        st.metric("SIGNAL MATCH", f"{response.get('match_score', 0)}%", "Executive Fit")
+                    with m2:
+                        st.metric("ATS PROBABILITY", f"{response.get('ats_probability', 0)}%", "High Pass Rate")
+                    with m3:
+                        st.metric("MARKET TEMP", response.get('market_temperature', 'N/A'), "Urgent Hire", delta_color="inverse")
+                    with m4:
+                        st.metric("EST. SALARY", response.get('salary_estimate', 'N/A'))
+                    
+                    # ROW 2: THE GAP VISUALIZER
+                    st.markdown("#### 🚨 SIGNAL INTERFERENCE (Missing Keywords)")
+                    
+                    # CSS for "Chips"
+                    st.markdown("""
+                    <style>
+                    .keyword-chip {
+                        display: inline-block;
+                        padding: 5px 12px;
+                        margin: 5px;
+                        border-radius: 15px;
+                        background-color: #1E1E1E;
+                        border: 1px solid #FF4B4B; 
+                        color: #FF4B4B;
+                        font-family: monospace;
+                        font-weight: bold;
+                    }
+                    </style>
+                    """, unsafe_allow_html=True)
+                    
+                    # Generate Chips
+                    chips_html = ""
+                    for kw in response.get('missing_keywords', []):
+                        chips_html += f"<span class='keyword-chip'>⚠ {kw}</span>"
+                    st.markdown(chips_html, unsafe_allow_html=True)
+                    
+                    st.caption("Fix: Add these exact keywords to your 'Core Competencies' or 'Summary'.")
 
-                        # 3. GAP ANALYSIS (THE FIX)
-                        elif recon_type == "🧩 Gap Analysis (The Fix)":
-                            from logic.generator import generate_plain_text
-                            with st.spinner("Identifying Gaps..."):
-                                prompt = f"""
-                                ACT AS: Career Coach.
-                                TASK: Identify top 3 Gaps between Resume and JD.
-                                OUTPUT: Markdown Table with columns: Requirement, Candidate Evidence, Verdict (Match/Gap).
-                                JD: {jd_text[:2000]}
-                                RESUME: {resume_text[:2000]}
-                                """
-                                result = generate_plain_text(prompt, model_name=selected_model)
-                                st.warning("⚠️ GAP ANALYSIS COMPLETE")
-                                st.markdown(result)
+                    st.markdown("---")
+
+                    # ROW 3: DEEP RECON DOSSIER
+                    c1_dash, c2_dash = st.columns([2, 1])
+                    
+                    with c1_dash:
+                        st.subheader("🚩 THE BLEEDING NECK")
+                        st.error(f"**DIAGNOSIS:** {response.get('bleeding_neck', 'N/A')}")
+                        st.markdown(f"**STRATEGY:** Leverage your strengths ({', '.join(response.get('key_strengths', [])[:2])}) to solve this.")
+                    
+                    with c2_dash:
+                        st.subheader("👤 BUYER PSYCHOLOGY")
+                        st.info(f"**TARGET:** {response.get('hiring_manager_persona', 'N/A')}")
+                        st.caption("Tone Strategy: Be direct.")
+
+            else:
+                st.warning("⚠ WAITING FOR SIGNAL INPUT...")
     
     # ─────────────────────────────────────────────────────────────
     # HUNT MODE - THE HEADHUNTER
