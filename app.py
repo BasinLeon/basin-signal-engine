@@ -708,10 +708,37 @@ with col1:
             st.code(whisper_query, language="text")
             st.markdown(f"[🐦 **EXECUTE X/TWITTER INTERCEPT**](https://twitter.com/search?q={encoded_whisper})", unsafe_allow_html=True)
 
-            st.markdown("#### 5. WORKFORCE INTEL (Ecosystem Backchannel)")
-            st.markdown(f"[💼 **OPEN YC JOB BOARDS (High-Yield Manual Check)**](https://www.ycombinator.com/jobs?role=Sales&role=Operations)", unsafe_allow_html=True)
+            st.markdown("#### 4. WORKFORCE INTEL (Ecosystem Backchannel)")
+            st.markdown(f"[💼 **YC JOB BOARDS**](https://www.ycombinator.com/jobs?role=Sales&role=Operations)", unsafe_allow_html=True)
             
-            st.success("✅ ALL 5 VECTORS DEPLOYED. Execute each link to initiate sweep.")
+            st.markdown("---")
+            
+            # DIGITAL ETHER EXPANSION
+            st.markdown("#### 5. DIGITAL ETHER (Deep Web Intel)")
+            st.caption("Underground signals: Reddit, Hacker News, Financial News")
+            
+            ether_c1, ether_c2 = st.columns(2)
+            
+            with ether_c1:
+                st.markdown("**🔴 REDDIT INTEL**")
+                st.markdown(f"[r/ExperiencedSales](https://www.reddit.com/r/ExperiencedSales/search/?q={target_role.replace(' ', '%20')})", unsafe_allow_html=True)
+                st.markdown(f"[r/sales](https://www.reddit.com/r/sales/search/?q=GTM%20hiring)", unsafe_allow_html=True)
+                st.markdown(f"[r/devops](https://www.reddit.com/r/devops/search/?q=hiring)", unsafe_allow_html=True)
+                
+                st.markdown("**👾 HACKER NEWS**")
+                hn_query = f"{target_role} hiring"
+                st.markdown(f"[HN: Who's Hiring](https://hn.algolia.com/?q={hn_query.replace(' ', '+')})", unsafe_allow_html=True)
+            
+            with ether_c2:
+                st.markdown("**📰 FINANCIAL SIGNALS**")
+                st.markdown(f"[WSJ: Funding News](https://www.wsj.com/search?query={target_sector.split()[0]}%20funding)", unsafe_allow_html=True)
+                st.markdown(f"[TechCrunch: Funding](https://techcrunch.com/tag/funding/)", unsafe_allow_html=True)
+                st.markdown(f"[Crunchbase: Recent Funding](https://www.crunchbase.com/discover/funding_rounds)", unsafe_allow_html=True)
+                
+                st.markdown("**🎯 SECTOR INTEL**")
+                st.markdown(f"[Google News: {target_sector.split()[0]}](https://news.google.com/search?q={target_sector.split()[0]}%20hiring)", unsafe_allow_html=True)
+            
+            st.success("✅ ALL 7 VECTORS DEPLOYED. Execute each link to initiate sweep.")
 
     # ==============================================================================
     # ▲ MODE 6: ORACLE (DIGITAL ETHER & PREDICTIVE INDEXING)
