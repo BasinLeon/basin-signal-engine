@@ -352,19 +352,19 @@ with st.sidebar:
     if "STRATEGIC RECON" in mission_phase:
         st.caption("Focus: Finding Market Fit & Targets")
         selected_tool_label = st.radio("Select Tool:", 
-            ["Omni-Agent (Intel)", "Black Ops (Hunt)", "Boardroom (Sim)", "Analytics (Scoreboard)"],
+            ["Omni-Agent (Intel)", "Black Ops (Hunt)", "Company Intel", "Boardroom (Sim)", "Analytics (Scoreboard)"],
             label_visibility="collapsed")
             
     elif "EXECUTION OPS" in mission_phase:
         st.caption("Focus: Scaling the Narrative & Team")
         selected_tool_label = st.radio("Select Tool:", 
-            ["Boardroom (Sim)", "Voice", "Talent Signal (Recruiter)"],
+            ["Pipeline CRM", "Boardroom (Sim)", "Objection Bank", "Voice", "Talent Signal (Recruiter)"],
             label_visibility="collapsed")
             
     elif "ARCHITECT DECK" in mission_phase:
         st.caption("Focus: High-Level Strategy & Governance")
         selected_tool_label = st.radio("Select Tool:", 
-            ["First 90 Days (Closer)", "Boardroom (Sim)", "Analytics (Scoreboard)"],
+            ["First 90 Days (Closer)", "Pipeline CRM", "Boardroom (Sim)", "Analytics (Scoreboard)"],
             label_visibility="collapsed")
 
     # MAPPING TO SYSTEM KERNEL (Connecting UX to Logic)
@@ -374,10 +374,13 @@ with st.sidebar:
         "Black Ops (Hunt)": "🎯 Hunt",
         "Analytics (Scoreboard)": "📊 Analytics",
         "Boardroom (Sim)": "🥊 Practice (Dojo)",
-        "Practice (Dojo)": "🥊 Practice (Dojo)", # Fallback
+        "Practice (Dojo)": "🥊 Practice (Dojo)",
         "Voice": "🎤 Voice",
         "Talent Signal (Recruiter)": "🔍 Talent Signal",
-        "First 90 Days (Closer)": "🚀 First 90 Days"
+        "First 90 Days (Closer)": "🚀 First 90 Days",
+        "Pipeline CRM": "📈 Pipeline CRM",
+        "Objection Bank": "🛡️ Objection Bank",
+        "Company Intel": "🔬 Company Intel"
     }
     
     input_mode = tool_map.get(selected_tool_label, "📄 Intel")
@@ -1152,6 +1155,17 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
         st.markdown("## ▲ BOARDROOM SIMULATOR (SWARM SYNTHESIS)")
         st.caption("PROTOCOL: Develop executive narrative, coding, and board presentation skills.")
         
+        # SESSION HISTORY VIEWER
+        if st.session_state.get('session_history'):
+            with st.expander(f"📜 SESSION HISTORY ({len(st.session_state['session_history'])} sessions)"):
+                total_xp = sum(s.get('xp_gained', 0) for s in st.session_state['session_history'])
+                st.metric("TOTAL XP EARNED", f"{total_xp} XP", "Lifetime")
+                
+                for i, session in enumerate(reversed(st.session_state['session_history'][-5:])):  # Last 5
+                    st.markdown(f"**Session {len(st.session_state['session_history']) - i}:** {session.get('opponent', 'Unknown')} | +{session.get('xp_gained', 0)} XP")
+                    st.caption(f"Q: {session.get('question', '')[:100]}...")
+                st.markdown("---")
+        
         # 1. SETUP
         col1, col2 = st.columns([1, 2])
         with col1:
@@ -1220,17 +1234,90 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                         st.markdown("### 🧠 SWARM SYNTHESIS TRACE")
                         st.code(trace_result, language="markdown")
                         
+                        # ====== REAL-TIME XP CALCULATION ======
+                        word_count = len(user_answer.split())
+                        
+                        # Check for metrics (numbers, percentages, dollar signs)
+                        import re
+                        metrics_found = len(re.findall(r'\d+%|\$\d+|\d+[xX]|\d+\+', user_answer))
+                        
+                        # Check for STAR keywords
+                        star_keywords = ['situation', 'task', 'action', 'result', 'impact', 'outcome', 'achieved', 'delivered', 'built', 'led', 'grew']
+                        star_hits = sum(1 for kw in star_keywords if kw.lower() in user_answer.lower())
+                        
+                        # Calculate XP
+                        base_xp = 50
+                        word_bonus = min(word_count // 20, 50)  # Max 50 XP for length
+                        metric_bonus = metrics_found * 25  # 25 XP per metric
+                        star_bonus = star_hits * 15  # 15 XP per STAR keyword
+                        total_xp = base_xp + word_bonus + metric_bonus + star_bonus
+                        
+                        # Boss Health (inverse of your score quality)
+                        boss_damage = min(95, 20 + (metrics_found * 15) + (star_hits * 10))
+                        
+                        # Determine critical action
+                        if metrics_found == 0:
+                            critical_action = "ADD METRICS!"
+                            critical_tip = "Include numbers (%, $, x growth)"
+                        elif star_hits < 2:
+                            critical_action = "Use STAR Format"
+                            critical_tip = "Structure: Situation → Action → Result"
+                        elif word_count < 100:
+                            critical_action = "Expand Story"
+                            critical_tip = "Add more context and detail"
+                        else:
+                            critical_action = "DEPLOY NOW"
+                            critical_tip = "Answer is interview-ready!"
+                        
                         # FINAL SCORECARD CALL (Gamified Update)
                         st.markdown("---")
                         st.subheader("🏆 MISSION RESULT")
                         
-                        # These metrics motivate the next action
                         c1, c2, c3 = st.columns(3)
-                        c1.metric("ARCHITECT XP GAINED", "+150 XP", "Story Polished")
-                        c2.metric("BOSS HEALTH REDUCTION", "85%", "Metric Hit Rate High")
-                        c3.metric("CRITICAL ACTION", "Deploy Narrative", "Use this version.")
+                        c1.metric("ARCHITECT XP GAINED", f"+{total_xp} XP", f"Words: {word_count}")
+                        c2.metric("BOSS HEALTH REDUCTION", f"{boss_damage}%", f"Metrics: {metrics_found} | STAR: {star_hits}")
+                        c3.metric("CRITICAL ACTION", critical_action, critical_tip)
                         
                         st.success("✅ AGENT TRACE COMPLETE. FINAL ANSWER GENERATED.")
+                        
+                        # ====== SESSION HISTORY SAVE ======
+                        if 'session_history' not in st.session_state:
+                            st.session_state['session_history'] = []
+                        
+                        session_entry = {
+                            "timestamp": "2024-12-06",
+                            "opponent": st.session_state.get('opponent', 'Unknown'),
+                            "artifact": st.session_state.get('artifact', 'Unknown'),
+                            "question": st.session_state.get('current_q', ''),
+                            "answer": user_answer,
+                            "xp_gained": total_xp,
+                            "trace": trace_result[:500]  # Truncate for storage
+                        }
+                        st.session_state['session_history'].append(session_entry)
+                        st.info(f"📁 Session saved! Total sessions: {len(st.session_state['session_history'])}")
+                        
+                        # ====== LINKEDIN POST GENERATOR ======
+                        st.markdown("---")
+                        with st.expander("📱 GENERATE LINKEDIN POST (Herald V2)"):
+                            if st.button("🚀 CREATE LINKEDIN POST"):
+                                linkedin_prompt = f"""
+                                Convert this interview answer into a compelling LinkedIn post:
+                                
+                                ORIGINAL ANSWER: {user_answer}
+                                
+                                RULES:
+                                1. Start with a hook (question or bold statement)
+                                2. Keep it under 200 words
+                                3. Include the key metric (160% growth, $10M, etc.)
+                                4. End with a call-to-action or insight
+                                5. Use line breaks for readability
+                                6. Add 3-5 relevant hashtags
+                                
+                                Make it sound like a thought leader, not a job seeker.
+                                """
+                                linkedin_post = generate_plain_text(linkedin_prompt, model_name=model_id)
+                                st.text_area("📋 COPY THIS:", linkedin_post, height=250)
+                                st.caption("💡 Post this to build your 'Business Academic' brand!")
 
     # ─────────────────────────────────────────────────────────────
     # FIRST 90 DAYS MODE (THE CLOSER)
@@ -1284,9 +1371,155 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
             st.markdown("---")
             st.markdown(st.session_state['90_day_plan'])
             st.download_button("📥 Download Plan", st.session_state['90_day_plan'], "30_60_90_Plan.md")
-    
-    st.markdown("")
-    
+
+    # ==============================================================================
+    # 📈 MODE 8: PIPELINE CRM (DEAL TRACKER)
+    # ==============================================================================
+    elif input_mode == "📈 Pipeline CRM":
+        st.markdown("## 📈 PIPELINE CRM (DEAL TRACKER)")
+        st.caption("PROTOCOL: Track every opportunity from Application to Offer.")
+        
+        # Initialize Pipeline Data
+        if 'pipeline_data' not in st.session_state:
+            st.session_state['pipeline_data'] = [
+                {"Company": "DepthFirst", "Role": "Dir. GTM", "Stage": "Final Round", "Next Action": "Follow-up CEO", "Priority": "🔥 HIGH", "Last Contact": "2024-12-05"},
+                {"Company": "Mistral AI", "Role": "GTM Lead", "Stage": "HM Interview", "Next Action": "Send 90-Day Plan", "Priority": "🔥 HIGH", "Last Contact": "2024-12-04"},
+                {"Company": "Ambient.ai", "Role": "Rev Ops", "Stage": "Screen", "Next Action": "Prep Recruiter Q's", "Priority": "⚡ MED", "Last Contact": "2024-12-03"},
+                {"Company": "Verkada", "Role": "Sr. GTM", "Stage": "Applied", "Next Action": "Wait", "Priority": "⏳ LOW", "Last Contact": "2024-12-02"},
+            ]
+        
+        # Pipeline Metrics
+        k1, k2, k3, k4 = st.columns(4)
+        stages = [d["Stage"] for d in st.session_state['pipeline_data']]
+        k1.metric("TOTAL ACTIVE", len(st.session_state['pipeline_data']))
+        k2.metric("FINAL ROUNDS", stages.count("Final Round"))
+        k3.metric("HM INTERVIEWS", stages.count("HM Interview"))
+        k4.metric("SCREENS", stages.count("Screen"))
+        
+        st.markdown("---")
+        
+        # Editable Pipeline Table
+        st.markdown("#### 📋 ACTIVE PIPELINE")
+        edited_df = st.data_editor(
+            st.session_state['pipeline_data'],
+            num_rows="dynamic",
+            use_container_width=True,
+            column_config={
+                "Stage": st.column_config.SelectboxColumn(
+                    options=["Applied", "Screen", "HM Interview", "Final Round", "Offer", "Closed Won", "Closed Lost"]
+                ),
+                "Priority": st.column_config.SelectboxColumn(
+                    options=["🔥 HIGH", "⚡ MED", "⏳ LOW"]
+                )
+            }
+        )
+        st.session_state['pipeline_data'] = edited_df
+        
+        # Quick Add
+        st.markdown("---")
+        with st.expander("➕ QUICK ADD OPPORTUNITY"):
+            c1, c2, c3 = st.columns(3)
+            new_company = c1.text_input("Company Name")
+            new_role = c2.text_input("Role Title")
+            new_stage = c3.selectbox("Stage", ["Applied", "Screen", "HM Interview", "Final Round"])
+            
+            if st.button("ADD TO PIPELINE", type="primary"):
+                if new_company and new_role:
+                    new_entry = {
+                        "Company": new_company,
+                        "Role": new_role,
+                        "Stage": new_stage,
+                        "Next Action": "TBD",
+                        "Priority": "⚡ MED",
+                        "Last Contact": "2024-12-06"
+                    }
+                    st.session_state['pipeline_data'].append(new_entry)
+                    st.success(f"✅ Added {new_company} to Pipeline!")
+                    st.rerun()
+
+    # ==============================================================================
+    # 🛡️ MODE 9: OBJECTION BANK (INTERVIEW ARMOR)
+    # ==============================================================================
+    elif input_mode == "🛡️ Objection Bank":
+        st.markdown("## 🛡️ OBJECTION BANK (INTERVIEW ARMOR)")
+        st.caption("PROTOCOL: Pre-loaded responses to common interview challenges.")
+        
+        # Initialize Objection Bank
+        if 'objection_bank' not in st.session_state:
+            st.session_state['objection_bank'] = {
+                "Why did you leave your last role?": "I completed my mission—architecting the Revenue OS that drove 160% YoY pipeline growth. The next chapter requires a larger canvas where I can build at scale.",
+                "You don't have direct experience in [X industry].": "My systems are industry-agnostic. The Revenue OS I built reduced CAC by 40% and generated $10M pipeline—that methodology transfers to any B2B SaaS environment.",
+                "Why should we hire you over someone with more tenure?": "Tenure measures time; I measure impact. In 18 months, I built a GTM engine from zero that now generates 100+ qualified leads per week. I'm not looking for a job—I'm looking to build your next revenue machine.",
+                "Tell me about a failure.": "Early in my career, I relied on 'sales activity' over 'sales architecture.' I was burning cycles instead of building systems. That failure taught me to think like an engineer—now I build once, scale infinitely.",
+                "What's your weakness?": "I can over-engineer solutions when speed is required. I've learned to ship MVPs fast, then iterate based on data—not perfectionism."
+            }
+        
+        # Display Objections
+        st.markdown("#### 📖 YOUR PLAYBOOK")
+        
+        for objection, response in st.session_state['objection_bank'].items():
+            with st.expander(f"❓ {objection}"):
+                st.success(f"**YOUR RESPONSE:**\n\n{response}")
+                st.caption("💡 TIP: Practice saying this out loud 3x before your interview.")
+        
+        st.markdown("---")
+        
+        # Add New Objection
+        st.markdown("#### ➕ ADD NEW OBJECTION")
+        new_objection = st.text_input("Objection/Question")
+        new_response = st.text_area("Your Polished Response", height=150)
+        
+        if st.button("SAVE TO BANK", type="primary"):
+            if new_objection and new_response:
+                st.session_state['objection_bank'][new_objection] = new_response
+                st.success(f"✅ Added to Objection Bank!")
+                st.rerun()
+
+    # ==============================================================================
+    # 🔬 MODE 10: COMPANY INTEL (DEEP DIVE)
+    # ==============================================================================
+    elif input_mode == "🔬 Company Intel":
+        st.markdown("## 🔬 COMPANY INTEL (DEEP DIVE)")
+        st.caption("PROTOCOL: Pre-interview reconnaissance on target companies.")
+        
+        company_name = st.text_input("🎯 TARGET COMPANY NAME", placeholder="e.g., Verkada, Mistral AI, Ambient.ai")
+        
+        if company_name:
+            st.markdown("---")
+            st.markdown(f"#### 📊 INTEL REPORT: {company_name.upper()}")
+            
+            # Quick Links
+            c1, c2, c3, c4 = st.columns(4)
+            c1.markdown(f"[🔗 LinkedIn](https://www.linkedin.com/company/{company_name.lower().replace(' ', '-')})")
+            c2.markdown(f"[💰 Crunchbase](https://www.crunchbase.com/organization/{company_name.lower().replace(' ', '-')})")
+            c3.markdown(f"[📰 News](https://www.google.com/search?q={company_name}+funding+news)")
+            c4.markdown(f"[👥 Glassdoor](https://www.glassdoor.com/Overview/Working-at-{company_name.replace(' ', '-')}-EI_IE.htm)")
+            
+            st.markdown("---")
+            
+            # AI Intel Generator
+            if st.button("🧠 GENERATE AI INTEL BRIEF", type="primary", use_container_width=True):
+                from logic.generator import generate_plain_text
+                
+                with st.spinner(f"Researching {company_name}..."):
+                    intel_prompt = f"""
+                    Generate a pre-interview intelligence brief for {company_name}.
+                    
+                    Include:
+                    1. **COMPANY OVERVIEW:** What they do, target market, key differentiators.
+                    2. **RECENT NEWS:** Any funding rounds, product launches, or leadership changes (make educated guesses if unknown).
+                    3. **GTM CHALLENGES:** What pain points would a Director of GTM Systems solve for them?
+                    4. **TALKING POINTS:** 3 specific things Leon (a Revenue Architect with 160% pipeline growth) should mention to resonate with this company.
+                    5. **QUESTIONS TO ASK:** 2 insightful questions that show deep understanding of their business.
+                    
+                    Be specific and actionable.
+                    """
+                    model_id = st.session_state.get('selected_model_id', "groq:llama-3.3-70b-versatile")
+                    intel_result = generate_plain_text(intel_prompt, model_name=model_id)
+                    st.session_state['company_intel'] = intel_result
+            
+            if st.session_state.get('company_intel'):
+                st.markdown(st.session_state['company_intel'])
 
 
 
