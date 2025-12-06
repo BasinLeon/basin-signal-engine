@@ -432,20 +432,20 @@ col1, col2 = st.columns([1, 1], gap="large")
 with col1:
     st.markdown("### 📥 Ingest Data (The Signal)")
     
-    # Input Mode Toggle - NOW WITH PRACTICE!
+    # Input Mode Toggle - FULL ARSENAL
     input_mode = st.radio(
-        "Input Mode",
-        ["📄 Text/File", "🎤 Voice", "📹 Video", "🎯 Practice"],
+        "Mission Mode",
+        ["📄 Intel", "� Hunt", "🎤 Voice", "🥊 Practice"],
         horizontal=True,
-        help="Choose: Text/File, Voice, Video pitch, or Interview Practice."
+        help="Intel (Resume+JD), Hunt (Find targets), Voice (Audio input), Practice (Interview sim)"
     )
     
     st.markdown("")
     
     # ─────────────────────────────────────────────────────────────
-    # TEXT/FILE MODE
+    # INTEL MODE (Text/File Input)
     # ─────────────────────────────────────────────────────────────
-    if input_mode == "📄 Text/File":
+    if input_mode == "📄 Intel":
         # Resume Input Method
         resume_input_method = st.radio(
             "Resume Input",
@@ -509,6 +509,184 @@ The system will:
 Tip: Include the FULL JD for best results - the more context, the better the output."""
         )
         st.session_state.jd_text = job_description
+    
+    # ─────────────────────────────────────────────────────────────
+    # HUNT MODE - THE HEADHUNTER
+    # ─────────────────────────────────────────────────────────────
+    elif input_mode == "🎯 Hunt":
+        st.markdown("#### 🎯 THE HEADHUNTER")
+        st.caption("Generate precision targeting strings for LinkedIn. Find the jobs BEFORE they find you.")
+        
+        st.markdown('<div class="divider-solid"></div>', unsafe_allow_html=True)
+        
+        # === ROLE SELECTION ===
+        st.markdown("##### 🎖️ TARGET ROLE")
+        target_role = st.selectbox(
+            "What role are you hunting?",
+            [
+                "GTM Operations / Revenue Ops",
+                "Head of Partnerships / Channel",
+                "Chief of Staff (Revenue/GTM)",
+                "Founding Sales / First Hire",
+                "Sales Strategy & Enablement",
+                "Solutions Architect / SE",
+                "Product Operations",
+                "Custom..."
+            ],
+            key="hunt_role"
+        )
+        
+        # Custom role option
+        if target_role == "Custom...":
+            custom_role = st.text_input("Enter custom role keywords", placeholder='e.g., "Director of Growth" OR "VP Marketing"')
+        
+        st.markdown("")
+        
+        # === SECTOR SELECTION ===
+        st.markdown("##### 🏢 TARGET SECTOR")
+        target_sector = st.selectbox(
+            "Which industry vertical?",
+            [
+                "General SaaS / B2B Tech",
+                "HR Tech / Future of Work",
+                "Cybersecurity / GRC",
+                "AI / ML / DevTools",
+                "FinTech / Payments",
+                "HealthTech / Digital Health",
+                "Climate / CleanTech",
+                "Custom..."
+            ],
+            key="hunt_sector"
+        )
+        
+        if target_sector == "Custom...":
+            custom_sector = st.text_input("Enter custom sector keywords", placeholder='e.g., "Climate Tech" OR "Sustainability"')
+        
+        st.markdown("")
+        
+        # === SENIORITY FILTER ===
+        st.markdown("##### 📊 SENIORITY LEVEL")
+        seniority = st.multiselect(
+            "Select target levels",
+            ["Manager", "Senior Manager", "Director", "Head of", "VP", "C-Level"],
+            default=["Manager", "Director", "Head of"],
+            key="hunt_seniority"
+        )
+        
+        st.markdown("")
+        
+        # === LOCATION (Optional) ===
+        st.markdown("##### 🌍 LOCATION (Optional)")
+        location = st.text_input(
+            "Add location filter",
+            placeholder='e.g., "Remote" OR "San Francisco" OR "New York"',
+            key="hunt_location"
+        )
+        
+        st.markdown('<div class="divider-solid"></div>', unsafe_allow_html=True)
+        
+        # === GENERATE BUTTON ===
+        if st.button("⚡ GENERATE HUNTING COORDINATES", use_container_width=True, type="primary"):
+            
+            # === THE BOOLEAN LOGIC ENGINE ===
+            
+            # Role strings
+            role_strings = {
+                "GTM Operations / Revenue Ops": '("GTM Operations" OR "Revenue Operations" OR "RevOps" OR "Sales Operations" OR "Go-to-Market Strategy" OR "Sales Strategy")',
+                "Head of Partnerships / Channel": '("Head of Partnerships" OR "Director of Partnerships" OR "Senior Partner Manager" OR "Head of Channel" OR "Channel Sales" OR "Strategic Alliances" OR "Business Development Director")',
+                "Chief of Staff (Revenue/GTM)": '("Chief of Staff") AND ("Revenue" OR "Sales" OR "CRO" OR "GTM" OR "Commercial" OR "COO")',
+                "Founding Sales / First Hire": '("Founding AE" OR "First Sales Hire" OR "Head of Sales" OR "0 to 1 Sales" OR "First GTM Hire" OR "Founding Sales")',
+                "Sales Strategy & Enablement": '("Sales Strategy" OR "Sales Enablement" OR "Revenue Enablement" OR "GTM Enablement" OR "Commercial Strategy")',
+                "Solutions Architect / SE": '("Solutions Architect" OR "Solutions Engineer" OR "Pre-Sales Engineer" OR "Technical Account Manager" OR "Solutions Consultant")',
+                "Product Operations": '("Product Operations" OR "Product Ops" OR "Business Operations" OR "Growth Operations" OR "Strategy & Operations")',
+            }
+            
+            # Sector strings
+            sector_strings = {
+                "General SaaS / B2B Tech": 'AND ("SaaS" OR "B2B" OR "Enterprise Software" OR "Cloud" OR "Software")',
+                "HR Tech / Future of Work": 'AND ("HR Tech" OR "HRTech" OR "Workforce" OR "Payroll" OR "People Operations" OR "Compliance" OR "Deel" OR "Rippling" OR "Gusto" OR "Remote")',
+                "Cybersecurity / GRC": 'AND ("Cybersecurity" OR "Security" OR "Zero Trust" OR "GRC" OR "Compliance" OR "Identity" OR "Vanta" OR "Drata" OR "Snyk" OR "CrowdStrike")',
+                "AI / ML / DevTools": 'AND ("Generative AI" OR "GenAI" OR "LLM" OR "Machine Learning" OR "DevTools" OR "Developer Experience" OR "AI Platform" OR "MLOps")',
+                "FinTech / Payments": 'AND ("FinTech" OR "Payments" OR "Banking" OR "Lending" OR "Financial Services" OR "Stripe" OR "Plaid" OR "Ramp")',
+                "HealthTech / Digital Health": 'AND ("HealthTech" OR "Digital Health" OR "Healthcare" OR "Telehealth" OR "Medical" OR "Health Tech")',
+                "Climate / CleanTech": 'AND ("Climate Tech" OR "CleanTech" OR "Sustainability" OR "Clean Energy" OR "Carbon" OR "ESG")',
+            }
+            
+            # Noise filter - CRITICAL
+            noise_filter = 'AND NOT ("Intern" OR "Entry Level" OR "Junior" OR "SDR" OR "BDR" OR "Account Executive" OR "Door to Door" OR "Commission Only" OR "Cold Calling")'
+            
+            # Build the string
+            if target_role == "Custom...":
+                role_part = f'({custom_role})'
+            else:
+                role_part = role_strings.get(target_role, "")
+            
+            if target_sector == "Custom...":
+                sector_part = f'AND ({custom_sector})'
+            else:
+                sector_part = sector_strings.get(target_sector, "")
+            
+            # Seniority
+            if seniority:
+                seniority_part = 'AND (' + ' OR '.join([f'"{s}"' for s in seniority]) + ')'
+            else:
+                seniority_part = ""
+            
+            # Location
+            if location:
+                location_part = f'AND ({location})'
+            else:
+                location_part = ""
+            
+            # COMBINE
+            boolean_string = f"{role_part} {sector_part} {seniority_part} {location_part} {noise_filter}"
+            boolean_string = boolean_string.strip()
+            
+            # Store in session
+            st.session_state.hunt_result = boolean_string
+        
+        # === DISPLAY RESULTS ===
+        if "hunt_result" in st.session_state and st.session_state.hunt_result:
+            st.markdown('<div class="divider-solid"></div>', unsafe_allow_html=True)
+            st.markdown("##### ⚡ HUNTING COORDINATES GENERATED")
+            
+            # Display the string
+            st.code(st.session_state.hunt_result, language="text")
+            
+            # Copy instruction
+            st.info("📋 **Copy the string above** and paste into LinkedIn's search bar for precision targeting.")
+            
+            # Quick links
+            col_link1, col_link2 = st.columns(2)
+            with col_link1:
+                st.markdown("[🔗 Open LinkedIn Jobs](https://www.linkedin.com/jobs/search/)")
+            with col_link2:
+                st.markdown("[🔗 Open LinkedIn People](https://www.linkedin.com/search/results/people/)")
+            
+            st.markdown("")
+            
+            # Pro tips
+            with st.expander("💡 PRO TIPS FOR HUNTING"):
+                st.markdown("""
+                **LinkedIn Search Hacks:**
+                
+                1. **Jobs Search**: Paste the string, then filter by "Date Posted: Past Week"
+                2. **People Search**: Find hiring managers with: `"Head of" AND "HR Tech" AND "hiring"`
+                3. **Saved Searches**: Save your search for daily alerts
+                4. **Boolean in Messages**: Use keywords when reaching out
+                
+                **The Sniper Approach:**
+                - Find the job → Find the hiring manager → Send a DM
+                - Don't just apply - **architect the connection**
+                
+                **Refining Results:**
+                - Too many results? Add more specific sectors
+                - Too few results? Remove seniority filters
+                """)
+        
+        # Set empty values for Intel mode compatibility
+        resume_text = ""
+        job_description = ""
     
     # ─────────────────────────────────────────────────────────────
     # VOICE MODE - ENHANCED
@@ -744,9 +922,9 @@ Tip: Include the FULL JD for best results - the more context, the better the out
     # ─────────────────────────────────────────────────────────────
     # PRACTICE MODE - INTERVIEW ROLEPLAY
     # ─────────────────────────────────────────────────────────────
-    elif input_mode == "🎯 Practice":
-        st.markdown("#### 🎯 Interview Practice Mode")
-        st.caption("Practice with AI-powered interview questions based on your resume and target role")
+    elif input_mode == "🥊 Practice":
+        st.markdown("#### 🥊 THE WAR ROOM")
+        st.caption("Practice with AI-powered interview questions. Get scored on your performance.")
         
         # Initialize practice session state
         if "practice_messages" not in st.session_state:
@@ -966,8 +1144,8 @@ Start by introducing yourself as the interviewer and asking your first question.
     
     st.markdown("")
     
-    # C. The Persona Selector (hidden for video and practice modes)
-    if input_mode not in ["📹 Video", "🎯 Practice"]:
+    # C. The Persona Selector (only for Intel mode)
+    if input_mode == "� Intel":
         persona_options = get_persona_options()
         target_persona = st.selectbox(
             "Target Persona (The Lens)",
