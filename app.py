@@ -328,10 +328,10 @@ Include:
         
         st.markdown("")
         
-        # B. The Target (Job Description) - EXPANDED
+        # B. The Target (Job Description) - EXPANDED for long JDs
         job_description = st.text_area(
             "Paste Job Description / Context",
-            height=400,  # Increased from 200 to fit longer JDs
+            height=500,  # Tall enough for most full JDs
             value=st.session_state.jd_text,
             placeholder="""Paste the full job description here...
 
@@ -345,106 +345,156 @@ Tip: Include the FULL JD for best results - the more context, the better the out
         st.session_state.jd_text = job_description
     
     # ─────────────────────────────────────────────────────────────
-    # VOICE MODE
+    # VOICE MODE - ENHANCED
     # ─────────────────────────────────────────────────────────────
     elif input_mode == "🎤 Voice":
-        st.markdown("#### 🎤 Voice Resume Input")
-        st.caption("Click to record your career background (2-3 minutes)")
+        st.markdown("#### 🎤 Voice-First Resume Input")
         
-        # Resume Voice Recorder
-        audio_bytes_resume = audio_recorder(
-            text="Click to record resume",
-            recording_color="#e74c3c",
-            neutral_color="#667eea",
-            icon_name="microphone",
-            icon_size="2x",
-            key="resume_recorder"
+        # Resume input method selector
+        voice_resume_method = st.radio(
+            "Resume Source",
+            ["🎙️ Record Voice", "📁 Upload File", "📝 Paste Text"],
+            horizontal=True,
+            key="voice_resume_method"
         )
         
-        if audio_bytes_resume:
-            st.audio(audio_bytes_resume, format="audio/wav")
-            st.caption(f"📊 Recording captured ({len(audio_bytes_resume)} bytes)")
+        if voice_resume_method == "🎙️ Record Voice":
+            st.caption("🎯 Speak about your background (2-3 minutes). Describe your experience, key achievements, and skills.")
             
-            # Transcribe button
-            if st.button("🔄 Transcribe Resume", key="transcribe_resume"):
-                with st.spinner("Transcribing with Whisper..."):
-                    try:
-                        transcript = transcribe_audio(audio_bytes_resume, use_api=True)
-                        st.session_state.voice_resume_text = transcript
-                        st.success("✓ Transcription complete!")
-                    except Exception as e:
-                        st.error(f"Transcription failed: {str(e)}")
+            # Resume Voice Recorder
+            audio_bytes_resume = audio_recorder(
+                text="🎙️ Click to start recording",
+                recording_color="#e74c3c",
+                neutral_color="#667eea",
+                icon_name="microphone",
+                icon_size="3x",
+                key="resume_recorder"
+            )
             
-            # Show transcription
+            if audio_bytes_resume:
+                st.audio(audio_bytes_resume, format="audio/wav")
+                
+                # Auto-transcribe or manual button
+                col_trans1, col_trans2 = st.columns([1, 1])
+                with col_trans1:
+                    if st.button("🔄 Transcribe with Whisper", key="transcribe_resume", use_container_width=True):
+                        with st.spinner("Transcribing..."):
+                            try:
+                                transcript = transcribe_audio(audio_bytes_resume, use_api=True)
+                                st.session_state.voice_resume_text = transcript
+                                st.success("✓ Transcription complete!")
+                                st.rerun()
+                            except Exception as e:
+                                st.error(f"Transcription failed: {str(e)}")
+                                st.caption("Make sure OPENAI_API_KEY is set for Whisper")
+                
+                with col_trans2:
+                    st.download_button(
+                        "💾 Download Audio",
+                        data=audio_bytes_resume,
+                        file_name="resume_recording.wav",
+                        mime="audio/wav",
+                        use_container_width=True
+                    )
+            
+            # Show/edit transcription
             if st.session_state.voice_resume_text:
+                st.markdown("##### 📝 Transcribed Resume (editable)")
                 resume_text = st.text_area(
-                    "Transcribed Resume (edit if needed)",
+                    "Edit your transcription",
                     value=st.session_state.voice_resume_text,
-                    height=150,
-                    key="resume_transcript_display"
+                    height=300,
+                    key="resume_transcript_edit",
+                    label_visibility="collapsed"
                 )
                 st.session_state.voice_resume_text = resume_text
+                st.success(f"✓ {len(resume_text)} characters ready")
             else:
                 resume_text = ""
-        else:
-            resume_text = st.session_state.voice_resume_text or ""
+                
+        elif voice_resume_method == "📁 Upload File":
+            uploaded_resume = st.file_uploader(
+                "Upload Resume (PDF, MD, TXT)",
+                type=['pdf', 'md', 'txt'],
+                key="voice_mode_resume_upload"
+            )
+            if uploaded_resume:
+                resume_text = extract_text_from_upload(uploaded_resume)
+                st.session_state.voice_resume_text = resume_text
+                st.success(f"✓ Resume loaded ({len(resume_text)} characters)")
+            else:
+                resume_text = st.session_state.voice_resume_text or ""
+                
+        else:  # Paste Text
+            resume_text = st.text_area(
+                "Paste Your Resume",
+                value=st.session_state.voice_resume_text or "",
+                height=300,
+                placeholder="Paste your resume content here..."
+            )
             if resume_text:
-                st.info("Previous transcription available")
-                st.text_area(
-                    "Previous Transcription",
-                    value=resume_text,
-                    height=100,
-                    disabled=True
-                )
+                st.session_state.voice_resume_text = resume_text
+                st.success(f"✓ {len(resume_text)} characters loaded")
         
         st.markdown("---")
         
-        st.markdown("#### 🎤 Voice JD Input")
-        st.caption("Click to describe the role requirements")
+        # JD Input Section
+        st.markdown("#### 🎤 Voice-First Job Description")
         
-        # JD Voice Recorder
-        audio_bytes_jd = audio_recorder(
-            text="Click to record JD",
-            recording_color="#e74c3c",
-            neutral_color="#764ba2",
-            icon_name="microphone",
-            icon_size="2x",
-            key="jd_recorder"
+        voice_jd_method = st.radio(
+            "JD Source",
+            ["🎙️ Record Voice", "📝 Paste Text"],
+            horizontal=True,
+            key="voice_jd_method"
         )
         
-        if audio_bytes_jd:
-            st.audio(audio_bytes_jd, format="audio/wav")
-            st.caption(f"📊 Recording captured ({len(audio_bytes_jd)} bytes)")
+        if voice_jd_method == "🎙️ Record Voice":
+            st.caption("🎯 Describe the role: What does the job involve? What are they looking for?")
             
-            if st.button("🔄 Transcribe JD", key="transcribe_jd"):
-                with st.spinner("Transcribing with Whisper..."):
-                    try:
-                        transcript = transcribe_audio(audio_bytes_jd, use_api=True)
-                        st.session_state.voice_jd_text = transcript
-                        st.success("✓ Transcription complete!")
-                    except Exception as e:
-                        st.error(f"Transcription failed: {str(e)}")
+            audio_bytes_jd = audio_recorder(
+                text="🎙️ Click to record JD description",
+                recording_color="#e74c3c",
+                neutral_color="#764ba2",
+                icon_name="microphone",
+                icon_size="3x",
+                key="jd_recorder"
+            )
+            
+            if audio_bytes_jd:
+                st.audio(audio_bytes_jd, format="audio/wav")
+                
+                if st.button("🔄 Transcribe JD", key="transcribe_jd", use_container_width=True):
+                    with st.spinner("Transcribing..."):
+                        try:
+                            transcript = transcribe_audio(audio_bytes_jd, use_api=True)
+                            st.session_state.voice_jd_text = transcript
+                            st.success("✓ Transcription complete!")
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Transcription failed: {str(e)}")
             
             if st.session_state.voice_jd_text:
+                st.markdown("##### 📝 Transcribed JD (editable)")
                 job_description = st.text_area(
-                    "Transcribed JD (edit if needed)",
+                    "Edit transcription",
                     value=st.session_state.voice_jd_text,
-                    height=150,
-                    key="jd_transcript_display"
+                    height=400,
+                    key="jd_transcript_edit",
+                    label_visibility="collapsed"
                 )
                 st.session_state.voice_jd_text = job_description
             else:
                 job_description = ""
-        else:
-            job_description = st.session_state.voice_jd_text or ""
+                
+        else:  # Paste Text
+            job_description = st.text_area(
+                "Paste Job Description",
+                value=st.session_state.voice_jd_text or "",
+                height=400,
+                placeholder="Paste the full job description here..."
+            )
             if job_description:
-                st.info("Previous transcription available")
-                st.text_area(
-                    "Previous Transcription",
-                    value=job_description,
-                    height=100,
-                    disabled=True
-                )
+                st.session_state.voice_jd_text = job_description
     
     # ─────────────────────────────────────────────────────────────
     # VIDEO MODE - THE GAME CHANGER
