@@ -454,57 +454,104 @@ with col1:
     # INTEL MODE (The Data Center HUD)
     # ─────────────────────────────────────────────────────────────
     if input_mode == "📄 Intel":
-        st.markdown("### 🧬 STRATEGIC ALIGNMENT HUD")
+        st.markdown("## STRATEGIC ALIGNMENT HUD")
         
-        # 1. DATA INGESTION (THE FEED)
-        with st.expander("📂 SOURCE DATA (Resume & Target)", expanded=True):
-            c1, c2 = st.columns(2)
-            with c1:
+        # 1. DATA INGESTION (CLEAN TABS)
+        st.markdown("#### 1. INGEST DATA")
+        
+        col_source, col_target = st.columns(2)
+        
+        # LEFT COLUMN: YOUR SIGNAL
+        with col_source:
+            st.caption("SOURCE SIGNAL (YOUR ASSET)")
+            input_type = st.radio("Input Method:", ["Upload File", "Manual Entry"], horizontal=True, label_visibility="collapsed")
+            
+            resume_text = ""
+            if input_type == "Upload File":
+                uploaded_file = st.file_uploader("Upload Master Resume", type=['txt', 'md', 'pdf'], label_visibility="collapsed")
+                if uploaded_file is not None:
+                    try:
+                        from logic.ingest import extract_text_from_upload
+                        resume_text = extract_text_from_upload(uploaded_file)
+                        st.session_state.resume_text = resume_text
+                        st.success("✅ Asset Loaded")
+                    except Exception as e:
+                        st.error(f"Error reading file: {e}")
+                elif st.session_state.get('resume_text'):
+                    resume_text = st.session_state.resume_text
+                    st.caption("Using previously loaded resume.")
+            else:
                 resume_text = st.text_area(
-                    "Your Signal (Resume)", 
-                    height=150, 
+                    "Paste Resume Text", 
+                    height=200, 
                     value=st.session_state.get('resume_text', ''),
-                    placeholder="Paste your Master Resume...", 
-                    help="The Asset",
-                    key="hud_resume"
+                    placeholder="[PASTE MASTER RESUME HERE]", 
+                    label_visibility="collapsed",
+                    key="hud_resume_manual"
                 )
                 st.session_state.resume_text = resume_text
-            with c2:
-                jd_text = st.text_area(
-                    "Target Signal (JD)", 
-                    height=150, 
-                    value=st.session_state.get('jd_text', ''),
-                    placeholder="Paste the Job Description...", 
-                    help="The Mission",
-                    key="hud_jd"
-                )
-                st.session_state.jd_text = jd_text
 
-        # 2. THE ANALYSIS ENGINE
-        if st.button("🚀 RUN SIGNAL DIAGNOSTICS", type="primary", use_container_width=True):
+        # RIGHT COLUMN: TARGET SIGNAL
+        with col_target:
+            st.caption("TARGET VECTOR (THE MISSION)")
+            jd_text = st.text_area(
+                "Paste Job Description", 
+                height=235, 
+                value=st.session_state.get('jd_text', ''),
+                placeholder="[PASTE JD HERE]", 
+                label_visibility="collapsed",
+                key="hud_jd"
+            )
+            st.session_state.jd_text = jd_text
+
+        # 2. ANALYSIS CONFIGURATION (THE HEADHUNTER VIEW)
+        st.markdown("#### 2. CONFIGURE ANALYSIS")
+        
+        c1, c2, c3 = st.columns(3)
+        with c1:
+            recon_mode = st.selectbox("Intelligence Type", 
+                ["Signal Match (Fit Score)", "Strategic Dossier (The Plan)", "Gap Analysis (The Fix)"])
+        with c2:
+            persona = st.selectbox("Headhunter Filter", 
+                ["Strict Gatekeeper (HR)", "Velocity Founder (CEO)", "Technical Bar Raiser (CTO)"])
+        with c3:
+            depth = st.slider("Analysis Depth", 0, 100, 100)
+
+        # 3. EXECUTION
+        st.markdown("---")
+        if st.button("RUN DIAGNOSTICS", type="primary", use_container_width=True):
             if resume_text and jd_text:
-                with st.spinner("Encrypting connection... Analyzing Signal Strength..."):
+                with st.spinner("PROCESSING SIGNAL ARCHITECTURE..."):
                     
                     from logic.generator import generate_plain_text
                     import json
                     
-                    # THE LLM PROMPT (STRUCTURED JSON OUTPUT)
+                    # Persona Mapping
+                    persona_map = {
+                        "Strict Gatekeeper (HR)": "The Operator (Process & Efficiency)",
+                        "Velocity Founder (CEO)": "The Visionary (Growth & Scale)",
+                        "Technical Bar Raiser (CTO)": "The Technologist (Stack & Architecture)"
+                    }
+                    target_persona = persona_map.get(persona, "The Visionary (Growth & Scale)")
+
+                    # THE LLM PROMPT
                     prompt = f"""
                     ACT AS: BASIN::NEXUS Intelligence Engine.
                     INPUT: RESUME vs JD.
+                    CONTEXT: Analyzing for {target_persona}.
+                    MODE: {recon_mode}.
+                    DEPTH: {depth}%.
                     
-                    TASK: Perform a deep gap analysis.
+                    TASK: Perform a deep {recon_mode} analysis.
                     
                     OUTPUT JSON FORMAT ONLY:
                     {{
                         "match_score": (Integer 0-100),
-                        "ats_probability": (Integer 0-100, estimate of passing automated screen),
-                        "market_temperature": ("Cold", "Warm", "Hot" based on urgency of JD),
-                        "missing_keywords": ["keyword1", "keyword2", "keyword3"],
-                        "key_strengths": ["strength1", "strength2"],
-                        "bleeding_neck": "The #1 expensive problem detailed in the JD",
-                        "hiring_manager_persona": "Description of the buyer psychology",
-                        "salary_estimate": "Estimated range based on level/title"
+                        "market_heat": ("Cold", "Warm", "Hot"),
+                        "salary_estimate": "Estimated range",
+                        "risk_factor": ("Low", "Medium", "High"),
+                        "executive_summary": "2-3 sentences on Builder DNA and fit.",
+                        "observations": ["Observation 1", "Observation 2"]
                     }}
                     
                     RESUME: {resume_text[:3000]}
@@ -512,85 +559,36 @@ with col1:
                     """
                     
                     raw_result = generate_plain_text(prompt, model_name=selected_model)
-                    
-                    # Clean the output (strip markdown code blocks if present)
                     clean_result = raw_result.replace("```json", "").replace("```", "").strip()
                     
                     try:
                         response = json.loads(clean_result)
                     except Exception as e:
-                        st.warning(f"⚠️ Signal Interference (JSON Parse Error). Using Simulation protocols. Error: {e}")
-                        # Fallback Mock Data
+                        st.warning(f"⚠️ Signal Interference (JSON Parse Error). Using Simulation protocols.")
                         response = {
-                            "match_score": 85,
-                            "ats_probability": 90,
-                            "market_temperature": "Warm",
-                            "missing_keywords": ["Strategic Planning", "P&L Management", "Team Building"],
-                            "key_strengths": ["Technical Architecture", "System Design"],
-                            "bleeding_neck": "Operational inefficiency and lack of scalable systems.",
-                            "hiring_manager_persona": "Results-oriented leader seeking immediate impact.",
-                            "salary_estimate": "$160k - $220k"
+                            "match_score": 88,
+                            "market_heat": "Warm",
+                            "salary_estimate": "$210k+ OTE",
+                            "risk_factor": "Low",
+                            "executive_summary": "Candidate demonstrates strong 'Builder' DNA matching the Founder persona. The 160% growth metric is the primary hook."
                         }
-
-                    # 3. THE VISUAL DASHBOARD (THE DATA CENTER)
-                    st.markdown("---")
                     
-                    # ROW 1: TOP LEVEL TELEMETRY
-                    m1, m2, m3, m4 = st.columns(4)
-                    with m1:
-                        st.metric("SIGNAL MATCH", f"{response.get('match_score', 0)}%", "Executive Fit")
-                    with m2:
-                        st.metric("ATS PROBABILITY", f"{response.get('ats_probability', 0)}%", "High Pass Rate")
-                    with m3:
-                        st.metric("MARKET TEMP", response.get('market_temperature', 'N/A'), "Urgent Hire", delta_color="inverse")
-                    with m4:
-                        st.metric("EST. SALARY", response.get('salary_estimate', 'N/A'))
+                    st.markdown(f"### 🧬 ANALYSIS COMPLETE: {recon_mode.upper()}")
+                    st.info(f"Viewing through lens: **{persona}**")
                     
-                    # ROW 2: THE GAP VISUALIZER
-                    st.markdown("#### 🚨 SIGNAL INTERFERENCE (Missing Keywords)")
+                    # VISUALIZATION
+                    k1, k2, k3, k4 = st.columns(4)
+                    k1.metric("Match Score", f"{response.get('match_score', 0)}%", "High")
+                    k2.metric("Market Heat", response.get('market_heat', 'N/A'), "Series B")
+                    k3.metric("Salary Est.", response.get('salary_estimate', 'N/A'), "OTE")
+                    k4.metric("Risk Factor", response.get('risk_factor', 'N/A'), "Stable")
                     
-                    # CSS for "Chips"
-                    st.markdown("""
-                    <style>
-                    .keyword-chip {
-                        display: inline-block;
-                        padding: 5px 12px;
-                        margin: 5px;
-                        border-radius: 15px;
-                        background-color: #1E1E1E;
-                        border: 1px solid #FF4B4B; 
-                        color: #FF4B4B;
-                        font-family: monospace;
-                        font-weight: bold;
-                    }
-                    </style>
-                    """, unsafe_allow_html=True)
-                    
-                    # Generate Chips
-                    chips_html = ""
-                    for kw in response.get('missing_keywords', []):
-                        chips_html += f"<span class='keyword-chip'>⚠ {kw}</span>"
-                    st.markdown(chips_html, unsafe_allow_html=True)
-                    
-                    st.caption("Fix: Add these exact keywords to your 'Core Competencies' or 'Summary'.")
-
-                    st.markdown("---")
-
-                    # ROW 3: DEEP RECON DOSSIER
-                    c1_dash, c2_dash = st.columns([2, 1])
-                    
-                    with c1_dash:
-                        st.subheader("🚩 THE BLEEDING NECK")
-                        st.error(f"**DIAGNOSIS:** {response.get('bleeding_neck', 'N/A')}")
-                        st.markdown(f"**STRATEGY:** Leverage your strengths ({', '.join(response.get('key_strengths', [])[:2])}) to solve this.")
-                    
-                    with c2_dash:
-                        st.subheader("👤 BUYER PSYCHOLOGY")
-                        st.info(f"**TARGET:** {response.get('hiring_manager_persona', 'N/A')}")
-                        st.caption("Tone Strategy: Be direct.")
-
+                    st.markdown("#### 🔍 RECRUITER OBSERVATIONS")
+                    st.write(f"""
+                    > **Executive Summary:** {response.get('executive_summary', 'N/A')}
+                    """)
             else:
-                st.warning("⚠ WAITING FOR SIGNAL INPUT...")
+                st.error("DATA MISSING: UPLOAD RESUME AND TARGET JD.")
     
     # ─────────────────────────────────────────────────────────────
     # HUNT MODE - THE HEADHUNTER
@@ -1093,19 +1091,15 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
 
 
 
-# ═══════════════════════════════════════════════════════════════
-# FOOTER
-# ═══════════════════════════════════════════════════════════════
+# ==============================================================================
+# 🖥️ SYSTEM STATUS FOOTER
+# ==============================================================================
+st.markdown("---")
+f1, f2, f3 = st.columns([1, 1, 2])
 
-st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-
-footer_col1, footer_col2, footer_col3 = st.columns(3)
-
-with footer_col1:
-    st.caption("**Mode:** Voice-First Intelligence")
-
-with footer_col2:
-    st.caption("**Protocol:** Zero-to-One")
-
-with footer_col3:
-    st.caption("**Status:** Multimodal Ready")
+with f1:
+    st.caption("SYSTEM STATUS: **ONLINE**")
+with f2:
+    st.caption("OPERATOR: **LEON BASIN**")
+with f3:
+    st.caption("BUILD: **BASIN::NEXUS v4.1 (Revenue Architect Edition)**")
