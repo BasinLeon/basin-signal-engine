@@ -364,6 +364,89 @@ st.markdown("""
     ::-webkit-scrollbar-thumb:hover {
         background: rgba(255, 191, 0, 0.5);
     }
+    
+    /* === CARD HOVER ANIMATIONS === */
+    
+    .nexus-card, [data-testid="stMetric"] {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .nexus-card:hover, [data-testid="stMetric"]:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    }
+    
+    /* === RADIO BUTTON STYLING === */
+    
+    [data-testid="stRadio"] > label {
+        display: flex;
+        align-items: center;
+        padding: 8px 12px;
+        margin: 4px 0;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+    
+    [data-testid="stRadio"] > label:hover {
+        background: rgba(255, 191, 0, 0.1);
+    }
+    
+    /* === MOBILE RESPONSIVE === */
+    
+    @media (max-width: 768px) {
+        .main .block-container {
+            padding: 1rem;
+        }
+        
+        .nexus-header {
+            font-size: 1.8rem !important;
+        }
+        
+        [data-testid="stMetric"] {
+            padding: 12px;
+        }
+        
+        [data-testid="stSidebar"] {
+            min-width: 280px;
+        }
+    }
+    
+    /* === LOADING SPINNER === */
+    
+    .stSpinner > div {
+        border-top-color: #FFBF00 !important;
+    }
+    
+    /* === INPUT FIELDS === */
+    
+    input, textarea, [data-testid="stTextInput"] input {
+        background: rgba(255, 191, 0, 0.05) !important;
+        border: 1px solid rgba(255, 191, 0, 0.2) !important;
+        border-radius: 8px !important;
+        color: white !important;
+    }
+    
+    input:focus, textarea:focus {
+        border-color: #FFBF00 !important;
+        box-shadow: 0 0 0 2px rgba(255, 191, 0, 0.2) !important;
+    }
+    
+    /* === SELECT BOXES === */
+    
+    [data-testid="stSelectbox"] > div {
+        background: rgba(255, 191, 0, 0.05);
+        border: 1px solid rgba(255, 191, 0, 0.2);
+        border-radius: 8px;
+    }
+    
+    /* === TOAST NOTIFICATIONS === */
+    
+    [data-testid="stToast"] {
+        background: linear-gradient(135deg, #0d0d1a, #0a0a0f) !important;
+        border: 1px solid rgba(255, 191, 0, 0.3) !important;
+        border-radius: 12px !important;
+    }
 
 </style>
 """, unsafe_allow_html=True)
