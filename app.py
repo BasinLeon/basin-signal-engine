@@ -435,9 +435,9 @@ with col1:
     # Input Mode Toggle - FULL ARSENAL
     input_mode = st.radio(
         "Mission Mode",
-        ["📄 Intel", "🎯 Hunt", "🎤 Voice", "📹 Video", "🥊 Practice"],
+        ["📄 Intel", "🎯 Hunt", "👔 Recruiter", "🎤 Voice", "🥊 Practice"],
         horizontal=True,
-        help="Intel (Resume+JD), Hunt (Boolean search), Voice (Audio), Video (Pitch analysis), Practice (Interview sim)"
+        help="Intel (Resume+JD), Hunt (Find jobs), Recruiter (Screen candidates), Voice (Audio), Practice (Interview)"
     )
     
     st.markdown("")
@@ -1034,6 +1034,145 @@ Keep each section to 2-3 sentences max. Write it exactly as they should SAY it o
             st.info("💡 **Pro tip:** Record this in Loom and send directly to the hiring manager's LinkedIn DM.")
         
         # Set empty values for Intel mode compatibility
+        resume_text = ""
+        job_description = ""
+    
+    # ─────────────────────────────────────────────────────────────
+    # RECRUITER MODE - SCREEN CANDIDATES
+    # ─────────────────────────────────────────────────────────────
+    elif input_mode == "👔 Recruiter":
+        st.markdown("#### 👔 THE RECRUITER'S EYE")
+        st.caption("Screen candidates using 15 years of hiring instinct, codified into AI")
+        
+        st.info("💡 **Use Case:** You're helping a company screen candidates, or building your portfolio as a hiring consultant.")
+        
+        st.markdown('<div class="divider-solid"></div>', unsafe_allow_html=True)
+        
+        # Job Requirements
+        st.markdown("##### 📋 ROLE REQUIREMENTS")
+        recruiter_role = st.text_input(
+            "Role being hired for:",
+            placeholder="e.g., Senior GTM Manager, Head of Partnerships",
+            key="recruiter_role"
+        )
+        
+        recruiter_jd = st.text_area(
+            "Job Description / Must-Haves:",
+            height=150,
+            placeholder="Paste the JD or list the key requirements...",
+            key="recruiter_jd"
+        )
+        
+        st.markdown("")
+        
+        # Screening Criteria
+        st.markdown("##### ⚙️ SCREENING CRITERIA")
+        col_crit1, col_crit2 = st.columns(2)
+        
+        with col_crit1:
+            min_experience = st.slider("Min. Years Experience", 0, 20, 5, key="min_exp")
+            require_metrics = st.checkbox("Must have quantified metrics", value=True, key="req_metrics")
+            require_leadership = st.checkbox("Must show leadership experience", value=False, key="req_lead")
+        
+        with col_crit2:
+            red_flags = st.multiselect(
+                "Red Flags to catch:",
+                ["Job hopping (<18 months)", "No metrics/numbers", "Vague descriptions", "Employment gaps", "Corporate buzzwords", "No progression"],
+                default=["Job hopping (<18 months)", "No metrics/numbers"],
+                key="red_flags"
+            )
+        
+        st.markdown("")
+        
+        # Candidate Resume
+        st.markdown("##### 📄 CANDIDATE RESUME")
+        candidate_resume = st.text_area(
+            "Paste the candidate's resume:",
+            height=250,
+            placeholder="Paste the full resume or LinkedIn summary of the candidate...",
+            key="candidate_resume"
+        )
+        
+        st.markdown('<div class="divider-solid"></div>', unsafe_allow_html=True)
+        
+        # Screen Button
+        if st.button("🔍 SCREEN THIS CANDIDATE", use_container_width=True, type="primary"):
+            if candidate_resume and recruiter_role:
+                with st.spinner("Applying the Recruiter's Eye..."):
+                    try:
+                        screening_prompt = f"""You are Leon Basin, a Technical Revenue Architect with 15 years of GTM experience.
+
+You are screening a candidate for: {recruiter_role}
+
+JOB REQUIREMENTS:
+{recruiter_jd[:1500]}
+
+SCREENING CRITERIA:
+- Minimum {min_experience} years of experience required
+- Must have quantified metrics: {require_metrics}
+- Must show leadership: {require_leadership}
+- Red flags to catch: {', '.join(red_flags)}
+
+CANDIDATE'S RESUME:
+{candidate_resume[:2500]}
+
+Screen this candidate with your "Recruiter's Eye" from 15 years of hiring.
+
+Provide your assessment in this format:
+
+**VERDICT**: [STRONG HIRE 🟢 / INTERVIEW 🟡 / PASS ❌]
+
+**FIT SCORE**: [0-100]
+
+**QUICK TAKE** (2 sentences):
+What's your gut reaction in 10 seconds?
+
+**STRENGTHS** (Top 3):
+What makes this candidate stand out?
+
+**CONCERNS** (Top 3):
+What would you probe in an interview?
+
+**RED FLAGS DETECTED**:
+Based on the criteria, what red flags did you find?
+
+**INTERVIEW QUESTIONS** (2-3):
+What would you ask to validate their claims?
+
+**COMPARISON NOTE**:
+How does this candidate compare to the top 10% you've seen for this role?
+
+Be direct. Be specific. Give the hiring manager a clear recommendation."""
+
+                        from groq import Groq
+                        client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+                        response = client.chat.completions.create(
+                            model="llama-3.3-70b-versatile",
+                            messages=[{"role": "user", "content": screening_prompt}],
+                            temperature=0.6
+                        )
+                        screening_result = response.choices[0].message.content
+                        st.session_state.screening_result = screening_result
+                    except Exception as e:
+                        st.error(f"Error: {str(e)}")
+            else:
+                st.warning("Please enter the role and paste the candidate's resume.")
+        
+        # Display Results
+        if "screening_result" in st.session_state and st.session_state.screening_result:
+            st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+            st.markdown("##### 📊 SCREENING RESULT")
+            st.markdown(st.session_state.screening_result)
+            
+            st.markdown("")
+            with st.expander("📤 EXPORT OPTIONS"):
+                st.markdown("**Copy this assessment to:**")
+                st.markdown("- Greenhouse/Lever feedback form")
+                st.markdown("- Hiring manager email")
+                st.markdown("- Your consulting deliverable")
+                st.code(st.session_state.screening_result, language="markdown")
+        
+        # Set empty values
         resume_text = ""
         job_description = ""
     

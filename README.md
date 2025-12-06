@@ -1,156 +1,137 @@
-# 🏗️ Basin Signal Engine
+# ⚡ BASIN::NEXUS
 
-> *AI-Powered Career Intelligence Platform*
+> *The Revenue Architect's Command Center*
 
-Transform your resume into targeted narratives that match job requirements. Built with multi-modal input (Text, Voice, Video) and multi-LLM support (OpenAI, Google, Groq, Ollama).
+**I build the systems that build revenue.**
 
-![Python](https://img.shields.io/badge/Python-3.9+-blue)
-![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red)
-![License](https://img.shields.io/badge/License-MIT-green)
+[![Python](https://img.shields.io/badge/Python-3.9+-blue)](https://python.org)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.28+-red)](https://streamlit.io)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 ---
 
-## ✨ Features
+## 🎯 What This Is
 
-### 🎯 Core Intelligence
+**BASIN::NEXUS** is an AI-powered GTM Intelligence Platform that I built to operationalize my 15 years of revenue experience into code.
 
-- **Pain Point Extraction** — Identifies real business problems from job descriptions
-- **Evidence Mapping** — Maps your experience to those specific needs
-- **Persona Targeting** — Tunes output for Operators, Visionaries, or Technologists
+This isn't a "job search tool." It's a **Reverse-ATS** — a system that finds the hidden market, coaches your narrative, and eliminates operational friction from the job hunt.
 
-### 🎤 Multi-Modal Input
+**Creator:** [Leon Basin](https://linkedin.com/in/leonbasin) | Technical GTM Architect
 
-- **📄 Text/File** — Upload PDF/MD/TXT or paste directly
-- **🎤 Voice** — Record your background, transcribed with Whisper
-- **📹 Video** — Upload a pitch video for AI coaching (Gemini 2.0)
+---
 
-### 🤖 Multi-LLM Support
+## ⚡ The Arsenal
+
+### 📄 **Intel Mode** — Resume × JD Analysis
+
+- Pain Point Extraction from job descriptions
+- Evidence Mapping from your resume
+- Persona Targeting (Operator, Visionary, Technologist)
+- Gap Analysis with market context
+
+### 🎯 **Hunt Mode** — The Headhunter
+
+- **Boolean Generator** — Precision LinkedIn targeting strings
+- **ATS Breaker** — Search Lever, Greenhouse, Ashby DIRECTLY
+- **Whisper Search** — Find stealth startups & first hires
+- **Startup Radar** — Wellfound/AngelList advanced filters
+- **Headhunter Critique** — AI recruiter feedback (3 personas)
+- **Teleprompter Scripts** — 60-second Loom pitch generator
+
+### 🎤 **Voice Mode** — Audio Intelligence
+
+- Record resume/JD via microphone
+- Whisper STT transcription
+- Audio cover letter generation (OpenAI TTS)
+
+### 📹 **Video Mode** — Pitch Coaching
+
+- Upload video pitches
+- AI analysis of delivery, content, presence
+- Async video script generator
+
+### 🥊 **Practice Mode** — The War Room
+
+- AI-powered interview simulation
+- Real-time conversation practice
+- Performance scoring & feedback
+
+---
+
+## 📈 What I've Delivered (The Metrics)
+
+| Role | Architectural Win | Metric |
+|------|------------------|--------|
+| **Fudo Security** | Re-architected Americas GTM & partner channel | **160% YoY Pipeline Increase** |
+| **Sense** | BDR leadership & sales automation framework | **$10M Pipeline Generated** |
+| **Basin & Associates** | Zero-to-One GTM engines for AI/Cyber clients | **$621k Active Pipeline** |
+
+---
+
+## 🤖 Multi-LLM Support
 
 | Provider | Models | Cost |
 |----------|--------|------|
 | ⚡ **Groq** | Llama 3.3 70B, Mixtral | **FREE** |
-| 🦙 **Ollama** | Llama 3.2, DeepSeek R1 | **FREE (local)** |
+| 🦙 **Ollama** | Llama 3.2, DeepSeek | **FREE (local)** |
 | ☁️ **OpenAI** | GPT-4o, GPT-4o Mini | Paid |
 | ☁️ **Google** | Gemini 1.5 Flash/Pro | Free tier |
-
-### 🔊 Voice Output
-
-- **Text-to-Speech** — Generate audio cover letters with OpenAI TTS
-- **Multiple voices** — Onyx, Nova, Alloy, Echo, Fable, Shimmer
 
 ---
 
 ## 🚀 Quick Start
 
-### 1. Clone & Install
-
 ```bash
-git clone https://github.com/YOURUSERNAME/basin-signal-engine.git
+# Clone
+git clone https://github.com/BasinLeon/basin-signal-engine.git
 cd basin-signal-engine
+
+# Setup
 python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
+source venv/bin/activate
 pip install -r requirements.txt
-```
 
-### 2. Configure API Keys (Optional)
-
-```bash
+# Configure (optional - can use sidebar)
 cp .env.example .env
-# Edit .env with your keys (or enter in sidebar)
-```
 
-**Free Options:**
-
-- **Groq**: [console.groq.com](https://console.groq.com) - FREE, super fast
-- **Ollama**: `brew install ollama && ollama pull llama3.2` - FREE, local
-
-### 3. Run
-
-```bash
+# Run
 streamlit run app.py
 ```
 
-Open [http://localhost:8501](http://localhost:8501)
+---
+
+## 🧠 The Stack
+
+- **Languages:** Python, SQL
+- **Frameworks:** Streamlit, Next.js
+- **AI/LLM:** Llama 3.3, OpenAI API, Groq, Google Gemini
+- **Voice:** OpenAI Whisper (STT), OpenAI TTS
 
 ---
 
-## 📐 The Basin Protocol
+## 🎯 The Philosophy
 
-| Principle | Meaning |
-|-----------|---------|
-| **Systems > Hires** | Build engines, not just manage teams |
-| **Signal > Noise** | Every claim has a metric |
-| **Architecture > Activity** | Show systems thinking |
+> *"Algorithms sort talent. Systems scale revenue. Stories connect them."*
 
----
+I am a **Technical Revenue Architect** who operates at the intersection of Enterprise Sales Strategy and GTM Engineering.
 
-## 🏗️ Architecture
-
-```text
-/basin-signal-engine
-├── app.py                    # Streamlit Interface
-├── requirements.txt          # Dependencies
-├── .env                      # API Keys (git-ignored)
-│
-├── /logic
-│   ├── ingest.py             # PDF/Text Extraction
-│   ├── prompt_engine.py      # System Prompts
-│   ├── generator.py          # Multi-LLM Router
-│   ├── voice.py              # Speech-to-Text & TTS
-│   └── video.py              # Video Analysis
-│
-└── /assets
-    └── master_resume.md      # Template Resume
-```
+For 15 years, I led sales teams and built revenue engines. Today, I don't just manage the GTM process — **I code it.**
 
 ---
 
-## 📤 Output
+## 🤝 Connect
 
-1. **Gap Analysis** — 3 pain points with resume evidence
-2. **Professional Summary** — Tailored 3-4 sentence summary
-3. **Sniper Email Blurb** — 150-word outreach message
-4. **Audio Cover Letter** — TTS-generated audio version
-
----
-
-## 🎭 Persona Targeting
-
-| Persona | Best For |
-|---------|----------|
-| **The Operator** | Ops Leaders, RevOps, Trust & Safety |
-| **The Visionary** | GTM, Growth, Sales Leadership |
-| **The Technologist** | Solutions Architects, Technical PM |
-
----
-
-## 🧪 Mock Mode
-
-Test UI without API calls:
-
-```python
-# In logic/generator.py, set:
-MOCK_MODE = True
-```
-
----
-
-## 🔮 Roadmap
-
-- [x] Multi-LLM support (OpenAI, Gemini, Groq, Ollama)
-- [x] Voice input (Whisper STT)
-- [x] Audio output (OpenAI TTS)
-- [x] Video pitch analysis (Gemini 2.0)
-- [ ] PDF export for tailored resumes
-- [ ] Chrome extension for one-click JD capture
-- [ ] User authentication & saved sessions
+- **LinkedIn:** [linkedin.com/in/leonbasin](https://linkedin.com/in/leonbasin)
+- **Portfolio:** [basinleon.com](https://basinleon.com)
+- **X:** [@basin_leon](https://twitter.com/basin_leon)
+- **Email:** <lbasin23@gmail.com>
 
 ---
 
 ## 📜 License
 
-MIT License - Build freely.
+MIT License — Build with it, learn from it, make it yours.
 
 ---
 
-**Basin & Associates** | Built on the Zero-to-One Protocol
+*Built with 🔥 by Leon Basin | Mountain View, CA | 2024-2025*
