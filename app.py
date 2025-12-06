@@ -307,7 +307,7 @@ if "generated_audio" not in st.session_state:
 with st.sidebar:
     # 1. HEADER & SYSTEM STATUS
     st.markdown("### ▲ BASIN::NEXUS")
-    st.caption("v4.2 | REVENUE ARCHITECT OS")
+    st.caption("v11:11 | QUANTUM LEAP PROTOCOL")
     st.markdown("---")
     
     # 2. SYSTEM CORE & CONFIGURATION (Terminal Style)
