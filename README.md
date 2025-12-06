@@ -134,4 +134,4 @@ MIT License — Build with it, learn from it, make it yours.
 
 ---
 
-*Built with 🔥 by Leon Basin | Mountain View, CA | 2024-2025*
+Built with 🔥 by Leon Basin | Mountain View, CA | 2024-2025
