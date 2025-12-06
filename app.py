@@ -321,17 +321,21 @@ with st.sidebar:
         st.caption("⚠️ LINK: OFFLINE")
         st.markdown("[Get Key](https://console.groq.com)")
     
-    # LLM FLEET SELECTOR (Highlighting Groq/Llama as primary speed engine)
+    # LLM FLEET SELECTOR (v11:11 FINAL CONFIGURATION)
     selected_model_label = st.selectbox("LLM ENGINE", 
-        ["Llama 3.3 70B (Speed)", "Mixtral 8x7B (Logic)", "Gemini Pro (Reasoning)"], 
+        ["Llama 3.3 70B (Speed/Groq)", 
+         "Mixtral 8x7B (Logic/Groq)", 
+         "Gemini Pro (Reasoning/Google)",
+         "Claude 3.5 Sonnet (Narrative/Anthropic)"], 
         label_visibility="collapsed"
     )
     
     # SYSTEM KERNEL: Map Human Labels to API IDs
     model_map = {
-        "Llama 3.3 70B (Speed)": "groq:llama-3.3-70b-versatile",
-        "Mixtral 8x7B (Logic)": "groq:mixtral-8x7b-32768", 
-        "Gemini Pro (Reasoning)": "gemini-pro"
+        "Llama 3.3 70B (Speed/Groq)": "groq:llama-3.3-70b-versatile",
+        "Mixtral 8x7B (Logic/Groq)": "groq:mixtral-8x7b-32768", 
+        "Gemini Pro (Reasoning/Google)": "gemini-pro",
+        "Claude 3.5 Sonnet (Narrative/Anthropic)": "claude-3-5-sonnet-20241022"
     }
     st.session_state['selected_model_id'] = model_map.get(selected_model_label, "groq:llama-3.3-70b-versatile")
     

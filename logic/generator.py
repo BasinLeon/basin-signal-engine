@@ -55,6 +55,8 @@ def get_provider(model: str) -> str:
         return "ollama"
     if model.startswith("gemini") or model.startswith("models/gemini"):
         return "google"
+    if model.startswith("claude"):
+        return "anthropic"
     return "openai"
 
 
@@ -139,6 +141,19 @@ def generate_plain_text(prompt: str, model_name: str = "groq:llama-3.3-70b-versa
             gemini_model = genai.GenerativeModel(model_name)
             response = gemini_model.generate_content(prompt)
             return response.text
+            
+        elif provider == "anthropic":
+            import anthropic
+            api_key = os.environ.get("ANTHROPIC_API_KEY")
+            if not api_key: return "Error: Missing ANTHROPIC_API_KEY"
+            
+            client = anthropic.Anthropic(api_key=api_key)
+            response = client.messages.create(
+                model=model_name,
+                max_tokens=2048,
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return response.content[0].text
             
         return "Error: Provider not supported for plain text yet."
         
