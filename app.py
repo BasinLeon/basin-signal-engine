@@ -454,167 +454,131 @@ with col1:
     # INTEL MODE (The Data Center HUD)
     # ─────────────────────────────────────────────────────────────
     # ==============================================================================
-    # 📄 MODE 1: INTEL (THE REVENUE ARCHITECT HUD)
+    # 📄 MODE 1: INTEL (THE OMNI-AGENT HUD)
     # ==============================================================================
     if input_mode == "📄 Intel":
         st.markdown("## 🧬 STRATEGIC INTELLIGENCE HUD")
-        st.caption("Protocol: Turn Job Descriptions into Strategic Assets.")
-
-        # --- 1. THE INGESTION ENGINE (YOUR ASSETS) ---
-        st.markdown("#### 1. INGEST TARGET DATA")
         
-        col_source, col_target = st.columns(2)
+        # --- 1. THE CAREER VAULT (Teal-Inspired Storage) ---
+        st.markdown("#### 1. THE CAREER VAULT (DATA LAKE)")
         
-        # LEFT: YOUR SIGNAL (Leon's Resume / Portfolio)
-        with col_source:
-            st.info("📂 **SOURCE SIGNAL (YOUR ASSET)**")
-            # Default to your Master Profile if no file uploaded
-            default_resume = """
-            Leon Basin | Director of GTM Systems & Revenue Architecture
-            Ex-Fudo Security (160% Pipeline Growth), Sense ($10M ARR Impact), Google Ops.
-            Specialist in: Partner Ecosystems, Revenue Operations, Python/AI Automation.
-            """
-            
-            input_type = st.radio("Input Source:", ["Use Master Profile", "Upload Specific PDF", "Paste Text"], horizontal=True, label_visibility="collapsed")
-            
-            resume_text = ""
-            if input_type == "Use Master Profile":
-                resume_text = default_resume
-                st.success("✅ Master Profile Loaded (Revenue Architect v4.0)")
-                with st.expander("View Master Profile Data"):
-                    st.code(resume_text)
-                    
-            elif input_type == "Upload Specific PDF":
-                uploaded_file = st.file_uploader("Upload Tailored Resume", type=['pdf', 'txt'], label_visibility="collapsed")
-                if uploaded_file:
+        # Initialize Session State for The Vault
+        if 'resume_vault' not in st.session_state:
+            st.session_state['resume_vault'] = {}
+        
+        col_vault, col_upload = st.columns([2, 1])
+        
+        with col_upload:
+            # UPLOADER: Adds to the Vault, doesn't just replace
+            uploaded_files = st.file_uploader("Ingest Career Assets (PDF/TXT)", type=['txt', 'pdf', 'md'], accept_multiple_files=True, label_visibility="collapsed")
+            if uploaded_files:
+                for f in uploaded_files:
                     try:
-                        from logic.ingest import extract_text_from_upload
-                        resume_text = extract_text_from_upload(uploaded_file)
-                        st.success(f"✅ Loaded: {uploaded_file.name}")
+                        # Simple text extraction simulation (or use logic.ingest)
+                        text = f.read().decode("utf-8", errors='ignore') 
+                        st.session_state['resume_vault'][f.name] = text
                     except:
-                        st.warning("⚠️ Text extraction simulation active.")
-                        resume_text = "Simulated extracted text from PDF..."
+                        st.session_state['resume_vault'][f.name] = "Content extracted..."
+                st.success(f"✅ Ingested {len(uploaded_files)} Assets into Vault")
+
+        with col_vault:
+            # VISUALIZE THE VAULT
+            if st.session_state['resume_vault']:
+                st.info(f"📚 **ACTIVE KNOWLEDGE BASE:** {len(st.session_state['resume_vault'])} Files Loaded")
+                # Select which assets to use for this specific scan
+                active_assets = st.multiselect("Active Context for Omni-Agent", 
+                                               options=st.session_state['resume_vault'].keys(),
+                                               default=st.session_state['resume_vault'].keys(),
+                                               help="Select which resumes the Agent should 'read' to find matches.")
             else:
-                resume_text = st.text_area(
-                    "Paste Resume Text", 
-                    height=200, 
-                    value=st.session_state.get('resume_text', ''),
-                    placeholder="[PASTE TEXT HERE]", 
-                    label_visibility="collapsed",
-                    key="hud_resume"
-                )
-                st.session_state.resume_text = resume_text
+                st.warning("⚠️ Vault Empty. Upload Resumes to build your Data Lake.")
+                active_assets = []
 
-        # RIGHT: TARGET SIGNAL (The Job Description)
-        with col_target:
-            st.error("🎯 **TARGET VECTOR (THE MISSION)**")
-            jd_text = st.text_area(
-                "Paste Job Description", 
-                height=235, 
-                value=st.session_state.get('jd_text', ''),
-                placeholder="[PASTE FULL JD HERE]", 
-                label_visibility="collapsed",
-                key="hud_jd"
-            )
-            st.session_state.jd_text = jd_text
+        # --- 2. TARGET VECTOR ---
+        st.markdown("#### 2. TARGET VECTOR (THE MISSION)")
+        jd_text = st.text_area("Paste Job Description", height=150, placeholder="[PASTE JD HERE]", label_visibility="collapsed")
 
-
-        # --- 2. THE ANALYSIS CONFIGURATION (THE LENS) ---
+        # --- 3. EXECUTION (The Teal-Style Matcher) ---
         st.markdown("---")
-        st.markdown("#### 2. CONFIGURE INTELLIGENCE OUTPUT")
         
-        # These options are tailored to YOUR specific needs from the documents
-        c1, c2, c3 = st.columns(3)
-        
+        c1, c2 = st.columns([1, 4])
         with c1:
-            mission_type = st.selectbox("Mission Type", 
-                ["The Sniper Pitch (Email)", "Strategic Dossier (Deep Recon)", "Gap Analysis (The Fix)", "Interview Prep (The War Room)"])
+            if st.button("🚀 RUN OMNI-SCAN", type="primary", use_container_width=True):
+                if active_assets and jd_text:
+                    with st.spinner("OMNI-AGENT: Scanning all historical assets for signal matches..."):
+                        
+                        # COMBINE ALL SELECTED RESUMES INTO ONE "SUPER PROFILE"
+                        combined_history = ""
+                        for name in active_assets:
+                            combined_history += f"\n--- SOURCE: {name} ---\n{st.session_state['resume_vault'][name]}"
+                        
+                        # LLM PROMPT (The "Teal" Logic)
+                        prompt = f"""
+                        ACT AS: BASIN::NEXUS Omni-Agent.
+                        
+                        INPUT:
+                        1. CANDIDATE VAULT (Combined History): {combined_history[:3000]}...
+                        2. TARGET JD: {jd_text[:2000]}...
+                        
+                        MISSION: 
+                        Perform a "TealHQ-Style" Gap Analysis. Look at the JD, then scan the ENTIRE Candidate Vault to find matches, even if they are in old resumes.
+                        
+                        OUTPUT JSON FORMAT:
+                        {{
+                            "match_score": (0-100),
+                            "hard_skills_match": ["Python", "GTM", "Salesforce"],
+                            "missing_keywords": ["SQL", "Looker"],
+                            "found_in_archive": "Found 'Staffing' experience in 'Resume_2015.pdf' - Suggest adding this to current profile.",
+                            "resume_fix_suggestion": "Rewrite bullet 3 to include 'SQL' keyword."
+                        }}
+                        """
+                        
+                        # SIMULATED RESPONSE (Integration Point: from logic.generator import generate_json)
+                        response = {
+                            "match_score": 91,
+                            "hard_skills_match": ["GTM Strategy", "Partnerships", "Zero Trust"],
+                            "missing_keywords": ["Looker", "dbt"],
+                            "found_in_archive": "⚠️ **RECOVERED SIGNAL:** JD asks for 'Staffing'. Found deep experience in *'Slingshot_Resume_2015.pdf'*. Add this to your active application.",
+                            "resume_fix_suggestion": "👉 **FIX:** Your current summary ignores 'Data Quality'. Add 'Managed Data Integrity' from your Google Ops experience."
+                        }
+                        
+                        # --- THE VISUAL DISPLAY (Teal-Style) ---
+                        st.markdown("### 🧬 OMNI-AGENT ANALYSIS")
+                        
+                        # 1. SCOREBOARD
+                        k1, k2, k3 = st.columns(3)
+                        k1.metric("OMNI-MATCH SCORE", f"{response['match_score']}%", "Including Archive Data")
+                        k2.metric("HARD SKILLS", f"{len(response['hard_skills_match'])} Matches", "Strong")
+                        k3.metric("MISSING", f"{len(response['missing_keywords'])} Critical", "Action Required", delta_color="inverse")
+                        
+                        # 2. KEYWORD CHECKLIST (Teal-Style)
+                        st.markdown("#### 🔍 KEYWORD MATCHING")
+                        
+                        # MATCHED (Green Chips)
+                        st.caption("✅ MATCHED SKILLS (From Vault)")
+                        valid_html = ""
+                        for kw in response['hard_skills_match']:
+                            valid_html += f"<span style='background-color:#0e3616; padding:4px 8px; margin:2px; border-radius:4px; border:1px solid #28a745; color:#28a745; font-size:0.8em'>{kw}</span>"
+                        st.markdown(valid_html, unsafe_allow_html=True)
+                        
+                        # MISSING (Red Chips)
+                        st.caption("❌ MISSING KEYWORDS (Add These)")
+                        missing_html = ""
+                        for kw in response['missing_keywords']:
+                            missing_html += f"<span style='background-color:#380e0e; padding:4px 8px; margin:2px; border-radius:4px; border:1px solid #dc3545; color:#dc3545; font-size:0.8em'>{kw}</span>"
+                        st.markdown(missing_html, unsafe_allow_html=True)
+                        
+                        st.markdown("---")
+                        
+                        # 3. THE OMNI-AGENT INSIGHT (The "Magic")
+                        st.info(response['found_in_archive'])
+                        st.write(f"**Action Item:** {response['resume_fix_suggestion']}")
+                
+                else:
+                    st.error("⚠️ DATA MISSING: Upload assets to Vault and Paste JD.")
         
         with c2:
-            angle = st.selectbox("Strategic Angle", 
-                ["Revenue Architect (Systems Focus)", "Partner Builder (Channel Focus)", "Operator (Efficiency Focus)", "Founder (Speed Focus)"])
-        
-        with c3:
-            tone = st.selectbox("Tone Protocol", 
-                ["Executive / Direct (No Fluff)", "Collaborative / Builder", "Challenger / Diagnostic"])
-
-        # --- 3. EXECUTION ---
-        if st.button("🚀 DEPLOY INTELLIGENCE ASSET", type="primary", use_container_width=True):
-            if resume_text and jd_text:
-                with st.spinner("CALCULATING STRATEGIC ALIGNMENT..."):
-                    
-                    # --- VISUAL HUD (MOCKUP FOR "DATA CENTER" FEEL) ---
-                    st.markdown("### 📡 TELEMETRY REPORT")
-                    
-                    # The "Gauge" Visuals
-                    m1, m2, m3, m4 = st.columns(4)
-                    m1.metric("Signal Match", "92%", "Excellent")
-                    m2.metric("Market Heat", "Hot", "Urgent Hire")
-                    m3.metric("ATS Pass Rate", "High", "Optimized")
-                    m4.metric("Est. OTE", "$220k - $250k", "Director Level")
-                    
-                    st.markdown("---")
-                    
-                    # --- OUTPUT GENERATION ---
-                    
-                    if mission_type == "The Sniper Pitch (Email)":
-                        st.subheader("📧 THE SNIPER PITCH (Draft)")
-                        st.info(f"**Strategy:** leveraging '{angle}' angle with '{tone}' tone.")
-                        
-                        st.markdown(f"""
-                        **Subject:** Structuring the Partner Ecosystem (Fudo/Sense Experience)
-
-                        **Hi [Hiring Manager],**
-                        
-                        I’ve been tracking **[Company Name]**'s expansion. The velocity is incredible, but I know from experience that scaling a partner ecosystem at this speed creates **structural debt**.
-                        
-                        I specialize in architecting the revenue engines that solve that debt.
-                        
-                        As **Director of GTM Systems** at Fudo Security, I didn't just manage partners; I operationalized them. I built a "Technical-to-Commercial" enablement program that **reactivated our LATAM channel**, driving a **160% increase** in pipeline coverage.
-                        
-                        I am looking for a role where I can architect your partner engine to drive lower CAC—not just manage a list of accounts.
-                        
-                        I have a specific perspective on how we can activate your [Specific Channel] network. Open to a brief chat?
-                        
-                        **Leon Basin**
-                        Director of GTM Systems & Revenue Architecture
-                        """)
-                        
-                        st.caption("💡 **Why this works:** Mentions 'Structural Debt' hook, cites '160% increase' metric, offers 'Specific Perspective'.")
-
-                    elif mission_type == "Strategic Dossier (Deep Recon)":
-                        st.subheader("🕵️ DEEP RECON DOSSIER")
-                        st.markdown("""
-                        **1. 🚩 THE BLEEDING NECK:**
-                        * **Diagnosis:** They have a high volume of signups but low activation. The JD mentions "churn" 3 times.
-                        * **Your Fix:** Cite your **Sense** experience (Reduced churn by 12% via automation).
-                        
-                        **2. 💣 THE LANDMINE:**
-                        * **Do Not Say:** "I rely on Relationship Selling."
-                        * **Say Instead:** "I rely on **Systematic Enablement** and **Programmatic Activation**."
-                        
-                        **3. 🧠 THE STRATEGIC DROP:**
-                        * Mention specifically how you would audit their current **HubSpot/Salesforce** workflow in the first 30 days.
-                        """)
-
-                    elif mission_type == "Gap Analysis (The Fix)":
-                        st.subheader("🧩 GAP ANALYSIS & FIX")
-                        st.table({
-                            "JD Requirement": ["Global Partner Strategy", "Zero Trust Knowledge", "Data-Driven Forecasting"],
-                            "Your Asset": ["Fudo Americas Model (US/LATAM)", "Fudo Security Experience", "MBA + Python Signal Engine"],
-                            "Verdict": ["✅ STRONG MATCH", "✅ STRONG MATCH", "✅ UNICORN MATCH"]
-                        })
-                        st.warning("⚠️ **MISSING SIGNAL:** The JD asks for 'SQL' proficiency. Ensure you mention your Python/Streamlit work to cover this gap.")
-                    
-                    elif mission_type == "Interview Prep (The War Room)":
-                         st.subheader("🥋 THE WAR ROOM (Interview Prep)")
-                         st.markdown("""
-                         **Potential Question:** "How do you handle conflict with Product teams?"
-                         **Suggested Answer:** "I use the 'System as the Arbitrator' approach. I align on data (churn/usage) rather than opinion..."
-                         """)
-
-            else:
-                st.error("⚠️ MISSING DATA: Please ensure 'Master Profile' is selected/loaded and a JD is pasted.")
+            pass
     
     # ==============================================================================
     # 🎯 MODE 2: HUNT (TARGET ACQUISITION SYSTEM)
