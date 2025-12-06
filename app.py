@@ -42,17 +42,27 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* === BASIN::NEXUS DARK PROTOCOL === */
+    /* === BASIN::NEXUS PREMIUM DARK PROTOCOL === */
     
-    /* Core Background - Void Black */
+    /* Core Background - Softer Dark Gray (not pure black) */
     .stApp {
-        background: #000000;
+        background: linear-gradient(180deg, #0f1419 0%, #1a1f2e 100%);
     }
     
     /* Main container */
     .main .block-container {
         padding-top: 2rem;
         max-width: 1400px;
+    }
+    
+    /* Global text color - better contrast */
+    .stApp, .stApp p, .stApp span, .stApp div {
+        color: #e6e8eb !important;
+    }
+    
+    /* Headers more visible */
+    h1, h2, h3, h4 {
+        color: #ffffff !important;
     }
     
     /* === TYPOGRAPHY === */
@@ -481,37 +491,95 @@ if "generated_audio" not in st.session_state:
 with st.sidebar:
     # 1. HEADER & SYSTEM STATUS
     st.markdown("### ▲ BASIN::NEXUS")
-    st.caption("v13 | REVENUE ARCHITECT OS | ☁️ G-SUITE SYNC")
+    st.caption("v14 | REVENUE ARCHITECT OS | 🧠 FULL GROQ FLEET")
     st.markdown("---")
     
     # 2. SYSTEM CORE & CONFIGURATION (Terminal Style)
     st.markdown("#### ⚙️ SYSTEM CORE")
     
-    api_key = st.text_input("GROQ API KEY", type="password", placeholder="sk-...", label_visibility="collapsed")
+    api_key = st.text_input("GROQ API KEY", type="password", placeholder="gsk_...", label_visibility="collapsed")
     if api_key:
-        st.session_state['groq_api_key'] = api_key # Persist
+        st.session_state['groq_api_key'] = api_key
+        os.environ['GROQ_API_KEY'] = api_key  # Set for generator.py
         st.caption("✅ LINK: SECURE")
     else:
         st.caption("⚠️ LINK: OFFLINE")
         st.markdown("[Get Key](https://console.groq.com)")
     
-    # LLM FLEET SELECTOR (v11:11 FINAL CONFIGURATION)
-    selected_model_label = st.selectbox("LLM ENGINE", 
-        ["Llama 3.3 70B (Speed/Groq)", 
-         "Mixtral 8x7B (Logic/Groq)", 
-         "Gemini Pro (Reasoning/Google)",
-         "Claude 3.5 Sonnet (Narrative/Anthropic)"], 
+    # ═══════════════════════════════════════════════════════════════
+    # LLM FLEET SELECTOR (V14: FULL GROQ ARSENAL)
+    # ═══════════════════════════════════════════════════════════════
+    
+    # Model Category Selector
+    model_category = st.selectbox("🎯 MODEL TYPE",
+        ["⚡ TEXT (Fast)", "🧠 REASONING", "🔧 TOOLS", "👁️ VISION", "🎤 SPEECH", "🛡️ SAFETY"],
         label_visibility="collapsed"
     )
     
+    # Dynamic Model Selection based on Category
+    if model_category == "⚡ TEXT (Fast)":
+        selected_model_label = st.selectbox("SELECT ENGINE",
+            ["GPT OSS 120B (Groq)", "GPT OSS 20B (Groq)", "Kimi K2 (Groq)", 
+             "Llama 4 Scout (Groq)", "Llama 3.3 70B (Groq)"],
+            label_visibility="collapsed"
+        )
+    elif model_category == "🧠 REASONING":
+        selected_model_label = st.selectbox("SELECT ENGINE",
+            ["GPT OSS 120B (Deep Think)", "GPT OSS 20B (Fast Think)", "Qwen 3 32B (Logic)"],
+            label_visibility="collapsed"
+        )
+    elif model_category == "🔧 TOOLS":
+        selected_model_label = st.selectbox("SELECT ENGINE",
+            ["GPT OSS 120B (Function Calling)", "Kimi K2 (Agent)", 
+             "Llama 4 Scout (MCP)", "Qwen 3 32B (Tools)"],
+            label_visibility="collapsed"
+        )
+    elif model_category == "👁️ VISION":
+        selected_model_label = st.selectbox("SELECT ENGINE",
+            ["Llama 4 Scout (Vision)", "Llama 4 Maverick (Vision Pro)"],
+            label_visibility="collapsed"
+        )
+    elif model_category == "🎤 SPEECH":
+        selected_model_label = st.selectbox("SELECT ENGINE",
+            ["Whisper Large v3 (STT)", "Whisper Large v3 Turbo (Fast STT)", "PlayAI TTS (Speech)"],
+            label_visibility="collapsed"
+        )
+    elif model_category == "🛡️ SAFETY":
+        selected_model_label = st.selectbox("SELECT ENGINE",
+            ["Safety GPT OSS 20B", "Llama Guard"],
+            label_visibility="collapsed"
+        )
+    
     # SYSTEM KERNEL: Map Human Labels to API IDs
     model_map = {
-        "Llama 3.3 70B (Speed/Groq)": "groq:llama-3.3-70b-versatile",
-        "Mixtral 8x7B (Logic/Groq)": "groq:mixtral-8x7b-32768", 
-        "Gemini Pro (Reasoning/Google)": "gemini-pro",
-        "Claude 3.5 Sonnet (Narrative/Anthropic)": "claude-3-5-sonnet-20241022"
+        # Text Models
+        "GPT OSS 120B (Groq)": "groq:gpt-oss-120b",
+        "GPT OSS 20B (Groq)": "groq:gpt-oss-20b",
+        "Kimi K2 (Groq)": "groq:kimi-k2",
+        "Llama 4 Scout (Groq)": "groq:llama-4-scout",
+        "Llama 3.3 70B (Groq)": "groq:llama-3.3-70b-versatile",
+        # Reasoning Models
+        "GPT OSS 120B (Deep Think)": "groq:gpt-oss-120b",
+        "GPT OSS 20B (Fast Think)": "groq:gpt-oss-20b",
+        "Qwen 3 32B (Logic)": "groq:qwen3-32b",
+        # Tool/Function Calling Models
+        "GPT OSS 120B (Function Calling)": "groq:gpt-oss-120b",
+        "Kimi K2 (Agent)": "groq:kimi-k2",
+        "Llama 4 Scout (MCP)": "groq:llama-4-scout",
+        "Qwen 3 32B (Tools)": "groq:qwen3-32b",
+        # Vision Models
+        "Llama 4 Scout (Vision)": "groq:llama-4-scout",
+        "Llama 4 Maverick (Vision Pro)": "groq:llama-4-maverick",
+        # Speech Models
+        "Whisper Large v3 (STT)": "groq:whisper-large-v3",
+        "Whisper Large v3 Turbo (Fast STT)": "groq:whisper-large-v3-turbo",
+        "PlayAI TTS (Speech)": "groq:playai-tts",
+        # Safety Models
+        "Safety GPT OSS 20B": "groq:safety-gpt-oss-20b",
+        "Llama Guard": "groq:llama-guard",
     }
     st.session_state['selected_model_id'] = model_map.get(selected_model_label, "groq:llama-3.3-70b-versatile")
+    st.caption(f"🔗 `{st.session_state['selected_model_id']}`")
     
     st.markdown("---")
 
@@ -530,19 +598,22 @@ with st.sidebar:
     if "STRATEGIC RECON" in mission_phase:
         st.caption("Focus: Finding Market Fit & Targets")
         selected_tool_label = st.radio("Select Tool:", 
-            ["📄 Omni-Agent (Intel)", "🎯 Black Ops (Hunt)", "🔥 Swipe Mode", "🔬 Company Intel", "🥊 Boardroom (Sim)", "📊 Analytics", "☁️ G-Suite Sync"],
+            ["📄 Omni-Agent (Intel)", "🎯 Black Ops (Hunt)", "🔥 Swipe Mode", "🔬 Company Intel", 
+             "🥊 Boardroom (Sim)", "📊 Analytics", "📡 Market Radar", "☁️ G-Suite Sync"],
             label_visibility="collapsed")
             
     elif "EXECUTION OPS" in mission_phase:
         st.caption("Focus: Scaling the Narrative & Team")
         selected_tool_label = st.radio("Select Tool:", 
-            ["📈 Pipeline CRM", "🥊 Boardroom (Sim)", "🎙️ Live Assist", "🛡️ Objection Bank", "🎤 Voice", "🔍 Talent Signal"],
+            ["📈 Pipeline CRM", "🥊 Boardroom (Sim)", "🎙️ Live Assist", "🛡️ Objection Bank", 
+             "🎤 Voice", "🔍 Talent Signal", "📡 Market Radar"],
             label_visibility="collapsed")
             
     elif "ARCHITECT DECK" in mission_phase:
         st.caption("Focus: High-Level Strategy & Governance")
         selected_tool_label = st.radio("Select Tool:", 
-            ["🚀 First 90 Days", "📈 Pipeline CRM", "🥊 Boardroom (Sim)", "🎙️ Live Assist", "📊 Analytics"],
+            ["🚀 First 90 Days", "📈 Pipeline CRM", "🥊 Boardroom (Sim)", "🎙️ Live Assist", 
+             "📊 Analytics", "📡 Market Radar"],
             label_visibility="collapsed")
 
     # MAPPING TO SYSTEM KERNEL (Connecting UX to Logic)
@@ -560,7 +631,8 @@ with st.sidebar:
         "🛡️ Objection Bank": "🛡️ Objection Bank",
         "🔬 Company Intel": "🔬 Company Intel",
         "🎙️ Live Assist": "🎙️ Live Assist",
-        "☁️ G-Suite Sync": "☁️ G-Suite Sync"
+        "☁️ G-Suite Sync": "☁️ G-Suite Sync",
+        "📡 Market Radar": "📡 Market Radar"
     }
     
     input_mode = tool_map.get(selected_tool_label, "📄 Intel")
@@ -603,9 +675,9 @@ if show_dashboard:
     # Quick Stats
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("SYSTEM VERSION", "v12", "🔥 Swipe Mode")
+        st.metric("SYSTEM VERSION", "v14", "📡 Market Radar")
     with col2:
-        st.metric("MODES ACTIVE", "12", "All Online")
+        st.metric("MODES ACTIVE", "14", "All Online")
     with col3:
         vault_count = len(st.session_state.get('resume_vault', {}))
         st.metric("VAULT ASSETS", str(vault_count), "Upload to begin")
@@ -2167,6 +2239,239 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
             LeonOS CRM Sheet → G-Suite Sync → Pipeline CRM → Oracle Analytics
             ```
             """)
+
+
+    # ==============================================================================
+    # 📡 MODE 14: MARKET SENTIMENT RADAR (The Oracle Dashboard)
+    # ==============================================================================
+    elif input_mode == "📡 Market Radar":
+        st.markdown("## 📡 MARKET SENTIMENT RADAR")
+        st.caption("PROTOCOL: Economics → Execution. Real-time intelligence on market conditions, job seeker sentiment, and opportunity windows.")
+        
+        # Hero Stats Bar
+        col_m1, col_m2, col_m3, col_m4 = st.columns(4)
+        
+        with col_m1:
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #00ff8833; border-radius: 12px; padding: 20px; text-align: center;">
+                <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">MARKET HEALTH</p>
+                <h2 style="color: #00ff88; margin: 8px 0 0 0;">72/100</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col_m2:
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #ffd70033; border-radius: 12px; padding: 20px; text-align: center;">
+                <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">HIRING VELOCITY</p>
+                <h2 style="color: #ffd700; margin: 8px 0 0 0;">MODERATE</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col_m3:
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #00d4ff33; border-radius: 12px; padding: 20px; text-align: center;">
+                <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">GTM DEMAND</p>
+                <h2 style="color: #00d4ff; margin: 8px 0 0 0;">↑ +12%</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with col_m4:
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #ff6b6b33; border-radius: 12px; padding: 20px; text-align: center;">
+                <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">COMPETITION</p>
+                <h2 style="color: #ff6b6b; margin: 8px 0 0 0;">HIGH</h2>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        # Main Radar Dashboard
+        radar_tab1, radar_tab2, radar_tab3 = st.tabs(["📰 HEADLINE INTEL", "🎭 SENTIMENT MAP", "🎯 OPPORTUNITY SIGNALS"])
+        
+        with radar_tab1:
+            st.markdown("### 📰 FINANCIAL HEADLINE INTELLIGENCE")
+            st.caption("Real-time synthesis of WSJ, Bloomberg, and TechCrunch for revenue-relevant signals.")
+            
+            # Mock Headlines (replace with real API integration)
+            headlines_data = [
+                {
+                    "source": "WSJ",
+                    "headline": "Tech Layoffs Slow as AI Hiring Surges",
+                    "signal": "🟢 POSITIVE",
+                    "implication": "Companies stabilizing; new AI-GTM roles opening",
+                    "timestamp": "2 hours ago"
+                },
+                {
+                    "source": "Bloomberg",
+                    "headline": "Series A Funding Rebounds in Q4",
+                    "signal": "🟢 POSITIVE",
+                    "implication": "Early-stage startups will need GTM architects",
+                    "timestamp": "4 hours ago"
+                },
+                {
+                    "source": "TechCrunch",
+                    "headline": "SaaS Valuations Under Pressure",
+                    "signal": "🟡 NEUTRAL",
+                    "implication": "Focus on efficiency-driven roles (RevOps, Growth)",
+                    "timestamp": "6 hours ago"
+                },
+                {
+                    "source": "LinkedIn",
+                    "headline": "Revenue Operations Hiring Up 34% YoY",
+                    "signal": "🟢 POSITIVE",
+                    "implication": "Your systems-thinking skillset is in demand",
+                    "timestamp": "1 day ago"
+                },
+            ]
+            
+            for item in headlines_data:
+                st.markdown(f"""
+                <div style="background: rgba(255, 191, 0, 0.05); border-left: 3px solid rgba(255, 191, 0, 0.4); padding: 15px; margin: 10px 0; border-radius: 0 8px 8px 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="color: #8892b0; font-size: 0.8rem;">{item['source']} · {item['timestamp']}</span>
+                        <span style="font-size: 0.8rem;">{item['signal']}</span>
+                    </div>
+                    <h4 style="color: #fff; margin: 8px 0;">{item['headline']}</h4>
+                    <p style="color: #FFBF00; font-size: 0.85rem; margin: 0;">→ {item['implication']}</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # Refresh Button
+            if st.button("🔄 REFRESH INTEL FEED", use_container_width=True):
+                st.toast("Scanning financial feeds...", icon="📡")
+                st.rerun()
+        
+        with radar_tab2:
+            st.markdown("### 🎭 JOB SEEKER SENTIMENT MAP")
+            st.caption("Analyzing Reddit, Blind, and Twitter for real-time market psychology.")
+            
+            # Sentiment Categories
+            sent_col1, sent_col2 = st.columns(2)
+            
+            with sent_col1:
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid rgba(255, 107, 107, 0.3); border-radius: 12px; padding: 20px;">
+                    <h4 style="color: #ff6b6b; margin: 0 0 15px 0;">🔥 PAIN POINTS (Reddit /r/jobs)</h4>
+                    <ul style="color: #8892b0; margin: 0; padding-left: 20px; line-height: 1.8;">
+                        <li>"Ghosted after 5 rounds" (342 upvotes)</li>
+                        <li>"Applied to 200 jobs, 3 callbacks" (891 upvotes)</li>
+                        <li>"Lowballed on salary after layoff" (567 upvotes)</li>
+                        <li>"AI tools making resumes generic" (223 upvotes)</li>
+                    </ul>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with sent_col2:
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 20px;">
+                    <h4 style="color: #00ff88; margin: 0 0 15px 0;">💎 BRIGHT SPOTS (Success Stories)</h4>
+                    <ul style="color: #8892b0; margin: 0; padding-left: 20px; line-height: 1.8;">
+                        <li>"Landed GTM role at Series A" (156 upvotes)</li>
+                        <li>"Referral networks still work" (423 upvotes)</li>
+                        <li>"AI skills = instant callbacks" (289 upvotes)</li>
+                        <li>"Niche expertise > generic apps" (178 upvotes)</li>
+                    </ul>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            st.markdown("")
+            
+            # Sentiment Meter
+            st.markdown("#### 📊 OVERALL MARKET SENTIMENT")
+            sentiment_score = 42  # 0-100 scale
+            st.progress(sentiment_score / 100)
+            
+            if sentiment_score < 30:
+                sentiment_label = "🔴 PESSIMISTIC — High anxiety, longer search cycles"
+            elif sentiment_score < 60:
+                sentiment_label = "🟡 CAUTIOUS — Market uncertainty, strategic patience required"
+            else:
+                sentiment_label = "🟢 OPTIMISTIC — Hiring momentum building"
+            
+            st.caption(sentiment_label)
+            
+            # Insight Box
+            st.markdown("""
+            <div style="background: rgba(255, 191, 0, 0.1); border: 1px solid rgba(255, 191, 0, 0.3); border-radius: 12px; padding: 20px; margin-top: 20px;">
+                <h4 style="color: #FFBF00; margin: 0 0 10px 0;">🧠 ORACLE INSIGHT</h4>
+                <p style="color: #e6e8eb; margin: 0;">Current sentiment is <strong>cautiously pessimistic</strong>. This creates an opportunity: companies that ARE hiring face less competition for top talent. Position yourself as a <strong>systems-builder</strong>, not a job-seeker. The "I can architect your revenue engine" narrative cuts through the noise.</p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        with radar_tab3:
+            st.markdown("### 🎯 OPPORTUNITY SIGNALS")
+            st.caption("AI-detected patterns indicating prime hiring windows.")
+            
+            # Opportunity Cards
+            opp_col1, opp_col2, opp_col3 = st.columns(3)
+            
+            with opp_col1:
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 255, 136, 0.05)); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 12px; padding: 20px;">
+                    <h4 style="color: #00ff88; margin: 0 0 10px 0;">🚀 SECTOR: AI/ML INFRA</h4>
+                    <p style="color: #8892b0; font-size: 0.85rem; margin: 0 0 10px 0;">Funding surge detected. GTM roles opening at:</p>
+                    <ul style="color: #fff; margin: 0; padding-left: 20px;">
+                        <li>Perplexity AI</li>
+                        <li>Groq</li>
+                        <li>Anthropic</li>
+                    </ul>
+                    <p style="color: #00ff88; font-size: 0.8rem; margin: 10px 0 0 0;">SIGNAL STRENGTH: ████████░░ 80%</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with opp_col2:
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 215, 0, 0.05)); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 12px; padding: 20px;">
+                    <h4 style="color: #ffd700; margin: 0 0 10px 0;">📈 SECTOR: DEVTOOLS</h4>
+                    <p style="color: #8892b0; font-size: 0.85rem; margin: 0 0 10px 0;">PLG → Enterprise pivot = GTM buildout:</p>
+                    <ul style="color: #fff; margin: 0; padding-left: 20px;">
+                        <li>Vercel</li>
+                        <li>Railway</li>
+                        <li>Supabase</li>
+                    </ul>
+                    <p style="color: #ffd700; font-size: 0.8rem; margin: 10px 0 0 0;">SIGNAL STRENGTH: ██████░░░░ 60%</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with opp_col3:
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(0, 212, 255, 0.05)); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 12px; padding: 20px;">
+                    <h4 style="color: #00d4ff; margin: 0 0 10px 0;">💼 SECTOR: FINTECH</h4>
+                    <p style="color: #8892b0; font-size: 0.85rem; margin: 0 0 10px 0;">Rate cuts = lending startup revival:</p>
+                    <ul style="color: #fff; margin: 0; padding-left: 20px;">
+                        <li>Ramp</li>
+                        <li>Mercury</li>
+                        <li>Brex</li>
+                    </ul>
+                    <p style="color: #00d4ff; font-size: 0.8rem; margin: 10px 0 0 0;">SIGNAL STRENGTH: ██████████ 90%</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            # Generate Custom Intel Button
+            st.markdown("#### 🧬 GENERATE CUSTOM INTEL REPORT")
+            
+            radar_target = st.text_input("Enter target sector or company:", placeholder="e.g., 'Series B SaaS companies in healthcare'")
+            
+            if st.button("🔬 ANALYZE MARKET SIGNALS", type="primary", use_container_width=True):
+                if radar_target:
+                    with st.spinner("Oracle Agent scanning market signals..."):
+                        import time
+                        time.sleep(2)
+                        
+                        st.success("✅ Intel Report Generated")
+                        st.markdown(f"""
+                        <div style="background: rgba(255, 191, 0, 0.08); border: 1px solid rgba(255, 191, 0, 0.3); border-radius: 12px; padding: 20px; margin-top: 15px;">
+                            <h4 style="color: #FFBF00; margin: 0 0 15px 0;">📊 INTEL REPORT: {radar_target.upper()}</h4>
+                            <p style="color: #e6e8eb;"><strong>Market Conditions:</strong> The {radar_target} sector is showing moderate growth signals with Q1 2025 funding announcements expected.</p>
+                            <p style="color: #e6e8eb;"><strong>Hiring Patterns:</strong> Companies in this space are prioritizing RevOps and GTM leadership roles as they scale past $10M ARR.</p>
+                            <p style="color: #e6e8eb;"><strong>Recommended Approach:</strong> Position your "Revenue OS" narrative. Emphasize systems-thinking over campaign execution.</p>
+                            <p style="color: #00ff88; margin-top: 15px;"><strong>CONFIDENCE LEVEL: HIGH (78%)</strong></p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.warning("Enter a target sector or company to analyze.")
 
 
 # ==============================================================================

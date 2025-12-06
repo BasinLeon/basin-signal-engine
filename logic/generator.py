@@ -29,22 +29,120 @@ DEFAULT_TEMPERATURE = 0.7
 def get_model_options() -> list:
     """
     Returns available model options for the UI.
+    Full Groq Model Fleet + Local/Cloud options.
     
     Returns:
         list: Model option tuples (display_name, model_id)
     """
     return [
-        # ⚡ GROQ (FREE Cloud - Super Fast!)
-        ("⚡ Llama 3.3 70B (Groq - FREE)", "groq:llama-3.3-70b-versatile"),
-        ("⚡ Llama 3.1 8B (Groq - FREE)", "groq:llama-3.1-8b-instant"),
-        ("⚡ Mixtral 8x7B (Groq - FREE)", "groq:mixtral-8x7b-32768"),
-        # 🏠 Local Models via Ollama
+        # ═══════════════════════════════════════════════════════════
+        # ⚡ GROQ CLOUD FLEET (FREE - Ultra Fast Inference)
+        # ═══════════════════════════════════════════════════════════
+        
+        # --- REASONING / DEEP THINKING ---
+        ("🧠 GPT OSS 120B (Reasoning)", "groq:gpt-oss-120b"),
+        ("🧠 GPT OSS 20B (Reasoning)", "groq:gpt-oss-20b"),
+        ("🧠 Qwen 3 32B (Reasoning)", "groq:qwen3-32b"),
+        
+        # --- FUNCTION CALLING / TOOL USE ---
+        ("🔧 GPT OSS 120B (Tools)", "groq:gpt-oss-120b"),
+        ("🔧 Kimi K2 (Tools)", "groq:kimi-k2"),
+        ("🔧 Llama 4 Scout (Tools)", "groq:llama-4-scout"),
+        ("🔧 Qwen 3 32B (Tools)", "groq:qwen3-32b"),
+        
+        # --- TEXT-TO-TEXT (General) ---
+        ("⚡ GPT OSS 120B (Fast)", "groq:gpt-oss-120b"),
+        ("⚡ GPT OSS 20B (Fast)", "groq:gpt-oss-20b"),
+        ("⚡ Kimi K2 (Fast)", "groq:kimi-k2"),
+        ("⚡ Llama 4 Scout (Fast)", "groq:llama-4-scout"),
+        ("⚡ Llama 3.3 70B (Versatile)", "groq:llama-3.3-70b-versatile"),
+        
+        # --- VISION (Multimodal) ---
+        ("👁️ Llama 4 Scout (Vision)", "groq:llama-4-scout"),
+        ("👁️ Llama 4 Maverick (Vision)", "groq:llama-4-maverick"),
+        
+        # --- MULTILINGUAL ---
+        ("🌍 GPT OSS 120B (Multilingual)", "groq:gpt-oss-120b"),
+        ("🌍 Kimi K2 (Multilingual)", "groq:kimi-k2"),
+        ("🌍 Llama 4 Scout (Multilingual)", "groq:llama-4-scout"),
+        
+        # --- SPEECH-TO-TEXT ---
+        ("🎤 Whisper Large v3", "groq:whisper-large-v3"),
+        ("🎤 Whisper Large v3 Turbo", "groq:whisper-large-v3-turbo"),
+        
+        # --- TEXT-TO-SPEECH ---
+        ("🔊 PlayAI TTS", "groq:playai-tts"),
+        
+        # --- SAFETY / CONTENT MODERATION ---
+        ("🛡️ Safety GPT OSS 20B", "groq:safety-gpt-oss-20b"),
+        ("🛡️ Llama Guard", "groq:llama-guard"),
+        
+        # ═══════════════════════════════════════════════════════════
+        # 🏠 LOCAL MODELS (Ollama - No API Key Required)
+        # ═══════════════════════════════════════════════════════════
         ("🦙 Llama 3.2 (Local - 3B)", "ollama:llama3.2"),
-        ("� DeepSeek R1 (Local - 8B)", "ollama:deepseek-r1:8b"),
-        # ☁️ Cloud Models (Paid)
+        ("🧪 DeepSeek R1 (Local - 8B)", "ollama:deepseek-r1:8b"),
+        
+        # ═══════════════════════════════════════════════════════════
+        # ☁️ PREMIUM CLOUD MODELS (Paid APIs)
+        # ═══════════════════════════════════════════════════════════
         ("☁️ GPT-4o (OpenAI)", "gpt-4o"),
         ("☁️ Gemini 1.5 Flash (Google)", "gemini-1.5-flash"),
+        ("☁️ Claude 3.5 Sonnet (Anthropic)", "claude-3-5-sonnet-20241022"),
     ]
+
+
+def get_model_categories() -> dict:
+    """
+    Returns models organized by capability category for UI display.
+    
+    Returns:
+        dict: Category name -> list of (display_name, model_id) tuples
+    """
+    return {
+        "🧠 REASONING": [
+            ("GPT OSS 120B", "groq:gpt-oss-120b"),
+            ("GPT OSS 20B", "groq:gpt-oss-20b"),
+            ("Qwen 3 32B", "groq:qwen3-32b"),
+        ],
+        "🔧 FUNCTION CALLING": [
+            ("GPT OSS 120B", "groq:gpt-oss-120b"),
+            ("GPT OSS 20B", "groq:gpt-oss-20b"),
+            ("Llama 4 Scout", "groq:llama-4-scout"),
+            ("Qwen 3 32B", "groq:qwen3-32b"),
+            ("Kimi K2", "groq:kimi-k2"),
+        ],
+        "⚡ TEXT-TO-TEXT": [
+            ("GPT OSS 120B", "groq:gpt-oss-120b"),
+            ("GPT OSS 20B", "groq:gpt-oss-20b"),
+            ("Kimi K2", "groq:kimi-k2"),
+            ("Llama 4 Scout", "groq:llama-4-scout"),
+            ("Llama 3.3 70B", "groq:llama-3.3-70b-versatile"),
+        ],
+        "👁️ VISION": [
+            ("Llama 4 Scout", "groq:llama-4-scout"),
+            ("Llama 4 Maverick", "groq:llama-4-maverick"),
+        ],
+        "🌍 MULTILINGUAL": [
+            ("GPT OSS 120B", "groq:gpt-oss-120b"),
+            ("GPT OSS 20B", "groq:gpt-oss-20b"),
+            ("Kimi K2", "groq:kimi-k2"),
+            ("Llama 4 Scout", "groq:llama-4-scout"),
+            ("Llama 3.3 70B", "groq:llama-3.3-70b-versatile"),
+            ("Whisper Large v3", "groq:whisper-large-v3"),
+        ],
+        "🎤 SPEECH-TO-TEXT": [
+            ("Whisper Large v3", "groq:whisper-large-v3"),
+            ("Whisper Large v3 Turbo", "groq:whisper-large-v3-turbo"),
+        ],
+        "🔊 TEXT-TO-SPEECH": [
+            ("PlayAI TTS", "groq:playai-tts"),
+        ],
+        "🛡️ SAFETY": [
+            ("Safety GPT OSS 20B", "groq:safety-gpt-oss-20b"),
+            ("Llama Guard", "groq:llama-guard"),
+        ],
+    }
 
 
 def get_provider(model: str) -> str:
