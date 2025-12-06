@@ -322,7 +322,18 @@ with st.sidebar:
         st.markdown("[Get Key](https://console.groq.com)")
     
     # LLM FLEET SELECTOR (Highlighting Groq/Llama as primary speed engine)
-    st.selectbox("LLM ENGINE", ["Llama 3.3 70B (Speed)", "Mixtral 8x7B (Logic)", "Gemini Pro (Reasoning)"], label_visibility="collapsed")
+    selected_model_label = st.selectbox("LLM ENGINE", 
+        ["Llama 3.3 70B (Speed)", "Mixtral 8x7B (Logic)", "Gemini Pro (Reasoning)"], 
+        label_visibility="collapsed"
+    )
+    
+    # SYSTEM KERNEL: Map Human Labels to API IDs
+    model_map = {
+        "Llama 3.3 70B (Speed)": "groq:llama-3.3-70b-versatile",
+        "Mixtral 8x7B (Logic)": "groq:mixtral-8x7b-32768", 
+        "Gemini Pro (Reasoning)": "gemini-pro"
+    }
+    st.session_state['selected_model_id'] = model_map.get(selected_model_label, "groq:llama-3.3-70b-versatile")
     
     st.markdown("---")
 
@@ -1160,7 +1171,9 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                 Generate one highly challenging, scenario-based question related to {artifact} suitable for a {opponent}.
                 If {artifact} is 'Systems Design Question', include a constraint (e.g., must be Python/Streamlit based).
                 """
-                st.session_state['current_q'] = generate_plain_text(q_prompt)
+                # PASS THE SELECTED MODEL ID
+                model_id = st.session_state.get('selected_model_id', "groq:llama-3.3-70b-versatile")
+                st.session_state['current_q'] = generate_plain_text(q_prompt, model_name=model_id)
                 st.session_state['opponent'] = opponent
                 st.session_state['artifact'] = artifact
 
@@ -1200,7 +1213,9 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                         **FINAL SYNTHESIS (THE WINNING ANSWER):** (Write the final, polished response, incorporating all four points.)
                         """
                         
-                        trace_result = generate_plain_text(swarm_trace_prompt)
+                        # PASS THE SELECTED MODEL ID
+                        model_id = st.session_state.get('selected_model_id', "groq:llama-3.3-70b-versatile")
+                        trace_result = generate_plain_text(swarm_trace_prompt, model_name=model_id)
                         
                         st.markdown("### 🧠 SWARM SYNTHESIS TRACE")
                         st.code(trace_result, language="markdown")
