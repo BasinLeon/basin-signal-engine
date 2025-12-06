@@ -90,6 +90,52 @@ def generate_signal_output(messages: list, model: str = None) -> dict:
         return _generate_with_openai(messages, model)
 
 
+def generate_plain_text(prompt: str, model_name: str = "groq:llama-3.3-70b-versatile") -> str:
+    """
+    Generates plain text (non-JSON) output for conversational features like War Room.
+    Mainly supports Groq for speed.
+    """
+    messages = [{"role": "user", "content": prompt}]
+    provider = get_provider(model_name)
+    
+    try:
+        if provider == "groq":
+            from groq import Groq
+            api_key = os.environ.get("GROQ_API_KEY")
+            if not api_key: return "Error: Missing GROQ_API_KEY"
+            
+            client = Groq(api_key=api_key)
+            response = client.chat.completions.create(
+                model=model_name.replace("groq:", ""),
+                messages=messages,
+                temperature=0.7
+            )
+            return response.choices[0].message.content
+            
+        elif provider == "openai":
+            from openai import OpenAI
+            client = OpenAI()
+            response = client.chat.completions.create(
+                model=model_name,
+                messages=messages,
+                temperature=0.7
+            )
+            return response.choices[0].message.content
+            
+        elif provider == "ollama":
+            import ollama
+            response = ollama.chat(
+                model=model_name.replace("ollama:", ""),
+                messages=messages,
+            )
+            return response['message']['content']
+            
+        return "Error: Provider not supported for plain text yet."
+        
+    except Exception as e:
+        return f"Error generating text: {str(e)}"
+
+
 # ═══════════════════════════════════════════════════════════════
 # GROQ GENERATOR (FREE CLOUD - SUPER FAST!)
 # ═══════════════════════════════════════════════════════════════

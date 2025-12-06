@@ -7,7 +7,7 @@ The core differentiator: Pain Point Extraction -> Skill Mapping -> High-Agency R
 """
 
 
-def construct_basin_prompt(resume_text: str, job_description: str, target_persona: str) -> list:
+def construct_basin_prompt(resume_text: str, job_description: str, target_persona: str, use_deep_recon: bool = False) -> list:
     """
     Constructs the specific 'Revenue Architect' system prompt to guide the LLM.
     Forces the model to ignore generic HR fluff and focus on 'Systems > Hires'.
@@ -47,6 +47,46 @@ def construct_basin_prompt(resume_text: str, job_description: str, target_person
     config = persona_configs.get(target_persona, persona_configs["The Visionary (Growth & Scale)"])
     
     # 2. The System Instruction (The "Basin Protocol")
+    # Deep Recon Logic Injection
+    if use_deep_recon:
+        output_instructions = """
+Return ONLY valid JSON with exactly these keys:
+
+{
+  "strategic_dossier": {
+    "bleeding_neck": "Identify the #1 expensive problem they are trying to fix (e.g., Churn, Low Pipeline, Compliance Risk).",
+    "buyer_persona": "Analyze the hiring manager's psyche: 'Risk-Averse Gatekeeper' vs 'Velocity-Obsessed Founder'.",
+    "the_landmine": "What is the one thing the candidate must NOT say? (e.g., 'I like slow processes')."
+  },
+  "gap_analysis": "Markdown formatted analysis with the 3 pain points detected and how the resume addresses each",
+  "summary": "A 3-4 sentence professional summary that directly addresses the pain points. Start with role title. Use active voice. Include at least one metric.",
+  "email_blurb": "A 'Sniper' email/DM (150 words). HOOK: Address 'The Bleeding Neck'. PROOF: Cite specific Resume metric. CLOSE: Specific 'Strategy Drop'.",
+  "key_bullets": ["3-5 tailored bullet points from the resume that best prove ability to solve the pain points"]
+}
+"""
+    else:
+        output_instructions = """
+Return ONLY valid JSON with exactly these keys:
+
+{
+  "gap_analysis": "Markdown formatted analysis with the 3 pain points detected and how the resume addresses each",
+  "summary": "A 3-4 sentence professional summary that directly addresses the pain points. Start with role title. Use active voice. Include at least one metric.",
+  "email_blurb": "A 150-word max 'Sniper' email/DM to the hiring manager. Format:\\nSubject: [Compelling subject line]\\n\\n[Opening hook referencing their specific pain]\\n[Value: specific project/outcome that solves it]\\n[Close: 'Worth a brief exchange?']",
+  "key_bullets": ["3-5 tailored bullet points from the resume that best prove ability to solve the pain points"]
+}
+"""
+
+    output_format_section = f"""
+═══════════════════════════════════════════════════════════════
+OUTPUT FORMAT (STRICT JSON)
+═══════════════════════════════════════════════════════════════
+
+{output_instructions}
+
+DO NOT include any text outside the JSON object. DO NOT use markdown code blocks around the JSON.
+"""
+    
+    # Reassemble the final system prompt with the variable section
     system_prompt = f"""You are 'Basin', an Executive Career Architect and GTM Strategist for Basin & Associates.
 
 Your goal is to translate technical competence into commercial value using the "Zero-to-One" framework.
@@ -73,6 +113,8 @@ YOUR TASK
 3. **The Pivot:** Rewrite the Professional Summary and Key Bullets to bridge the gap.
    Every statement must prove the candidate can solve the identified pain points.
 
+{ "4. **Strategic Recon:** Generate the 'Bleeding Neck' analysis and 'Sniper Pitch' logic." if use_deep_recon else "" }
+
 ═══════════════════════════════════════════════════════════════
 CONSTRAINTS (THE BASIN STANDARD)
 ═══════════════════════════════════════════════════════════════
@@ -83,20 +125,7 @@ CONSTRAINTS (THE BASIN STANDARD)
 - **Required Tone:** {config['required_tone']}
 - **Output Style:** {config['output_style']}
 
-═══════════════════════════════════════════════════════════════
-OUTPUT FORMAT (STRICT JSON)
-═══════════════════════════════════════════════════════════════
-
-Return ONLY valid JSON with exactly these keys:
-
-{{
-  "gap_analysis": "Markdown formatted analysis with the 3 pain points detected and how the resume addresses each",
-  "summary": "A 3-4 sentence professional summary that directly addresses the pain points. Start with role title. Use active voice. Include at least one metric.",
-  "email_blurb": "A 150-word max 'Sniper' email/DM to the hiring manager. Format:\\nSubject: [Compelling subject line]\\n\\n[Opening hook referencing their specific pain]\\n[Value: specific project/outcome that solves it]\\n[Close: 'Worth a brief exchange?']",
-  "key_bullets": ["3-5 tailored bullet points from the resume that best prove ability to solve the pain points"]
-}}
-
-DO NOT include any text outside the JSON object. DO NOT use markdown code blocks around the JSON.
+{output_format_section}
 """
 
     # 3. The User Input (The Data)
