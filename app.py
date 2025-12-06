@@ -328,17 +328,19 @@ Include:
         
         st.markdown("")
         
-        # B. The Target (Job Description)
+        # B. The Target (Job Description) - EXPANDED
         job_description = st.text_area(
             "Paste Job Description / Context",
-            height=200,
+            height=400,  # Increased from 200 to fit longer JDs
             value=st.session_state.jd_text,
-            placeholder="""Paste the target JD here...
+            placeholder="""Paste the full job description here...
 
 The system will:
 1. Extract the top 3 Pain Points
 2. Map your resume to those pains
-3. Generate tailored output"""
+3. Generate tailored output
+
+Tip: Include the FULL JD for best results - the more context, the better the output."""
         )
         st.session_state.jd_text = job_description
     
