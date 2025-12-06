@@ -782,54 +782,117 @@ with col1:
                     st.markdown("[🚀 **SCAN STARTUPS**](https://wellfound.com/jobs)", unsafe_allow_html=True)
 
     # ==============================================================================
-    # 📊 MODE 5: ANALYTICS (THE SCOREBOARD & COACH)
+    # 📊 MODE 6: COMMAND CENTER (CAREER OS)
     # ==============================================================================
     elif input_mode == "📊 Analytics":
-        st.markdown("## 📈 CAREER VELOCITY SCOREBOARD")
-        st.caption("PROTOCOL: Measure Output. Forecast Offer Date.")
+        st.markdown("## CAREER OPERATIONS CENTER")
+        st.caption("PROTOCOL: PIPELINE FORECASTING & REVENUE INTELLIGENCE")
         
-        # 1. INPUT METRICS
-        st.markdown("#### 1. WEEKLY TELEMETRY")
-        c1, c2, c3, c4 = st.columns(4)
-        with c1:
-            apps_sent = st.number_input("Applications Sent", value=12, step=1)
-        with c2:
-            screens = st.number_input("Recruiter Screens", value=2, step=1)
-        with c3:
-            hms = st.number_input("Hiring Manager Interviews", value=1, step=1)
-        with c4:
-            offers = st.number_input("Offers Received", value=0, step=1)
-            
-        # 2. THE FORECAST ENGINE
-        st.markdown("---")
-        st.markdown("#### 2. VELOCITY FORECAST")
+        # --- 1. GLOBAL TELEMETRY (THE NUMBERS) ---
+        st.markdown("#### 1. PIPELINE TELEMETRY")
         
-        # Simple conversion math
-        screen_rate = (screens / apps_sent) * 100 if apps_sent > 0 else 0
-        offer_rate = (offers / hms) * 100 if hms > 0 else 0
-        
-        m1, m2, m3 = st.columns(3)
-        with m1:
-            st.metric("CONVERSION (App -> Screen)", f"{screen_rate:.1f}%", "Target: 15%")
-        with m2:
-            st.metric("PIPELINE VELOCITY", f"{screens} Screens/Wk", "Active")
-        with m3:
-            # Fun calculation: If 10 screens = 1 offer, how many weeks left?
-            needed_screens = 10 - screens
-            weeks_to_offer = max(1, needed_screens / 2) # Assuming 2 screens/week velocity
-            st.metric("EST. WEEKS TO OFFER", f"{weeks_to_offer:.1f} Wks", "Based on Velocity")
+        # User Inputs (Simulating CRM Data Entry)
+        with st.expander("📝 UPDATE WEEKLY METRICS", expanded=True):
+            c1, c2, c3, c4 = st.columns(4)
+            with c1:
+                apps = st.number_input("APPLICATIONS SENT", value=42, step=1, help="Total outbound volume")
+            with c2:
+                screens = st.number_input("RECRUITER SCREENS", value=6, step=1, help="Top of Funnel conversion")
+            with c3:
+                hms = st.number_input("MANAGER INTERVIEWS", value=2, step=1, help="Mid Funnel conversion")
+            with c4:
+                finals = st.number_input("FINAL ROUNDS", value=1, step=1, help="Bottom Funnel conversion")
 
-        # 3. THE COACH
+        # METRIC CALCULATIONS
+        screen_rate = (screens / apps) * 100 if apps > 0 else 0.0
+        hm_rate = (hms / screens) * 100 if screens > 0 else 0.0
+        close_rate = (finals / hms) * 100 if hms > 0 else 0.0
+        
+        # PIPELINE VALUE (The "Apollo" Feature)
+        avg_salary = 220000 # Your Target OTE
+        pipeline_value = (screens * 0.1 * avg_salary) + (hms * 0.3 * avg_salary) + (finals * 0.6 * avg_salary)
+        
         st.markdown("---")
-        st.markdown("#### 🧠 TACTICAL COACHING")
-        if screen_rate < 10:
-            st.error("🚨 **COACHING ALERT:** Your App-to-Screen rate is low (<10%).")
-            st.write("👉 **FIX:** Your resume is not passing the ATS or 'Gatekeeper'. Go to **Intel Mode** and run a 'Gap Analysis' on your resume vs. the JD.")
-        elif hms > 0 and offers == 0:
-            st.warning("⚠️ **COACHING ALERT:** You are getting interviews but not closing.")
-            st.write("👉 **FIX:** Your narrative is failing in the room. Go to **Practice Mode** and drill 'The Skeptic' persona.")
-        else:
-            st.success("✅ **SYSTEM HEALTHY:** Pipeline velocity is strong. Maintain outbound pressure.")
+        
+        # --- 2. THE DASHBOARD (VISUALS) ---
+        
+        # ROW 1: HEALTH METRICS
+        k1, k2, k3, k4 = st.columns(4)
+        k1.metric("PIPELINE VELOCITY", f"{screens} Leads/Wk", "Active Signal")
+        k2.metric("FORECASTED REVENUE", f"${pipeline_value/1000:,.0f}k", "Weighted Value")
+        k3.metric("CONVERSION (APP > SCREEN)", f"{screen_rate:.1f}%", f"{screen_rate-10:.1f}% vs Benchmark")
+        k4.metric("OFFER PROBABILITY", f"{min(finals*25, 95)}%", "Based on Finals")
+        
+        # ROW 2: FUNNEL DIAGNOSTICS (THE COACH)
+        st.markdown("#### 2. SYSTEM DIAGNOSTICS")
+        
+        d1, d2 = st.columns([2, 1])
+        
+        with d1:
+            # LOGIC ENGINE: WHERE IS THE LEAK?
+            if screen_rate < 10:
+                status_color = "error"
+                diagnosis = "CRITICAL FAILURE: TOP OF FUNNEL"
+                fix = "Your Resume/Outreach is not converting. The Market is rejecting your 'Signal'."
+                action = "GO TO 'INTEL MODE' -> RUN 'OMNI-SCAN' TO FIX KEYWORDS."
+            elif hm_rate < 30:
+                status_color = "warning"
+                diagnosis = "WARNING: MID-FUNNEL LEAK"
+                fix = "You are passing the Recruiter but failing the Hiring Manager. Your narrative lacks 'Builder' authority."
+                action = "GO TO 'PRACTICE MODE' -> DRILL 'THE SKEPTIC' PERSONA."
+            elif finals > 0:
+                status_color = "success"
+                diagnosis = "SYSTEM OPTIMIZED: CLOSING MODE"
+                fix = "You are in the kill zone. Focus entirely on the 'First 90 Days' plan."
+                action = "GO TO 'FIRST 90 DAYS' -> GENERATE EXECUTION PLAN."
+            else:
+                status_color = "info"
+                diagnosis = "SYSTEM CALIBRATING..."
+                fix = "Increase outbound volume to generate statistically significant data."
+                action = "GO TO 'HUNT MODE' -> EXECUTE 'BLACK OPS' SEARCH."
+
+            # RENDER DIAGNOSTIC CARD
+            if status_color == "error":
+                st.error(f"**DIAGNOSIS:** {diagnosis}")
+            elif status_color == "warning":
+                st.warning(f"**DIAGNOSIS:** {diagnosis}")
+            elif status_color == "success":
+                st.success(f"**DIAGNOSIS:** {diagnosis}")
+            else:
+                st.info(f"**DIAGNOSIS:** {diagnosis}")
+                
+            st.markdown(f"**ROOT CAUSE:** {fix}")
+            st.caption(f"**RECOMMENDED PROTOCOL:** {action}")
+
+        with d2:
+            # MOMENTUM GAUGE
+            st.markdown("**MOMENTUM SCORE**")
+            momentum = min((apps * 1) + (screens * 5) + (hms * 10), 100)
+            st.progress(momentum / 100)
+            st.caption(f"Current Load: {momentum}% Capacity")
+            
+            # TIME TO OFFER ESTIMATOR
+            needed_screens = max(0, 15 - screens) # Assume 15 screens = 1 offer
+            weeks_left = needed_screens / 2 # Assume 2 screens/week velocity
+            if finals > 0:
+                st.metric("EST. TIME TO OFFER", "2 Weeks", "In Final Rounds")
+            else:
+                st.metric("EST. TIME TO OFFER", f"{weeks_left:.1f} Weeks", "Based on Velocity")
+
+        # --- 3. STRATEGIC ACTIONS ---
+        st.markdown("---")
+        st.markdown("#### 3. DEPLOY COUNTER-MEASURES")
+        
+        b1, b2, b3 = st.columns(3)
+        with b1:
+            if st.button("🚀 LAUNCH 'BLACK OPS' HUNT", use_container_width=True):
+                st.toast("Redirecting to Search Arrays...")
+        with b2:
+            if st.button("🧬 RUN RESUME DIAGNOSTIC", use_container_width=True):
+                st.toast("Loading Omni-Agent...")
+        with b3:
+            if st.button("⚔️ ENTER THE DOJO", use_container_width=True):
+                st.toast("Initializing Combat Simulator...")
 
     
     # ─────────────────────────────────────────────────────────────
