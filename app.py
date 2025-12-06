@@ -617,59 +617,80 @@ with st.sidebar:
     
     st.markdown("---")
 
-    # 3. THE EXECUTIVE LIBRARY (STARTUP LIFECYCLE MAPPING)
+    # 3. MISSION PROTOCOL (THE 3-PHASE ARCHITECTURE)
     st.markdown("#### 🧭 MISSION PROTOCOL")
     
-    # Lifecycle Phase Selector (The "Executive" View)
-    mission_phase = st.selectbox("OPERATIONAL PHASE", 
-        ["I. STRATEGIC RECON (Pre-A)", "II. EXECUTION OPS (Series A-C)", "III. ARCHITECT DECK (IPO+)"],
-        label_visibility="collapsed"
-    )
-    
-    # Dynamic Tool Selection based on Phase
-    selected_tool_label = ""
-    
-    if "STRATEGIC RECON" in mission_phase:
-        st.caption("Focus: Finding Market Fit & Targets")
-        selected_tool_label = st.radio("Select Tool:", 
-            ["📄 Omni-Agent (Intel)", "🎯 Black Ops (Hunt)", "🔥 Swipe Mode", "🔬 Company Intel", 
-             "🥊 Boardroom (Sim)", "📊 Analytics", "📡 Market Radar", "☁️ G-Suite Sync"],
-            label_visibility="collapsed")
-            
-    elif "EXECUTION OPS" in mission_phase:
-        st.caption("Focus: Scaling the Narrative & Team")
-        selected_tool_label = st.radio("Select Tool:", 
-            ["📈 Pipeline CRM", "🥊 Boardroom (Sim)", "🎙️ Live Assist", "🛡️ Objection Bank", 
-             "🎤 Voice", "🔍 Talent Signal", "📡 Market Radar"],
-            label_visibility="collapsed")
-            
-    elif "ARCHITECT DECK" in mission_phase:
-        st.caption("Focus: High-Level Strategy & Governance")
-        selected_tool_label = st.radio("Select Tool:", 
-            ["🚀 First 90 Days", "📈 Pipeline CRM", "🥊 Boardroom (Sim)", "🎙️ Live Assist", 
-             "📊 Analytics", "📡 Market Radar"],
-            label_visibility="collapsed")
+    # Initialize Logic for Mutual Exclusivity
+    if 'prev_battle' not in st.session_state: st.session_state.prev_battle = "📄 Intel (Omni-Agent)"
+    if 'prev_oracle' not in st.session_state: st.session_state.prev_oracle = "🎯 Hunt (Black Ops)"
+    if 'prev_builder' not in st.session_state: st.session_state.prev_builder = "📈 Pipeline CRM"
+    if 'selected_tool_label' not in st.session_state: st.session_state.selected_tool_label = "📄 Intel (Omni-Agent)"
 
-    # MAPPING TO SYSTEM KERNEL (Connecting UX to Logic)
-    # This maps the "Cool Executive Names" to the internal "Functional Names"
+    # PHASE I: THE BATTLESTATION (PREP)
+    with st.expander("I. ⚔️ BATTLESTATION (PREP)", expanded=True):
+        st.caption("Protocol: Sharpen Narrative & Defense")
+        mode_battle = st.radio("Select Tool:", 
+            ["📄 Intel (Omni-Agent)", 
+             "🥊 Boardroom (Dojo)", 
+             "🎤 Voice (Practice)", 
+             "🛡️ Objection Bank"],
+            label_visibility="collapsed", key="battle")
+
+    # PHASE II: THE ORACLE ARRAY (SEARCH)
+    with st.expander("II. 🛰️ ORACLE ARRAY (HUNT)"):
+        st.caption("Protocol: Market Recon & Signal Detection")
+        mode_oracle = st.radio("Select Tool:", 
+            ["🎯 Hunt (Black Ops)", 
+             "📡 Market Radar", 
+             "📊 Analytics (Oracle)", 
+             "🔬 Company Intel", 
+             "🔥 Swipe Mode (Job Tinder)",
+             "☁️ G-Suite Sync (Data Lake)"],
+            label_visibility="collapsed", key="oracle")
+
+    # PHASE III: THE BUILDER DECK (CLOSE)
+    with st.expander("III. 🏗️ BUILDER DECK (EXECUTE)"):
+        st.caption("Protocol: Pipeline Management & Closing")
+        mode_builder = st.radio("Select Tool:", 
+            ["📈 Pipeline CRM", 
+             "🚀 First 90 Days", 
+             "🔍 Talent Signal", 
+             "🎙️ Live Assist (Digital Twin)"],
+            label_visibility="collapsed", key="builder")
+
+    # LOGIC TO HANDLE MULTIPLE RADIOS (One Ring to Rule Them All)
+    # Detect which one changed and update master selection
+    if st.session_state.battle != st.session_state.prev_battle:
+        st.session_state.selected_tool_label = st.session_state.battle
+        st.session_state.prev_battle = st.session_state.battle
+        
+    elif st.session_state.oracle != st.session_state.prev_oracle:
+        st.session_state.selected_tool_label = st.session_state.oracle
+        st.session_state.prev_oracle = st.session_state.oracle
+
+    elif st.session_state.builder != st.session_state.prev_builder:
+        st.session_state.selected_tool_label = st.session_state.builder
+        st.session_state.prev_builder = st.session_state.builder
+    
+    # MAPPING TO SYSTEM KERNEL
     tool_map = {
-        "📄 Omni-Agent (Intel)": "📄 Intel",
-        "🎯 Black Ops (Hunt)": "🎯 Hunt",
-        "🔥 Swipe Mode": "🔥 Swipe Mode",
-        "📊 Analytics": "📊 Analytics",
-        "🥊 Boardroom (Sim)": "🥊 Practice (Dojo)",
-        "🎤 Voice": "🎤 Voice",
-        "🔍 Talent Signal": "🔍 Talent Signal",
-        "🚀 First 90 Days": "🚀 First 90 Days",
-        "📈 Pipeline CRM": "📈 Pipeline CRM",
+        "📄 Intel (Omni-Agent)": "📄 Intel",
+        "🥊 Boardroom (Dojo)": "🥊 Practice (Dojo)",
+        "🎤 Voice (Practice)": "🎤 Voice",
         "🛡️ Objection Bank": "🛡️ Objection Bank",
+        "🎯 Hunt (Black Ops)": "🎯 Hunt",
+        "📡 Market Radar": "📡 Market Radar",
+        "📊 Analytics (Oracle)": "📊 Analytics",
         "🔬 Company Intel": "🔬 Company Intel",
-        "🎙️ Live Assist": "🎙️ Live Assist",
-        "☁️ G-Suite Sync": "☁️ G-Suite Sync",
-        "📡 Market Radar": "📡 Market Radar"
+        "🔥 Swipe Mode (Job Tinder)": "🔥 Swipe Mode",
+        "☁️ G-Suite Sync (Data Lake)": "☁️ G-Suite Sync",
+        "📈 Pipeline CRM": "📈 Pipeline CRM",
+        "🚀 First 90 Days": "🚀 First 90 Days",
+        "🔍 Talent Signal": "🔍 Talent Signal",
+        "🎙️ Live Assist (Digital Twin)": "🎙️ Live Assist"
     }
     
-    input_mode = tool_map.get(selected_tool_label, "📄 Intel")
+    input_mode = tool_map.get(st.session_state.selected_tool_label, "📄 Intel")
 
     st.markdown("---")
 
