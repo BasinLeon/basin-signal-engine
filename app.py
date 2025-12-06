@@ -350,10 +350,44 @@ st.markdown("""
     /* === FILE UPLOADER === */
     
     [data-testid="stFileUploader"] {
-        background: rgba(255, 191, 0, 0.05);
-        border: 2px dashed rgba(255, 191, 0, 0.3);
-        border-radius: 12px;
-        padding: 16px;
+        background: rgba(255, 191, 0, 0.05) !important;
+        border: 2px dashed rgba(255, 191, 0, 0.3) !important;
+        border-radius: 12px !important;
+        padding: 16px !important;
+    }
+    
+    [data-testid="stFileUploader"] > div {
+        background: transparent !important;
+    }
+    
+    [data-testid="stFileUploader"] section {
+        background: rgba(0, 0, 0, 0.4) !important;
+        border: 1px dashed rgba(255, 191, 0, 0.2) !important;
+        border-radius: 8px !important;
+    }
+    
+    [data-testid="stFileUploader"] section > div {
+        background: transparent !important;
+    }
+    
+    [data-testid="stFileUploader"] small {
+        color: #8892b0 !important;
+    }
+    
+    [data-testid="stFileUploader"] button {
+        background: rgba(255, 191, 0, 0.1) !important;
+        border: 1px solid rgba(255, 191, 0, 0.3) !important;
+        color: #FFBF00 !important;
+    }
+    
+    /* File uploader drag zone */
+    [data-testid="stFileUploaderDropzone"] {
+        background: rgba(0, 0, 0, 0.5) !important;
+        border-color: rgba(255, 191, 0, 0.3) !important;
+    }
+    
+    [data-testid="stFileUploaderDropzone"] * {
+        color: #8892b0 !important;
     }
     
     /* === SCROLLBAR === */
@@ -860,146 +894,146 @@ with col1:
         st.markdown("#### 2. TARGET VECTOR (THE MISSION)")
         jd_text = st.text_area("Paste Job Description", height=150, placeholder="[PASTE JD HERE]", label_visibility="collapsed")
 
-    # --- 2. THE WAR ROOM (MULTI-AGENT CONFIG) ---
-    st.markdown("---")
-    st.markdown("#### 3. DEPLOY GTM SWARM (MULTI-AGENT)")
+        # --- 2. THE WAR ROOM (MULTI-AGENT CONFIG) ---
+        st.markdown("---")
+        st.markdown("#### 3. DEPLOY GTM SWARM (MULTI-AGENT)")
     
-    c1, c2 = st.columns([1, 2])
-    
-    with c1:
-        st.caption("🧠 GLOBAL STRATEGY SETTINGS")
-        # Global settings that apply to ALL agents
-        strategic_angle = st.selectbox("Strategic Angle", 
-            ["Revenue Architect (Systems Focus)", "Partner Builder (Channel Focus)", "Operator (Efficiency Focus)", "Founder (Speed Focus)"])
+        c1, c2 = st.columns([1, 2])
         
-        tone = st.selectbox("Tone Protocol", 
-            ["Executive / Direct (No Fluff)", "Collaborative / Builder", "Challenger / Diagnostic"])
+        with c1:
+            st.caption("🧠 GLOBAL STRATEGY SETTINGS")
+            # Global settings that apply to ALL agents
+            strategic_angle = st.selectbox("Strategic Angle", 
+                ["Revenue Architect (Systems Focus)", "Partner Builder (Channel Focus)", "Operator (Efficiency Focus)", "Founder (Speed Focus)"])
             
-    with c2:
-        st.caption("🤖 ACTIVATE AGENTS (SELECT OUTPUTS)")
-        # This allows you to run multiple agents at once
-        active_agents = st.multiselect("Deploy Specialized Agents:",
-            [
-                "📧 The Sniper (Cold Email)",
-                "📱 The Closer (Phone/Voicemail Scripts)",
-                "🔗 The Networker (LinkedIn DM)",
-                "🛡️ The Devil's Advocate (Objection Handling)",
-                "🏗️ The Architect (30-60-90 Day Outline)"
-            ],
-            default=["📧 The Sniper (Cold Email)", "📱 The Closer (Phone/Voicemail Scripts)"]
-        )
+            tone = st.selectbox("Tone Protocol", 
+                ["Executive / Direct (No Fluff)", "Collaborative / Builder", "Challenger / Diagnostic"])
+                
+        with c2:
+            st.caption("🤖 ACTIVATE AGENTS (SELECT OUTPUTS)")
+            # This allows you to run multiple agents at once
+            active_agents = st.multiselect("Deploy Specialized Agents:",
+                [
+                    "📧 The Sniper (Cold Email)",
+                    "📱 The Closer (Phone/Voicemail Scripts)",
+                    "🔗 The Networker (LinkedIn DM)",
+                    "🛡️ The Devil's Advocate (Objection Handling)",
+                    "🏗️ The Architect (30-60-90 Day Outline)"
+                ],
+                default=["📧 The Sniper (Cold Email)", "📱 The Closer (Phone/Voicemail Scripts)"]
+            )
 
-    # --- 3. EXECUTION (THE SWARM) ---
-    st.markdown("---")
-    
-    if st.button("🚀 DEPLOY SWARM INTELLIGENCE", type="primary", use_container_width=True):
-        if active_assets and jd_text:
-            
-            # TABS FOR OUTPUT (Clean Workspace)
-            # Create tabs dynamically based on selected agents
-            tabs = st.tabs([agent.split(" ")[1] + " OUTPUT" for agent in active_agents])
-            
-            for i, agent in enumerate(active_agents):
-                with tabs[i]:
-                    with st.spinner(f"Agent {agent} is working..."):
-                        
-                        # ==========================================
-                        # AGENT 1: THE SNIPER (EMAIL)
-                        # ==========================================
-                        if "Sniper" in agent:
-                            st.subheader("📧 THE SNIPER PITCH")
-                            st.info(f"Strategy: {strategic_angle} | Tone: {tone}")
+        # --- 3. EXECUTION (THE SWARM) ---
+        st.markdown("---")
+        
+        if st.button("🚀 DEPLOY SWARM INTELLIGENCE", type="primary", use_container_width=True):
+            if active_assets and jd_text:
+                
+                # TABS FOR OUTPUT (Clean Workspace)
+                # Create tabs dynamically based on selected agents
+                tabs = st.tabs([agent.split(" ")[1] + " OUTPUT" for agent in active_agents])
+                
+                for i, agent in enumerate(active_agents):
+                    with tabs[i]:
+                        with st.spinner(f"Agent {agent} is working..."):
                             
-                            # Simulated LLM Output based on your "Sniper Arsenal"
-                            st.markdown(f"""
-                            **Subject:** Structuring the Partner Ecosystem (Fudo/Sense Experience)
-
-                            **Hi [Hiring Manager],**
-
-                            I’ve been tracking **[Company]**'s expansion. The velocity is incredible, but I know from experience that scaling at this speed creates **structural debt**.
-                            
-                            I specialize in fixing that debt.
-                            
-                            As **Director of GTM Systems** (Ex-Fudo/Sense), I re-architected revenue engines to drive **160% pipeline growth** and **$10M in new ARR**.
-                            
-                            I have a specific perspective on how we can activate your [Channel/Vertical] to lower CAC.
-                            
-                            Open to a brief chat?
-                            
-                            **Leon Basin**
-                            Director of GTM Systems
-                            """)
-                            st.caption("💡 **Agent Note:** I used the 'Structural Debt' hook because it resonates with the 'Founder' persona.")
-
-                        # ==========================================
-                        # AGENT 2: THE CLOSER (PHONE)
-                        # ==========================================
-                        elif "Closer" in agent:
-                            st.subheader("📱 COLD CALL & VOICEMAIL SCRIPTS")
-                            
-                            c_col1, c_col2 = st.columns(2)
-                            with c_col1:
-                                st.markdown("**📞 LIVE CALL OPENER**")
+                            # ==========================================
+                            # AGENT 1: THE SNIPER (EMAIL)
+                            # ==========================================
+                            if "Sniper" in agent:
+                                st.subheader("📧 THE SNIPER PITCH")
+                                st.info(f"Strategy: {strategic_angle} | Tone: {tone}")
+                                
+                                # Simulated LLM Output based on your "Sniper Arsenal"
                                 st.markdown(f"""
-                                "Hi [Name], this is Leon Basin.
+                                **Subject:** Structuring the Partner Ecosystem (Fudo/Sense Experience)
+
+                                **Hi [Hiring Manager],**
+
+                                I've been tracking **[Company]**'s expansion. The velocity is incredible, but I know from experience that scaling at this speed creates **structural debt**.
                                 
-                                I'm not calling to sell you software. I'm calling because I've been tracking your expansion into **[Region/Vertical]**, and I noticed a gap in your partner activation layer.
+                                I specialize in fixing that debt.
                                 
-                                I built the fix for this at **Fudo Security** (160% growth). I have an idea for [Company]—do you have 30 seconds, or should I send it via email?"
+                                As **Director of GTM Systems** (Ex-Fudo/Sense), I re-architected revenue engines to drive **160% pipeline growth** and **$10M in new ARR**.
+                                
+                                I have a specific perspective on how we can activate your [Channel/Vertical] to lower CAC.
+                                
+                                Open to a brief chat?
+                                
+                                **Leon Basin**
+                                Director of GTM Systems
                                 """)
-                            with c_col2:
-                                st.markdown("**📼 VOICEMAIL DROP**")
+                                st.caption("💡 **Agent Note:** I used the 'Structural Debt' hook because it resonates with the 'Founder' persona.")
+
+                            # ==========================================
+                            # AGENT 2: THE CLOSER (PHONE)
+                            # ==========================================
+                            elif "Closer" in agent:
+                                st.subheader("📱 COLD CALL & VOICEMAIL SCRIPTS")
+                                
+                                c_col1, c_col2 = st.columns(2)
+                                with c_col1:
+                                    st.markdown("**📞 LIVE CALL OPENER**")
+                                    st.markdown(f"""
+                                    "Hi [Name], this is Leon Basin.
+                                    
+                                    I'm not calling to sell you software. I'm calling because I've been tracking your expansion into **[Region/Vertical]**, and I noticed a gap in your partner activation layer.
+                                    
+                                    I built the fix for this at **Fudo Security** (160% growth). I have an idea for [Company]—do you have 30 seconds, or should I send it via email?"
+                                    """)
+                                with c_col2:
+                                    st.markdown("**📼 VOICEMAIL DROP**")
+                                    st.markdown(f"""
+                                    "Hi [Name], Leon Basin here. Former Director of GTM at Fudo.
+                                    
+                                    I have a specific strategy to help you fix the **Partner Activation** bottleneck I'm seeing in your JD. It involves a 'Technical-to-Commercial' shift that drove $10M pipeline for me at Sense.
+                                    
+                                    Sending you the 1-pager now. Check your inbox."
+                                    """)
+
+                            # ==========================================
+                            # AGENT 3: THE NETWORKER (LINKEDIN)
+                            # ==========================================
+                            elif "Networker" in agent:
+                                st.subheader("🔗 LINKEDIN CONNECTION SEQUENCING")
+                                st.markdown("**CONNECTION REQUEST (300 CHARS)**")
+                                st.code(f"""
+                                Hi [Name], following [Company]'s growth. I see you're scaling the Partner team. I previously built the GTM engine at Fudo (160% growth) and Sense ($10M pipe). I have a perspective on your LATAM expansion. Would love to connect. - Leon
+                                """, language="text")
+                                
+                                st.markdown("**FOLLOW-UP DM (VALUE DROP)**")
+                                st.markdown("""
+                                "Thanks for connecting. I wrote a quick 'Gap Analysis' on [Company]'s current partner ecosystem vs. the 'Revenue OS' model I built at Fudo. Thought it might be useful as you scale Q3. [Link]"
+                                """)
+
+                            # ==========================================
+                            # AGENT 4: THE DEVIL'S ADVOCATE (OBJECTIONS)
+                            # ==========================================
+                            elif "Devil" in agent:
+                                st.subheader("🛡️ OBJECTION HANDLING (THE PRE-MORTEM)")
+                                st.error("🚩 RED FLAG DETECTED: 'You've been a consultant recently.'")
                                 st.markdown(f"""
-                                "Hi [Name], Leon Basin here. Former Director of GTM at Fudo.
+                                **THE OBJECTION:** "We need a long-term builder, not a consultant."
                                 
-                                I have a specific strategy to help you fix the **Partner Activation** bottleneck I'm seeing in your JD. It involves a 'Technical-to-Commercial' shift that drove $10M pipeline for me at Sense.
+                                **THE SCRIPTED REBUTTAL:**
+                                "I understand. I operated as a consultant specifically to build **'Zero-to-One'** engines for multiple startups quickly. 
                                 
-                                Sending you the 1-pager now. Check your inbox."
+                                But my core DNA is **Ownership**. I spent 2 years at Fudo and 2 years at Sense building the foundations. I'm looking for my next 5-year home to scale what I build."
+                                """)
+                            
+                            # ==========================================
+                            # AGENT 5: THE ARCHITECT (90 DAY PLAN)
+                            # ==========================================
+                            elif "Architect" in agent:
+                                st.subheader("🏗️ 30-60-90 DAY MICRO-PLAN")
+                                st.markdown("""
+                                * **Day 1-30 (Audit):** Audit the HubSpot/Salesforce instance for 'Signal Decay'. Interview top 5 performing reps to map the 'Winning Path'.
+                                * **Day 31-60 (Build):** Deploy the 'Revenue OS' framework. Automate the 'Technical-to-Commercial' handoff to reduce friction.
+                                * **Day 61-90 (Scale):** Launch the LATAM Partner Activation campaign. Target: 15% increase in partner-sourced pipeline.
                                 """)
 
-                        # ==========================================
-                        # AGENT 3: THE NETWORKER (LINKEDIN)
-                        # ==========================================
-                        elif "Networker" in agent:
-                            st.subheader("🔗 LINKEDIN CONNECTION SEQUENCING")
-                            st.markdown("**CONNECTION REQUEST (300 CHARS)**")
-                            st.code(f"""
-                            Hi [Name], following [Company]'s growth. I see you're scaling the Partner team. I previously built the GTM engine at Fudo (160% growth) and Sense ($10M pipe). I have a perspective on your LATAM expansion. Would love to connect. - Leon
-                            """, language="text")
-                            
-                            st.markdown("**FOLLOW-UP DM (VALUE DROP)**")
-                            st.markdown("""
-                            "Thanks for connecting. I wrote a quick 'Gap Analysis' on [Company]'s current partner ecosystem vs. the 'Revenue OS' model I built at Fudo. Thought it might be useful as you scale Q3. [Link]"
-                            """)
-
-                        # ==========================================
-                        # AGENT 4: THE DEVIL'S ADVOCATE (OBJECTIONS)
-                        # ==========================================
-                        elif "Devil" in agent:
-                            st.subheader("🛡️ OBJECTION HANDLING (THE PRE-MORTEM)")
-                            st.error("🚩 RED FLAG DETECTED: 'You've been a consultant recently.'")
-                            st.markdown(f"""
-                            **THE OBJECTION:** "We need a long-term builder, not a consultant."
-                            
-                            **THE SCRIPTED REBUTTAL:**
-                            "I understand. I operated as a consultant specifically to build **'Zero-to-One'** engines for multiple startups quickly. 
-                            
-                            But my core DNA is **Ownership**. I spent 2 years at Fudo and 2 years at Sense building the foundations. I'm looking for my next 5-year home to scale what I build."
-                            """)
-                        
-                        # ==========================================
-                        # AGENT 5: THE ARCHITECT (90 DAY PLAN)
-                        # ==========================================
-                        elif "Architect" in agent:
-                            st.subheader("🏗️ 30-60-90 DAY MICRO-PLAN")
-                            st.markdown("""
-                            * **Day 1-30 (Audit):** Audit the HubSpot/Salesforce instance for 'Signal Decay'. Interview top 5 performing reps to map the 'Winning Path'.
-                            * **Day 31-60 (Build):** Deploy the 'Revenue OS' framework. Automate the 'Technical-to-Commercial' handoff to reduce friction.
-                            * **Day 61-90 (Scale):** Launch the LATAM Partner Activation campaign. Target: 15% increase in partner-sourced pipeline.
-                            """)
-
-        else:
-            st.error("⚠️ MISSING DATA: Upload assets to Vault and Paste JD.")
+            else:
+                st.error("⚠️ MISSING DATA: Upload assets to Vault and Paste JD.")
     
     # ==============================================================================
     # 🎯 MODE 2: HUNT (PRESCIENT TARGETING SYSTEM)
@@ -2271,7 +2305,7 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
             st.markdown("""
             <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #00d4ff33; border-radius: 12px; padding: 20px; text-align: center;">
                 <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">GTM DEMAND</p>
-                <h2 style="color: #00d4ff; margin: 8px 0 0 0;">↑ +12%</h2>
+                <h2 style="color: #00d4ff; margin: 8px 0 0 0;">&uarr; +12%</h2>
             </div>
             """, unsafe_allow_html=True)
         
