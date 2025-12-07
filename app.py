@@ -502,9 +502,10 @@ st.markdown("""
 
 
 # ═══════════════════════════════════════════════════════════════
-# SESSION STATE INITIALIZATION
+# SESSION STATE INITIALIZATION (COMPREHENSIVE)
 # ═══════════════════════════════════════════════════════════════
 
+# Core Resume/JD State
 if "resume_text" not in st.session_state:
     st.session_state.resume_text = ""
     # Auto-load Master Profile if it exists
@@ -520,6 +521,44 @@ if "voice_jd_text" not in st.session_state:
     st.session_state.voice_jd_text = ""
 if "generated_audio" not in st.session_state:
     st.session_state.generated_audio = None
+
+# Identity & Mindset Programming
+if "identity_script" not in st.session_state:
+    st.session_state.identity_script = None
+if "identity_audio" not in st.session_state:
+    st.session_state.identity_audio = None
+
+# Voice Lab / Practice Sessions
+if "voice_sessions" not in st.session_state:
+    st.session_state.voice_sessions = []
+if "ideal_answer" not in st.session_state:
+    st.session_state.ideal_answer = None
+
+# Boardroom Simulator
+if "sim_active" not in st.session_state:
+    st.session_state.sim_active = False
+if "current_q" not in st.session_state:
+    st.session_state.current_q = None
+if "sim_mode" not in st.session_state:
+    st.session_state.sim_mode = None
+
+# Career Planning
+if "90_day_plan" not in st.session_state:
+    st.session_state["90_day_plan"] = None
+if "path_result" not in st.session_state:
+    st.session_state.path_result = None
+
+# Comms Studio
+if "comms_output" not in st.session_state:
+    st.session_state.comms_output = None
+
+# Global Target Company (for cross-feature linking)
+if "target_company" not in st.session_state:
+    st.session_state.target_company = ""
+
+# First Run Flag (for onboarding)
+if "first_run" not in st.session_state:
+    st.session_state.first_run = True
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -778,6 +817,27 @@ if show_dashboard:
     # ═══════════════════════════════════════════════════════════════
     st.markdown("## ▲ MISSION BRIEFING")
     st.caption("OPERATOR: LEON BASIN | TARGET: DIRECTOR OF GTM SYSTEMS ($220k+)")
+    
+    # --- FIRST RUN ONBOARDING ---
+    if st.session_state.first_run:
+        with st.container():
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, rgba(255,191,0,0.1), rgba(255,215,0,0.05)); border: 2px solid #FFD700; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+                <h3 style="color: #FFD700; margin: 0 0 16px 0;">🚀 WELCOME TO BASIN::NEXUS</h3>
+                <p style="color: #ccd6f6; margin-bottom: 16px;">Your AI-powered Career Intelligence Command Center. Here's how to get started:</p>
+                <ol style="color: #8892b0; margin-left: 20px;">
+                    <li><b style="color: #FFD700;">Upload Your Resume</b> → Go to "📄 Intel" and add your career assets to the Vault</li>
+                    <li><b style="color: #FFD700;">Target Companies</b> → Use "🎯 Hunt" or "🔥 Swipe Mode" to build your pipeline</li>
+                    <li><b style="color: #FFD700;">Practice & Prepare</b> → Hit the "🥊 Dojo" or "🎤 Voice Lab" to sharpen your pitch</li>
+                    <li><b style="color: #FFD700;">Generate Assets</b> → Deploy the AI Swarm to create emails, scripts, and strategies</li>
+                </ol>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            if st.button("✅ GOT IT - LET'S BEGIN", type="primary", use_container_width=True):
+                st.session_state.first_run = False
+                st.toast("🎯 Mission Activated! Your journey begins now.", icon="🚀")
+                st.rerun()
     
     st.markdown("---")
     
@@ -1167,7 +1227,7 @@ with col1:
             st.caption("PROTOCOL: Open Source Intelligence (OSINT) Link Generators.")
             o_col1, o_col2 = st.columns(2)
             o_name = o_col1.text_input("Target Name", placeholder="e.g. Leon Basin", key="osint_name")
-            o_domain = o_col2.text_input("Company Domain", value=selected_company if 'selected_company' in locals() else "", placeholder="e.g. anthropic.com", key="osint_domain")
+            o_domain = o_col2.text_input("Company Domain", value=st.session_state.target_company, placeholder="e.g. anthropic.com", key="osint_domain")
             
             if st.button("🔓 GENERATE INTELLIGENCE LINKS", use_container_width=True):
                 if o_name and o_domain:
@@ -1206,7 +1266,7 @@ with col1:
         with osint_tab2:
             st.caption("PROTOCOL: Pattern Recognition for Opportunity Analysis.")
             
-            s_company = st.text_input("Target Company / Sector", value=selected_company if 'selected_company' in locals() else "", key="signal_company")
+            s_company = st.text_input("Target Company / Sector", value=st.session_state.target_company, key="signal_company")
             
             if st.button("📡 SCAN FOR TRIGGERS", type="primary", use_container_width=True):
                 if s_company:
@@ -1280,7 +1340,7 @@ with col1:
                                     
         with osint_tab3:
             st.caption("PROTOCOL: Full-Spectrum Corporate Analysis.")
-            r_company = st.text_input("Deep Dive Target", value=selected_company if 'selected_company' in locals() else "", placeholder="e.g. Stripe", key="osint_recon")
+            r_company = st.text_input("Deep Dive Target", value=st.session_state.target_company, placeholder="e.g. Stripe", key="osint_recon")
             if r_company:
                 q = r_company.replace(' ', '+')
                 d_c1, d_c2, d_c3 = st.columns(3)
@@ -3466,11 +3526,23 @@ start with full focus on day one. Is that something we can add?"
                         model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
                         comms_output = generate_plain_text(comms_prompt, model_name=model_id)
                         st.session_state.comms_output = comms_output
+                        st.toast(f"✨ Script generated for {target_name}!", icon="🎯")
                 
                 # 5. OUTPUT DISPLAY
-                if "comms_output" in st.session_state:
+                if st.session_state.comms_output:
                     st.markdown("---")
                     st.markdown("#### 📤 READY TO SEND")
+                    
+                    # Calculate character count for validation
+                    char_count = len(st.session_state.comms_output)
+                    
+                    if comms_channel == "🟦 LinkedIn" and char_count > 300:
+                        st.warning(f"⚠️ Character count: {char_count}/300 - Consider trimming for LinkedIn connection request limit.")
+                    elif comms_channel == "📱 SMS / Text" and char_count > 160:
+                        st.warning(f"⚠️ Character count: {char_count}/160 - May be split into multiple messages.")
+                    else:
+                        st.caption(f"📊 Characters: {char_count}")
+                    
                     st.code(st.session_state.comms_output, language="markdown" if comms_channel != "📧 Email" else "text")
                     
                     if comms_channel == "📧 Email":
