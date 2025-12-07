@@ -631,6 +631,21 @@ with st.sidebar:
     with st.expander("⚛️ QUANTUM STATE: ACTIVE", expanded=False):
         st.caption("Reality Distortion Field: 84%")
         st.progress(0.84)
+        
+    # 3. BIO-OS (PHYSICAL PROTOCOLS)
+    with st.expander("🧬 BIO-OS: OPTIMIZE MACHINE", expanded=False):
+        st.caption("The code is only as strong as the vessel.")
+        bio_modes = ["Standing", "Couch", "Floor", "Desk"]
+        current_posture = st.selectbox("Current Posture", bio_modes)
+        
+        if st.button("⚡ GENERATE MICRO-WORKOUT"):
+            workouts = {
+                "Standing": "10 Squats + 30s Calf Raises. Keep blood pumping.",
+                "Couch": "Seated Leg Lifts (20 reps). Core activation.",
+                "Floor": "Plank (1 min) + Cobra Stretch. Reset the spine.",
+                "Desk": "Neck Rotations + Wrist Decompression. Protect the inputs."
+            }
+            st.success(f"PROTOCOL: {workouts[current_posture]}")
     st.markdown("#### ⚙️ SYSTEM CORE")
     
     # Check for Streamlit Secrets first (for always-on deployment)
@@ -3179,8 +3194,21 @@ with col1:
                       """, unsafe_allow_html=True)
                  
                  st.button("💾 SAVE TO PIPELINE (PROJECTED)", type="primary")
+                 
+                 # KNOWLEDGE BASE SAVE
+                 if st.button("🧠 ADD TO AGENT KNOWLEDGE BASE"):
+                     if 'jd_knowledge_base' not in st.session_state:
+                         st.session_state.jd_knowledge_base = []
+                     st.session_state.jd_knowledge_base.append(signal_data)
+                     st.toast(f"JD Ingested. Agent Intelligence: {len(st.session_state.jd_knowledge_base)} Records.", icon="🧠")
 
         st.markdown("---")
+        
+        # AGENT KNOWLEDGE BASE DISPLAY
+        if 'jd_knowledge_base' in st.session_state and st.session_state.jd_knowledge_base:
+            with st.expander(f"📚 AGENT TRAINING DATA ({len(st.session_state.jd_knowledge_base)} JDs)", expanded=False):
+                 st.dataframe(st.session_state.jd_knowledge_base)
+                 
         st.markdown("### 🃏 THE DECK (ACTIVE OPPORTUNITIES)")
         
         # EXISTING CARD STACK DISPLAY (Keep existing logic but styled)
@@ -8016,10 +8044,15 @@ Curious if this resonates?""", height=150)
                 ipo_col1, ipo_col2 = st.columns([1, 2])
                 
                 with ipo_col1:
-                    # CALCULATE "IPO READINESS" (Mock Logic based on stats)
+                    # CALCULATE "IPO READINESS" & VALUATION
                     readiness = min((real_stats['hours_coded'] * 2) + (real_stats['bugs_squashed'] * 5), 100)
+                    
+                    # VALUATION ALGORITHM: (Hours * $500) + (Bugs * $1000) + (Base IP Value)
+                    valuation = (real_stats['hours_coded'] * 500) + (real_stats['bugs_squashed'] * 1000) + 50000
+                    
                     st.metric("IPO Readiness", f"{int(readiness)}%", "+12% this week")
-                    st.caption("Threshold for Public Offering: 200%")
+                    st.metric("Implied IP Valuation", f"${int(valuation):,}", "Shadow Equity")
+                    st.caption("Threshold for Public Offering: $200k")
                     
                 with ipo_col2:
                     st.info("💡 **Analyst Note:** Market sentiment is bullish. 'Vibe Coding' asset class is outperforming traditional SaaS.")
