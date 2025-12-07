@@ -3748,9 +3748,10 @@ start with full focus on day one. Is that something we can add?"
             ]
         
         # CRM Tabs
-        # CRM Tabs (Your Full Tab Structure) - Added NETWORK BUILDER
-        crm_tab1, crm_tab2, crm_tab3, crm_tab4, crm_tab5, crm_tab6, crm_tab7 = st.tabs([
+        # CRM Tabs (Your Full Tab Structure) - Added NETWORK BUILDER + TREE OF LIFE
+        crm_tab1, crm_tab2, crm_tab3, crm_tab4, crm_tab5, crm_tab6, crm_tab7, crm_tab8 = st.tabs([
             "📋 DAILY BRIEFING", 
+            "✡️ TREE OF LIFE",
             "👤 CONTACTS", 
             "📈 DEALS", 
             "🔗 NETWORK BUILDER",
@@ -3758,6 +3759,273 @@ start with full focus on day one. Is that something we can add?"
             "🏢 ENRICH", 
             "📦 ARCHIVE"
         ])
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TAB: ✡️ TREE OF LIFE (KABBALAH CRM)
+        # ═══════════════════════════════════════════════════════════════
+        with crm_tab2:
+            st.markdown("## ✡️ TREE OF LIFE (ETZ CHAIM)")
+            st.caption("PROTOCOL: Your career journey mapped to the 10 Sefirot - Divine emanations of manifestation.")
+            
+            # The 10 Sefirot with career stage mapping
+            sefirot = [
+                {
+                    "name": "כֶּתֶר",
+                    "english": "KETER",
+                    "meaning": "Crown — Divine Will",
+                    "career_stage": "Signed Offer",
+                    "color": "#FFFFFF",
+                    "glow": "rgba(255,255,255,0.5)",
+                    "action": "Accept with gratitude. This is the manifestation of your highest intent.",
+                    "meditation": "I am aligned with my highest purpose. The crown of success rests upon me.",
+                    "position": (50, 5)
+                },
+                {
+                    "name": "חָכְמָה",
+                    "english": "CHOKHMAH",
+                    "meaning": "Wisdom — Flash of Insight",
+                    "career_stage": "Final Round",
+                    "color": "#A0A0FF",
+                    "glow": "rgba(160,160,255,0.5)",
+                    "action": "Trust your intuition. The wisdom you've built speaks through you.",
+                    "meditation": "I access deep wisdom. Divine insight flows through my words.",
+                    "position": (75, 20)
+                },
+                {
+                    "name": "בִּינָה",
+                    "english": "BINAH",
+                    "meaning": "Understanding — Deep Analysis",
+                    "career_stage": "2nd Interview",
+                    "color": "#00FF88",
+                    "glow": "rgba(0,255,136,0.5)",
+                    "action": "Understand their needs deeply. Ask probing questions.",
+                    "meditation": "I comprehend all layers. Understanding illuminates my path.",
+                    "position": (25, 20)
+                },
+                {
+                    "name": "חֶסֶד",
+                    "english": "CHESED",
+                    "meaning": "Loving-kindness — Expansion",
+                    "career_stage": "1st Interview",
+                    "color": "#00D4FF",
+                    "glow": "rgba(0,212,255,0.5)",
+                    "action": "Lead with generosity. Give value before asking for anything.",
+                    "meditation": "I expand with love. Abundance flows through giving.",
+                    "position": (75, 40)
+                },
+                {
+                    "name": "גְּבוּרָה",
+                    "english": "GEVURAH",
+                    "meaning": "Strength — Discipline",
+                    "career_stage": "Follow-Up",
+                    "color": "#FF6B6B",
+                    "glow": "rgba(255,107,107,0.5)",
+                    "action": "Be persistent but not desperate. Strength is knowing when to push.",
+                    "meditation": "I am strong in my conviction. Discipline creates breakthroughs.",
+                    "position": (25, 40)
+                },
+                {
+                    "name": "תִּפְאֶרֶת",
+                    "english": "TIFERET",
+                    "meaning": "Beauty — Harmony",
+                    "career_stage": "Engaged",
+                    "color": "#FFD700",
+                    "glow": "rgba(255,215,0,0.5)",
+                    "action": "Find the balance. Connect your story to their needs harmoniously.",
+                    "meditation": "I embody beauty in action. My presence creates harmony.",
+                    "position": (50, 45)
+                },
+                {
+                    "name": "נֶצַח",
+                    "english": "NETZACH",
+                    "meaning": "Victory — Persistence",
+                    "career_stage": "Warm Lead",
+                    "color": "#00FF88",
+                    "glow": "rgba(0,255,136,0.5)",
+                    "action": "Keep nurturing the relationship. Victory comes to those who persist.",
+                    "meditation": "Eternal victory is mine. I persist with joy.",
+                    "position": (70, 60)
+                },
+                {
+                    "name": "הוֹד",
+                    "english": "HOD",
+                    "meaning": "Glory — Acknowledgment",
+                    "career_stage": "Response Received",
+                    "color": "#FF9500",
+                    "glow": "rgba(255,149,0,0.5)",
+                    "action": "Acknowledge their response. Show gratitude for attention.",
+                    "meditation": "I radiate authentic glory. My worth is self-evident.",
+                    "position": (30, 60)
+                },
+                {
+                    "name": "יְסוֹד",
+                    "english": "YESOD",
+                    "meaning": "Foundation — Connection",
+                    "career_stage": "Outreach Sent",
+                    "color": "#9B59B6",
+                    "glow": "rgba(155,89,182,0.5)",
+                    "action": "Build the foundation. Your outreach is the first brick.",
+                    "meditation": "I establish strong foundations. Connection begins with action.",
+                    "position": (50, 75)
+                },
+                {
+                    "name": "מַלְכוּת",
+                    "english": "MALKHUT",
+                    "meaning": "Kingdom — Manifestation",
+                    "career_stage": "Identified",
+                    "color": "#8B4513",
+                    "glow": "rgba(139,69,19,0.5)",
+                    "action": "Ground your intention. Identify the opportunity clearly.",
+                    "meditation": "The kingdom manifests through me. I am ready to receive.",
+                    "position": (50, 95)
+                }
+            ]
+            
+            # TREE OF LIFE VISUALIZATION
+            st.markdown("""
+            <style>
+            .tree-container {
+                position: relative;
+                width: 100%;
+                height: 600px;
+                background: linear-gradient(180deg, #0a0a1a 0%, #1a1a2e 100%);
+                border-radius: 20px;
+                overflow: hidden;
+            }
+            .sefira {
+                position: absolute;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-align: center;
+            }
+            .sefira:hover {
+                transform: scale(1.2);
+                z-index: 10;
+            }
+            .sefira-name {
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+            .sefira-english {
+                font-size: 0.6rem;
+                color: rgba(255,255,255,0.7);
+            }
+            .path {
+                position: absolute;
+                background: rgba(255,255,255,0.1);
+                height: 2px;
+                transform-origin: 0 0;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            # Build tree HTML
+            tree_html = '<div class="tree-container">'
+            
+            # Add paths (simplified - connecting major sefirot)
+            # In a full implementation, you'd draw 22 paths for the Hebrew letters
+            
+            # Add sefirot circles
+            for i, s in enumerate(sefirot):
+                x, y = s["position"]
+                tree_html += f'''
+                <div class="sefira" style="left: calc({x}% - 40px); top: calc({y}% - 40px); 
+                     background: radial-gradient(circle, {s["color"]}40, {s["color"]}20);
+                     border: 2px solid {s["color"]}; box-shadow: 0 0 20px {s["glow"]};">
+                    <span class="sefira-name" style="color: {s["color"]};">{s["name"]}</span>
+                    <span class="sefira-english">{s["english"]}</span>
+                </div>
+                '''
+            
+            tree_html += '</div>'
+            st.markdown(tree_html, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            # DEAL MAPPING TO SEFIROT
+            st.markdown("### 📊 YOUR DEALS ON THE TREE")
+            
+            deals = st.session_state.get('crm_deals', [])
+            
+            # Map stages to sefirot
+            stage_to_sefira = {
+                "Identified": "MALKHUT",
+                "Outreach Sent": "YESOD",
+                "Response Received": "HOD",
+                "Warm": "NETZACH",
+                "Engaged": "TIFERET",
+                "Under Review": "GEVURAH",
+                "1st Interview": "CHESED",
+                "2nd Interview": "BINAH",
+                "Final Round": "CHOKHMAH",
+                "Offer": "KETER",
+                "Interview Scheduled": "CHESED",
+                "Intro Pending": "YESOD",
+                "Under Review (HM)": "GEVURAH",
+                "Active": "TIFERET"
+            }
+            
+            # Group deals by sefira
+            deals_by_sefira = {}
+            for deal in deals:
+                stage = deal.get('Stage', 'Identified')
+                sefira_name = stage_to_sefira.get(stage, "MALKHUT")
+                if sefira_name not in deals_by_sefira:
+                    deals_by_sefira[sefira_name] = []
+                deals_by_sefira[sefira_name].append(deal)
+            
+            # Display deals grouped by sefira
+            for s in sefirot:
+                eng = s["english"]
+                if eng in deals_by_sefira:
+                    deal_list = deals_by_sefira[eng]
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, {s['color']}10, {s['color']}05);
+                                border-left: 4px solid {s['color']}; padding: 16px; margin: 12px 0; border-radius: 0 12px 12px 0;">
+                        <h4 style="color: {s['color']}; margin: 0 0 8px 0;">{s['name']} {eng} — {s['meaning']}</h4>
+                        <p style="color: #8892b0; font-size: 0.85rem; margin: 0 0 12px 0;">{s['career_stage']}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    for deal in deal_list:
+                        st.markdown(f"   • **{deal['Company']}** — {deal['Role']}")
+            
+            st.markdown("---")
+            
+            # DAILY KAVANAH (INTENTION)
+            st.markdown("### 🕯️ DAILY KAVANAH (Intention)")
+            
+            import random
+            daily_sefira = random.choice(sefirot)
+            
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, {daily_sefira['color']}15, transparent);
+                        border: 2px solid {daily_sefira['color']}; border-radius: 16px; padding: 24px; text-align: center;">
+                <p style="color: #8892b0; margin: 0; font-size: 0.9rem;">TODAY'S FOCUS</p>
+                <h1 style="color: {daily_sefira['color']}; margin: 12px 0; font-size: 3rem;">{daily_sefira['name']}</h1>
+                <h3 style="color: {daily_sefira['color']}; margin: 0 0 16px 0;">{daily_sefira['english']} — {daily_sefira['meaning']}</h3>
+                <p style="color: #ccd6f6; font-size: 1.1rem; font-style: italic; margin: 0 0 16px 0;">"{daily_sefira['meditation']}"</p>
+                <p style="color: #8892b0; margin: 0;">🎯 <b>Action:</b> {daily_sefira['action']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            # SEFIRA DETAIL EXPANDERS
+            st.markdown("### 📖 SEFIROT GUIDE")
+            
+            for s in sefirot:
+                with st.expander(f"{s['name']} {s['english']} — {s['meaning']}"):
+                    st.markdown(f"**Career Stage:** {s['career_stage']}")
+                    st.markdown(f"**Action:** {s['action']}")
+                    st.markdown(f"**Meditation:** *{s['meditation']}*")
         
         # ═══════════════════════════════════════════════════════════════
         # TAB 0: DAILY BRIEFING (AUTOMATIC TASK ENGINE)
@@ -3929,7 +4197,7 @@ start with full focus on day one. Is that something we can add?"
         # ═══════════════════════════════════════════════════════════════
         # TAB 2: CONTACT DATABASE (Original)
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab2:
+        with crm_tab3:
             st.markdown("### 👤 CONTACT DATABASE")
             
             # Metrics
@@ -4003,7 +4271,7 @@ start with full focus on day one. Is that something we can add?"
         # ═══════════════════════════════════════════════════════════════
         # TAB 3: DEAL PIPELINE
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab3:
+        with crm_tab4:
             st.markdown("### 📈 DEAL PIPELINE")
             
             deals = st.session_state['crm_deals']
@@ -4124,7 +4392,7 @@ start with full focus on day one. Is that something we can add?"
         # ═══════════════════════════════════════════════════════════════
         # TAB 4: NETWORK BUILDER (NEW!)
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab4:
+        with crm_tab5:
             st.markdown("### 🔗 NETWORK BUILDER")
             st.caption("Strengthen relationships. Get warm intros. Build your network systematically.")
             
@@ -4385,7 +4653,7 @@ start with full focus on day one. Is that something we can add?"
         # ═══════════════════════════════════════════════════════════════
         # TAB 5: RECRUITERS & NETWORK (was TAB 4)
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab5:
+        with crm_tab6:
             st.markdown("### 👥 RECRUITERS & NETWORK")
             st.caption("Track your recruiter relationships and network contacts.")
             
@@ -4427,7 +4695,7 @@ start with full focus on day one. Is that something we can add?"
         # ═══════════════════════════════════════════════════════════════
         # TAB 6: COMPANY ENRICHMENT (AI AUTO-FILL) - was TAB 5
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab6:
+        with crm_tab7:
             st.markdown("### 🏢 COMPANY ENRICHMENT (AI AUTO-FILL)")
             st.caption("Paste a company name or website URL → AI fills in key intel.")
             
@@ -4472,7 +4740,7 @@ start with full focus on day one. Is that something we can add?"
         # ═══════════════════════════════════════════════════════════════
         # TAB 7: ARCHIVE & CLOSED - was TAB 6
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab7:
+        with crm_tab8:
             st.markdown("### 📦 ARCHIVE & CLOSED")
             st.caption("Closed opportunities and archived contacts.")
             
