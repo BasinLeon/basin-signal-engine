@@ -507,6 +507,39 @@ st.markdown("""
     [data-testid="stSidebar"] h4 {
         color: var(--gold-primary) !important;
         font-family: 'Orbitron', sans-serif !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        hyphens: none !important;
+    }
+    
+    /* === SIDEBAR TEXT FIX (Prevent word collapse) === */
+    [data-testid="stSidebar"] * {
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
+        white-space: normal !important;
+    }
+    
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] span,
+    [data-testid="stSidebar"] label {
+        font-size: 0.85rem !important;
+        line-height: 1.4 !important;
+        word-break: normal !important;
+    }
+    
+    /* Fix Material icons showing as text */
+    [data-testid="stSidebar"] .material-icons,
+    [data-testid="stSidebar"] [class*="icon"] {
+        font-family: 'Material Icons', sans-serif !important;
+    }
+    
+    /* Prevent header text from breaking mid-word */
+    [data-testid="stSidebar"] h1,
+    [data-testid="stSidebar"] h2,
+    [data-testid="stSidebar"] h3 {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
     }
     
     /* === INPUTS (Terminal Style) === */
