@@ -3248,61 +3248,74 @@ start with full focus on day one. Is that something we can add?"
                     st.info("Build your first champion by strengthening 1 relationship to 🔗🔗🔗🔗🔗")
             
             # --- OUTREACH TEMPLATES ---
+            # --- COMMS STUDIO (Formerly Outreach Templates) ---
             with network_sub_tab2:
-                st.markdown("#### 📝 AI OUTREACH TEMPLATES")
+                st.markdown("#### 📣 COMMS STUDIO")
+                st.caption("Precision-engineered scripts for every channel.")
                 
-                template_type = st.selectbox("Template Type", [
-                    "🤝 Reconnection (Cold → Warm)",
-                    "🎯 Intro Request",
-                    "📣 Value-First Message",
-                    "🙏 Thank You + Ask for Referral"
-                ])
+                # 1. STRATEGY CONFIGURATION
+                c_conf1, c_conf2 = st.columns(2)
+                with c_conf1:
+                    comms_channel = st.selectbox("📡 Channel", ["🟦 LinkedIn", "📧 Email", "📞 Phone / Voice"])
+                with c_conf2:
+                    comms_tone = st.selectbox("🎭 Tone", ["Professional (Safe)", "Casual (Startup)", "The Challenger (Bold)"])
+
+                # 2. SCENARIO SELECTION (Dynamic)
+                scenarios = []
+                if comms_channel == "🟦 LinkedIn":
+                    scenarios = ["🤝 Connection Request (Active Hiring)", "👋 Connection Request (Peer)", "💬 DM: Reconnect (Warm)", "📣 Comment Strategy (Thought Leadership)"]
+                elif comms_channel == "📧 Email":
+                    scenarios = ["🧊 Cold Outreach (Hiring Manager)", "👻 Follow Up (Post-Ghosting)", "🙏 Thank You (Post-Interview)", "💼 Resignation / Transition"]
+                elif comms_channel == "📞 Phone / Voice":
+                    scenarios = ["⚡ Cold Call Opener (30s)", "📼 Voicemail Drop", "🛡️ Gatekeeper Bypass"]
                 
-                target_name = st.text_input("Target Person", placeholder="e.g., Sarah Chen")
-                target_company = st.text_input("Their Company", placeholder="e.g., Anthropic")
+                comms_scenario = st.selectbox("🎯 Scenario", scenarios)
                 
-                if st.button("🤖 GENERATE MESSAGE", type="primary", use_container_width=True):
+                # 3. INPUTS
+                st.markdown('<div class="divider-solid"></div>', unsafe_allow_html=True)
+                
+                i1, i2 = st.columns(2)
+                target_name = i1.text_input("Target Name", placeholder="e.g. Sarah Chen")
+                target_company = i2.text_input("Target Company", placeholder="e.g. Anthropic")
+                
+                extra_context = st.text_area("Specific Context / Key Details", height=100, placeholder="e.g. They just raised Series B, I saw them on a podcast, or I want to highlight my 160% growth metric.")
+
+                # 4. GENERATION
+                if st.button("⚡ GENERATE SCRIPT", type="primary", use_container_width=True):
                     if target_name:
                         from logic.generator import generate_plain_text
                         
-                        template_prompts = {
-                            "🤝 Reconnection (Cold → Warm)": f"""
-                            Write a short LinkedIn message to reconnect with {target_name} at {target_company}.
-                            
-                            Context: Leon is a Director-level GTM executive looking for opportunities in AI/SaaS/Security.
-                            Approach: Warm, casual, value-first. Ask about them, not about yourself.
-                            Length: Under 100 words.
-                            End with: A soft ask to catch up
-                            """,
-                            "🎯 Intro Request": f"""
-                            Write a LinkedIn message asking {target_name} for an introduction to someone at their company or network.
-                            
-                            Context: Leon achieved 160% pipeline growth and built $10M+ pipelines.
-                            Approach: Brief, respectful of their time, specific about what help looks like.
-                            Length: Under 80 words.
-                            """,
-                            "📣 Value-First Message": f"""
-                            Write a LinkedIn message to {target_name} that provides value first (an insight, article, or congrats).
-                            
-                            Context: Congratulate them on something or share an insight about {target_company}.
-                            Approach: No ask in this message - just pure value.
-                            Length: Under 60 words.
-                            """,
-                            "🙏 Thank You + Ask for Referral": f"""
-                            Write a thank you message to {target_name} after they helped you, with a soft referral ask.
-                            
-                            Context: They gave you advice, an intro, or feedback.
-                            Approach: Genuine gratitude first, then ask if they know 1-2 others.
-                            Length: Under 80 words.
-                            """
-                        }
+                        comms_prompt = f"""
+                        ACT AS: Leon Basin, Director of GTM Systems (Top 1% Revenue Architect).
+                        TASK: Write a {comms_channel} script for the scenario: "{comms_scenario}".
                         
-                        model_id = st.session_state.get('selected_model_id', 'llama-3.3-70b-versatile')
-                        message = generate_plain_text(template_prompts[template_type], model_name=model_id)
+                        TARGET: {target_name} at {target_company}.
+                        MY CONTEXT: {extra_context}
+                        MY CORE STATS: 160% Pipeline Growth, $10M+ Pipeline Built.
                         
-                        st.markdown("---")
-                        st.markdown("#### 📧 YOUR MESSAGE")
-                        st.text_area("Copy this message:", value=message, height=150)
+                        TONE: {comms_tone}.
+                        
+                        CONSTRAINTS:
+                        - If LinkedIn Connection: Under 300 chars.
+                        - If Email: Subject Line + Body. Short paragraphs.
+                        - If Phone: Script format with [Pause] indicators.
+                        - "The Challenger" tone should be direct, quantifying the cost of inaction.
+                        
+                        Write only the final output. No fluff.
+                        """
+                        
+                        model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
+                        comms_output = generate_plain_text(comms_prompt, model_name=model_id)
+                        st.session_state.comms_output = comms_output
+                
+                # 5. OUTPUT DISPLAY
+                if "comms_output" in st.session_state:
+                    st.markdown("---")
+                    st.markdown("#### 📤 READY TO SEND")
+                    st.code(st.session_state.comms_output, language="markdown" if comms_channel != "📧 Email" else "text")
+                    
+                    if comms_channel == "📧 Email":
+                        st.info("💡 **Tip:** Subject lines like 'Quick question regarding [Goal]' often convert best.")
             
             # --- INTRO REQUESTS ---
             with network_sub_tab3:
