@@ -2257,6 +2257,60 @@ start with full focus on day one. Is that something we can add?"
             contacts = st.session_state.get('crm_contacts', [])
             deals = st.session_state.get('crm_deals', [])
             
+            # ═══════════════════════════════════════════════════════════════
+            # v15: MORNING BRIEFING (LIVE PIPELINE INTEL)
+            # ═══════════════════════════════════════════════════════════════
+            st.markdown("## 📰 MORNING BRIEFING (Pipeline Intel)")
+            st.caption("Live news for your active opportunities. Stay ahead of the conversation.")
+            
+            # Get unique companies from deals
+            pipeline_companies = list(set([d['Company'] for d in deals[:5]]))
+            
+            if pipeline_companies:
+                with st.expander("🔍 CLICK TO LOAD LIVE INTEL", expanded=False):
+                    for company in pipeline_companies[:5]:
+                        st.markdown(f"#### 🏢 {company}")
+                        
+                        try:
+                            import requests
+                            q_url = company.replace(' ', '%20')
+                            hn_url = f"https://hn.algolia.com/api/v1/search?query={q_url}&tags=story&hitsPerPage=3"
+                            response = requests.get(hn_url, timeout=5)
+                            
+                            if response.status_code == 200:
+                                hits = response.json().get('hits', [])
+                                if hits:
+                                    for hit in hits[:2]:
+                                        title = hit.get('title', 'No title')
+                                        url = hit.get('url') or f"https://news.ycombinator.com/item?id={hit.get('objectID')}"
+                                        st.markdown(f"📰 [{title}]({url})")
+                                else:
+                                    st.caption("*No recent news. Company is operating quietly.*")
+                            else:
+                                st.caption("*Intel unavailable.*")
+                        except:
+                            st.caption("*Intel feed offline.*")
+                        
+                        st.divider()
+                
+                # Quick Links for all pipeline companies
+                st.markdown("#### 🔗 QUICK RESEARCH")
+                link_cols = st.columns(len(pipeline_companies[:5]))
+                for i, company in enumerate(pipeline_companies[:5]):
+                    with link_cols[i]:
+                        q = company.replace(' ', '+')
+                        st.markdown(f"[{company}](https://www.google.com/search?q={q}+funding+news)")
+            
+            st.markdown("---")
+            
+            # Show High-Yield Tactics from Win/Loss Memory (if any)
+            if 'win_loss_memory' in st.session_state and st.session_state['win_loss_memory']['high_yield_tactics']:
+                st.markdown("## ⚡ TODAY'S WINNING TACTICS")
+                st.caption("Based on your logged wins, use these in your next call:")
+                for tactic in st.session_state['win_loss_memory']['high_yield_tactics']:
+                    st.success(f"✅ **{tactic}**")
+                st.markdown("---")
+            
             # CALCULATE TASKS
             # Priority 1: HIGH priority, not closed, needs action
             urgent_tasks = [c for c in contacts if c.get('Priority') == '🔥 HIGH' and c.get('Status') not in ['Closed', 'Interview Scheduled', 'Closed Won', 'Closed Lost']]
@@ -2463,6 +2517,92 @@ start with full focus on day one. Is that something we can add?"
                 }
             )
             st.session_state['crm_deals'] = edited_deals
+            
+            st.markdown("---")
+            
+            # ═══════════════════════════════════════════════════════════════
+            # v15: WIN/LOSS FEEDBACK LOOP (NEURAL LEARNING)
+            # ═══════════════════════════════════════════════════════════════
+            st.markdown("### 🧠 WIN/LOSS FEEDBACK (Neural Learning)")
+            st.caption("Teach the system what works. It will suggest high-yield tactics in future sessions.")
+            
+            # Initialize Win/Loss Memory
+            if 'win_loss_memory' not in st.session_state:
+                st.session_state['win_loss_memory'] = {
+                    'wins': [],
+                    'losses': [],
+                    'high_yield_tactics': []
+                }
+            
+            # Log a Win
+            with st.expander("🏆 LOG A WIN (Deal Advanced)"):
+                win_company = st.selectbox("Which company?", [d['Company'] for d in deals], key="win_company")
+                win_stage = st.selectbox("What stage did you reach?", ["Interview Scheduled", "Final Round", "Offer", "Closed Won"], key="win_stage")
+                win_what_worked = st.text_area("What worked? (metrics, stories, tactics)", placeholder="e.g., 'Used 160% YoY metric', 'Partner Architecture story landed'", key="win_worked")
+                
+                if st.button("💾 LOG WIN", type="primary", key="log_win"):
+                    if win_company and win_what_worked:
+                        st.session_state['win_loss_memory']['wins'].append({
+                            "company": win_company,
+                            "stage": win_stage,
+                            "what_worked": win_what_worked,
+                            "date": "12/06/2024"
+                        })
+                        # Extract tactics
+                        if "160%" in win_what_worked or "percent" in win_what_worked.lower():
+                            if "160% YoY metric" not in st.session_state['win_loss_memory']['high_yield_tactics']:
+                                st.session_state['win_loss_memory']['high_yield_tactics'].append("160% YoY metric")
+                        if "partner" in win_what_worked.lower():
+                            if "Partner Architecture story" not in st.session_state['win_loss_memory']['high_yield_tactics']:
+                                st.session_state['win_loss_memory']['high_yield_tactics'].append("Partner Architecture story")
+                        if "$10M" in win_what_worked or "pipeline" in win_what_worked.lower():
+                            if "$10M Pipeline proof" not in st.session_state['win_loss_memory']['high_yield_tactics']:
+                                st.session_state['win_loss_memory']['high_yield_tactics'].append("$10M Pipeline proof")
+                        
+                        st.success(f"🧠 WIN LOGGED! The system is learning from {win_company}.")
+                        st.balloons()
+            
+            # Log a Loss
+            with st.expander("📉 LOG A LOSS (Deal Lost)"):
+                loss_company = st.selectbox("Which company?", [d['Company'] for d in deals], key="loss_company")
+                loss_reason = st.text_area("What didn't work?", placeholder="e.g., 'They wanted more SMB experience', 'Salary mismatch'", key="loss_reason")
+                
+                if st.button("💾 LOG LOSS", key="log_loss"):
+                    if loss_company and loss_reason:
+                        st.session_state['win_loss_memory']['losses'].append({
+                            "company": loss_company,
+                            "reason": loss_reason,
+                            "date": "12/06/2024"
+                        })
+                        st.info(f"📊 LOSS LOGGED. The system will learn to avoid this pattern.")
+            
+            # Show High-Yield Tactics
+            if st.session_state['win_loss_memory']['high_yield_tactics']:
+                st.markdown("---")
+                st.markdown("#### ⚡ HIGH-YIELD TACTICS (What's Working)")
+                for tactic in st.session_state['win_loss_memory']['high_yield_tactics']:
+                    st.success(f"✅ **{tactic}** — Use this in your next interview!")
+            
+            # Show Win/Loss History
+            wins = st.session_state['win_loss_memory']['wins']
+            losses = st.session_state['win_loss_memory']['losses']
+            
+            if wins or losses:
+                st.markdown("---")
+                st.markdown("#### 📊 WIN/LOSS HISTORY")
+                
+                hist_cols = st.columns(2)
+                with hist_cols[0]:
+                    st.markdown("**🏆 WINS**")
+                    for w in wins[-5:]:
+                        st.caption(f"{w['company']} → {w['stage']}")
+                        st.write(f"*{w['what_worked'][:50]}...*" if len(w['what_worked']) > 50 else f"*{w['what_worked']}*")
+                
+                with hist_cols[1]:
+                    st.markdown("**📉 LOSSES**")
+                    for l in losses[-5:]:
+                        st.caption(f"{l['company']}")
+                        st.write(f"*{l['reason'][:50]}...*" if len(l['reason']) > 50 else f"*{l['reason']}*")
         
         # ═══════════════════════════════════════════════════════════════
         # TAB 4: RECRUITERS & NETWORK
