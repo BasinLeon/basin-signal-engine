@@ -1391,6 +1391,52 @@ def calculate_possibilities(loc: int, files: int) -> str:
     else:
         return f"{int(possibilities)}"
 
+class ChessBattle:
+    """
+    The Metaphysical Chess Engine.
+    Maps builder activity to chess strategy concepts.
+    """
+    
+    OPENINGS = [
+        {"name": "The King's Indian Defense", "desc": "Hypermodern. Allowing the enemy (market) to take the center, then striking from the flanks."},
+        {"name": "The Ruy Lopez", "desc": "Classical. Direct pressure on the knight to control the center. Assertive and traditional."},
+        {"name": "The Sicilian Defense", "desc": "Aggressive counter-attack. Asymmetrical warfare. High risk, high reward."},
+        {"name": "The Queen's Gambit", "desc": "Sacrificing material (time/sleep) for position (product leverage)."}
+    ]
+    
+    MIDGAME_TACTICS = [
+        "Forking the Knight (Multitasking)",
+        "Pinning the Bishop (Focus)",
+        "Discovering Check (Insight)",
+        "Promoting the Pawn (Shipping)"
+    ]
+    
+    @staticmethod
+    def get_daily_strategy(level: int) -> dict:
+        """Returns a strategy metaphor based on the user's level."""
+        import random
+        # Seed with day of year to keep it consistent for the day
+        import datetime
+        random.seed(datetime.datetime.now().day)
+        
+        opening = random.choice(ChessBattle.OPENINGS)
+        tactic = random.choice(ChessBattle.MIDGAME_TACTICS)
+        
+        return {
+            "opening": opening['name'],
+            "philosophy": opening['desc'],
+            "current_tactic": tactic,
+            "white_pieces": "Builder, Architect, Scribe",
+            "black_pieces": "Entropy, Noise, Decay"
+        }
+
+    @staticmethod
+    def calculate_moves(hours: float, bugs: int) -> int:
+        """Estimates total moves played based on activity."""
+        # 1 Hour = 4 Moves. 1 Bug = 2 Moves.
+        return int((hours * 4) + (bugs * 2))
+
+
 
 
 

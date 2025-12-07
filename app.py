@@ -7497,7 +7497,7 @@ Curious if this resonates?""", height=150)
                 BUSINESS_MODELS, PRICING_IDEAS, CONTENT_IDEAS,
                 calculate_reputation_score, generate_community_content,
                 generate_leon_posts, get_build_stats,
-                generate_scroll_content
+                generate_scroll_content, ChessBattle
             )
             integrations_loaded = True
         except ImportError:
@@ -7521,6 +7521,7 @@ Curious if this resonates?""", height=150)
             # Main Tabs
             social_tabs = st.tabs([
                 "🖤 POST FORGE",
+                "♟️ GRANDMASTER",
                 "🧵 THREAD WEAVER", 
                 "📡 OMNI-CHANNEL", 
                 "✨ VIBE NETWORK", 
@@ -7597,8 +7598,38 @@ Curious if this resonates?""", height=150)
                         
                         st.caption("Copy this to basinleon.com")
             
-            # TAB 1: THREAD WEAVER (X-First)
+            # TAB 1: GRANDMASTER STRATEGY (NEW)
             with social_tabs[1]:
+                st.markdown("#### ♟️ THE GEOMETRICAL BATTLE")
+                st.caption("Duolingo meets Headspace. Your build progress as a metaphysical chess match.")
+                
+                gm_col1, gm_col2 = st.columns([1, 2])
+                
+                with gm_col1:
+                    # Metric
+                    moves_made = ChessBattle.calculate_moves(real_stats['hours_coded'], real_stats['bugs_squashed'])
+                    st.metric("Total Moves Played", f"{moves_made}", f"+{int(moves_made*0.05)} today")
+                    # Display Abstract Chess Visual (Using Unsplash as placeholder for the artifact)
+                    st.image("https://images.unsplash.com/photo-1529699211952-734e80c4d42b", caption="The Board is Set", use_column_width=True)
+                    
+                with gm_col2:
+                    # Strategy
+                    strategy = ChessBattle.get_daily_strategy(real_stats['level'])
+                    
+                    st.markdown(f"### ⚔️ OPENING: {strategy['opening']}")
+                    st.markdown(f"*{strategy['philosophy']}*")
+                    
+                    st.success(f"**CURRENT TACTIC:** {strategy['current_tactic']}")
+                    
+                    st.markdown("---")
+                    st.markdown(f"**⚪ WHITE (YOU):** {strategy['white_pieces']}")
+                    st.markdown(f"**⚫ BLACK (THE VOID):** {strategy['black_pieces']}")
+                    
+                    if st.button("♟️ MAKE MOVE (LOG SESSION)"):
+                        st.toast("Move Recorded on the Astral Plane.", icon="♟️")
+
+            # TAB 2: THREAD WEAVER (X-First)
+            with social_tabs[2]:
                 st.markdown("#### 🧵 X / TWITTER THREAD GENERATOR")
                 st.caption("Turn your building progress into viral threads.")
                 
@@ -7638,8 +7669,8 @@ Curious if this resonates?""", height=150)
                         
                     st.success("✅ Thread ready to post!")
             
-            # TAB 2: OMNI-CHANNEL DISTRIBUTION
-            with social_tabs[1]:
+            # TAB 3: OMNI-CHANNEL DISTRIBUTION
+            with social_tabs[3]:
                 st.markdown("#### 📡 CONTENT DISTRIBUTION ENGINE")
                 st.caption("Write once, distribute everywhere. Build your media empire.")
                 
@@ -7677,8 +7708,8 @@ Curious if this resonates?""", height=150)
                             st.markdown("**Bluesky Post**")
                             st.code(assets['bluesky'], language=None)
             
-            # TAB 3: VIBE NETWORK
-            with social_tabs[2]:
+            # TAB 4: VIBE NETWORK
+            with social_tabs[4]:
                 st.markdown("#### ✨ VIBE NETWORK FINDER")
                 st.caption("Find your tribe. Connect with builders, vibe coders, and marketers.")
                 
@@ -7710,8 +7741,8 @@ Curious if this resonates?""", height=150)
                     if 'url' in vibe_data:
                         st.markdown(f"[🔗 GO TO {vibe_data['name'].upper()}]({vibe_data['url']})")
 
-            # TAB 4: COMMUNITY MANAGER (NEW)
-            with social_tabs[3]:
+            # TAB 5: COMMUNITY MANAGER
+            with social_tabs[5]:
                 st.markdown("#### 🏘️ COMMUNITY MANAGER")
                 st.caption("Manage: 'Vibe Coding & Vibe Building'")
                 
@@ -7735,8 +7766,8 @@ Curious if this resonates?""", height=150)
                          st.markdown("**🔥 Challenge**")
                          st.text_area("Challenge", value=posts['challenge'], height=150)
 
-            # TAB 5: VOICE & REP (NEW)
-            with social_tabs[4]:
+            # TAB 6: VOICE & REP
+            with social_tabs[6]:
                 st.markdown("#### 🗣️ VOICE CALIBRATION & REPUTATION")
                 
                 r_col1, r_col2 = st.columns(2)
@@ -7763,8 +7794,8 @@ Curious if this resonates?""", height=150)
                         st.session_state['voice_profile'] = voice_sample
                         st.success("Voice profile updated! Future content will match this style.")
             
-            # TAB 6: JOIN BETA / WAITLIST
-            with social_tabs[5]:
+            # TAB 7: JOIN BETA / WAITLIST
+            with social_tabs[7]:
                 st.markdown("#### 📧 BETA & NEWSLETTER STRATEGY")
                 st.caption("Capture interest. Build the list. Launch properly.")
                 
@@ -7789,8 +7820,8 @@ Curious if this resonates?""", height=150)
                         st.caption(model['description'])
                         st.markdown(f"*Examples: {', '.join(model['examples'])}*")
             
-            # TAB 7: GLOBAL HQ
-            with social_tabs[6]:
+            # TAB 8: GLOBAL HQ
+            with social_tabs[8]:
                 st.markdown("#### 🌍 GLOBAL OPERATIONS CENTER")
                 st.caption("Basin & Associates: Serving the world. No borders.")
                 
