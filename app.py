@@ -1385,12 +1385,112 @@ if show_dashboard:
                         <p style="color: #8892b0; font-size: 0.75rem; margin: 4px 0 0 0;">{entry.get('published', '')}</p>
                     </div>
                     """, unsafe_allow_html=True)
-            else:
                 st.caption("No recent news found for this company.")
     
     st.markdown("---")
     
-    # --- 4. PIPELINE METRICS ---
+    # --- 6. APPLE NEWS STYLE FEED ---
+    st.markdown("### 📰 INDUSTRY INTEL (APPLE NEWS STYLE)")
+    st.caption("Curated business intelligence from multiple sources.")
+    
+    news_tabs = st.tabs(["🔥 Tech/AI", "💰 VC & Funding", "📊 Business", "🎯 Jobs"])
+    
+    news_sources = {
+        "🔥 Tech/AI": "https://news.google.com/rss/search?q=AI+hiring+OR+tech+layoffs+OR+startup+funding&hl=en-US&gl=US&ceid=US:en",
+        "💰 VC & Funding": "https://techcrunch.com/category/startups/feed/",
+        "📊 Business": "https://news.google.com/rss/topics/CAAqJggKIiBDQkFTRWdvSUwyMHZNRGx6TVdZU0FtVnVHZ0pWVXlnQVAB?hl=en-US&gl=US&ceid=US:en",
+        "🎯 Jobs": "https://news.google.com/rss/search?q=revenue+operations+hiring+OR+GTM+jobs+OR+sales+director+jobs&hl=en-US&gl=US&ceid=US:en"
+    }
+    
+    import feedparser
+    
+    for i, (tab_name, rss_url) in enumerate(news_sources.items()):
+        with news_tabs[i]:
+            try:
+                feed = feedparser.parse(rss_url)
+                if feed.entries:
+                    for entry in feed.entries[:3]:
+                        # Apple News style card
+                        st.markdown(f"""
+                        <div style="background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); 
+                                    border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; margin: 12px 0;
+                                    transition: all 0.3s; cursor: pointer;">
+                            <a href="{entry.link}" target="_blank" style="text-decoration: none;">
+                                <h4 style="color: #ccd6f6; margin: 0 0 8px 0; font-size: 1rem; line-height: 1.4;">{entry.title}</h4>
+                            </a>
+                            <p style="color: #8892b0; font-size: 0.75rem; margin: 0;">
+                                {entry.get('published', '')[:20] if entry.get('published') else 'Recent'}
+                            </p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.caption("Loading news...")
+            except Exception as e:
+                st.caption(f"Feed unavailable: {e}")
+    
+    st.markdown("---")
+    
+    # --- 7. UPCOMING INTERVIEWS (Calendar Integration) ---
+    st.markdown("### 📅 UPCOMING INTERVIEWS")
+    st.caption("Your scheduled interviews for the next 7 days.")
+    
+    # Check for calendar events in session state
+    if 'calendar_events' not in st.session_state:
+        st.session_state['calendar_events'] = []
+    
+    # Display upcoming events
+    if st.session_state['calendar_events']:
+        for event in st.session_state['calendar_events'][:5]:
+            event_color = "#00ff88" if "Final" in event.get('type', '') else "#FFD700"
+            st.markdown(f"""
+            <div style="background: rgba(255,191,0,0.05); border-left: 4px solid {event_color}; 
+                        padding: 16px; margin: 8px 0; border-radius: 0 8px 8px 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h4 style="color: #ccd6f6; margin: 0;">{event.get('title', 'Interview')}</h4>
+                        <p style="color: #8892b0; margin: 4px 0 0 0; font-size: 0.85rem;">
+                            🏢 {event.get('company', 'Company')} | 📍 {event.get('type', 'Interview')}
+                        </p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="color: {event_color}; font-weight: bold; margin: 0;">{event.get('date', 'TBD')}</p>
+                        <p style="color: #8892b0; font-size: 0.75rem; margin: 4px 0 0 0;">{event.get('time', '')}</p>
+                    </div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+    else:
+        st.info("📅 No upcoming interviews scheduled. Add one below!")
+    
+    # Add new interview
+    with st.expander("➕ ADD INTERVIEW"):
+        add_cols = st.columns([2, 2, 1])
+        new_company = add_cols[0].text_input("Company", key="cal_company")
+        new_date = add_cols[1].date_input("Date", key="cal_date")
+        new_type = add_cols[2].selectbox("Type", ["Phone Screen", "Hiring Manager", "Final Round", "CEO/Panel"], key="cal_type")
+        
+        if st.button("📅 ADD TO CALENDAR", use_container_width=True):
+            if new_company:
+                st.session_state['calendar_events'].append({
+                    'title': f"{new_type} - {new_company}",
+                    'company': new_company,
+                    'date': str(new_date),
+                    'type': new_type,
+                    'time': ''
+                })
+                st.toast(f"📅 Interview with {new_company} added!", icon="✅")
+                st.rerun()
+        
+        # Google Calendar link
+        if new_company:
+            import urllib.parse
+            gcal_title = urllib.parse.quote(f"Interview: {new_company} ({new_type})")
+            gcal_link = f"https://calendar.google.com/calendar/render?action=TEMPLATE&text={gcal_title}&dates={str(new_date).replace('-', '')}T100000/{str(new_date).replace('-', '')}T110000"
+            st.markdown(f"[📅 Open in Google Calendar]({gcal_link})")
+    
+    st.markdown("---")
+    
+    # --- 8. PIPELINE METRICS ---
     st.markdown("### 📊 CAMPAIGN STATUS")
     
     # --- 3. CRITICAL ACTIONS (Next 24H) ---
@@ -2722,7 +2822,7 @@ with col1:
             
             # AUDIO INPUT (Voice Practice)  
             st.markdown("#### 🎤 VOICE PRACTICE (Record Answer)")
-            st.caption("Record your response and get AI feedback.")
+            st.caption("Record your response and get AI-powered transcription + analysis.")
             
             audio_input = st.audio_input("🎙️ Record Your Answer", key="mobile_audio")
             
@@ -2730,27 +2830,134 @@ with col1:
                 st.audio(audio_input)
                 st.success("✅ Audio captured!")
                 
-                # Quick Analysis (placeholder - integrate Whisper for real transcription)
-                if st.button("🧠 ANALYZE RESPONSE", type="primary", use_container_width=True, key="mobile_analyze"):
-                    with st.spinner("Analyzing..."):
+                # WHISPER TRANSCRIPTION + ANALYSIS
+                if st.button("🧠 TRANSCRIBE & ANALYZE", type="primary", use_container_width=True, key="mobile_analyze"):
+                    
+                    # Import Whisper module
+                    try:
+                        from logic.whisper_transcriber import get_transcriber, analyze_speech
+                        transcriber = get_transcriber(st.session_state.get('groq_api_key'))
+                        
+                        if transcriber.is_available():
+                            with st.spinner(f"🎙️ Transcribing via {transcriber.get_backend().upper()}..."):
+                                # Transcribe
+                                result = transcriber.transcribe(audio_input)
+                                
+                                if result.get("error"):
+                                    st.error(f"Transcription error: {result['error']}")
+                                else:
+                                    transcript = result.get("text", "")
+                                    
+                                    # Analyze speech
+                                    analysis = analyze_speech(transcript)
+                                    
+                                    # TRANSCRIPT DISPLAY
+                                    st.markdown("##### 📝 TRANSCRIPT")
+                                    st.text_area("Your Response:", transcript, height=150, disabled=True)
+                                    
+                                    # TELEMETRY DISPLAY
+                                    st.markdown("##### 📊 VOICE TELEMETRY")
+                                    
+                                    t_cols = st.columns(4)
+                                    t_cols[0].metric("📝 WORDS", analysis['word_count'], "Target: 150-250")
+                                    t_cols[1].metric("🚫 FILLERS", analysis['filler_count'], "Target: <3")
+                                    t_cols[2].metric("📊 METRICS", "✅" if analysis['has_metric'] else "❌", "Use numbers!")
+                                    t_cols[3].metric("💪 POWER", analysis['power_score'], "Target: 3+")
+                                    
+                                    # Progress bars
+                                    st.markdown("---")
+                                    
+                                    # Filler Alert
+                                    if analysis['filler_words']:
+                                        st.warning(f"🚫 **Filler words detected:** {', '.join(set(analysis['filler_words']))}")
+                                    
+                                    # Power words celebration
+                                    if analysis['power_words']:
+                                        st.success(f"💪 **Power words used:** {', '.join(set(analysis['power_words']))}")
+                                    
+                                    # Metrics found
+                                    if analysis['metrics_found']:
+                                        st.info(f"📊 **Metrics mentioned:** {', '.join(analysis['metrics_found'])}")
+                                    
+                                    # Save to session state for history
+                                    if 'voice_sessions' not in st.session_state:
+                                        st.session_state['voice_sessions'] = []
+                                    
+                                    st.session_state['voice_sessions'].append({
+                                        'drill': st.session_state.get('mobile_drill', 'Mobile Practice'),
+                                        'transcript': transcript,
+                                        'words': analysis['word_count'],
+                                        'fillers': analysis['filler_count'],
+                                        'has_metric': analysis['has_metric'],
+                                        'wpm': 0,
+                                        'score': analysis['power_score']
+                                    })
+                                    
+                                    st.toast("📈 Session saved to history!", icon="✅")
+                                    
+                                    # AI COACHING
+                                    st.markdown("---")
+                                    st.markdown("##### 🤖 AI COACH FEEDBACK")
+                                    
+                                    with st.spinner("Getting personalized feedback..."):
+                                        from logic.generator import generate_plain_text
+                                        
+                                        feedback_prompt = f"""
+                                        You are an elite interview coach for Director-level GTM roles ($200k+).
+                                        
+                                        QUESTION: "{st.session_state.get('mobile_drill', 'Tell me about yourself')}"
+                                        
+                                        CANDIDATE'S RESPONSE (transcribed):
+                                        "{transcript}"
+                                        
+                                        TELEMETRY:
+                                        - Word count: {analysis['word_count']}
+                                        - Filler words: {analysis['filler_count']} ({', '.join(analysis['filler_words']) if analysis['filler_words'] else 'None'})
+                                        - Metrics used: {analysis['has_metric']} ({', '.join(analysis['metrics_found']) if analysis['metrics_found'] else 'None'})
+                                        - Power words: {', '.join(analysis['power_words']) if analysis['power_words'] else 'None'}
+                                        
+                                        Provide:
+                                        1. 📊 **Score (1-10)** with brief justification
+                                        2. ✅ **What worked** (1 thing)
+                                        3. 🔧 **What to improve** (1 thing)
+                                        4. 🎯 **Power phrase** to add next time
+                                        
+                                        Be specific to THEIR response. Not generic advice.
+                                        """
+                                        
+                                        model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
+                                        feedback = generate_plain_text(feedback_prompt, model_name=model_id)
+                                        
+                                        st.markdown(feedback)
+                        else:
+                            st.warning("⚠️ Whisper not available. Using AI estimation...")
+                            # Fallback to original behavior
+                            from logic.generator import generate_plain_text
+                            
+                            feedback_prompt = f"""
+                            You are a professional interview coach.
+                            The candidate just practiced answering: "{st.session_state.get('mobile_drill', 'Tell me about yourself')}"
+                            
+                            Give quick feedback (3 bullet points max):
+                            1. What they likely did well
+                            2. One area to improve
+                            3. A power phrase to use next time
+                            
+                            Keep it short and actionable.
+                            """
+                            model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
+                            feedback = generate_plain_text(feedback_prompt, model_name=model_id)
+                            
+                            st.markdown("##### 💡 COACH FEEDBACK")
+                            st.success(feedback)
+                    
+                    except ImportError as e:
+                        st.error(f"Module not found: {e}. Using fallback.")
+                        # Fallback
                         from logic.generator import generate_plain_text
-                        
-                        feedback_prompt = f"""
-                        You are a professional interview coach.
-                        The candidate just practiced answering: "{st.session_state.get('mobile_drill', 'Tell me about yourself')}"
-                        
-                        Give quick feedback (3 bullet points max):
-                        1. What they likely did well
-                        2. One area to improve
-                        3. A power phrase to use next time
-                        
-                        Keep it short and actionable.
-                        """
-                        model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
-                        feedback = generate_plain_text(feedback_prompt, model_name=model_id)
-                        
-                        st.markdown("##### 💡 COACH FEEDBACK")
-                        st.success(feedback)
+                        feedback_prompt = f"Give interview feedback for answering: {st.session_state.get('mobile_drill', 'Tell me about yourself')}"
+                        feedback = generate_plain_text(feedback_prompt, model_name="llama-3.3-70b-versatile")
+                        st.markdown(feedback)
             
             st.markdown("---")
             
