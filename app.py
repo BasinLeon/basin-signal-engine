@@ -1301,18 +1301,33 @@ with col1:
     # ==============================================================================
     elif input_mode == "🔥 Swipe Mode":
         st.markdown("## 🔥 SWIPE MODE: JOB TINDER")
-        st.caption("PROTOCOL: Swipe through opportunities. Build your pipeline fast.")
+        st.caption("PROTOCOL: Swipe through 15+ high-value opportunities. Build your pipeline fast.")
         
-        # Sample job data - In production, this would come from Hunt Mode vectors
+        # UPGRADED: 15+ jobs with more detail
         if 'swipe_jobs' not in st.session_state:
             st.session_state.swipe_jobs = [
-                {"id": 1, "title": "Director of GTM Strategy", "company": "Mistral AI", "location": "San Francisco, CA", "salary": "$220k-280k", "match": 95, "signal": "Series B, $600M raised, hiring 50+ in GTM"},
-                {"id": 2, "title": "VP of Revenue Operations", "company": "Anthropic", "location": "San Francisco, CA", "salary": "$250k-320k", "match": 92, "signal": "AI Leader, aggressive expansion, ex-OpenAI team"},
-                {"id": 3, "title": "Head of Partnerships", "company": "Verkada", "location": "San Mateo, CA", "salary": "$200k-260k", "match": 88, "signal": "Physical security + AI, strong channel program"},
-                {"id": 4, "title": "Director of Sales Strategy", "company": "Wiz", "location": "Palo Alto, CA", "salary": "$230k-300k", "match": 91, "signal": "Cloud security unicorn, $1B ARR run rate"},
-                {"id": 5, "title": "GTM Lead - Enterprise", "company": "Notion", "location": "San Francisco, CA", "salary": "$190k-240k", "match": 85, "signal": "Productivity + AI features, PLG motion"},
-                {"id": 6, "title": "Director of Channel Sales", "company": "CrowdStrike", "location": "Austin, TX (Remote OK)", "salary": "$210k-270k", "match": 89, "signal": "Cybersecurity leader, expanding partner ecosystem"},
-                {"id": 7, "title": "VP GTM Operations", "company": "Figma", "location": "San Francisco, CA", "salary": "$240k-300k", "match": 87, "signal": "Adobe acquisition fell through, independent growth mode"},
+                # Tier 1: AI Leaders ($250k+)
+                {"id": 1, "title": "Director of GTM Strategy", "company": "Mistral AI", "location": "San Francisco, CA", "salary": "$220k-280k", "match": 95, "signal": "Series B, $600M raised, hiring 50+ in GTM", "url": "https://mistral.ai/careers", "tier": "🔥 TIER 1"},
+                {"id": 2, "title": "VP of Revenue Operations", "company": "Anthropic", "location": "San Francisco, CA", "salary": "$250k-320k", "match": 92, "signal": "AI Leader, aggressive expansion, ex-OpenAI team", "url": "https://anthropic.com/careers", "tier": "🔥 TIER 1"},
+                {"id": 3, "title": "Head of GTM - Enterprise", "company": "OpenAI", "location": "San Francisco, CA", "salary": "$300k-400k", "match": 94, "signal": "ChatGPT, GPT-5 coming, massive enterprise push", "url": "https://openai.com/careers", "tier": "🔥 TIER 1"},
+                {"id": 4, "title": "Director of Sales Strategy", "company": "Wiz", "location": "Palo Alto, CA", "salary": "$230k-300k", "match": 91, "signal": "Cloud security unicorn, $1B ARR run rate", "url": "https://wiz.io/careers", "tier": "🔥 TIER 1"},
+                
+                # Tier 2: Security/DevTools ($200k+)
+                {"id": 5, "title": "Head of Partnerships", "company": "Verkada", "location": "San Mateo, CA", "salary": "$200k-260k", "match": 88, "signal": "Physical security + AI, strong channel program", "url": "https://verkada.com/careers", "tier": "⚡ TIER 2"},
+                {"id": 6, "title": "Director of Channel Sales", "company": "CrowdStrike", "location": "Austin, TX (Remote OK)", "salary": "$210k-270k", "match": 89, "signal": "Cybersecurity leader, expanding partner ecosystem", "url": "https://crowdstrike.com/careers", "tier": "⚡ TIER 2"},
+                {"id": 7, "title": "VP GTM Operations", "company": "Figma", "location": "San Francisco, CA", "salary": "$240k-300k", "match": 87, "signal": "Adobe acquisition fell through, independent growth mode", "url": "https://figma.com/careers", "tier": "⚡ TIER 2"},
+                {"id": 8, "title": "Director of RevOps", "company": "Ambient.ai", "location": "Palo Alto, CA", "salary": "$180k-220k", "match": 90, "signal": "AI Security, Series B, building GTM from scratch", "url": "https://ambient.ai/careers", "tier": "⚡ TIER 2"},
+                
+                # Tier 3: Growth Stage ($150k-200k)
+                {"id": 9, "title": "GTM Lead - Enterprise", "company": "Notion", "location": "San Francisco, CA", "salary": "$190k-240k", "match": 85, "signal": "Productivity + AI features, PLG motion", "url": "https://notion.so/careers", "tier": "📈 TIER 3"},
+                {"id": 10, "title": "Account Executive - Enterprise", "company": "Deel", "location": "Remote US", "salary": "$180k-250k OTE", "match": 86, "signal": "Global HR tech, $12B valuation, aggressive expansion", "url": "https://deel.com/careers", "tier": "📈 TIER 3"},
+                {"id": 11, "title": "Director of Partnerships", "company": "Hightouch", "location": "San Francisco, CA", "salary": "$170k-220k", "match": 84, "signal": "Data activation, Reverse ETL leader, partner-led growth", "url": "https://hightouch.com/careers", "tier": "📈 TIER 3"},
+                {"id": 12, "title": "Head of Sales", "company": "Nooks", "location": "San Francisco, CA", "salary": "$160k-200k + equity", "match": 83, "signal": "AI Sales tools, YC backed, disrupting cold calling", "url": "https://nooks.ai/careers", "tier": "📈 TIER 3"},
+                
+                # Tier 4: Early Stage (High Equity)
+                {"id": 13, "title": "First US AE", "company": "2501.ai", "location": "Remote US", "salary": "$150k-180k + 0.5% equity", "match": 88, "signal": "AI Agents, European startup, first US hire", "url": "https://2501.ai", "tier": "🚀 TIER 4"},
+                {"id": 14, "title": "GTM Lead", "company": "DepthFirst", "location": "San Francisco, CA", "salary": "$140k-170k + 0.8% equity", "match": 91, "signal": "AI Infrastructure, Seed stage, building from zero", "url": "https://depthfirst.ai", "tier": "🚀 TIER 4"},
+                {"id": 15, "title": "Fractional CRO", "company": "Stealth AI Startup", "location": "Remote", "salary": "$5k-10k/mo retainer", "match": 80, "signal": "Pre-seed, need GTM strategy, equity available", "url": "#", "tier": "🌱 ADVISORY"},
             ]
             st.session_state.swipe_index = 0
             st.session_state.swiped_right = []
@@ -1326,20 +1341,27 @@ with col1:
             job = jobs[idx]
             
             # Job Card Display
+            tier = job.get('tier', '📈 TIER 3')
+            tier_color = "#ffd700" if "TIER 1" in tier else "#00d4ff" if "TIER 2" in tier else "#00ff88"
+            
             st.markdown(f"""
             <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 100%); 
-                        border: 2px solid #00d4ff; border-radius: 20px; padding: 30px; 
+                        border: 2px solid {tier_color}; border-radius: 20px; padding: 30px; 
                         margin: 20px 0; text-align: center;">
-                <p style="color: #00d4ff; font-size: 0.9rem;">JOB {idx + 1} of {len(jobs)}</p>
+                <p style="color: {tier_color}; font-size: 0.9rem; font-weight: bold;">{tier} | JOB {idx + 1} of {len(jobs)}</p>
                 <h1 style="color: white; margin: 10px 0;">{job['title']}</h1>
-                <h2 style="color: #00d4ff; margin: 5px 0;">{job['company']}</h2>
+                <h2 style="color: {tier_color}; margin: 5px 0;">{job['company']}</h2>
                 <p style="color: #8892b0;">📍 {job['location']} | 💰 {job['salary']}</p>
-                <div style="background: #00d4ff22; padding: 15px; border-radius: 10px; margin: 20px 0;">
-                    <p style="color: #00d4ff; font-weight: bold;">🎯 MATCH SCORE: {job['match']}%</p>
+                <div style="background: {tier_color}22; padding: 15px; border-radius: 10px; margin: 20px 0;">
+                    <p style="color: {tier_color}; font-weight: bold;">🎯 MATCH SCORE: {job['match']}%</p>
                     <p style="color: #8892b0; font-size: 0.9rem;">📡 SIGNAL: {job['signal']}</p>
                 </div>
             </div>
             """, unsafe_allow_html=True)
+            
+            # Quick Apply Link
+            if job.get('url') and job['url'] != "#":
+                st.markdown(f"[🚀 **QUICK APPLY →** {job['url']}]({job['url']})")
             
             # Swipe Buttons
             st.markdown("### MAKE YOUR MOVE")
@@ -3097,24 +3119,74 @@ start with full focus on day one. Is that something we can add?"
     # ==============================================================================
     elif input_mode == "🔬 Company Intel":
         st.markdown("## 🔬 COMPANY INTEL (DEEP DIVE)")
-        st.caption("PROTOCOL: Pre-interview reconnaissance on target companies.")
+        st.caption("PROTOCOL: Pre-interview reconnaissance + Live News + Decision Maker Finder.")
         
         company_name = st.text_input("🎯 TARGET COMPANY NAME", placeholder="e.g., Verkada, Mistral AI, Ambient.ai")
         
         if company_name:
             st.markdown("---")
-            st.markdown(f"#### 📊 INTEL REPORT: {company_name.upper()}")
+            st.markdown(f"### 📊 INTEL REPORT: {company_name.upper()}")
             
-            # Quick Links
-            c1, c2, c3, c4 = st.columns(4)
+            # ═══════════════════════════════════════════════════════════════
+            # SECTION 1: QUICK LINKS
+            # ═══════════════════════════════════════════════════════════════
+            st.markdown("#### 🔗 QUICK RECONNAISSANCE")
+            c1, c2, c3, c4, c5 = st.columns(5)
             c1.markdown(f"[🔗 LinkedIn](https://www.linkedin.com/company/{company_name.lower().replace(' ', '-')})")
             c2.markdown(f"[💰 Crunchbase](https://www.crunchbase.com/organization/{company_name.lower().replace(' ', '-')})")
             c3.markdown(f"[📰 News](https://www.google.com/search?q={company_name}+funding+news)")
             c4.markdown(f"[👥 Glassdoor](https://www.glassdoor.com/Overview/Working-at-{company_name.replace(' ', '-')}-EI_IE.htm)")
+            c5.markdown(f"[📈 G2](https://www.g2.com/search?query={company_name.replace(' ', '+')})")
             
             st.markdown("---")
             
-            # AI Intel Generator
+            # ═══════════════════════════════════════════════════════════════
+            # SECTION 2: LIVE NEWS (HACKERNEWS)
+            # ═══════════════════════════════════════════════════════════════
+            st.markdown("#### 📰 LIVE NEWS (HackerNews)")
+            
+            try:
+                import requests
+                q_url = company_name.replace(' ', '%20')
+                hn_url = f"https://hn.algolia.com/api/v1/search?query={q_url}&tags=story&hitsPerPage=5"
+                response = requests.get(hn_url, timeout=5)
+                
+                if response.status_code == 200:
+                    hits = response.json().get('hits', [])
+                    if hits:
+                        for hit in hits[:5]:
+                            title = hit.get('title', 'No title')
+                            url = hit.get('url') or f"https://news.ycombinator.com/item?id={hit.get('objectID')}"
+                            points = hit.get('points', 0)
+                            st.markdown(f"• [{title}]({url}) — {points} points")
+                    else:
+                        st.caption("*No recent HackerNews coverage.*")
+            except:
+                st.caption("*Unable to fetch live news.*")
+            
+            st.markdown("---")
+            
+            # ═══════════════════════════════════════════════════════════════
+            # SECTION 3: DECISION MAKER FINDER
+            # ═══════════════════════════════════════════════════════════════
+            st.markdown("#### 👤 DECISION MAKER FINDER")
+            st.caption("Find the right people to reach out to:")
+            
+            dm_cols = st.columns(4)
+            with dm_cols[0]:
+                st.markdown(f"[🎯 VP Sales](https://www.linkedin.com/search/results/people/?keywords={company_name}%20VP%20Sales)")
+            with dm_cols[1]:
+                st.markdown(f"[🎯 CRO](https://www.linkedin.com/search/results/people/?keywords={company_name}%20CRO)")
+            with dm_cols[2]:
+                st.markdown(f"[🎯 Head of GTM](https://www.linkedin.com/search/results/people/?keywords={company_name}%20Head%20GTM)")
+            with dm_cols[3]:
+                st.markdown(f"[🎯 Recruiter](https://www.linkedin.com/search/results/people/?keywords={company_name}%20Recruiter)")
+            
+            st.markdown("---")
+            
+            # ═══════════════════════════════════════════════════════════════
+            # SECTION 4: AI INTEL BRIEF
+            # ═══════════════════════════════════════════════════════════════
             if st.button("🧠 GENERATE AI INTEL BRIEF", type="primary", use_container_width=True):
                 from logic.generator import generate_plain_text
                 
@@ -3137,6 +3209,32 @@ start with full focus on day one. Is that something we can add?"
             
             if st.session_state.get('company_intel'):
                 st.markdown(st.session_state['company_intel'])
+                
+                st.markdown("---")
+                
+                # Quick Actions
+                action_cols = st.columns(3)
+                with action_cols[0]:
+                    if st.button("📋 Copy Intel"):
+                        st.toast("Intel copied!", icon="📋")
+                with action_cols[1]:
+                    if st.button("🥊 Practice Interview"):
+                        st.session_state['dojo_target_company'] = company_name
+                        st.session_state.selected_tool_label = "🥊 Boardroom (Dojo)"
+                        st.rerun()
+                with action_cols[2]:
+                    if st.button("➕ Add to CRM"):
+                        if 'crm_deals' not in st.session_state:
+                            st.session_state['crm_deals'] = []
+                        st.session_state['crm_deals'].append({
+                            "Company": company_name,
+                            "Role": "Research",
+                            "Stage": "Discovery",
+                            "Priority": 2,
+                            "Signal": "Intel gathered",
+                            "Notes": f"Intel brief generated on {st.session_state.get('current_date', 'today')}"
+                        })
+                        st.toast(f"{company_name} added to CRM!", icon="✅")
 
     # ==============================================================================
     # 🎙️ MODE 11: LIVE ASSIST (DIGITAL TWIN PROTOCOL)
