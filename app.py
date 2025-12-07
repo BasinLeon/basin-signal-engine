@@ -586,6 +586,22 @@ st.markdown("""
         box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
     }
     
+    /* === FIX: Hide broken Material Icons showing as text === */
+    .streamlit-expanderHeader svg {
+        display: none !important;
+    }
+    
+    /* Hide any stray icon text like 'keyboard_arrow_right' */
+    [data-testid="stExpander"] span[data-testid="stMarkdownContainer"] p {
+        display: inline !important;
+    }
+    
+    /* Force text-only display for expander headers */
+    .streamlit-expanderHeader p {
+        margin: 0 !important;
+        display: inline !important;
+    }
+    
     /* === TABS (Mission Control) === */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
