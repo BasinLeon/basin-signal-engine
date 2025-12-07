@@ -2237,12 +2237,133 @@ start with full focus on day one. Is that something we can add?"
             ]
         
         # CRM Tabs
-        crm_tab1, crm_tab2, crm_tab3, crm_tab4 = st.tabs(["👤 CONTACTS", "📈 DEALS", "🏢 ENRICH COMPANY", "⏰ FOLLOW-UPS"])
+        # CRM Tabs (Your Full Tab Structure)
+        crm_tab1, crm_tab2, crm_tab3, crm_tab4, crm_tab5, crm_tab6 = st.tabs([
+            "📋 DAILY BRIEFING", 
+            "👤 CONTACTS", 
+            "📈 DEALS", 
+            "👥 RECRUITERS", 
+            "🏢 ENRICH", 
+            "📦 ARCHIVE"
+        ])
         
         # ═══════════════════════════════════════════════════════════════
-        # TAB 1: CONTACT DATABASE
+        # TAB 0: DAILY BRIEFING (AUTOMATIC TASK ENGINE)
         # ═══════════════════════════════════════════════════════════════
         with crm_tab1:
+            st.markdown("### 📋 DAILY BRIEFING — TODAY'S MISSION")
+            st.caption(f"📅 {st.session_state.get('current_date', 'December 6, 2024')} | Auto-generated action list based on your pipeline.")
+            
+            contacts = st.session_state.get('crm_contacts', [])
+            deals = st.session_state.get('crm_deals', [])
+            
+            # CALCULATE TASKS
+            # Priority 1: HIGH priority, not closed, needs action
+            urgent_tasks = [c for c in contacts if c.get('Priority') == '🔥 HIGH' and c.get('Status') not in ['Closed', 'Interview Scheduled', 'Closed Won', 'Closed Lost']]
+            
+            # Priority 2: Medium priority
+            medium_tasks = [c for c in contacts if c.get('Priority') == '⚡ MED' and c.get('Status') not in ['Closed']]
+            
+            # Pending responses
+            pending = [c for c in contacts if c.get('Status') in ['Outreach Sent', 'Sent', 'Under Review']]
+            
+            # Interviews scheduled
+            interviews = [c for c in contacts if c.get('Status') == 'Interview Scheduled']
+            
+            st.markdown("---")
+            
+            # ═══ TODAY'S TOP 5 ACTIONS ═══
+            st.markdown("## 🔥 TODAY'S TOP 5 ACTIONS")
+            
+            today_tasks = []
+            
+            # Add interviews first (highest priority)
+            for c in interviews:
+                today_tasks.append({
+                    "action": f"🎯 **PREP FOR INTERVIEW:** {c['Company']} ({c['Role']})",
+                    "contact": c['Name'],
+                    "priority": 0,
+                    "type": "interview"
+                })
+            
+            # Add HIGH priority follow-ups
+            for c in urgent_tasks[:5]:
+                today_tasks.append({
+                    "action": f"📞 **FOLLOW UP:** {c['Name']} @ {c['Company']}",
+                    "contact": c['Name'],
+                    "priority": 1,
+                    "type": "follow_up",
+                    "next_step": c.get('Next Step', 'TBD')
+                })
+            
+            # Display Top 5
+            if today_tasks:
+                for i, task in enumerate(today_tasks[:5], 1):
+                    col1, col2 = st.columns([4, 1])
+                    with col1:
+                        st.markdown(f"**{i}.** {task['action']}")
+                        if task.get('next_step'):
+                            st.caption(f"   → {task['next_step']}")
+                    with col2:
+                        if st.checkbox("✅ Done", key=f"task_{i}"):
+                            st.success("Completed!")
+                    st.divider()
+            else:
+                st.success("✅ All caught up! No urgent tasks today.")
+            
+            st.markdown("---")
+            
+            # ═══ PENDING RESPONSES ═══
+            st.markdown("## 📤 AWAITING RESPONSE")
+            st.caption("Check for replies from these contacts:")
+            
+            if pending:
+                for c in pending[:8]:
+                    col1, col2, col3 = st.columns([3, 1, 1])
+                    with col1:
+                        st.write(f"**{c['Name']}** @ {c['Company']}")
+                        st.caption(f"Last touch: {c.get('Last Touch', 'Unknown')} | Channel: {c.get('Channel', 'Unknown')}")
+                    with col2:
+                        st.caption(c.get('Status', 'Unknown'))
+                    with col3:
+                        if st.button("✅ Replied", key=f"replied_brief_{c['Name']}"):
+                            for contact in st.session_state['crm_contacts']:
+                                if contact['Name'] == c['Name']:
+                                    contact['Status'] = 'Warm'
+                                    break
+                            st.rerun()
+            else:
+                st.info("No pending outreach.")
+            
+            st.markdown("---")
+            
+            # ═══ NEXT 7 DAYS FOLLOW-UPS ═══
+            st.markdown("## 📅 NEXT 7 DAYS")
+            
+            # Group by urgency
+            this_week = medium_tasks[:10]
+            
+            if this_week:
+                for c in this_week:
+                    st.markdown(f"• **{c['Name']}** @ {c['Company']} — *{c.get('Next Step', 'TBD')}*")
+            else:
+                st.info("Pipeline is clear for the week!")
+            
+            st.markdown("---")
+            
+            # ═══ QUICK STATS ═══
+            st.markdown("## 📊 PIPELINE SNAPSHOT")
+            
+            k1, k2, k3, k4 = st.columns(4)
+            k1.metric("TOTAL CONTACTS", len(contacts))
+            k2.metric("ACTIVE DEALS", len(deals))
+            k3.metric("PENDING RESPONSES", len(pending))
+            k4.metric("INTERVIEWS", len(interviews))
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 2: CONTACT DATABASE (Original)
+        # ═══════════════════════════════════════════════════════════════
+        with crm_tab2:
             st.markdown("### 👤 CONTACT DATABASE")
             
             # Metrics
@@ -2309,9 +2430,9 @@ start with full focus on day one. Is that something we can add?"
                         st.rerun()
         
         # ═══════════════════════════════════════════════════════════════
-        # TAB 2: DEAL PIPELINE
+        # TAB 3: DEAL PIPELINE
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab2:
+        with crm_tab3:
             st.markdown("### 📈 DEAL PIPELINE")
             
             deals = st.session_state['crm_deals']
@@ -2344,9 +2465,51 @@ start with full focus on day one. Is that something we can add?"
             st.session_state['crm_deals'] = edited_deals
         
         # ═══════════════════════════════════════════════════════════════
-        # TAB 3: COMPANY ENRICHMENT (AI AUTO-FILL)
+        # TAB 4: RECRUITERS & NETWORK
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab3:
+        with crm_tab4:
+            st.markdown("### 👥 RECRUITERS & NETWORK")
+            st.caption("Track your recruiter relationships and network contacts.")
+            
+            # Initialize Recruiters
+            if 'crm_recruiters' not in st.session_state:
+                st.session_state['crm_recruiters'] = [
+                    {"Name": "Virginia Bowers", "Agency": "Sellers Hub", "Specialty": "Enterprise SaaS", "Quality": "⭐⭐⭐⭐", "Status": "Active", "Notes": "Very responsive, quality leads"},
+                    {"Name": "Gia Thomas", "Agency": "Neuco", "Specialty": "Cybersecurity", "Quality": "⭐⭐⭐⭐", "Status": "Active", "Notes": "Cyber niche recruiter"},
+                    {"Name": "Luca Browning", "Agency": "Rise Technical", "Specialty": "SaaS", "Quality": "⭐⭐⭐", "Status": "Active", "Notes": "Good recruiter, candidate-first"},
+                    {"Name": "Kayleigh", "Agency": "Aikido Security", "Specialty": "Internal", "Quality": "⭐⭐⭐⭐⭐", "Status": "Active", "Notes": "Internal, strong process"},
+                    {"Name": "Nicole Ceranna", "Agency": "Ambient.ai", "Specialty": "Internal", "Quality": "⭐⭐⭐⭐", "Status": "Active", "Notes": "Forwarded to CFO"},
+                    {"Name": "Justin Dedrickson", "Agency": "Verkada", "Specialty": "Internal", "Quality": "⭐⭐⭐", "Status": "Active", "Notes": "High volume hiring"},
+                    {"Name": "Christine Covert", "Agency": "Independent", "Specialty": "GTM", "Quality": "⭐⭐⭐⭐", "Status": "Replied", "Notes": "Senior Mgr / 0-to-1 qualification"},
+                    {"Name": "Kelli Hrivnak", "Agency": "Knak Digital", "Specialty": "SMB", "Quality": "⭐⭐⭐", "Status": "Connection", "Notes": "GTM Architect for SMBs"},
+                ]
+            
+            st.dataframe(st.session_state['crm_recruiters'], use_container_width=True)
+            
+            st.markdown("---")
+            st.markdown("#### ➕ ADD RECRUITER")
+            r1, r2, r3 = st.columns(3)
+            new_rec_name = r1.text_input("Recruiter Name", key="new_rec_name")
+            new_rec_agency = r2.text_input("Agency/Company", key="new_rec_agency")
+            new_rec_spec = r3.text_input("Specialty", key="new_rec_spec")
+            
+            if st.button("ADD RECRUITER", key="add_rec_btn"):
+                if new_rec_name:
+                    st.session_state['crm_recruiters'].append({
+                        "Name": new_rec_name,
+                        "Agency": new_rec_agency,
+                        "Specialty": new_rec_spec,
+                        "Quality": "⭐⭐⭐",
+                        "Status": "New",
+                        "Notes": ""
+                    })
+                    st.success(f"✅ Added {new_rec_name}")
+                    st.rerun()
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 5: COMPANY ENRICHMENT (AI AUTO-FILL)
+        # ═══════════════════════════════════════════════════════════════
+        with crm_tab5:
             st.markdown("### 🏢 COMPANY ENRICHMENT (AI AUTO-FILL)")
             st.caption("Paste a company name or website URL → AI fills in key intel.")
             
@@ -2389,61 +2552,71 @@ start with full focus on day one. Is that something we can add?"
                             st.info("Use the Contact tab to add a new contact with this company.")
         
         # ═══════════════════════════════════════════════════════════════
-        # TAB 4: FOLLOW-UP ENGINE
+        # TAB 6: ARCHIVE & CLOSED
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab4:
-            st.markdown("### ⏰ FOLLOW-UP ENGINE")
-            st.caption("What needs attention TODAY and this week.")
+        with crm_tab6:
+            st.markdown("### 📦 ARCHIVE & CLOSED")
+            st.caption("Closed opportunities and archived contacts.")
             
-            contacts = st.session_state['crm_contacts']
+            # Initialize Archive
+            if 'crm_archive' not in st.session_state:
+                st.session_state['crm_archive'] = [
+                    {"Company": "Pallet", "Role": "Founding AE", "Status": "Closed", "Reason": "Candidates at offer stage"},
+                    {"Company": "Valerie Health", "Role": "Founding AE", "Status": "Closed", "Reason": "Late-stage candidates"},
+                    {"Company": "Serval", "Role": "AE", "Status": "Closed", "Reason": "Security requirement mismatch"},
+                    {"Company": "Anthropic", "Role": "Enterprise AE", "Status": "Rejected", "Reason": "Did not pass screen"},
+                    {"Company": "One Workplace", "Role": "Enterprise MDM", "Status": "Closed", "Reason": "Role expired"},
+                    {"Company": "Andreessen Horowitz", "Role": "GTM Partner", "Status": "Closed", "Reason": "Requisition removed"},
+                    {"Company": "Soteria", "Role": "Strategic AE", "Status": "Closed", "Reason": "No response after 3 cycles"},
+                    {"Company": "Thrively", "Role": "Enterprise AE", "Status": "Archived", "Reason": "No movement after 3 weeks"},
+                    {"Company": "WilsonAI", "Role": "Founding Sales Lead", "Status": "Archived", "Reason": "Founder silent"},
+                    {"Company": "Whatfix", "Role": "Enterprise AE", "Status": "Archived", "Reason": "No movement after 3 weeks"},
+                ]
             
-            # Due Today (based on next step containing dates or "Follow")
-            st.markdown("#### 🔥 DUE TODAY / URGENT")
-            urgent = [c for c in contacts if c['Priority'] == '🔥 HIGH' and c['Status'] not in ['Closed', 'Interview Scheduled']]
-            
-            if urgent:
-                for c in urgent[:5]:
-                    st.markdown(f"**{c['Name']}** @ {c['Company']} — *{c.get('Next Step', 'TBD')}*")
-                    st.caption(f"Status: {c['Status']} | Last: {c.get('Last Touch', 'N/A')}")
-                    st.divider()
-            else:
-                st.success("✅ No urgent follow-ups!")
+            st.dataframe(st.session_state['crm_archive'], use_container_width=True)
             
             st.markdown("---")
             
-            # Pending Outreach
-            st.markdown("#### 📤 PENDING RESPONSES (Awaiting Reply)")
-            pending = [c for c in contacts if c['Status'] in ['Outreach Sent', 'Sent', 'Under Review']]
+            # Move to Archive from Contacts
+            st.markdown("#### 🗑️ ARCHIVE A CONTACT")
+            contacts = st.session_state.get('crm_contacts', [])
+            contact_names = [c['Name'] for c in contacts]
             
-            if pending:
-                for c in pending[:8]:
-                    col1, col2 = st.columns([3, 1])
-                    with col1:
-                        st.write(f"**{c['Name']}** @ {c['Company']}")
-                        st.caption(f"Channel: {c.get('Channel', 'Unknown')} | Last: {c.get('Last Touch', 'N/A')}")
-                    with col2:
-                        if st.button("✅ Mark Replied", key=f"replied_{c['Name']}"):
-                            for contact in st.session_state['crm_contacts']:
-                                if contact['Name'] == c['Name']:
-                                    contact['Status'] = 'Warm'
-                                    break
-                            st.rerun()
-            else:
-                st.info("No pending outreach.")
+            if contact_names:
+                contact_to_archive = st.selectbox("Select contact to archive:", contact_names, key="archive_select")
+                archive_reason = st.text_input("Reason for archiving:", key="archive_reason")
+                
+                if st.button("ARCHIVE CONTACT", type="secondary", key="archive_btn"):
+                    if contact_to_archive:
+                        # Find and move contact
+                        for i, c in enumerate(st.session_state['crm_contacts']):
+                            if c['Name'] == contact_to_archive:
+                                st.session_state['crm_archive'].append({
+                                    "Company": c['Company'],
+                                    "Role": c['Role'],
+                                    "Status": "Archived",
+                                    "Reason": archive_reason or "Manually archived"
+                                })
+                                st.session_state['crm_contacts'].pop(i)
+                                st.success(f"✅ Archived {contact_to_archive}")
+                                st.rerun()
+                                break
             
             st.markdown("---")
             
             # Export Option
-            if st.button("📥 EXPORT CRM DATA (JSON)", use_container_width=True):
+            if st.button("📥 EXPORT ALL CRM DATA (JSON)", use_container_width=True):
                 import json
                 export_data = {
-                    "contacts": st.session_state['crm_contacts'],
-                    "deals": st.session_state['crm_deals']
+                    "contacts": st.session_state.get('crm_contacts', []),
+                    "deals": st.session_state.get('crm_deals', []),
+                    "recruiters": st.session_state.get('crm_recruiters', []),
+                    "archive": st.session_state.get('crm_archive', [])
                 }
                 st.download_button(
-                    "💾 Download CRM Export",
+                    "💾 Download Full CRM Export",
                     data=json.dumps(export_data, indent=2),
-                    file_name="basin_nexus_crm_export.json",
+                    file_name="basin_nexus_crm_full_export.json",
                     mime="application/json"
                 )
 
