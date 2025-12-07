@@ -20,8 +20,7 @@ from logic.generator import generate_signal_output, estimate_tokens, get_model_o
 from logic.voice import transcribe_audio, generate_speech, get_voice_options
 from logic.video import analyze_video_pitch, validate_video, get_video_info
 
-# Import audio recorder (Python 3.13 compatible)
-from audio_recorder_streamlit import audio_recorder
+# Note: Using native st.audio_input instead of audio_recorder_streamlit for Cloud compatibility
 
 
 # ═══════════════════════════════════════════════════════════════
@@ -2083,7 +2082,7 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                 TASK: Ask ONE challenging, open-ended question to stress-test this claim. Do not be polite. Go for the root cause.
                 """
                 # Use existing generator function
-                model_id = st.session_state.get('selected_model_id', "groq:llama-3.3-70b-versatile")
+                model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
                 st.session_state['current_q'] = generate_plain_text(q_prompt, model_name=model_id)
                 st.session_state['sim_active'] = True
 
@@ -2142,7 +2141,7 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                         3. Rewrite the "Hook" (First 2 sentences) to be 2x more executive.
                         """
                         # Use existing generator function
-                        model_id = st.session_state.get('selected_model_id', "groq:llama-3.3-70b-versatile")
+                        model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
                         feedback = generate_plain_text(analysis_prompt, model_name=model_id)
                         
                         # D. THE SCOREBOARD
@@ -2205,7 +2204,7 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                     ### 🏆 THE IMPACT (Day 90 KPI)
                     - Define one major outcome (e.g., "Full Pipeline Visibility" or "20% Efficiency Gain").
                     """
-                    plan = generate_plain_text(prompt, model_name=selected_model)
+                    plan = generate_plain_text(prompt, model_name=st.session_state.get('selected_model_id', 'llama-3.3-70b-versatile'))
                     st.session_state['90_day_plan'] = plan
             else:
                 st.error("Please paste a JD.")
@@ -2830,7 +2829,7 @@ start with full focus on day one. Is that something we can add?"
                         Be concise. Use real data if you know it.
                         """
                         
-                        result = generate_plain_text(prompt, model_name=selected_model)
+                        result = generate_plain_text(prompt, model_name=st.session_state.get('selected_model_id', 'llama-3.3-70b-versatile'))
                         
                         st.markdown("---")
                         st.markdown("### 📊 COMPANY INTEL BRIEF")
@@ -2986,7 +2985,7 @@ start with full focus on day one. Is that something we can add?"
                     
                     Be specific and actionable.
                     """
-                    model_id = st.session_state.get('selected_model_id', "groq:llama-3.3-70b-versatile")
+                    model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
                     intel_result = generate_plain_text(intel_prompt, model_name=model_id)
                     st.session_state['company_intel'] = intel_result
             
@@ -3046,7 +3045,7 @@ start with full focus on day one. Is that something we can add?"
                     
                     Keep it punchy - this is a quick refresh before the call.
                     """
-                    model_id = st.session_state.get('selected_model_id', "groq:llama-3.3-70b-versatile")
+                    model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
                     briefing = generate_plain_text(brief_prompt, model_name=model_id)
                     st.markdown(briefing)
         

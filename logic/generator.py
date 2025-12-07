@@ -39,43 +39,27 @@ def get_model_options() -> list:
         # ⚡ GROQ CLOUD FLEET (FREE - Ultra Fast Inference)
         # ═══════════════════════════════════════════════════════════
         
-        # --- REASONING / DEEP THINKING ---
-        ("🧠 GPT OSS 120B (Reasoning)", "groq:gpt-oss-120b"),
-        ("🧠 GPT OSS 20B (Reasoning)", "groq:gpt-oss-20b"),
-        ("🧠 Qwen 3 32B (Reasoning)", "groq:qwen3-32b"),
+        # --- PRODUCTION MODELS ---
+        ("⚡ Llama 3.3 70B (Versatile)", "llama-3.3-70b-versatile"),
+        ("⚡ GPT OSS 120B (Fast)", "openai/gpt-oss-120b"),
+        ("⚡ GPT OSS 20B (Fast)", "openai/gpt-oss-20b"),
         
-        # --- FUNCTION CALLING / TOOL USE ---
-        ("🔧 GPT OSS 120B (Tools)", "groq:gpt-oss-120b"),
-        ("🔧 Kimi K2 (Tools)", "groq:kimi-k2"),
-        ("🔧 Llama 4 Scout (Tools)", "groq:llama-4-scout"),
-        ("🔧 Qwen 3 32B (Tools)", "groq:qwen3-32b"),
-        
-        # --- TEXT-TO-TEXT (General) ---
-        ("⚡ GPT OSS 120B (Fast)", "groq:gpt-oss-120b"),
-        ("⚡ GPT OSS 20B (Fast)", "groq:gpt-oss-20b"),
-        ("⚡ Kimi K2 (Fast)", "groq:kimi-k2"),
-        ("⚡ Llama 4 Scout (Fast)", "groq:llama-4-scout"),
-        ("⚡ Llama 3.3 70B (Versatile)", "groq:llama-3.3-70b-versatile"),
-        
-        # --- VISION (Multimodal) ---
-        ("👁️ Llama 4 Scout (Vision)", "groq:llama-4-scout"),
-        ("👁️ Llama 4 Maverick (Vision)", "groq:llama-4-maverick"),
-        
-        # --- MULTILINGUAL ---
-        ("🌍 GPT OSS 120B (Multilingual)", "groq:gpt-oss-120b"),
-        ("🌍 Kimi K2 (Multilingual)", "groq:kimi-k2"),
-        ("🌍 Llama 4 Scout (Multilingual)", "groq:llama-4-scout"),
+        # --- PREVIEW MODELS ---
+        ("🧪 Kimi K2 (Preview)", "moonshotai/kimi-k2-instruct"),
+        ("🧪 Llama 4 Scout (Preview)", "meta-llama/llama-4-scout-17b-16e-instruct"),
+        ("🧪 Llama 4 Maverick (Preview)", "meta-llama/llama-4-maverick-17b-128e-instruct"),
+        ("🧪 Qwen 3 32B (Preview)", "qwen/qwen3-32b"),
         
         # --- SPEECH-TO-TEXT ---
-        ("🎤 Whisper Large v3", "groq:whisper-large-v3"),
-        ("🎤 Whisper Large v3 Turbo", "groq:whisper-large-v3-turbo"),
+        ("🎤 Whisper Large v3", "whisper-large-v3"),
+        ("🎤 Whisper Large v3 Turbo", "whisper-large-v3-turbo"),
         
         # --- TEXT-TO-SPEECH ---
-        ("🔊 PlayAI TTS", "groq:playai-tts"),
+        ("🔊 PlayAI TTS", "playai-tts"),
         
         # --- SAFETY / CONTENT MODERATION ---
-        ("🛡️ Safety GPT OSS 20B", "groq:safety-gpt-oss-20b"),
-        ("🛡️ Llama Guard", "groq:llama-guard"),
+        ("🛡️ Safety GPT OSS 20B", "openai/gpt-oss-safeguard-20b"),
+        ("🛡️ Llama Guard", "meta-llama/llama-guard-4-12b"),
         
         # ═══════════════════════════════════════════════════════════
         # 🏠 LOCAL MODELS (Ollama - No API Key Required)
@@ -188,7 +172,7 @@ def generate_signal_output(messages: list, model: str = None) -> dict:
     if MOCK_MODE:
         return _get_mock_data()
     
-    model = model or "groq:llama-3.3-70b-versatile"
+    model = model or "llama-3.3-70b-versatile"
     provider = get_provider(model)
     
     if provider == "groq":
@@ -201,7 +185,7 @@ def generate_signal_output(messages: list, model: str = None) -> dict:
         return _generate_with_openai(messages, model)
 
 
-def generate_plain_text(prompt: str, model_name: str = "groq:llama-3.3-70b-versatile") -> str:
+def generate_plain_text(prompt: str, model_name: str = "llama-3.3-70b-versatile") -> str:
     """
     Generates plain text (non-JSON) output for conversational features like War Room.
     Mainly supports Groq for speed.
