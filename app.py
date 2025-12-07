@@ -635,17 +635,62 @@ with st.sidebar:
     # 3. BIO-OS (PHYSICAL PROTOCOLS)
     with st.expander("🧬 BIO-OS: OPTIMIZE MACHINE", expanded=False):
         st.caption("The code is only as strong as the vessel.")
+        
+        # Session Tracking
+        import datetime
+        if 'session_start' not in st.session_state:
+            st.session_state.session_start = datetime.datetime.now()
+        if 'water_count' not in st.session_state:
+            st.session_state.water_count = 0
+        if 'workout_count' not in st.session_state:
+            st.session_state.workout_count = 0
+            
+        session_duration = datetime.datetime.now() - st.session_state.session_start
+        hours = int(session_duration.total_seconds() // 3600)
+        minutes = int((session_duration.total_seconds() % 3600) // 60)
+        
+        # Session Stats Row
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("⏱️ Session", f"{hours}h {minutes}m")
+        with col2:
+            st.metric("💧 Hydration", f"{st.session_state.water_count} glasses")
+        with col3:
+            st.metric("🏋️ Workouts", str(st.session_state.workout_count))
+        
+        # Break Alert
+        if hours >= 2:
+            st.warning("⚠️ 2+ HOURS — Time for a movement break!")
+        elif hours >= 1:
+            st.info("💡 1+ hour in session — Consider a stretch.")
+        
+        # Posture-Based Workout
+        st.markdown("---")
         bio_modes = ["Standing", "Couch", "Floor", "Desk"]
         current_posture = st.selectbox("Current Posture", bio_modes)
         
-        if st.button("⚡ GENERATE MICRO-WORKOUT"):
-            workouts = {
-                "Standing": "10 Squats + 30s Calf Raises. Keep blood pumping.",
-                "Couch": "Seated Leg Lifts (20 reps). Core activation.",
-                "Floor": "Plank (1 min) + Cobra Stretch. Reset the spine.",
-                "Desk": "Neck Rotations + Wrist Decompression. Protect the inputs."
-            }
-            st.success(f"PROTOCOL: {workouts[current_posture]}")
+        col_a, col_b = st.columns(2)
+        with col_a:
+            if st.button("⚡ MICRO-WORKOUT"):
+                workouts = {
+                    "Standing": "10 Squats + 30s Calf Raises. Keep blood pumping.",
+                    "Couch": "Seated Leg Lifts (20 reps). Core activation.",
+                    "Floor": "Plank (1 min) + Cobra Stretch. Reset the spine.",
+                    "Desk": "Neck Rotations + Wrist Decompression. Protect the inputs."
+                }
+                st.session_state.workout_count += 1
+                st.success(f"🎯 {workouts[current_posture]}")
+        with col_b:
+            if st.button("💧 LOG WATER"):
+                st.session_state.water_count += 1
+                st.toast("💧 Hydration logged!", icon="✅")
+        
+        # Reset Session
+        if st.button("🔄 Reset Session", use_container_width=True):
+            st.session_state.session_start = datetime.datetime.now()
+            st.session_state.water_count = 0
+            st.session_state.workout_count = 0
+            st.toast("Session reset!", icon="🔄")
     st.markdown("#### ⚙️ SYSTEM CORE")
     
     # Check for Streamlit Secrets first (for always-on deployment)
