@@ -2256,40 +2256,90 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                 ["NVIDIA (AI/Arch)", "LinkedIn (Values)", "eBay (Scale/Ops)", "Generic Series B"],
                 help="Configures the AI's personality and question logic.")
         with c2:
-            interviewer_style = st.selectbox("🗣️ INTERVIEWER STYLE", 
-                ["The Skeptic (Drill Down)", "The Visionary (Big Picture)", "The Bar Raiser (Behavioral)"])
+            # SHADOW CABINET PERSONAS
+            interviewer_style = st.selectbox("🗣️ SHADOW CABINET", 
+                [
+                    "👔 Marcus (The CRO) - Revenue & Forecasts",
+                    "💰 Sarah (The VC) - Metrics & Unit Economics", 
+                    "🦄 David (The Visionary) - Strategy & Scale",
+                    "⚙️ Alex (The CTO) - Systems & Data",
+                    "🤝 Elena (The People Leader) - Culture & Conflict"
+                ])
         with c3:
             artifact_focus = st.selectbox("📂 ARTIFACT DEFENSE", 
-                ["160% Pipeline Growth", "Revenue OS Architecture", "Leadership/Management"])
+                ["160% Pipeline Growth", "Revenue OS Architecture", "Leadership/Management", "General Background"])
 
         # 2. THE SIMULATION LOOP
         st.markdown("---")
         
-        if st.button("🔴 INITIATE SIMULATION", type="primary", use_container_width=True):
-            with st.spinner(f"Loading {target_company} Neural Profile..."):
-                from logic.generator import generate_plain_text
-                
-                # Company-Specific Logic Injection
-                company_context = ""
-                if "NVIDIA" in target_company:
-                    company_context = "Focus heavily on 'First Principles' thinking, technical architecture of the GTM system, and speed of execution. Be intense but logical."
-                elif "LinkedIn" in target_company:
-                    company_context = "Focus on 'Members First' value, 'Intelligent Risk Taking', and navigating complex matrixed organizations. Be collaborative."
-                elif "eBay" in target_company:
-                    company_context = "Focus on operational efficiency, marketplaces, and data-driven decision making (Google Ops DNA)."
-                
-                # Generate the Question
-                q_prompt = f"""
-                ACT AS: A Senior Hiring Manager at {target_company}. Style: {interviewer_style}.
-                CONTEXT: {company_context}
-                CANDIDATE CLAIM: {artifact_focus} (Leon Basin).
-                
-                TASK: Ask ONE challenging, open-ended question to stress-test this claim. Do not be polite. Go for the root cause.
-                """
-                # Use existing generator function
-                model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
-                st.session_state['current_q'] = generate_plain_text(q_prompt, model_name=model_id)
-                st.session_state['sim_active'] = True
+        b1, b2 = st.columns(2)
+        
+        # ACTION 1: SIMULATION (Drilling)
+        with b1:
+            if st.button("🔴 INITIATE INTERVIEW SIM", type="primary", use_container_width=True):
+                with st.spinner(f"Summoning {interviewer_style}..."):
+                    from logic.generator import generate_plain_text
+                    
+                    # Persona Logic
+                    persona_prompt = ""
+                    if "Marcus" in interviewer_style:
+                        persona_prompt = "You are Marcus, a ruthless CRO. You care ONLY about forecast accuracy, pipeline velocity, and revenue predictability. You hate fluff. You want numbers."
+                    elif "Sarah" in interviewer_style:
+                        persona_prompt = "You are Sarah, a Sequoia Partner. You care about CAC, LTV, Magic Number, and Scalability. You want to know if this person understands the business model."
+                    elif "David" in interviewer_style:
+                        persona_prompt = "You are David, a Visionary Founder. You care about the 'Why', the 10x thinking, and the narrative. You want to be inspired."
+                    elif "Alex" in interviewer_style:
+                        persona_prompt = "You are Alex, a skeptical CTO. You care about how the systems actually work, data integrity, and API integrations. You smell BS instantly."
+                    elif "Elena" in interviewer_style:
+                        persona_prompt = "You are Elena, a VP of People. You care about EQ, conflict resolution, diversity, and how this person leads teams. You hate toxicity."
+
+                    # Company Context
+                    company_context = ""
+                    if "NVIDIA" in target_company:
+                        company_context = "Context: NVIDIA (First Principles, Speed, Innovation)."
+                    elif "LinkedIn" in target_company:
+                        company_context = "Context: LinkedIn (Economic Graph, Members First, Collaboration)."
+                    
+                    # Generate the Question
+                    q_prompt = f"""
+                    ACT AS: {persona_prompt}
+                    TARGET COMPANY: {target_company}.
+                    {company_context}
+                    CANDIDATE CLAIM: {artifact_focus} (Leon Basin).
+                    
+                    TASK: Ask ONE challenging, open-ended question to stress-test this claim. Stay in character (Marcus/Sarah/David/Alex/Elena).
+                    """
+                    
+                    model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
+                    st.session_state['current_q'] = generate_plain_text(q_prompt, model_name=model_id)
+                    st.session_state['sim_active'] = True
+                    st.session_state['sim_mode'] = "interview"
+
+        # ACTION 2: COLLABORATION (Brainstorming)
+        with b2:
+            if st.button("🔵 COLLABORATE / STRATEGY", use_container_width=True):
+                with st.spinner(f"Brainstorming with {interviewer_style}..."):
+                    from logic.generator import generate_plain_text
+                    
+                    # Persona Logic (Helper Mode)
+                    persona_prompt = "You are a helpful, brilliant strategic advisor."
+                    if "Marcus" in interviewer_style:
+                        persona_prompt = "You are Marcus, a seasoned CRO mentor. You want to help Leon build a bulletproof revenue engine."
+                    elif "Sarah" in interviewer_style:
+                        persona_prompt = "You are Sarah, a VC mentor. You want to help Leon frame his story for investors and board members."
+                    
+                    q_prompt = f"""
+                    ACT AS: {persona_prompt}
+                    TOPIC: {artifact_focus}
+                    
+                    TASK: Provide 3 strategic bullet points on how Leon should position this topic to impress a hiring manager at {target_company}.
+                    Be constructive and collaborative.
+                    """
+                    
+                    model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
+                    st.session_state['current_q'] = generate_plain_text(q_prompt, model_name=model_id)
+                    st.session_state['sim_active'] = True
+                    st.session_state['sim_mode'] = "collaborate"
 
         # 3. INTERACTION LAYER
         if st.session_state.get('sim_active'):
@@ -2310,14 +2360,20 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                 st.caption(f"Audio generation skipped: {str(e)}")
 
             # B. THE RESPONSE (Voice Input Simulation)
-            st.markdown("#### 🎙️ YOUR RESPONSE")
-            st.caption("Instructions: Use your system's dictation tool (Fn+Fn on Mac) to speak into the box below.")
-            user_transcript = st.text_area("Transcript Input", height=200, placeholder="[ Speak Answer Here ]")
+            st.markdown("#### 🎙️ YOUR INPUT")
+            
+            sim_mode = st.session_state.get('sim_mode', 'interview')
+            input_placeholder = "[ Speak Answer Here ]" if sim_mode == "interview" else "[ Ask follow up question or refine strategy ]"
+            
+            st.caption(f"Instructions: Use your system's dictation tool (Fn+Fn on Mac) to speak into the box below. Mode: **{sim_mode.upper()}**")
+            user_transcript = st.text_area("Transcript Input", height=200, placeholder=input_placeholder)
 
             # C. SPEECH TELEMETRY ENGINE
-            if st.button("🛑 END & ANALYZE PERFORMANCE", use_container_width=True):
+            btn_label = "🛑 END & ANALYZE PERFORMANCE" if sim_mode == "interview" else "🛑 FINALIZE STRATEGY"
+            
+            if st.button(btn_label, use_container_width=True):
                 if user_transcript:
-                    with st.spinner("CALCULATING TELEMETRY..."):
+                    with st.spinner("PROCESSING..."):
                         from logic.generator import generate_plain_text
                         
                         # 1. LOGIC: WPM CALCULATION
@@ -2331,20 +2387,35 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                         filler_density = (filler_count / word_count) * 100 if word_count > 0 else 0
                         
                         # 3. LLM: CONTENT ANALYSIS
-                        analysis_prompt = f"""
-                        ACT AS: Executive Communication Coach.
-                        CONTEXT: Company: {target_company}. Question: {st.session_state['current_q']}.
-                        TRANSCRIPT: "{user_transcript}"
+                        if sim_mode == "interview":
+                            analysis_prompt = f"""
+                            ACT AS: Executive Communication Coach.
+                            CONTEXT: Company: {target_company}. Question: {st.session_state['current_q']}.
+                            TRANSCRIPT: "{user_transcript}"
+                            
+                            METRICS:
+                            - WPM: {est_wpm} (Target: 130-150)
+                            - Filler Density: {filler_density:.1f}% (Target: < 3%)
+                            
+                            TASK:
+                            1. Grade the answer (A-F) based on {target_company} culture.
+                            2. Did they mention the "160% Growth" or "$10M" metric?
+                            3. Rewrite the "Hook" (First 2 sentences) to be 2x more executive.
+                            """
+                        else:
+                            # COLLABORATION MODE
+                            analysis_prompt = f"""
+                            ACT AS: Strategic Advisor ({interviewer_style}).
+                            CONTEXT: We are brainstorming strategy for {target_company}.
+                            MY INPUT/FOLLOW UP: "{user_transcript}"
+                            PREVIOUS ADVICE: {st.session_state['current_q']}
+                            
+                            TASK:
+                            1. Refine the strategy based on my input.
+                            2. Provide a concrete "Next Step" or "Action Item".
+                            3. Draft a short email snippet I could send to {target_company} regarding this topic.
+                            """
                         
-                        METRICS:
-                        - WPM: {est_wpm} (Target: 130-150)
-                        - Filler Density: {filler_density:.1f}% (Target: < 3%)
-                        
-                        TASK:
-                        1. Grade the answer (A-F) based on {target_company} culture.
-                        2. Did they mention the "160% Growth" or "$10M" metric?
-                        3. Rewrite the "Hook" (First 2 sentences) to be 2x more executive.
-                        """
                         # Use existing generator function
                         model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
                         feedback = generate_plain_text(analysis_prompt, model_name=model_id)
@@ -3382,21 +3453,30 @@ start with full focus on day one. Is that something we can add?"
                         st.rerun()
             
             with col2:
+                # Framework Selector for Objection Handling
+                obj_framework = st.radio("Strategy:", ["PREP (Direct)", "SOAR (Strategic)", "STAR (Story)", "CIRCLE (Process)"], horizontal=True, index=0)
+                
                 if st.button("🤖 AI GENERATE RESPONSE"):
                     if new_objection:
                         from logic.generator import generate_plain_text
                         
                         gen_prompt = f"""
-                        You are a Director-level GTM executive. Generate a confident, data-backed response to this interview objection:
+                        You are a Director-level GTM executive. Generate a confident, data-backed response to this interview objection.
                         
                         OBJECTION: {new_objection}
                         
-                        Use these real achievements:
+                        FRAMEWORK TO USE: {obj_framework}
+                        - PREP: Point, Reason, Example, Point (Best for rapid fire)
+                        - SOAR: Situation, Obstacle, Action, Result (Best for strategic challenges)
+                        - STAR: Situation, Task, Action, Result (Best for behavioral)
+                        - CIRCLE: Context, Implication, Result, Complexity, Leadership, Execution (Best for process)
+                        
+                        Use these real achievements where relevant:
                         - 160% YoY pipeline growth at Fudo Security
                         - $10M pipeline built at Sense
                         - Partner Revenue OS that reduced CAC by 40%
                         
-                        Keep it under 100 words. Be confident, not defensive.
+                        Keep it under 100 words. Be confident, not defensive. Structure it clearly.
                         """
                         
                         model_id = st.session_state.get('selected_model_id', 'llama-3.3-70b-versatile')
