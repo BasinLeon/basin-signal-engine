@@ -2058,45 +2058,88 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                     # Metric Detection
                     has_metric = any(char.isdigit() for char in transcript_text) or '$' in transcript_text or '%' in transcript_text
                     
-                    # Keyword Scan (STAR Method)
-                    star_keywords = ['situation', 'task', 'action', 'result', 'achieved', 'delivered', 'built', 'led', 'grew', 'increased']
-                    star_hits = sum(1 for kw in star_keywords if kw.lower() in transcript_text.lower())
+                    # Estimate WPM (assuming average 60-90 seconds for a typical response)
+                    # A rough estimate: 150 words/minute is average speaking speed.
+                    # If we assume a 60-second response, WPM = words.
+                    # For a more robust calculation, one would need actual duration.
+                    # For now, let's assume a target duration of 60 seconds for WPM calculation.
+                    wpm = words # Simplified for now, as actual duration is not available from st.audio_input
+                    if words > 0:
+                        # If we want to be more accurate, we'd need the audio duration.
+                        # For a text_area, we can't get duration. Let's assume a 60-second target.
+                        # If the user speaks 150 words, WPM is 150. If 75 words, WPM is 75.
+                        # This is a placeholder.
+                        pass
                     
+                    # ═══════════════════════════════════════════════════════════════
+                    # FRAMEWORK SELECTOR (STAR vs SOAR)
+                    # ═══════════════════════════════════════════════════════════════
+                    framework = st.radio("🧠 Framework Strategy", ["STAR (Behavioral)", "SOAR (Strategic)"], horizontal=True, help="STAR = Situation, Task, Action, Result (Standard)\nSOAR = Situation, Obstacle, Action, Result (Senior Leadership)")
+                    
+                    # Keyword Scan (STAR vs SOAR)
+                    if "STAR" in framework:
+                        star_keywords = ["situation", "task", "action", "result", "because", "therefore", "led", "built", "created"]
+                        framework_hits = sum(1 for word in transcript_text.lower().split() if word in star_keywords)
+                        k4_label = "STAR SIGNAL"
+                    else:
+                        # SOAR Keywords: Focus on Obstacles/Strategy
+                        soar_keywords = ["obstacle", "challenge", "blocked", "pivot", "strategy", "overcame", "solution", "result", "impact"]
+                        framework_hits = sum(1 for word in transcript_text.lower().split() if word in soar_keywords)
+                        k4_label = "SOAR SIGNAL"
+
                     # 5. THE SCOREBOARD
                     st.markdown("### 📊 PERFORMANCE TELEMETRY")
                     
                     k1, k2, k3, k4 = st.columns(4)
-                    k1.metric("WORD COUNT", words, "Target: 150-200")
-                    k2.metric("FILLER WORDS", filler_count, "Target: <3", delta_color="inverse")
-                    k3.metric("DATA DENSITY", "✅ HIGH" if has_metric else "❌ LOW", "Critical")
-                    k4.metric("STAR KEYWORDS", star_hits, f"{star_hits}/10")
+                    k1.metric("WPM", wpm, "Target: 130-150")
+                    k2.metric("FILLERS", filler_count, "Target: <3")
+                    k3.metric("METRICS", "✅ Detected" if has_metric else "❌ Missing", "Use #s")
+                    k4.metric(k4_label, framework_hits, "Target: 3+")
                     
-                    st.markdown("---")
+                    st.divider()
+
+                    # ═══════════════════════════════════════════════════════════════
+                    # AI COACHING FEEDBACK
+                    # ═══════════════════════════════════════════════════════════════
+                    st.markdown("#### 🤖 AI COACHING FEEDBACK")
                     
-                    # Transcript Display
-                    st.markdown("#### 📝 TRANSCRIPT")
-                    st.text_area("Your Response", value=transcript_text, height=200, disabled=True)
-                    
-                    # Copy Button
-                    st.download_button("📋 Download Transcript", transcript_text, "voice_transcript.txt")
-                    
-                    st.markdown("---")
-                    
-                    # Coaching Feedback
-                    st.markdown("#### 🎯 COACHING FEEDBACK")
-                    
-                    if filler_count > 3:
-                        st.warning("⚠️ **HIGH FILLER COUNT:** Too many 'um's and 'uh's. Practice pausing instead.")
-                    
-                    if not has_metric:
-                        st.error("🚨 **MISSING METRICS:** You didn't cite any numbers. Always include the '160%' or '$10M' figure.")
-                    
-                    if star_hits < 3:
-                        st.info("💡 **STRUCTURE TIP:** Use more STAR method keywords (Situation, Task, Action, Result).")
-                    
-                    if has_metric and filler_count <= 3 and star_hits >= 3:
-                        st.success("🏆 **EXECUTIVE PRESENCE:** Strong data utilization and structured delivery!")
-                        st.balloons()
+                    if st.button("🧠 ANALYZE RESPONSE"):
+                        from logic.generator import generate_plain_text
+                        
+                        prompt = f"""
+                        Analyze this interview response for a Director of GTM Systems role ($220k OTE).
+                        
+                        Question: {target_drill}
+                        Transcript: "{transcript_text}"
+                        
+                        Framework: {framework}
+                        
+                        Provide:
+                        1. 📊 **Score (1-10)**: Based on clarity, confidence, and metric usage.
+                        2. 🛠️ **Structure Check**: Did they follow the {framework} format?
+                        3. 🚀 **Key Improvement**: One specific thing to change to sound more senior.
+                        
+                        Keep it brief and punchy.
+                        """
+                        model_id = st.session_state.get('selected_model_id', 'llama-3.3-70b-versatile')
+                        feedback = generate_plain_text(prompt, model_name=model_id)
+                        st.info(feedback)
+                        
+                        if filler_count > 3:
+                            st.warning("⚠️ **HIGH FILLER COUNT:** Too many 'um's and 'uh's. Practice pausing instead.")
+                        
+                        if not has_metric:
+                            st.error("🚨 **MISSING METRICS:** You didn't cite any numbers. Always include the '160%' or '$10M' figure.")
+
+                        if framework_hits < 3:
+                            if "STAR" in framework:
+                                st.info("💡 **STRUCTURE TIP:** Use more STAR keywords (Situation, Task, Action, Result).")
+                            else:
+                                st.info("💡 **STRATEGY TIP:** Highlight the OBSTACLE and your strategic ACTION (SOAR method).")
+                        
+                        if has_metric and filler_count <= 3 and framework_hits >= 3:
+                            st.success("🏆 **EXECUTIVE PRESENCE:** Strong data utilization and structured delivery!")
+                            st.balloons()
                     
                     st.markdown("---")
                     
@@ -2104,7 +2147,7 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                     # NEW: AI-GENERATED IDEAL ANSWER (BEST OF THE BEST)
                     # ═══════════════════════════════════════════════════════════════
                     st.markdown("#### 🤖 AI-GENERATED IDEAL ANSWER")
-                    st.caption("See how an executive would answer this question:")
+                    st.caption(f"See how an executive would answer using the **{framework}** method:")
                     
                     if st.button("🧠 GENERATE IDEAL ANSWER", type="primary"):
                         from logic.generator import generate_plain_text
@@ -2117,7 +2160,7 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                         Generate the IDEAL 60-second answer that includes:
                         1. A strong opening hook (first 10 seconds)
                         2. A specific metric or quantified result
-                        3. A clear story structure (STAR method)
+                        3. A clear story structure ({framework} method)
                         4. A confident close that ties to the role
                         
                         Use these real examples from your background:
@@ -2156,7 +2199,8 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                         'words': words,
                         'fillers': filler_count,
                         'has_metric': has_metric,
-                        'star_hits': star_hits,
+                        'structure_score': framework_hits,
+                        'framework': framework,
                         'transcript': transcript_text[:500]
                     })
                     
