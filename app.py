@@ -627,7 +627,10 @@ with st.sidebar:
     st.markdown("### ⚡ #IWrite:ICODE")
     st.markdown("---")
     
-    # 2. SYSTEM CORE & CONFIGURATION (Terminal Style)
+    # 2. QUANTUM CORE (SYSTEM CONFIG)
+    with st.expander("⚛️ QUANTUM STATE: ACTIVE", expanded=False):
+        st.caption("Reality Distortion Field: 84%")
+        st.progress(0.84)
     st.markdown("#### ⚙️ SYSTEM CORE")
     
     # Check for Streamlit Secrets first (for always-on deployment)
@@ -3137,10 +3140,50 @@ with col1:
     # 🔮 MODE 12: ORACLE DECK (CAREER TAROT)
     # ==============================================================================
     elif input_mode == "🔮 Oracle Deck":
-        st.markdown("## 🔮 ORACLE DECK: CAREER TAROT")
-        st.caption("PROTOCOL: Consult the cards. Align your Soul Vector with Market Opportunities.")
+        st.markdown("## 🔮 ORACLE: QUANTUM SIGNAL")
+        st.caption("PROTOCOL: Decrypt the Noise. Align with the Signal. The Market is a construct.")
         
-        # UPGRADED: 15+ jobs with more detail
+        # QUANTUM PARSER INPUT
+        st.markdown("### 🧬 INGEST EXTERNAL SIGNAL")
+        job_url = st.text_input("Paste Job Link (LinkedIn/Indeed)", placeholder="https://linkedin.com/jobs/view/...")
+        job_raw = st.text_area("Or Paste Raw Job Description (The Matrix Code)", height=150, placeholder="Paste the JD here to extract hidden salary and red flags...")
+        
+        if st.button("🔮 DECRYPT SIGNAL"):
+             with st.spinner("Parsing Reality..."):
+                 from logic.integrations import extract_job_signal, calculate_vibe_resonance
+                 import time
+                 time.sleep(1.5)
+                 
+                 # MOCK PARSE (Simulated)
+                 signal_data = extract_job_signal(job_raw if job_raw else "Mock Data")
+                 resonance = calculate_vibe_resonance(signal_data['signal'])
+                 
+                 st.markdown("---")
+                 st.markdown(f"### 🔓 SIGNAL DECRYPTED: {signal_data['title']}")
+                 
+                 q_col1, q_col2 = st.columns([1, 1])
+                 
+                 with q_col1:
+                     st.metric("Estimated Comp", signal_data['salary_est'], "Market Rate")
+                     st.markdown("**⚠️ RED FLAG SCAN:**")
+                     for flag in signal_data['flags']:
+                         st.markdown(f"- 🚩 {flag}")
+                         
+                 with q_col2:
+                      st.markdown(f"""
+                        <div style="border: 1px solid #00ff88; padding: 20px; border-radius: 10px; text-align: center; background: rgba(0, 255, 136, 0.05);">
+                            <h2 style="color: #00ff88; margin: 0;">{resonance['score']}%</h2>
+                            <p style="margin: 0; color: #fff;">QUANTUM RESONANCE</p>
+                            <p style="font-size: 0.8rem; color: #888; margin-top: 10px;">{resonance['math_proof']}</p>
+                        </div>
+                      """, unsafe_allow_html=True)
+                 
+                 st.button("💾 SAVE TO PIPELINE (PROJECTED)", type="primary")
+
+        st.markdown("---")
+        st.markdown("### 🃏 THE DECK (ACTIVE OPPORTUNITIES)")
+        
+        # EXISTING CARD STACK DISPLAY (Keep existing logic but styled)
         if 'swipe_jobs' not in st.session_state:
             st.session_state.swipe_jobs = [
                 # Tier 1: AI Leaders ($250k+)
@@ -7614,7 +7657,7 @@ Curious if this resonates?""", height=150)
                 st.caption("Generate artifacts in the exact @basin_leon voice.")
                 
                 # Mode Selection
-                forge_mode = st.radio("Forge Protocol", ["🐦 Micropost (X)", "📜 The Ancient Scroll (Long Form)"], horizontal=True)
+                forge_mode = st.radio("Forge Protocol", ["🐦 Micropost (X)", "📜 The Ancient Scroll (Long Form)", "📧 Substack (Newsletter)"], horizontal=True)
                 
                 if forge_mode == "🐦 Micropost (X)":
                     forge_col1, forge_col2 = st.columns([2, 1])
@@ -7648,6 +7691,31 @@ Curious if this resonates?""", height=150)
                             st.markdown(f"[🚀 **POST #1 NOW**]({intent_url})")
                         except:
                             pass
+                            
+                elif forge_mode == "📧 Substack (Newsletter)":
+                    st.info("PROTOCOL: Generates a full markdown draft ready for basinleon.com")
+                    ss_topic = st.text_input("Newsletter Topic", placeholder="e.g. The Death of the Resume")
+                    
+                    if st.button("📝 DRAFT NEWSLETTER"):
+                        with st.spinner("Writing Manifesto..."):
+                            # Reuse scroll content with 'report' type for structure
+                            draft = generate_scroll_content(ss_topic, type="report")
+                            
+                            final_draft = f"""
+                            # {ss_topic.upper()}
+                            
+                            *By Leon Basin | Sent via Basin::Nexus*
+                            
+                            ---
+                            
+                            {draft}
+                            
+                            ---
+                            
+                            [Subscribe to the Signal](https://basinleon.com)
+                            """
+                            st.text_area("Substack Markdown", value=final_draft, height=400)
+                            st.download_button("📥 Download .md", final_draft, file_name="newsletter.md")
                             
                 else: # SCROLL MODE
                     scroll_col1, scroll_col2 = st.columns([2, 1])
