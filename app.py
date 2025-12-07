@@ -653,6 +653,7 @@ with st.sidebar:
         st.caption("Protocol: Pipeline Management & Closing")
         mode_builder = st.radio("Select Tool:", 
             ["📈 Pipeline CRM", 
+             "💰 Negotiation (Comp)",
              "🚀 First 90 Days", 
              "🔍 Talent Signal", 
              "🎙️ Live Assist (Digital Twin)"],
@@ -687,7 +688,8 @@ with st.sidebar:
         "📈 Pipeline CRM": "📈 Pipeline CRM",
         "🚀 First 90 Days": "🚀 First 90 Days",
         "🔍 Talent Signal": "🔍 Talent Signal",
-        "🎙️ Live Assist (Digital Twin)": "🎙️ Live Assist"
+        "🎙️ Live Assist (Digital Twin)": "🎙️ Live Assist",
+        "💰 Negotiation (Comp)": "💰 Negotiation"
     }
     
     input_mode = tool_map.get(st.session_state.selected_tool_label, "📄 Intel")
@@ -752,133 +754,123 @@ show_dashboard = input_mode == "📄 Intel" and not st.session_state.get('resume
 
 if show_dashboard:
     # ═══════════════════════════════════════════════════════════════
-    # DASHBOARD: WELCOME VIEW
+    # 🏠 MISSION BRIEFING (THE EXECUTIVE LANDING PAGE)
     # ═══════════════════════════════════════════════════════════════
-    st.markdown("## 🎯 COMMAND CENTER")
-    st.caption("Welcome back, Revenue Architect. Select a mode from the sidebar to begin.")
+    st.markdown("## ▲ MISSION BRIEFING")
+    st.caption("OPERATOR: LEON BASIN | TARGET: DIRECTOR OF GTM SYSTEMS ($220k+)")
     
     st.markdown("---")
     
-    # Quick Stats
-    col1, col2, col3, col4 = st.columns(4)
-    with col1:
-        st.metric("SYSTEM VERSION", "v14", "📡 Market Radar")
-    with col2:
-        st.metric("MODES ACTIVE", "14", "All Online")
-    with col3:
-        vault_count = len(st.session_state.get('resume_vault', {}))
-        st.metric("VAULT ASSETS", str(vault_count), "Upload to begin")
-    with col4:
-        pipeline_count = len(st.session_state.get('pipeline_crm', []))
-        st.metric("PIPELINE DEALS", str(pipeline_count), "Add opportunities")
+    # --- 1. THE 4-PHASE PIPELINE (Strategic Navigation) ---
+    st.markdown("### 🧭 WHERE ARE YOU IN THE HUNT?")
+    
+    c1, c2, c3, c4 = st.columns(4)
+    
+    with c1:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 2px solid #00d4ff; border-radius: 12px; padding: 20px; text-align: center; min-height: 140px;">
+            <h3 style="color: #00d4ff; margin: 0 0 8px 0;">🔍</h3>
+            <h4 style="color: #00d4ff; margin: 0 0 8px 0;">DISCOVERY</h4>
+            <p style="color: #8892b0; font-size: 0.75rem; margin: 0;">Find targets before they list</p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("LAUNCH RADAR", use_container_width=True, key="db_hunt"):
+            st.session_state.selected_tool_label = "🎯 Hunt (Black Ops)"
+            st.rerun()
+    
+    with c2:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 2px solid #ffd700; border-radius: 12px; padding: 20px; text-align: center; min-height: 140px;">
+            <h3 style="color: #ffd700; margin: 0 0 8px 0;">📝</h3>
+            <h4 style="color: #ffd700; margin: 0 0 8px 0;">POSITION</h4>
+            <p style="color: #8892b0; font-size: 0.75rem; margin: 0;">Tailor the narrative asset</p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("BUILD DOSSIER", use_container_width=True, key="db_intel"):
+            st.session_state.selected_tool_label = "📄 Intel (Omni-Agent)"
+            st.rerun()
+    
+    with c3:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 2px solid #ff6b6b; border-radius: 12px; padding: 20px; text-align: center; min-height: 140px;">
+            <h3 style="color: #ff6b6b; margin: 0 0 8px 0;">🎤</h3>
+            <h4 style="color: #ff6b6b; margin: 0 0 8px 0;">COMBAT</h4>
+            <p style="color: #8892b0; font-size: 0.75rem; margin: 0;">Win the room (Interview)</p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("ENTER DOJO", use_container_width=True, key="db_dojo"):
+            st.session_state.selected_tool_label = "🥊 Boardroom (Dojo)"
+            st.rerun()
+    
+    with c4:
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 2px solid #00ff88; border-radius: 12px; padding: 20px; text-align: center; min-height: 140px;">
+            <h3 style="color: #00ff88; margin: 0 0 8px 0;">💰</h3>
+            <h4 style="color: #00ff88; margin: 0 0 8px 0;">CLOSE</h4>
+            <p style="color: #8892b0; font-size: 0.75rem; margin: 0;">Negotiate the $220k package</p>
+        </div>
+        """, unsafe_allow_html=True)
+        if st.button("NEGOTIATE", use_container_width=True, key="db_negotiate"):
+            st.session_state.selected_tool_label = "💰 Negotiation (Comp)"
+            st.rerun()
     
     st.markdown("---")
     
-    # Quick Actions - Row 1
-    st.markdown("### ⚡ QUICK START")
-    st.caption("Select a mode from the sidebar, or choose your phase above")
+    # --- 2. PIPELINE METRICS ---
+    st.markdown("### 📊 CAMPAIGN STATUS")
     
-    qa1, qa2, qa3, qa4 = st.columns(4)
-    with qa1:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #00d4ff33; border-radius: 12px; padding: 20px; min-height: 120px;">
-            <h4 style="color: #00d4ff; margin: 0 0 8px 0; font-size: 1rem;">🎯 HUNT MODE</h4>
-            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">7-vector job search</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with qa2:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #ff6b6b33; border-radius: 12px; padding: 20px; min-height: 120px;">
-            <h4 style="color: #ff6b6b; margin: 0 0 8px 0; font-size: 1rem;">🔥 SWIPE MODE</h4>
-            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Tinder for jobs</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with qa3:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #ffd70033; border-radius: 12px; padding: 20px; min-height: 120px;">
-            <h4 style="color: #ffd700; margin: 0 0 8px 0; font-size: 1rem;">🥊 BOARDROOM</h4>
-            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Interview simulator</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with qa4:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #00ff8833; border-radius: 12px; padding: 20px; min-height: 120px;">
-            <h4 style="color: #00ff88; margin: 0 0 8px 0; font-size: 1rem;">📈 PIPELINE</h4>
-            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Track opportunities</p>
-        </div>
-        """, unsafe_allow_html=True)
+    pipeline_data = st.session_state.get('pipeline_crm', [])
+    active_deals = len(pipeline_data)
+    interviews = sum(1 for d in pipeline_data if d.get('stage') in ['Interview', 'Final', 'Offer']) if pipeline_data else 0
     
-    # Row 2
-    qa5, qa6, qa7, qa8 = st.columns(4)
-    with qa5:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #9966ff33; border-radius: 12px; padding: 20px; min-height: 120px;">
-            <h4 style="color: #9966ff; margin: 0 0 8px 0; font-size: 1rem;">🎙️ LIVE ASSIST</h4>
-            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Real-time coaching</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with qa6:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #ff66b233; border-radius: 12px; padding: 20px; min-height: 120px;">
-            <h4 style="color: #ff66b2; margin: 0 0 8px 0; font-size: 1rem;">📊 ANALYTICS</h4>
-            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Oracle dashboard</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with qa7:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #66ccff33; border-radius: 12px; padding: 20px; min-height: 120px;">
-            <h4 style="color: #66ccff; margin: 0 0 8px 0; font-size: 1rem;">🔬 COMPANY</h4>
-            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Intel & research</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with qa8:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #ffcc6633; border-radius: 12px; padding: 20px; min-height: 120px;">
-            <h4 style="color: #ffcc66; margin: 0 0 8px 0; font-size: 1rem;">🚀 FIRST 90</h4>
-            <p style="color: #8892b0; font-size: 0.8rem; margin: 0;">Onboarding plan</p>
-        </div>
-        """, unsafe_allow_html=True)
+    k1, k2, k3, k4 = st.columns(4)
+    k1.metric("PIPELINE VELOCITY", f"{active_deals} Active", "Deals in Flight")
+    k2.metric("INTERVIEW PREP", f"{interviews} Pending", "Needs Dojo Reps")
+    k3.metric("SYSTEM VERSION", "v14.0", "Full Arsenal")
+    k4.metric("TARGET OTE", "$220k+", "Director GTM")
     
     st.markdown("---")
     
-    # Getting Started Section
-    st.markdown("### � GETTING STARTED")
+    # --- 3. CRITICAL ACTIONS (Next 24H) ---
+    st.markdown("### 🚨 CRITICAL ACTIONS (NEXT 24H)")
     
-    gs1, gs2 = st.columns(2)
-    with gs1:
-        st.markdown("""
-        <div style="background: rgba(255, 191, 0, 0.05); border: 1px solid rgba(255, 191, 0, 0.2); border-radius: 12px; padding: 20px;">
-            <h4 style="color: #FFBF00; margin: 0 0 12px 0;">1️⃣ Configure API</h4>
-            <p style="color: #8892b0; font-size: 0.9rem; margin: 0;">Add your Groq API key in the sidebar to enable LLM features. Get one free at console.groq.com</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with gs2:
-        st.markdown("""
-        <div style="background: rgba(255, 191, 0, 0.05); border: 1px solid rgba(255, 191, 0, 0.2); border-radius: 12px; padding: 20px;">
-            <h4 style="color: #FFBF00; margin: 0 0 12px 0;">2️⃣ Select Phase</h4>
-            <p style="color: #8892b0; font-size: 0.9rem; margin: 0;">Choose your mission phase (Strategic Recon, Execution Ops, or Architect Deck) to see relevant tools.</p>
-        </div>
-        """, unsafe_allow_html=True)
+    st.markdown("""
+    <div style="background: rgba(255, 107, 107, 0.1); border: 1px solid rgba(255, 107, 107, 0.3); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+        <p style="color: #ff6b6b; margin: 0;"><b>⚔️ PREP:</b> NVIDIA CRO Interview upcoming → <i>Run Boardroom Simulator with "NVIDIA" profile</i></p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    st.markdown("")
+    st.markdown("""
+    <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 8px; padding: 16px; margin-bottom: 12px;">
+        <p style="color: #ffd700; margin: 0;"><b>📧 FOLLOW-UP:</b> LinkedIn/eBay applications pending → <i>Generate Sniper Email via Intel Mode</i></p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    gs3, gs4 = st.columns(2)
-    with gs3:
-        st.markdown("""
-        <div style="background: rgba(255, 191, 0, 0.05); border: 1px solid rgba(255, 191, 0, 0.2); border-radius: 12px; padding: 20px;">
-            <h4 style="color: #FFBF00; margin: 0 0 12px 0;">3️⃣ Upload Resume</h4>
-            <p style="color: #8892b0; font-size: 0.9rem; margin: 0;">Go to Intel mode and upload your resume to the Career Vault for AI-powered analysis.</p>
-        </div>
-        """, unsafe_allow_html=True)
-    with gs4:
-        st.markdown("""
-        <div style="background: rgba(255, 191, 0, 0.05); border: 1px solid rgba(255, 191, 0, 0.2); border-radius: 12px; padding: 20px;">
-            <h4 style="color: #FFBF00; margin: 0 0 12px 0;">4️⃣ Start Hunting</h4>
-            <p style="color: #8892b0; font-size: 0.9rem; margin: 0;">Use Hunt Mode or Swipe Mode to find opportunities, then track them in Pipeline CRM.</p>
-        </div>
-        """, unsafe_allow_html=True)
+    st.markdown("""
+    <div style="background: rgba(0, 212, 255, 0.1); border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 8px; padding: 16px;">
+        <p style="color: #00d4ff; margin: 0;"><b>📡 INTEL:</b> Check Market Radar for sector signals → <i>AI/Security hiring trends</i></p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    # Add st.stop() to prevent rest of app from rendering when dashboard is shown
+    st.markdown("---")
+    
+    # --- 4. QUICK START (For New Users) ---
+    with st.expander("📘 GETTING STARTED GUIDE"):
+        st.markdown("""
+        **Step 1:** Add your Groq API key in the sidebar (free at console.groq.com)
+        
+        **Step 2:** Choose your phase above based on where you are:
+        - **DISCOVERY** → Finding new opportunities
+        - **POSITION** → Tailoring your pitch for a specific role
+        - **COMBAT** → Preparing for interviews
+        - **CLOSE** → Negotiating compensation
+        
+        **Step 3:** Use the sidebar expanders to access all 14+ tools
+        
+        **Pro Tip:** The Boardroom Simulator now supports company-specific profiles (NVIDIA, LinkedIn, eBay)
+        """)
+    
+    # Stop here - don't render the rest of the app
     st.stop()
 
 # ═══════════════════════════════════════════════════════════════
@@ -1851,6 +1843,130 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
             st.markdown("---")
             st.markdown(st.session_state['90_day_plan'])
             st.download_button("📥 Download Plan", st.session_state['90_day_plan'], "30_60_90_Plan.md")
+
+    # ==============================================================================
+    # 💰 MODE: NEGOTIATION (THE CLOSER - $200k+)
+    # ==============================================================================
+    elif input_mode == "💰 Negotiation":
+        st.markdown("## 💰 COMPENSATION ARCHITECT")
+        st.caption("PROTOCOL: Maximize OTE, Equity, and Sign-On for $200k+ Director roles.")
+        
+        st.markdown("---")
+        
+        # 1. THE OFFER INPUT
+        st.markdown("### 📊 CURRENT OFFER BREAKDOWN")
+        
+        c1, c2 = st.columns(2)
+        with c1:
+            base_offer = st.number_input("Base Salary ($)", value=180000, step=5000, format="%d")
+            variable_offer = st.number_input("Variable/Bonus ($)", value=40000, step=5000, format="%d")
+        with c2:
+            equity_val = st.number_input("Equity Value ($/yr)", value=20000, step=5000, format="%d")
+            sign_on = st.number_input("Sign-On Bonus ($)", value=0, step=5000, format="%d")
+
+        total_comp = base_offer + variable_offer + equity_val + sign_on
+        target_comp = 240000  # Your $240k Goal
+        gap = total_comp - target_comp
+
+        # Metrics Display
+        m1, m2, m3 = st.columns(3)
+        m1.metric("TOTAL COMPENSATION", f"${total_comp:,}")
+        m2.metric("TARGET OTE", f"${target_comp:,}")
+        if gap >= 0:
+            m3.metric("STATUS", "✅ ON TARGET", f"+${gap:,}")
+        else:
+            m3.metric("NEGOTIATION GAP", f"${abs(gap):,}", "Action Required", delta_color="inverse")
+        
+        st.markdown("---")
+        
+        # 2. COUNTER-OFFER SCRIPT GENERATOR
+        st.markdown("### 🗣️ COUNTER-OFFER SCRIPTS")
+        
+        scenario = st.selectbox("Select Negotiation Scenario:", [
+            "Lowball Base Salary",
+            "Equity Package Too Low",
+            "Competing Offer Leverage",
+            "Final Push (The 'Win-Win')",
+            "Ask for Sign-On Bonus"
+        ])
+
+        if st.button("🎯 GENERATE SCRIPT", type="primary", use_container_width=True):
+            st.markdown("---")
+            
+            if scenario == "Lowball Base Salary":
+                st.info("**Strategy:** Pivot from 'Need' to 'Market Value' & 'ROI'")
+                st.code(f'''
+"I'm incredibly excited about this role and the team. 
+
+Looking at the scope—specifically building the Revenue OS and architecting 
+the Partner ecosystem—my research and current market data put the value 
+for this impact at ${target_comp//1000}k OTE for Director-level positions.
+
+We're currently at ${total_comp//1000}k. 
+
+What levers can we explore on Base or Sign-On to bridge that ${abs(gap)//1000}k 
+gap so we can finalize this week?"
+''', language="text")
+            
+            elif scenario == "Equity Package Too Low":
+                st.info("**Strategy:** Frame equity as 'Upside Alignment' with company success")
+                st.code(f'''
+"I'm fully committed to the long-term vision here. 
+
+For a Director role where I'm architecting systems that directly impact 
+revenue, I'd expect the equity component to reflect that upside potential.
+
+Could we explore increasing the equity grant by 0.1-0.2% or adding 
+performance-based accelerators tied to revenue milestones I achieve?"
+''', language="text")
+            
+            elif scenario == "Competing Offer Leverage":
+                st.info("**Strategy:** Create urgency without ultimatums")
+                st.code(f'''
+"To be transparent—I have another opportunity I'm considering that's 
+at the ${target_comp//1000}k OTE level.
+
+However, I'm genuinely more excited about your mission and team. 
+
+If we can get closer to parity on compensation, I'm ready to commit 
+and take the other option off the table today. What's possible?"
+''', language="text")
+            
+            elif scenario == "Final Push (The 'Win-Win')":
+                st.info("**Strategy:** Signal readiness to sign with specific ask")
+                st.code(f'''
+"Here's where I am: If we can get the Base to ${base_offer + 15000:,} 
+and include a ${15000:,} sign-on to offset my current pipeline transition, 
+I'm ready to sign the offer letter today and start Monday.
+
+That's a total ask of ${30000:,}. Can we make that happen?"
+''', language="text")
+            
+            elif scenario == "Ask for Sign-On Bonus":
+                st.info("**Strategy:** Frame as 'transition bridge' not 'extra money'")
+                st.code(f'''
+"The base and variable are solid. One thing that would help close the loop: 
+I'm walking away from some active opportunities and potential bonuses.
+
+A sign-on of ${20000:,}-${30000:,} would bridge that transition and let me 
+start with full focus on day one. Is that something we can add?"
+''', language="text")
+        
+        st.markdown("---")
+        
+        # 3. MARKET DATA REFERENCE
+        with st.expander("📈 MARKET COMP DATA (Levels.fyi Reference)"):
+            st.markdown("""
+            **Director of GTM Systems / Revenue Operations:**
+            
+            | Company Type | Base | Variable | Equity | Total Comp |
+            |--------------|------|----------|--------|------------|
+            | Series B/C Startup | $180-220k | $40-60k | $30-50k | $250-330k |
+            | Growth Stage | $200-240k | $50-80k | $50-100k | $300-420k |
+            | Public Tech | $220-280k | $60-100k | $100-200k | $380-580k |
+            
+            *Source: Levels.fyi, Glassdoor, LinkedIn Salary Insights (2024)*
+            """)
 
     # ==============================================================================
     # 📈 MODE 8: PIPELINE CRM (DEAL TRACKER)
