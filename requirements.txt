@@ -1,13 +1,7 @@
 streamlit
 groq
+openai
 google-generativeai
 anthropic
-openai
 python-dotenv
-pypdf
-pydantic
-audio-recorder-streamlit
 gTTS
-plotly
-streamlit-gsheets
-google-auth
