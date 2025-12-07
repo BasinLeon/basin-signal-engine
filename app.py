@@ -531,11 +531,25 @@ with st.sidebar:
     # 2. SYSTEM CORE & CONFIGURATION (Terminal Style)
     st.markdown("#### ⚙️ SYSTEM CORE")
     
+    # Check for Streamlit Secrets first (for always-on deployment)
+    secret_key = None
+    try:
+        secret_key = st.secrets.get("GROQ_API_KEY", None)
+    except:
+        pass
+    
+    # Show input field for manual entry
     api_key = st.text_input("GROQ API KEY", type="password", placeholder="gsk_...", label_visibility="collapsed")
+    
+    # Use manual input if provided, otherwise fall back to secret
     if api_key:
         st.session_state['groq_api_key'] = api_key
-        os.environ['GROQ_API_KEY'] = api_key  # Set for generator.py
+        os.environ['GROQ_API_KEY'] = api_key
         st.caption("✅ LINK: SECURE")
+    elif secret_key:
+        st.session_state['groq_api_key'] = secret_key
+        os.environ['GROQ_API_KEY'] = secret_key
+        st.caption("✅ LINK: ALWAYS-ON")
     else:
         st.caption("⚠️ LINK: OFFLINE")
         st.markdown("[Get Key](https://console.groq.com)")
