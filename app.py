@@ -722,7 +722,8 @@ with st.sidebar:
     with st.expander("I. ⚔️ BATTLESTATION (PREP)", expanded=True):
         st.caption("Protocol: Sharpen Narrative & Defense")
         mode_battle = st.radio("Select Tool:", 
-            ["📄 Intel (Omni-Agent)", 
+            ["🎯 Prep Mode (Interview)",
+             "📄 Intel (Omni-Agent)", 
              "🥊 Boardroom (Dojo)", 
              "🎤 Voice (Practice)", 
              "🛡️ Objection Bank"],
@@ -767,6 +768,7 @@ with st.sidebar:
     
     # MAPPING TO SYSTEM KERNEL
     tool_map = {
+        "🎯 Prep Mode (Interview)": "🎯 Prep Mode",
         "📄 Intel (Omni-Agent)": "📄 Intel",
         "🥊 Boardroom (Dojo)": "🥊 Practice (Dojo)",
         "🎤 Voice (Practice)": "🎤 Voice",
@@ -1557,9 +1559,449 @@ with col1:
     # INTEL MODE (The Data Center HUD)
     # ─────────────────────────────────────────────────────────────
     # ==============================================================================
+    # 🎯 MODE 0: PREP MODE (INTERVIEW COMMAND CENTER)
+    # ==============================================================================
+    if input_mode == "🎯 Prep Mode":
+        st.markdown("## 🎯 INTERVIEW PREP MODE")
+        st.caption("PROTOCOL: Everything you need before your call. Zero distractions. Maximum preparation.")
+        
+        # Get upcoming interviews from CRM
+        deals = st.session_state.get('crm_deals', [])
+        calendar_events = st.session_state.get('calendar_events', [])
+        
+        # Find interview-stage deals
+        interview_deals = [d for d in deals if d.get('Stage') in ['Interview Scheduled', '1st Interview', '2nd Interview', 'Final Round', 'Under Review (HM)']]
+        
+        # Combine with calendar events
+        upcoming = []
+        for d in interview_deals:
+            upcoming.append({
+                'company': d.get('Company', 'Unknown'),
+                'role': d.get('Role', 'Unknown'),
+                'stage': d.get('Stage', 'Interview'),
+                'notes': d.get('Notes', '')
+            })
+        for e in calendar_events:
+            upcoming.append({
+                'company': e.get('company', 'Unknown'),
+                'role': e.get('title', 'Interview'),
+                'stage': e.get('type', 'Interview'),
+                'date': e.get('date', 'TBD')
+            })
+        
+        if not upcoming:
+            # Default if no interviews scheduled
+            upcoming = [{
+                'company': 'Example Company',
+                'role': 'Account Executive',
+                'stage': 'Interview',
+                'notes': 'Add interviews in Pipeline CRM'
+            }]
+        
+        # ═══════════════════════════════════════════════════════════════
+        # INTERVIEW SELECTOR
+        # ═══════════════════════════════════════════════════════════════
+        st.markdown("### 🎯 SELECT INTERVIEW TO PREP")
+        
+        interview_options = [f"{u['company']} — {u['role']}" for u in upcoming]
+        selected_interview = st.selectbox("Select upcoming interview:", interview_options, key="prep_interview_select")
+        
+        # Get selected interview details
+        selected_idx = interview_options.index(selected_interview) if selected_interview in interview_options else 0
+        current_interview = upcoming[selected_idx]
+        company = current_interview['company']
+        role = current_interview['role']
+        stage = current_interview.get('stage', 'Interview')
+        
+        # Interview Header Card
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, rgba(255,215,0,0.15), rgba(255,191,0,0.05));
+                    border: 2px solid #FFD700; border-radius: 16px; padding: 24px; margin: 16px 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <p style="color: #8892b0; margin: 0; font-size: 0.85rem;">PREPARING FOR</p>
+                    <h2 style="color: #FFD700; margin: 8px 0;">{company}</h2>
+                    <p style="color: #ccd6f6; margin: 0;">{role}</p>
+                </div>
+                <div style="text-align: right;">
+                    <p style="color: #8892b0; margin: 0; font-size: 0.85rem;">STAGE</p>
+                    <h3 style="color: #00ff88; margin: 8px 0;">{stage}</h3>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # ═══════════════════════════════════════════════════════════════
+        # PREP TABS
+        # ═══════════════════════════════════════════════════════════════
+        prep_tabs = st.tabs(["📋 CHECKLIST", "🔍 INTEL", "🎤 DRILLS", "🧠 MINDSET", "❓ KILL Qs", "📅 DAY-OF"])
+        
+        # ─────────────────────────────────────────────────────────────
+        # TAB 1: PRE-INTERVIEW CHECKLIST
+        # ─────────────────────────────────────────────────────────────
+        with prep_tabs[0]:
+            st.markdown("### 📋 PRE-INTERVIEW CHECKLIST")
+            st.caption("Complete each item before your interview. Track your progress.")
+            
+            # Initialize checklist state
+            if 'prep_checklist' not in st.session_state:
+                st.session_state['prep_checklist'] = {}
+            
+            checklist_items = [
+                ("research", "🔍 Research company (news, funding, culture)", "Research"),
+                ("linkedin", "🔗 Review interviewer's LinkedIn", "LinkedIn"),
+                ("questions", "❓ Prepare 3 questions to ask them", "Questions"),
+                ("pitch", "🎤 Practice 'Tell me about yourself' out loud", "Pitch"),
+                ("stories", "📖 Prep 3 STAR stories for behavioral Qs", "Stories"),
+                ("metrics", "📊 Memorize your key metrics (160% growth, etc)", "Metrics"),
+                ("objections", "🛡️ Review likely objections + responses", "Objections"),
+                ("tech", "💻 Test camera, mic, and internet connection", "Tech"),
+                ("outfit", "👔 Outfit selected and ready", "Outfit"),
+                ("calm", "🧘 5-minute breathing/meditation done", "Calm")
+            ]
+            
+            completed = 0
+            total = len(checklist_items)
+            
+            for key, label, short in checklist_items:
+                checked = st.checkbox(label, key=f"prep_{key}", value=st.session_state['prep_checklist'].get(key, False))
+                st.session_state['prep_checklist'][key] = checked
+                if checked:
+                    completed += 1
+            
+            # Progress bar
+            progress_pct = completed / total
+            progress_color = "#00ff88" if progress_pct >= 0.8 else "#FFD700" if progress_pct >= 0.5 else "#ff6b6b"
+            
+            st.markdown(f"""
+            <div style="margin-top: 20px;">
+                <p style="color: #8892b0; margin-bottom: 8px;">PREP PROGRESS: {completed}/{total} ({int(progress_pct * 100)}%)</p>
+                <div style="background: rgba(255,255,255,0.1); border-radius: 10px; height: 20px; overflow: hidden;">
+                    <div style="background: linear-gradient(90deg, {progress_color}80, {progress_color}); width: {progress_pct * 100}%; height: 100%; border-radius: 10px; transition: width 0.3s;"></div>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            if progress_pct >= 1.0:
+                st.balloons()
+                st.success("🎉 You're fully prepared! Go crush it!")
+        
+        # ─────────────────────────────────────────────────────────────
+        # TAB 2: COMPANY QUICK INTEL
+        # ─────────────────────────────────────────────────────────────
+        with prep_tabs[1]:
+            st.markdown(f"### 🔍 INTEL: {company}")
+            st.caption("Live news and insights about your target company.")
+            
+            # Quick Links
+            import urllib.parse
+            encoded_company = urllib.parse.quote(company)
+            
+            link_cols = st.columns(4)
+            link_cols[0].markdown(f"[🔍 Google](https://www.google.com/search?q={encoded_company}+news)")
+            link_cols[1].markdown(f"[💼 LinkedIn](https://www.linkedin.com/company/{encoded_company.lower().replace(' ', '-')})")
+            link_cols[2].markdown(f"[📰 Crunchbase](https://www.crunchbase.com/organization/{encoded_company.lower().replace(' ', '-')})")
+            link_cols[3].markdown(f"[🐦 Twitter](https://twitter.com/search?q={encoded_company})")
+            
+            st.markdown("---")
+            
+            # Live News
+            st.markdown("#### 📰 RECENT NEWS")
+            
+            import feedparser
+            
+            with st.spinner(f"Fetching intel for {company}..."):
+                rss_url = f"https://news.google.com/rss/search?q={encoded_company}&hl=en-US&gl=US&ceid=US:en"
+                feed = feedparser.parse(rss_url)
+                
+                if feed.entries:
+                    for entry in feed.entries[:5]:
+                        st.markdown(f"""
+                        <div style="background: rgba(255,191,0,0.05); border-left: 3px solid #FFD700; padding: 12px; margin: 8px 0;">
+                            <a href="{entry.link}" target="_blank" style="color: #ccd6f6; text-decoration: none; font-weight: 500;">
+                                {entry.title}
+                            </a>
+                            <p style="color: #8892b0; font-size: 0.75rem; margin: 4px 0 0 0;">{entry.get('published', '')[:25]}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.info("No recent news found. Try checking LinkedIn or Crunchbase.")
+            
+            # AI Company Brief
+            st.markdown("---")
+            st.markdown("#### 🤖 AI COMPANY BRIEF")
+            
+            if st.button("🧠 GENERATE INTEL BRIEF", use_container_width=True, key="prep_intel_btn"):
+                with st.spinner("Analyzing company..."):
+                    from logic.generator import generate_plain_text
+                    
+                    intel_prompt = f"""
+                    Generate a concise company intelligence brief for {company}.
+                    
+                    Include:
+                    1. **What they do** (1-2 sentences)
+                    2. **Recent developments** (funding, growth, news)
+                    3. **Company culture** (based on public perception)
+                    4. **Key talking points** for the interview (3 bullets)
+                    5. **Questions to ask them** (2 smart questions)
+                    
+                    Be specific and actionable. This is for interview prep.
+                    """
+                    
+                    model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
+                    brief = generate_plain_text(intel_prompt, model_name=model_id)
+                    
+                    st.markdown(brief)
+        
+        # ─────────────────────────────────────────────────────────────
+        # TAB 3: VOICE DRILLS (Role-Specific)
+        # ─────────────────────────────────────────────────────────────
+        with prep_tabs[2]:
+            st.markdown(f"### 🎤 VOICE DRILLS: {role}")
+            st.caption("Practice the exact questions they'll ask. Record yourself.")
+            
+            # Role-specific drills
+            drill_categories = {
+                "Core Pitch": [
+                    "Tell me about yourself.",
+                    "Walk me through your resume.",
+                    "Why are you interested in this role?",
+                    "What do you know about our company?"
+                ],
+                "Results & Metrics": [
+                    "Walk me through your biggest deal.",
+                    "Tell me about a time you exceeded quota.",
+                    "How did you achieve 160% growth?",
+                    "What's your average deal size and sales cycle?"
+                ],
+                "Behavioral (STAR)": [
+                    "Tell me about a difficult customer situation.",
+                    "Describe a time you had to learn quickly.",
+                    "Give an example of cross-functional collaboration.",
+                    "When did you fail? What did you learn?"
+                ],
+                "Role-Specific": [
+                    f"Why do you want to work at {company}?",
+                    "What's your 30-60-90 day plan?",
+                    "How would you ramp up in this territory?",
+                    "What's your approach to building pipeline?"
+                ]
+            }
+            
+            selected_category = st.selectbox("Select drill category:", list(drill_categories.keys()), key="prep_drill_cat")
+            
+            drill_options = drill_categories[selected_category]
+            selected_drill = st.selectbox("Select question:", drill_options, key="prep_drill_q")
+            
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, rgba(0,212,255,0.1), transparent);
+                        border: 2px solid #00d4ff; border-radius: 12px; padding: 20px; margin: 16px 0; text-align: center;">
+                <p style="color: #8892b0; margin: 0 0 8px 0; font-size: 0.9rem;">PRACTICE THIS QUESTION</p>
+                <h3 style="color: #00d4ff; margin: 0;">"{selected_drill}"</h3>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Audio recording
+            st.markdown("#### 🎙️ RECORD YOUR ANSWER")
+            audio = st.audio_input("Click to record", key="prep_audio")
+            
+            if audio:
+                st.audio(audio)
+                st.success("✅ Recording captured! Listen back and self-assess.")
+                
+                if st.button("🧠 GET AI FEEDBACK", use_container_width=True, key="prep_voice_feedback"):
+                    with st.spinner("Analyzing..."):
+                        from logic.generator import generate_plain_text
+                        
+                        feedback_prompt = f"""
+                        As an elite interview coach, give feedback for answering this question:
+                        "{selected_drill}"
+                        
+                        Provide:
+                        1. Key points to hit (3 bullets)
+                        2. Example opening line
+                        3. Example closing line
+                        4. Common mistakes to avoid
+                        
+                        Make it specific to a {role} role at {company}.
+                        """
+                        
+                        model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
+                        feedback = generate_plain_text(feedback_prompt, model_name=model_id)
+                        
+                        st.markdown(feedback)
+        
+        # ─────────────────────────────────────────────────────────────
+        # TAB 4: MINDSET CALIBRATION
+        # ─────────────────────────────────────────────────────────────
+        with prep_tabs[3]:
+            st.markdown("### 🧠 MINDSET CALIBRATION")
+            st.caption("Align your energy before the call. Set your intention.")
+            
+            # Daily Archetype
+            import random
+            
+            archetypes = [
+                {"symbol": "☉", "name": "THE SAGE", "essence": "Intuitive Wisdom", "calibration": "I access wisdom beyond logic. Insight arrives when I stop forcing.", "energy": "Lightning flash of clarity"},
+                {"symbol": "∞", "name": "THE GIVER", "essence": "Expansive Generosity", "calibration": "I expand by giving. The more value I offer, the more returns.", "energy": "Overflowing outward"},
+                {"symbol": "⬡", "name": "THE HARMONIZER", "essence": "Dynamic Balance", "calibration": "I am the bridge between worlds. My presence creates resonance.", "energy": "Heart of the system"},
+                {"symbol": "↑", "name": "THE VICTOR", "essence": "Eternal Persistence", "calibration": "I persist with joy, not desperation. Momentum compounds.", "energy": "Upward thrust"},
+                {"symbol": "✧", "name": "THE BEACON", "essence": "Authentic Radiance", "calibration": "My authentic presence is magnetic. Worth needs no convincing.", "energy": "Radiant stillness"}
+            ]
+            
+            daily = random.choice(archetypes)
+            
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, rgba(155,89,182,0.15), transparent);
+                        border: 2px solid #9b59b6; border-radius: 16px; padding: 32px; text-align: center;">
+                <p style="color: #8892b0; margin: 0; font-size: 0.9rem;">TODAY'S ARCHETYPE</p>
+                <h1 style="color: #9b59b6; margin: 16px 0; font-size: 4rem;">{daily['symbol']}</h1>
+                <h2 style="color: #9b59b6; margin: 0 0 8px 0;">{daily['name']}</h2>
+                <p style="color: #ccd6f6; font-size: 0.95rem; margin: 0 0 16px 0;">{daily['essence']} — <i>{daily['energy']}</i></p>
+                <p style="color: #ccd6f6; font-size: 1.2rem; font-style: italic; margin: 0;">"{daily['calibration']}"</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            # Power Affirmations
+            st.markdown("#### 💪 POWER AFFIRMATIONS")
+            st.caption("Say these out loud before your call:")
+            
+            affirmations = [
+                "I am the solution to their problem.",
+                "My experience speaks for itself.",
+                "I bring clarity and energy to every conversation.",
+                "I am interviewing them as much as they're interviewing me.",
+                "I am ready. I am prepared. I am enough."
+            ]
+            
+            for aff in affirmations:
+                st.markdown(f"""
+                <div style="background: rgba(0,255,136,0.05); border-left: 3px solid #00ff88; padding: 12px; margin: 8px 0;">
+                    <p style="color: #00ff88; margin: 0; font-size: 1.1rem;">"{aff}"</p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # Breathing Exercise
+            st.markdown("---")
+            st.markdown("#### 🧘 2-MINUTE BREATHING")
+            
+            if st.button("▶️ START BREATHING EXERCISE", use_container_width=True, key="prep_breathe"):
+                with st.spinner("Breathe in... hold... breathe out..."):
+                    import time
+                    progress_bar = st.progress(0)
+                    for i in range(100):
+                        time.sleep(1.2)  # ~2 min total
+                        progress_bar.progress(i + 1)
+                        if i % 10 == 0:
+                            st.toast("Breathe deeply... 🧘")
+                    st.success("✅ You're centered. Go crush it!")
+        
+        # ─────────────────────────────────────────────────────────────
+        # TAB 5: KILL QUESTIONS
+        # ─────────────────────────────────────────────────────────────
+        with prep_tabs[4]:
+            st.markdown(f"### ❓ KILL QUESTIONS: {role} @ {company}")
+            st.caption("The hardest questions they'll ask. Prepare your answers.")
+            
+            # Generate Kill Questions
+            if st.button("🧠 GENERATE KILL QUESTIONS", type="primary", use_container_width=True, key="prep_kill_btn"):
+                with st.spinner("Generating role-specific questions..."):
+                    from logic.generator import generate_plain_text
+                    
+                    kill_prompt = f"""
+                    You're a senior hiring manager at {company} interviewing for {role}.
+                    
+                    Generate 5 TOUGH interview questions that would make an average candidate stumble.
+                    For each question, provide:
+                    
+                    1. **The Question**
+                    2. **Why they ask it** (1 sentence)
+                    3. **How to answer it** (2-3 sentences with specific approach)
+                    
+                    Focus on questions specific to this role and company.
+                    Make them challenging but fair.
+                    """
+                    
+                    model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
+                    kill_questions = generate_plain_text(kill_prompt, model_name=model_id)
+                    
+                    st.session_state['kill_questions'] = kill_questions
+            
+            # Display generated questions
+            if 'kill_questions' in st.session_state:
+                st.markdown(st.session_state['kill_questions'])
+            else:
+                st.info("Click the button above to generate role-specific kill questions.")
+        
+        # ─────────────────────────────────────────────────────────────
+        # TAB 6: DAY-OF CHECKLIST
+        # ─────────────────────────────────────────────────────────────
+        with prep_tabs[5]:
+            st.markdown("### 📅 DAY-OF CHECKLIST")
+            st.caption("The morning of your interview. Don't miss anything.")
+            
+            day_of_items = [
+                ("🕐 Wake up early — no rushing", "wake"),
+                ("🏋️ Light exercise or stretch (15 min)", "exercise"),
+                ("🍳 Eat a balanced breakfast", "eat"),
+                ("☕ Coffee/tea ready (not too much)", "coffee"),
+                ("💻 Computer charged, cables connected", "tech1"),
+                ("📸 Camera at eye level, good lighting", "camera"),
+                ("🎧 Headphones tested, mic working", "audio"),
+                ("🌐 Internet speed test completed", "internet"),
+                ("📱 Phone on silent, notifications off", "phone"),
+                ("🚪 Do Not Disturb sign on door", "dnd"),
+                ("📋 Notes + questions printed/visible", "notes"),
+                ("🥤 Water glass nearby", "water"),
+                ("🧘 5-minute breathing before call", "breathe"),
+                ("😊 Smile before they answer", "smile")
+            ]
+            
+            st.markdown("#### ⏰ MORNING ROUTINE")
+            for label, key in day_of_items[:6]:
+                st.checkbox(label, key=f"dayof_{key}")
+            
+            st.markdown("#### 💻 TECH CHECK (30 min before)")
+            for label, key in day_of_items[6:10]:
+                st.checkbox(label, key=f"dayof_{key}")
+            
+            st.markdown("#### 🎯 FINAL PREP (5 min before)")
+            for label, key in day_of_items[10:]:
+                st.checkbox(label, key=f"dayof_{key}")
+            
+            # Final Countdown
+            st.markdown("---")
+            st.markdown("#### ⏱️ INTERVIEW COUNTDOWN")
+            
+            interview_time = st.time_input("Interview time:", key="prep_time")
+            
+            from datetime import datetime, timedelta
+            now = datetime.now()
+            interview_dt = now.replace(hour=interview_time.hour, minute=interview_time.minute, second=0)
+            
+            if interview_dt > now:
+                time_diff = interview_dt - now
+                hours, remainder = divmod(time_diff.seconds, 3600)
+                minutes, _ = divmod(remainder, 60)
+                
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, rgba(255,107,107,0.15), transparent);
+                            border: 2px solid #ff6b6b; border-radius: 12px; padding: 24px; text-align: center;">
+                    <p style="color: #8892b0; margin: 0;">INTERVIEW STARTS IN</p>
+                    <h1 style="color: #ff6b6b; margin: 8px 0; font-size: 3rem;">{hours}h {minutes}m</h1>
+                    <p style="color: #ccd6f6; margin: 0;">You've got this! 💪</p>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.success("🎯 Your interview time has passed or is now. GO CRUSH IT!")
+    
+    # ─────────────────────────────────────────────────────────────
+    # ==============================================================================
     # 📄 MODE 1: INTEL (THE OMNI-AGENT HUD)
     # ==============================================================================
-    if input_mode == "📄 Intel":
+    elif input_mode == "📄 Intel":
         st.markdown("## 🧬 STRATEGIC INTELLIGENCE HUD")
         
         # --- 1. THE CAREER VAULT (Teal-Inspired Storage) ---
