@@ -1710,3 +1710,58 @@ def count_project_lines_simple(directory: str) -> dict:
         "progress": (total % xp_per_level) / xp_per_level
     }
 
+# ═══════════════════════════════════════════════════════════════
+# 🎮 BUILDER GAMIFICATION ENGINE (SAVE FILE)
+# ═══════════════════════════════════════════════════════════════
+
+def get_build_stats() -> dict:
+    """
+    Load or initialize the 'Game Save' stats for the builder.
+    Syncs with build_stats.json in the repo.
+    """
+    import json
+    import os
+    
+    stats_file = "build_stats.json"
+    
+    # Default State (New Game)
+    default_stats = {
+        "hours_coded": 17.5,
+        "bugs_squashed": 4,  # Tracked from today
+        "current_streak": 2,
+        "level": 8,
+        "class": "Revenue Architect",
+        "loc_history": []
+    }
+    
+    if os.path.exists(stats_file):
+        try:
+            with open(stats_file, 'r') as f:
+                return json.load(f)
+        except:
+            return default_stats
+    else:
+        # Create initial save file
+        with open(stats_file, 'w') as f:
+            json.dump(default_stats, f, indent=4)
+        return default_stats
+
+def squash_bug():
+    """Increment the bug kill count."""
+    import json
+    stats = get_build_stats()
+    stats['bugs_squashed'] += 1
+    
+    with open("build_stats.json", 'w') as f:
+        json.dump(stats, f, indent=4)
+    return stats['bugs_squashed']
+
+def log_hours(hours: float):
+    """Add hours to the total build time."""
+    import json
+    stats = get_build_stats()
+    stats['hours_coded'] += hours
+    
+    with open("build_stats.json", 'w') as f:
+        json.dump(stats, f, indent=4)
+    return stats['hours_coded']

@@ -881,41 +881,58 @@ if show_dashboard:
     # 🎬 NETFLIX-STYLE DASHBOARD (SEASON 1: THE PIVOT)
     # ═══════════════════════════════════════════════════════════════
     
-    # 1. GAMIFICATION ENGINE (LOC TRACKER)
+    # 1. GAMIFICATION ENGINE (LOC & BUILD TRACKER)
     try:
-        from logic.integrations import count_project_lines
-        # Scan current directory
-        project_stats = count_project_lines(".")
+        from logic.integrations import count_project_lines, get_build_stats, squash_bug
+        
+        # Scan current directory for LOC
+        loc_stats = count_project_lines(".")
+        # Load RPG Save File
+        build_stats = get_build_stats()
+        
     except ImportError:
-        project_stats = {"level": 1, "total_lines": 0, "xp_current": 0, "xp_needed": 500}
+        loc_stats = {"level": 1, "total_lines": 0, "xp_current": 0, "xp_needed": 500, "progress": 0}
+        build_stats = {"hours_coded": 17.5, "bugs_squashed": 0, "level": 1}
 
     # HERO HEADER (Cinematic)
     st.markdown(f"""
     <div style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b'); background-size: cover; border-radius: 16px; padding: 40px; margin-bottom: 30px; border: 1px solid rgba(255, 191, 0, 0.2); position: relative; overflow: hidden;">
-        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #FFD700 {project_stats.get('progress', 0)*100}%, rgba(255,255,255,0.1) 0%);"></div>
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #FFD700 {loc_stats.get('progress', 0)*100}%, rgba(255,255,255,0.1) 0%);"></div>
         
         <div style="display: flex; justify-content: space-between; align-items: flex-end;">
             <div>
                 <span style="background: #E50914; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.7rem; letter-spacing: 1px;">SERIES ORIGINAL</span>
                 <h1 style="color: #fff; font-size: 3.5rem; margin: 10px 0 5px 0; text-shadow: 0 4px 20px rgba(0,0,0,0.8); font-weight: 800;">SEASON 1: THE PIVOT</h1>
                 <p style="color: #e6e6e6; font-size: 1.1rem; max-width: 600px; line-height: 1.6;">
-                    You are exactly where you need to be. The old world is gone. The new architecture is being written line by line. 
-                    Manage the signal. Ignore the noise. Build the empire.
+                    The code is the leverage. The network is the moat. 
+                    <br><span style="color: #FFD700;">{build_stats['hours_coded']} HOURS</span> on the clock. <span style="color: #FF4B4B;">{build_stats['bugs_squashed']} BUGS</span> squashed.
                 </p>
                 <div style="margin-top: 20px; display: flex; gap: 15px;">
-                    <button style="background: #fff; color: black; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; cursor: pointer;">▶ RESUME EPISODE</button>
-                    <button style="background: rgba(109, 109, 110, 0.7); color: white; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; cursor: pointer;">ℹ MORE INFO</button>
+                    <button style="background: #fff; color: black; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; cursor: pointer;">▶ RESUME</button>
+                    <button style="background: rgba(109, 109, 110, 0.7); color: white; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; cursor: pointer;">ℹ EPISODES</button>
                 </div>
             </div>
             
             <div style="text-align: right; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1);">
-                <div style="color: #FFD700; font-size: 0.8rem; font-weight: bold;">BUILDER LEVEL {project_stats.get('level', 1)}</div>
-                <div style="color: #fff; font-size: 2rem; font-weight: 800; font-family: monospace;">{project_stats.get('total_lines', 0):,} LOC</div>
-                <div style="color: #8892b0; font-size: 0.75rem;">XP: {project_stats.get('xp_current', 0)} / {project_stats.get('xp_needed', 500)} TO NEXT LVL</div>
+                <div style="color: #FFD700; font-size: 0.8rem; font-weight: bold;">BUILDER LEVEL {loc_stats.get('level', 1)}</div>
+                <div style="color: #fff; font-size: 2rem; font-weight: 800; font-family: monospace;">{loc_stats.get('total_lines', 0):,} LOC</div>
+                <div style="color: #8892b0; font-size: 0.75rem;">XP: {loc_stats.get('xp_current', 0)} / {loc_stats.get('xp_needed', 500)}</div>
             </div>
         </div>
     </div>
     """, unsafe_allow_html=True)
+    
+    # GAMIFICATION INTERACTION (Hidden Controls)
+    with st.expander("🎮 BUILDER CONTROLS", expanded=True):
+        g_col1, g_col2 = st.columns(2)
+        with g_col1:
+            if st.button("🐛 SQUASH BUG (+1 XP)"):
+                new_count = squash_bug()
+                st.toast(f"💥 BUG SQUASHED! Total: {new_count}", icon="🦟")
+                st.rerun()
+        with g_col2:
+            st.caption(f"Current Session: {build_stats['hours_coded']} Hours Logged")
+
 
     # EPISODE CARDS (Tools)
     st.markdown("### 📺 CONTINUE WATCHING")
@@ -7476,7 +7493,7 @@ Curious if this resonates?""", height=150)
                 generate_waitlist_cta, ALL_COUNTRIES, REMOTE_HUBS,
                 BUSINESS_MODELS, PRICING_IDEAS, CONTENT_IDEAS,
                 calculate_reputation_score, generate_community_content,
-                generate_leon_posts
+                generate_leon_posts, get_build_stats
             )
             integrations_loaded = True
         except ImportError:
@@ -7484,10 +7501,13 @@ Curious if this resonates?""", height=150)
             integrations_loaded = False
             
         if integrations_loaded:
+            # Load real stats
+            real_stats = get_build_stats()
+            
             # Stats & Overview
             st.markdown("### 📊 SIGNAL STRENGTH")
             stat_cols = st.columns(4)
-            stat_cols[0].metric("Build Time", "17h 00m", "+15m")
+            stat_cols[0].metric("Build Time", f"{real_stats['hours_coded']}h", "ACTIVE")
             stat_cols[1].metric("X Vibe Score", "High", "🔥")
             stat_cols[2].metric("Global Reach", len(ALL_COUNTRIES), "Countries")
             stat_cols[3].metric("Waitlist", "Beta", "Open")
