@@ -7601,34 +7601,42 @@ Curious if this resonates?""", height=150)
             
             # TAB 1: GRANDMASTER STRATEGY (NEW)
             with social_tabs[1]:
-                st.markdown("#### ♟️ THE GEOMETRICAL BATTLE")
-                st.caption("Duolingo meets Headspace. Your build progress as a metaphysical chess match.")
+                st.markdown("#### ♟️ KINETIC CHESSBOARD: FLUID GEOMETRY")
+                st.caption("The Infinite Game. Build logic meets spatial intuition. A Basin::Nexus Module.")
                 
-                gm_col1, gm_col2 = st.columns([1, 2])
+                gm_col1, gm_col2 = st.columns([1.2, 1.8])
                 
                 with gm_col1:
-                    # Metric
+                    # Metric & Visual
                     moves_made = ChessBattle.calculate_moves(real_stats['hours_coded'], real_stats['bugs_squashed'])
-                    st.metric("Total Moves Played", f"{moves_made}", f"+{int(moves_made*0.05)} today")
-                    # Display Abstract Chess Visual (Using Unsplash as placeholder for the artifact)
-                    st.image("https://images.unsplash.com/photo-1529699211952-734e80c4d42b", caption="The Board is Set", use_column_width=True)
+                    st.markdown(f"""
+                    <div style="border-left: 3px solid #FFD700; padding-left: 15px; margin-bottom: 20px;">
+                        <span style="color: #888; font-size: 0.8rem; letter-spacing: 1px;">MOVES ON THE BOARD</span><br>
+                        <span style="color: #fff; font-size: 2.2rem; font-weight: 800; font-family: monospace;">{moves_made}</span>
+                        <span style="color: #00ff88; font-size: 0.9rem;">(+{int(moves_made*0.05)} FLOW)</span>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    st.image("https://images.unsplash.com/photo-1529699211952-734e80c4d42b", caption="BASIN::NEXUS // VISUAL ARTIFACT", use_column_width=True)
                     
                 with gm_col2:
-                    # Strategy
+                    # Strategy & Puzzle
                     strategy = ChessBattle.get_daily_strategy(real_stats['level'])
                     
-                    st.markdown(f"### ⚔️ OPENING: {strategy['opening']}")
+                    st.markdown(f"### ⚔️ CURRENT FORM: {strategy['opening']}")
                     st.markdown(f"*{strategy['philosophy']}*")
                     
-                    st.success(f"**CURRENT TACTIC:** {strategy['current_tactic']}")
+                    st.info(f"**TACTIC:** {strategy['current_tactic']}")
                     
+                    # CHESS.COM EMBED
                     st.markdown("---")
-                    st.markdown(f"**⚪ WHITE (YOU):** {strategy['white_pieces']}")
-                    st.markdown(f"**⚫ BLACK (THE VOID):** {strategy['black_pieces']}")
+                    st.caption("🧩 DAILY TACTICS PUZZLE (Train Your Pattern Recognition)")
+                    import streamlit.components.v1 as components
+                    # Embedding Daily Puzzle from Chess.com
+                    components.iframe("https://www.chess.com/daily_puzzle", height=450, scrolling=False)
                     
-                    # LOG MOVE BUTTON
-                    if st.button("♟️ MAKE MOVE (LOG SESSION)"):
-                         st.toast("Move Recorded on the Astral Plane.", icon="♟️")
+                    if st.button("♟️ LOG MOVE (SESSION COMPLETE)"):
+                         st.toast("Move Recorded. Entropy Reduced.", icon="♟️")
                          
                 # GTM FOCUS MATRIX
                 st.markdown("---")
