@@ -2072,20 +2072,29 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                         pass
                     
                     # ═══════════════════════════════════════════════════════════════
-                    # FRAMEWORK SELECTOR (STAR vs SOAR)
+                    # FRAMEWORK SELECTOR (4 PROVEN METHODS)
                     # ═══════════════════════════════════════════════════════════════
-                    framework = st.radio("🧠 Framework Strategy", ["STAR (Behavioral)", "SOAR (Strategic)"], horizontal=True, help="STAR = Situation, Task, Action, Result (Standard)\nSOAR = Situation, Obstacle, Action, Result (Senior Leadership)")
+                    framework = st.radio("🧠 Framework Strategy", 
+                        ["STAR (Behavioral)", "SOAR (Strategic)", "CIRCLE (System Design)", "PREP (Opinion/Rapid)"], 
+                        horizontal=True, 
+                        help="STAR: Situation-Task-Action-Result (Standard)\nSOAR: Situation-Obstacle-Action-Result (Strategic)\nCIRCLE: Context-Implication-Result-Complexity-Leadership-Execution (Systems)\nPREP: Point-Reason-Example-Point (Direct/Rapid)"
+                    )
                     
-                    # Keyword Scan (STAR vs SOAR)
+                    # Keyword Scan (Multi-Model)
                     if "STAR" in framework:
-                        star_keywords = ["situation", "task", "action", "result", "because", "therefore", "led", "built", "created"]
-                        framework_hits = sum(1 for word in transcript_text.lower().split() if word in star_keywords)
+                        target_keywords = ["situation", "task", "action", "result", "because"]
                         k4_label = "STAR SIGNAL"
-                    else:
-                        # SOAR Keywords: Focus on Obstacles/Strategy
-                        soar_keywords = ["obstacle", "challenge", "blocked", "pivot", "strategy", "overcame", "solution", "result", "impact"]
-                        framework_hits = sum(1 for word in transcript_text.lower().split() if word in soar_keywords)
+                    elif "SOAR" in framework:
+                        target_keywords = ["obstacle", "challenge", "pivot", "strategy", "impact"]
                         k4_label = "SOAR SIGNAL"
+                    elif "CIRCLE" in framework:
+                        target_keywords = ["context", "implication", "complexity", "leadership", "execution", "trade-off", "system"]
+                        k4_label = "CIRCLE SIGNAL"
+                    elif "PREP" in framework:
+                        target_keywords = ["point", "reason", "example", "therefore", "believe", "experience"]
+                        k4_label = "PREP SIGNAL"
+                        
+                    framework_hits = sum(1 for word in transcript_text.lower().split() if word in target_keywords)
 
                     # 5. THE SCOREBOARD
                     st.markdown("### 📊 PERFORMANCE TELEMETRY")
@@ -2112,7 +2121,7 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                         Question: {target_drill}
                         Transcript: "{transcript_text}"
                         
-                        Framework: {framework}
+                        Framework Selected: {framework}
                         
                         Provide:
                         1. 📊 **Score (1-10)**: Based on clarity, confidence, and metric usage.
@@ -2134,8 +2143,12 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                         if framework_hits < 3:
                             if "STAR" in framework:
                                 st.info("💡 **STRUCTURE TIP:** Use more STAR keywords (Situation, Task, Action, Result).")
-                            else:
+                            elif "SOAR" in framework:
                                 st.info("💡 **STRATEGY TIP:** Highlight the OBSTACLE and your strategic ACTION (SOAR method).")
+                            elif "CIRCLE" in framework:
+                                st.info("💡 **SYSTEMS TIP:** Define the CONTEXT and IMPLICATION before jumping to execution (CIRCLE method).")
+                            elif "PREP" in framework:
+                                st.info("💡 **CLARITY TIP:** Start with your POINT, give a REASON, share an EXAMPLE, and restate the POINT (PREP).")
                         
                         if has_metric and filler_count <= 3 and framework_hits >= 3:
                             st.success("🏆 **EXECUTIVE PRESENCE:** Strong data utilization and structured delivery!")
