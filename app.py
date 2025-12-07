@@ -598,35 +598,36 @@ with st.sidebar:
             label_visibility="collapsed"
         )
     
-    # SYSTEM KERNEL: Map Human Labels to API IDs
+    # SYSTEM KERNEL: Map Human Labels to API IDs (CORRECT GROQ IDs)
     model_map = {
-        # Text Models
-        "GPT OSS 120B (Groq)": "groq:gpt-oss-120b",
-        "GPT OSS 20B (Groq)": "groq:gpt-oss-20b",
-        "Kimi K2 (Groq)": "groq:kimi-k2",
-        "Llama 4 Scout (Groq)": "groq:llama-4-scout",
-        "Llama 3.3 70B (Groq)": "groq:llama-3.3-70b-versatile",
+        # Text Models (Production)
+        "GPT OSS 120B (Groq)": "openai/gpt-oss-120b",
+        "GPT OSS 20B (Groq)": "openai/gpt-oss-20b",
+        "Llama 3.3 70B (Groq)": "llama-3.3-70b-versatile",
+        # Preview Models
+        "Kimi K2 (Groq)": "moonshotai/kimi-k2-instruct",
+        "Llama 4 Scout (Groq)": "meta-llama/llama-4-scout-17b-16e-instruct",
         # Reasoning Models
-        "GPT OSS 120B (Deep Think)": "groq:gpt-oss-120b",
-        "GPT OSS 20B (Fast Think)": "groq:gpt-oss-20b",
-        "Qwen 3 32B (Logic)": "groq:qwen3-32b",
+        "GPT OSS 120B (Deep Think)": "openai/gpt-oss-120b",
+        "GPT OSS 20B (Fast Think)": "openai/gpt-oss-20b",
+        "Qwen 3 32B (Logic)": "qwen/qwen3-32b",
         # Tool/Function Calling Models
-        "GPT OSS 120B (Function Calling)": "groq:gpt-oss-120b",
-        "Kimi K2 (Agent)": "groq:kimi-k2",
-        "Llama 4 Scout (MCP)": "groq:llama-4-scout",
-        "Qwen 3 32B (Tools)": "groq:qwen3-32b",
+        "GPT OSS 120B (Function Calling)": "openai/gpt-oss-120b",
+        "Kimi K2 (Agent)": "moonshotai/kimi-k2-instruct",
+        "Llama 4 Scout (MCP)": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "Qwen 3 32B (Tools)": "qwen/qwen3-32b",
         # Vision Models
-        "Llama 4 Scout (Vision)": "groq:llama-4-scout",
-        "Llama 4 Maverick (Vision Pro)": "groq:llama-4-maverick",
+        "Llama 4 Scout (Vision)": "meta-llama/llama-4-scout-17b-16e-instruct",
+        "Llama 4 Maverick (Vision Pro)": "meta-llama/llama-4-maverick-17b-128e-instruct",
         # Speech Models
-        "Whisper Large v3 (STT)": "groq:whisper-large-v3",
-        "Whisper Large v3 Turbo (Fast STT)": "groq:whisper-large-v3-turbo",
-        "PlayAI TTS (Speech)": "groq:playai-tts",
+        "Whisper Large v3 (STT)": "whisper-large-v3",
+        "Whisper Large v3 Turbo (Fast STT)": "whisper-large-v3-turbo",
+        "PlayAI TTS (Speech)": "playai-tts",
         # Safety Models
-        "Safety GPT OSS 20B": "groq:safety-gpt-oss-20b",
-        "Llama Guard": "groq:llama-guard",
+        "Safety GPT OSS 20B": "openai/gpt-oss-safeguard-20b",
+        "Llama Guard": "meta-llama/llama-guard-4-12b",
     }
-    st.session_state['selected_model_id'] = model_map.get(selected_model_label, "groq:llama-3.3-70b-versatile")
+    st.session_state['selected_model_id'] = model_map.get(selected_model_label, "llama-3.3-70b-versatile")
     st.caption(f"🔗 `{st.session_state['selected_model_id']}`")
     
     st.markdown("---")
@@ -949,13 +950,90 @@ with col1:
                 st.warning("⚠️ Vault Empty. Upload Resumes to build your Data Lake.")
                 active_assets = []
 
-        # --- 2. TARGET VECTOR ---
-        st.markdown("#### 2. TARGET VECTOR (THE MISSION)")
-        jd_text = st.text_area("Paste Job Description", height=150, placeholder="[PASTE JD HERE]", label_visibility="collapsed")
+        # ═══════════════════════════════════════════════════════════════
+        # JOB BOARD AGGREGATOR (Pre-Loaded Jobs from Your Pipeline)
+        # ═══════════════════════════════════════════════════════════════
+        st.markdown("---")
+        st.markdown("#### 2. JOB SEARCH (Pre-Loaded from Pipeline)")
+        st.caption("Search for open roles at your target companies, or paste a JD manually.")
+        
+        # Pre-loaded target companies from CRM deals
+        pipeline_companies = []
+        if 'crm_deals' in st.session_state:
+            pipeline_companies = list(set([d['Company'] for d in st.session_state['crm_deals']]))
+        
+        # Default high-value targets
+        default_companies = ["Mistral AI", "Deel", "Verkada", "Ambient.ai", "DepthFirst", "Hightouch", "Nooks", "2501.ai"]
+        all_companies = list(set(pipeline_companies + default_companies))
+        
+        job_search_mode = st.radio("Job Source:", ["🔍 Search by Company", "📋 Paste JD Manually"], horizontal=True, label_visibility="collapsed")
+        
+        if job_search_mode == "🔍 Search by Company":
+            search_col1, search_col2 = st.columns([2, 1])
+            
+            with search_col1:
+                selected_company = st.selectbox("Select Target Company:", all_companies, key="job_search_company")
+            
+            with search_col2:
+                search_term = st.text_input("Role Keywords:", value="Account Executive", placeholder="e.g., AE, GTM, Sales")
+            
+            if st.button("🔍 SEARCH JOBS", type="primary", use_container_width=True):
+                with st.spinner(f"Searching {selected_company} openings..."):
+                    # Generate search URLs
+                    company_q = selected_company.replace(' ', '+')
+                    role_q = search_term.replace(' ', '+')
+                    
+                    st.markdown("##### 🔗 JOB BOARDS (Direct Links)")
+                    
+                    link_col1, link_col2, link_col3, link_col4 = st.columns(4)
+                    
+                    with link_col1:
+                        linkedin_url = f"https://www.linkedin.com/jobs/search/?keywords={role_q}%20{company_q}"
+                        st.markdown(f"[LinkedIn Jobs]({linkedin_url})")
+                    
+                    with link_col2:
+                        greenhouse_url = f"https://www.google.com/search?q={company_q}+careers+{role_q}+site:greenhouse.io"
+                        st.markdown(f"[Greenhouse]({greenhouse_url})")
+                    
+                    with link_col3:
+                        lever_url = f"https://www.google.com/search?q={company_q}+careers+{role_q}+site:lever.co"
+                        st.markdown(f"[Lever]({lever_url})")
+                    
+                    with link_col4:
+                        ashby_url = f"https://www.google.com/search?q={company_q}+careers+{role_q}+site:ashbyhq.com"
+                        st.markdown(f"[Ashby]({ashby_url})")
+                    
+                    st.markdown("---")
+                    
+                    # Search HackerNews for hiring posts
+                    st.markdown("##### 📰 HACKERNEWS HIRING THREADS")
+                    try:
+                        import requests
+                        hn_url = f"https://hn.algolia.com/api/v1/search?query={selected_company}+hiring&tags=story&hitsPerPage=5"
+                        response = requests.get(hn_url, timeout=5)
+                        if response.status_code == 200:
+                            hits = response.json().get('hits', [])
+                            if hits:
+                                for hit in hits[:3]:
+                                    title = hit.get('title', 'No title')
+                                    url = hit.get('url') or f"https://news.ycombinator.com/item?id={hit.get('objectID')}"
+                                    st.markdown(f"• [{title}]({url})")
+                            else:
+                                st.caption("*No recent hiring threads found.*")
+                    except:
+                        st.caption("*Search temporarily unavailable.*")
+                    
+                    st.info(f"💡 **TIP:** Copy the JD from {selected_company}'s careers page and paste below.")
+            
+            st.markdown("---")
+        
+        # --- 3. TARGET VECTOR (Manual JD Input) ---
+        st.markdown("#### 3. TARGET VECTOR (THE MISSION)")
+        jd_text = st.text_area("Paste Job Description", height=150, placeholder="[PASTE JD HERE - or use the search above to find jobs]", label_visibility="collapsed")
 
         # --- 2. THE WAR ROOM (MULTI-AGENT CONFIG) ---
         st.markdown("---")
-        st.markdown("#### 3. DEPLOY GTM SWARM (MULTI-AGENT)")
+        st.markdown("#### 4. DEPLOY GTM SWARM (MULTI-AGENT)")
     
         c1, c2 = st.columns([1, 2])
         

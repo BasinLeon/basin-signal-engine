@@ -147,6 +147,7 @@ def get_model_categories() -> dict:
 
 def get_provider(model: str) -> str:
     """Determine the provider based on model name."""
+    # Explicit prefixes
     if model.startswith("groq:"):
         return "groq"
     if model.startswith("ollama:"):
@@ -155,6 +156,16 @@ def get_provider(model: str) -> str:
         return "google"
     if model.startswith("claude"):
         return "anthropic"
+    
+    # Groq-hosted models (new format without groq: prefix)
+    groq_models = [
+        "openai/", "meta-llama/", "qwen/", "moonshotai/",
+        "llama-3", "whisper", "playai", "compound"
+    ]
+    for prefix in groq_models:
+        if model.startswith(prefix) or prefix in model:
+            return "groq"
+    
     return "openai"
 
 
