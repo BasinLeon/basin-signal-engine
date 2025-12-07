@@ -1152,13 +1152,81 @@ with col1:
             
             st.markdown("---")
         
-        # --- 3. TARGET VECTOR (Manual JD Input) ---
-        st.markdown("#### 3. TARGET VECTOR (THE MISSION)")
+        # --- 3. BLACK OPS AGENT (OSINT) ---
+        st.markdown("#### 3. BLACK OPS AGENT (INTEL & RECON)")
+        
+        osint_tab1, osint_tab2 = st.tabs(["🕵️ CONTACT HUNTER", "⚡ SIGNAL RADAR"])
+        
+        with osint_tab1:
+            st.caption("PROTOCOL: Open Source Intelligence (OSINT) Link Generators.")
+            o_col1, o_col2 = st.columns(2)
+            o_name = o_col1.text_input("Target Name", placeholder="e.g. Leon Basin", key="osint_name")
+            o_domain = o_col2.text_input("Company Domain", value=selected_company if 'selected_company' in locals() else "", placeholder="e.g. anthropic.com", key="osint_domain")
+            
+            if st.button("🔓 GENERATE INTELLIGENCE LINKS", use_container_width=True):
+                if o_name and o_domain:
+                    # Clean inputs
+                    o_name_esc = o_name.replace(' ', '+')
+                    
+                    st.markdown("##### 🎯 DIRECT CONTACT LINKS")
+                    l1, l2, l3 = st.columns(3)
+                    
+                    with l1:
+                        # Email Dork
+                        email_query = f'"email" "{o_domain}" site:linkedin.com/in/ "{o_name}"'
+                        st.markdown(f"[📧 Find Email (Google)](https://www.google.com/search?q={email_query})")
+                        st.caption("Scans LinkedIn profiles for email")
+                        
+                    with l2:
+                        # Phone Dork
+                        phone_query = f'"{o_name}" "{o_domain}" (phone OR mobile OR cell) -site:linkedin.com'
+                        st.markdown(f"[📞 Find Phone (Google)](https://www.google.com/search?q={phone_query})")
+                        st.caption("Scans deep web for contacts")
+
+                    with l3:
+                        # Meet Dork
+                        meet_query = f'site:calendly.com "{o_name}"'
+                        st.markdown(f"[📅 Find Calendly](https://www.google.com/search?q={meet_query})")
+                        st.caption("Checks for public booking links")
+
+        with osint_tab2:
+            st.caption("PROTOCOL: Pattern Recognition for Opportunity Analysis.")
+            
+            s_company = st.text_input("Target Company / Sector", value=selected_company if 'selected_company' in locals() else "", key="signal_company")
+            
+            if st.button("📡 SCAN FOR TRIGGERS", type="primary", use_container_width=True):
+                if s_company:
+                    from logic.generator import generate_plain_text
+                    
+                    with st.spinner("Intercepting Signals..."):
+                        signal_prompt = f"""
+                        ACT AS: Deep State Commercial Intelligence Analyst.
+                        TARGET: {s_company}
+                        
+                        MISSION: Identify 3 high-probability "Buying Triggers" for a Revenue/GTM Architecture deal.
+                        
+                        LOOK FOR:
+                        1. Recent Funding (Speed needed)
+                        2. Hiring Spree (Chaos in Ops)
+                        3. New Market Expansion (Process needed)
+                        4. Bad Press/Reviews (Fix needed)
+                        
+                        OUTPUT FORMAT:
+                        **1. [TRIGGER TYPE]**: [Specific Observation] -> [The Opening]
+                        """
+                        model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
+                        signals = generate_plain_text(signal_prompt, model_name=model_id)
+                        st.markdown(signals)
+            
+        st.markdown("---")
+        
+        # --- 4. TARGET VECTOR (Manual JD Input) ---
+        st.markdown("#### 4. TARGET VECTOR (THE MISSION)")
         jd_text = st.text_area("Paste Job Description", height=150, placeholder="[PASTE JD HERE - or use the search above to find jobs]", label_visibility="collapsed")
 
-        # --- 2. THE WAR ROOM (MULTI-AGENT CONFIG) ---
+        # --- 5. THE WAR ROOM (MULTI-AGENT CONFIG) ---
         st.markdown("---")
-        st.markdown("#### 4. DEPLOY GTM SWARM (MULTI-AGENT)")
+        st.markdown("#### 5. DEPLOY GTM SWARM (MULTI-AGENT)")
     
         c1, c2 = st.columns([1, 2])
         
@@ -3256,7 +3324,7 @@ start with full focus on day one. Is that something we can add?"
                 # 1. STRATEGY CONFIGURATION
                 c_conf1, c_conf2 = st.columns(2)
                 with c_conf1:
-                    comms_channel = st.selectbox("📡 Channel", ["🟦 LinkedIn", "📧 Email", "📞 Phone / Voice"])
+                    comms_channel = st.selectbox("📡 Channel", ["🟦 LinkedIn", "📧 Email", "📞 Phone / Voice", "📱 SMS / Text"])
                 with c_conf2:
                     comms_tone = st.selectbox("🎭 Tone", ["Professional (Safe)", "Casual (Startup)", "The Challenger (Bold)"])
 
@@ -3268,6 +3336,8 @@ start with full focus on day one. Is that something we can add?"
                     scenarios = ["🧊 Cold Outreach (Hiring Manager)", "👻 Follow Up (Post-Ghosting)", "🙏 Thank You (Post-Interview)", "💼 Resignation / Transition"]
                 elif comms_channel == "📞 Phone / Voice":
                     scenarios = ["⚡ Cold Call Opener (30s)", "📼 Voicemail Drop", "🛡️ Gatekeeper Bypass"]
+                elif comms_channel == "📱 SMS / Text":
+                    scenarios = ["📅 Confirm Meeting", "👋 Post-Event Follow Up", "👀 Quick Check-in (Warm)", "🚀 Update/News Share"]
                 
                 comms_scenario = st.selectbox("🎯 Scenario", scenarios)
                 
@@ -3299,6 +3369,7 @@ start with full focus on day one. Is that something we can add?"
                         - If LinkedIn Connection: Under 300 chars.
                         - If Email: Subject Line + Body. Short paragraphs.
                         - If Phone: Script format with [Pause] indicators.
+                        - If SMS: Under 160 chars. Casual but crisp. No "Dear [Name]".
                         - "The Challenger" tone should be direct, quantifying the cost of inaction.
                         
                         Write only the final output. No fluff.
