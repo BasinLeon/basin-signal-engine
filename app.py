@@ -1512,153 +1512,133 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
     # VOICE MODE - ENHANCED
     # ─────────────────────────────────────────────────────────────
     elif input_mode == "🎤 Voice":
-        st.markdown("#### 🎤 Voice-First Resume Input")
-        
-        # Resume input method selector
-        voice_resume_method = st.radio(
-            "Resume Source",
-            ["🎙️ Record Voice", "📁 Upload File", "📝 Paste Text"],
-            horizontal=True,
-            key="voice_resume_method"
-        )
-        
-        if voice_resume_method == "🎙️ Record Voice":
-            st.caption("🎯 Speak about your background (2-3 minutes). Describe your experience, key achievements, and skills.")
-            
-            # Resume Voice Recorder
-            audio_bytes_resume = audio_recorder(
-                text="🎙️ Click to start recording",
-                recording_color="#e74c3c",
-                neutral_color="#667eea",
-                icon_name="microphone",
-                icon_size="3x",
-                key="resume_recorder"
-            )
-            
-            if audio_bytes_resume:
-                st.audio(audio_bytes_resume, format="audio/wav")
-                
-                # Auto-transcribe or manual button
-                col_trans1, col_trans2 = st.columns([1, 1])
-                with col_trans1:
-                    if st.button("🔄 Transcribe with Whisper", key="transcribe_resume", use_container_width=True):
-                        with st.spinner("Transcribing..."):
-                            try:
-                                transcript = transcribe_audio(audio_bytes_resume, use_api=True)
-                                st.session_state.voice_resume_text = transcript
-                                st.success("✓ Transcription complete!")
-                                st.rerun()
-                            except Exception as e:
-                                st.error(f"Transcription failed: {str(e)}")
-                                st.caption("Make sure OPENAI_API_KEY is set for Whisper")
-                
-                with col_trans2:
-                    st.download_button(
-                        "💾 Download Audio",
-                        data=audio_bytes_resume,
-                        file_name="resume_recording.wav",
-                        mime="audio/wav",
-                        use_container_width=True
-                    )
-            
-            # Show/edit transcription
-            if st.session_state.voice_resume_text:
-                st.markdown("##### 📝 Transcribed Resume (editable)")
-                resume_text = st.text_area(
-                    "Edit your transcription",
-                    value=st.session_state.voice_resume_text,
-                    height=300,
-                    key="resume_transcript_edit",
-                    label_visibility="collapsed"
-                )
-                st.session_state.voice_resume_text = resume_text
-                st.success(f"✓ {len(resume_text)} characters ready")
-            else:
-                resume_text = ""
-                
-        elif voice_resume_method == "📁 Upload File":
-            uploaded_resume = st.file_uploader(
-                "Upload Resume (PDF, MD, TXT)",
-                type=['pdf', 'md', 'txt'],
-                key="voice_mode_resume_upload"
-            )
-            if uploaded_resume:
-                resume_text = extract_text_from_upload(uploaded_resume)
-                st.session_state.voice_resume_text = resume_text
-                st.success(f"✓ Resume loaded ({len(resume_text)} characters)")
-            else:
-                resume_text = st.session_state.voice_resume_text or ""
-                
-        else:  # Paste Text
-            resume_text = st.text_area(
-                "Paste Your Resume",
-                value=st.session_state.voice_resume_text or "",
-                height=300,
-                placeholder="Paste your resume content here..."
-            )
-            if resume_text:
-                st.session_state.voice_resume_text = resume_text
-                st.success(f"✓ {len(resume_text)} characters loaded")
+        st.markdown("## 🎙️ VOICE TELEMETRY LAB")
+        st.caption("PROTOCOL: Cloud-Native Voice Recording + Executive Presence Scoring.")
         
         st.markdown("---")
         
-        # JD Input Section
-        st.markdown("#### 🎤 Voice-First Job Description")
+        # 1. DRILL SETUP
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            target_drill = st.selectbox("SELECT DRILL SCENARIO", [
+                "Tell me about yourself (The Pitch)",
+                "Walk me through the 160% Growth metric",
+                "Why did you leave your last role?",
+                "Handle Objection: 'You are too expensive'",
+                "What's your management philosophy?",
+                "Describe a time you built a system from scratch"
+            ])
+        with col2:
+            st.info("💡 **TIP:** Speak for 45-90 seconds. Include at least one metric.")
+
+        st.markdown(f"### 🗣️ QUESTION: *{target_drill}*")
+        st.markdown("---")
         
-        voice_jd_method = st.radio(
-            "JD Source",
-            ["🎙️ Record Voice", "📝 Paste Text"],
-            horizontal=True,
-            key="voice_jd_method"
-        )
+        # 2. NATIVE RECORDING INTERFACE (CLOUD COMPATIBLE)
+        st.markdown("#### 🔴 RECORD YOUR ANSWER")
+        st.caption("Click the microphone below to start recording. Works on all devices.")
         
-        if voice_jd_method == "🎙️ Record Voice":
-            st.caption("🎯 Describe the role: What does the job involve? What are they looking for?")
+        audio_value = st.audio_input("Press to record your response")
+        
+        if audio_value:
+            st.success("✅ Audio Captured. Processing...")
             
-            audio_bytes_jd = audio_recorder(
-                text="🎙️ Click to record JD description",
-                recording_color="#e74c3c",
-                neutral_color="#764ba2",
-                icon_name="microphone",
-                icon_size="3x",
-                key="jd_recorder"
-            )
+            # 3. TRANSCRIPTION ENGINE (GROQ WHISPER)
+            api_key = st.session_state.get('groq_api_key')
             
-            if audio_bytes_jd:
-                st.audio(audio_bytes_jd, format="audio/wav")
-                
-                if st.button("🔄 Transcribe JD", key="transcribe_jd", use_container_width=True):
-                    with st.spinner("Transcribing..."):
-                        try:
-                            transcript = transcribe_audio(audio_bytes_jd, use_api=True)
-                            st.session_state.voice_jd_text = transcript
-                            st.success("✓ Transcription complete!")
-                            st.rerun()
-                        except Exception as e:
-                            st.error(f"Transcription failed: {str(e)}")
-            
-            if st.session_state.voice_jd_text:
-                st.markdown("##### 📝 Transcribed JD (editable)")
-                job_description = st.text_area(
-                    "Edit transcription",
-                    value=st.session_state.voice_jd_text,
-                    height=400,
-                    key="jd_transcript_edit",
-                    label_visibility="collapsed"
-                )
-                st.session_state.voice_jd_text = job_description
+            if api_key:
+                try:
+                    from groq import Groq
+                    client = Groq(api_key=api_key)
+                    
+                    with st.spinner("🧠 Transcribing via Groq Whisper..."):
+                        transcription = client.audio.transcriptions.create(
+                            file=("response.wav", audio_value, "audio/wav"),
+                            model="whisper-large-v3",
+                            response_format="text"
+                        )
+                        transcript_text = transcription
+                    
+                    # 4. TELEMETRY ANALYSIS
+                    words = len(transcript_text.split())
+                    
+                    # Filler Word Scan
+                    fillers = ['um', 'uh', 'like', 'you know', 'sort of', 'kind of', 'basically']
+                    filler_count = sum(transcript_text.lower().count(f) for f in fillers)
+                    
+                    # Metric Detection
+                    has_metric = any(char.isdigit() for char in transcript_text) or '$' in transcript_text or '%' in transcript_text
+                    
+                    # Keyword Scan (STAR Method)
+                    star_keywords = ['situation', 'task', 'action', 'result', 'achieved', 'delivered', 'built', 'led', 'grew', 'increased']
+                    star_hits = sum(1 for kw in star_keywords if kw.lower() in transcript_text.lower())
+                    
+                    # 5. THE SCOREBOARD
+                    st.markdown("### 📊 PERFORMANCE TELEMETRY")
+                    
+                    k1, k2, k3, k4 = st.columns(4)
+                    k1.metric("WORD COUNT", words, "Target: 150-200")
+                    k2.metric("FILLER WORDS", filler_count, "Target: <3", delta_color="inverse")
+                    k3.metric("DATA DENSITY", "✅ HIGH" if has_metric else "❌ LOW", "Critical")
+                    k4.metric("STAR KEYWORDS", star_hits, f"{star_hits}/10")
+                    
+                    st.markdown("---")
+                    
+                    # Transcript Display
+                    st.markdown("#### 📝 TRANSCRIPT")
+                    st.text_area("Your Response", value=transcript_text, height=200, disabled=True)
+                    
+                    # Copy Button
+                    st.download_button("📋 Download Transcript", transcript_text, "voice_transcript.txt")
+                    
+                    st.markdown("---")
+                    
+                    # Coaching Feedback
+                    st.markdown("#### 🎯 COACHING FEEDBACK")
+                    
+                    if filler_count > 3:
+                        st.warning("⚠️ **HIGH FILLER COUNT:** Too many 'um's and 'uh's. Practice pausing instead.")
+                    
+                    if not has_metric:
+                        st.error("🚨 **MISSING METRICS:** You didn't cite any numbers. Always include the '160%' or '$10M' figure.")
+                    
+                    if star_hits < 3:
+                        st.info("💡 **STRUCTURE TIP:** Use more STAR method keywords (Situation, Task, Action, Result).")
+                    
+                    if has_metric and filler_count <= 3 and star_hits >= 3:
+                        st.success("🏆 **EXECUTIVE PRESENCE:** Strong data utilization and structured delivery!")
+                        st.balloons()
+                    
+                    # Save to Session History
+                    if 'voice_sessions' not in st.session_state:
+                        st.session_state['voice_sessions'] = []
+                    
+                    st.session_state['voice_sessions'].append({
+                        'drill': target_drill,
+                        'words': words,
+                        'fillers': filler_count,
+                        'has_metric': has_metric,
+                        'star_hits': star_hits,
+                        'transcript': transcript_text[:500]
+                    })
+                    
+                    st.toast(f"📈 Session saved! Total: {len(st.session_state['voice_sessions'])} sessions")
+                        
+                except Exception as e:
+                    st.error(f"Transcription Error: {e}")
+                    st.caption("Check your Groq API key in the sidebar.")
             else:
-                job_description = ""
-                
-        else:  # Paste Text
-            job_description = st.text_area(
-                "Paste Job Description",
-                value=st.session_state.voice_jd_text or "",
-                height=400,
-                placeholder="Paste the full job description here..."
-            )
-            if job_description:
-                st.session_state.voice_jd_text = job_description
+                st.warning("⚠️ Enter your **Groq API Key** in the sidebar to enable voice transcription.")
+                st.caption("Get a free key at [console.groq.com](https://console.groq.com)")
+        
+        # Session History
+        if st.session_state.get('voice_sessions'):
+            st.markdown("---")
+            with st.expander(f"📜 SESSION HISTORY ({len(st.session_state['voice_sessions'])} sessions)"):
+                for i, session in enumerate(reversed(st.session_state['voice_sessions'][-5:])):
+                    st.markdown(f"**Session {len(st.session_state['voice_sessions']) - i}:** {session['drill']}")
+                    st.caption(f"Words: {session['words']} | Fillers: {session['fillers']} | Metrics: {'✅' if session['has_metric'] else '❌'}")
+                    st.markdown("---")
     
     # ─────────────────────────────────────────────────────────────
     # VIDEO MODE - THE GAME CHANGER
