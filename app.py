@@ -39,24 +39,45 @@ st.set_page_config(
 # BASIN::NEXUS - PREMIUM STYLING
 # ═══════════════════════════════════════════════════════════════
 
-# PWA META TAGS (For Mobile Installation)
-st.markdown("""
-<head>
-    <!-- PWA Manifest -->
-    <link rel="manifest" href=".streamlit/manifest.json">
+# PWA META TAGS (Injected via hidden component)
+# Note: Streamlit doesn't support direct head injection, using components.html
+import streamlit.components.v1 as components
+
+# PWA Support - Inject meta tags via JavaScript
+components.html("""
+<script>
+    // Inject PWA meta tags into document head
+    const head = document.getElementsByTagName('head')[0];
     
-    <!-- iOS PWA Support -->
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="BASIN::NEXUS">
+    // Apple Mobile Web App
+    const meta1 = document.createElement('meta');
+    meta1.name = 'apple-mobile-web-app-capable';
+    meta1.content = 'yes';
+    head.appendChild(meta1);
     
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#FFD700">
+    const meta2 = document.createElement('meta');
+    meta2.name = 'apple-mobile-web-app-status-bar-style';
+    meta2.content = 'black-translucent';
+    head.appendChild(meta2);
     
-    <!-- Viewport for Mobile -->
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-</head>
-""", unsafe_allow_html=True)
+    const meta3 = document.createElement('meta');
+    meta3.name = 'apple-mobile-web-app-title';
+    meta3.content = 'BASIN::NEXUS';
+    head.appendChild(meta3);
+    
+    // Theme Color
+    const meta4 = document.createElement('meta');
+    meta4.name = 'theme-color';
+    meta4.content = '#FFD700';
+    head.appendChild(meta4);
+    
+    // Manifest link
+    const manifest = document.createElement('link');
+    manifest.rel = 'manifest';
+    manifest.href = '.streamlit/manifest.json';
+    head.appendChild(manifest);
+</script>
+""", height=0)
 
 st.markdown("""
 <style>
