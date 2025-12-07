@@ -1,88 +1,135 @@
-# ▲ BASIN::NEXUS v14 | The AI Career Intelligence Platform
+# ▲ BASIN::NEXUS v14.2 | The Revenue Operating System
 
-> **"The future of GTM isn't about more activity. It's about better architecture."**
+### **A Closed-Loop Intelligence Platform for GTM Strategy & Career Execution.**
 
-![Status](https://img.shields.io/badge/Status-Operational-green) ![v14](https://img.shields.io/badge/Version-v14.0-blue) ![Stack](https://img.shields.io/badge/stack-Streamlit%20%7C%20Python%20%7C%20Groq-orange)
-
-## 📡 Why This Exists (The "Signal Decay" Problem)
-
-I built **BASIN::NEXUS** because the traditional job search—and modern GTM pipelines—are broken by **Signal Decay**: the gap between *what a company truly needs* (The Bleeding Neck) and *what a candidate/solution pitches* (The Resume).
-
-Applying to jobs is a "Brute Force" attack. It fails because it lacks intelligence.
-
-**BASIN::NEXUS is a Revenue Operating System.** It treats Career Management like an Enterprise Sales Deal, using AI to Move from **"Guessing"** to **"Sniper Precision."**
+**Leon Basin** | Revenue Architect & Director of GTM Systems  
+[LinkedIn](https://www.linkedin.com/in/leonbasin/) | [Live System](https://basinnexusappapp-39k7ljzoseebgnrivt6oey.streamlit.app/)
 
 ---
 
-## 🏗️ Core Architecture (v14 Features)
+## 🧪 THE THESIS (Why This Exists)
 
-This platform aggregates **14 Operational Modes** into a single "Command Center" dashboard.
+Traditional job searching is a **linear** process: Apply → Wait → Reject.
 
-### 1. 📡 Market Sentiment Radar (The Oracle)
-*   **Economics → Execution:** A real-time dashboard that synthesizes "Macro Signals" (WSJ Headlines, Interest Rates) into "Micro Opportunities."
-*   **Sentiment Connect:** Analyzes job seeker sentiment on Reddit/Blind to identify "Pain Points" in specific sectors before they hit the news.
-*   **Opportunity Windows:** AI-detected hiring surges based on funding news and "Stealth" signals.
+**BASIN::NEXUS** transforms it into a **cyclical, engineering-grade system**:
 
-### 2. 🥊 Boardroom Simulator v2.0 (The Neural Dojo)
-*   **Targeted Simulation:** Roleplay against specific AI Archetypes: **NVIDIA** (First Principles), **LinkedIn** (Values), **eBay** (Ops Rigor).
-*   **Speech Telemetry:** Real-time **WPM (Words Per Minute)** tracking and **Filler Word Analysis** to coach executive presence.
-*   **Swarm Synthesis:** After your answer, 4 specialized AI Agents (Strategies, Data, Narrative, Tech) debate and grade your performance.
-*   **Digital Twin:** Listen to the AI interviewer via Text-to-Speech (`gTTS`) for high-fidelity practice.
+1. **Signal Detection (Oracle):** Predictive scanning of VC portfolios, ATS data, and economic indicators.
+2. **Simulation (Digital Twin):** AI-driven roleplay to stress-test narratives against company-specific archetypes (NVIDIA, LinkedIn, eBay).
+3. **Execution (Revenue OS):** Treating the career search as a measurable Enterprise Sales pipeline.
 
-### 3. 🧬 Omni-Agent Swarm (The Strategy Engine)
-*   **The Sniper:** Writes 160-character "Cold Email" hooks that get 80% open rates.
-*   **The Architect:** Generates 30-60-90 Day Execution Plans based on JD analysis.
-*   **The Devil's Advocate:** Pre-mortems your interview answers to find weak spots before you enter the room.
+> *"I don't apply for jobs. I architect revenue systems—including the one that gets me hired."*
 
 ---
 
-## ⚡ The Tech Stack (Under the Hood)
+## 🛠️ ARCHITECTURAL MODULES (v14.2)
 
-This is a **Applied AI** application, demonstrating full-stack engineering capability:
+### **I. 🛰️ THE ORACLE ARRAY (Discovery & Intel)**
 
-*   **Frontend:** [Streamlit](https://streamlit.io/) (Python-based UI/UX)
-*   **Inference Engine:** [Groq](https://groq.com/) (LPU™ Inference Engine)
-    *   *Model Fleet:* Llama 3.3 70B, Mixtral 8x7B, Gemma 2 9B, Whisper v3 (Audio), Llama Guard (Safety).
-*   **Audio Intelligence:** OpenAI Whisper (STT) + Google gTTS (TTS).
-*   **Data Layer:** Local Session State (Privacy-First) + JSON/CSV Vault.
-*   **Architecture:** Modular "Mode-Based" logic controller (~2,500 lines of production Python).
+| Module | Function |
+|--------|----------|
+| **📡 Signal Radar** | Prospecting console aggregating real-time funding news (TechCrunch), social signals (Reddit/HN), and job postings into a single pane of glass. |
+| **🎯 Black Ops Hunt** | 7-vector search engine tapping into ATS data (Lever/Greenhouse), VC backchannels (Sequoia, YC), and hidden job markets. |
+| **📄 Omni-Agent Intel** | Resume Data Lake that ingests 15 years of career history to auto-generate "Bleeding Neck" diagnoses for target companies. |
+| **🔬 Company Intel** | Deep research synthesis on target companies—culture, pain points, hiring managers. |
+
+### **II. ⚔️ THE BATTLESTATION (Simulation & Prep)**
+
+| Module | Function |
+|--------|----------|
+| **🥊 Neural Dojo** | Voice-telemetry lab scoring executive presence (WPM, filler words, metric density) against corporate culture archetypes. |
+| **🎤 Voice Telemetry** | Cloud-native recording with Groq Whisper transcription + session tracking for improvement analytics. |
+| **🛡️ Objection Bank** | Dynamic defense matrix for handling tough interview questions with proven scripts. |
+| **🧠 Swarm Synthesis** | Four specialized AI agents (Architect, Oracle, Scribe, Coder) debate and refine answers in real-time. |
+
+### **III. 🏗️ THE BUILDER DECK (Execution & Closing)**
+
+| Module | Function |
+|--------|----------|
+| **📈 Pipeline CRM** | Live deal-tracking dashboard mirroring Enterprise CRM logic (Stage Probability, Weighted Value). |
+| **💰 Negotiation Architect** | Compensation calculator + counter-offer script generator for $200k+ Director roles. |
+| **🚀 First 90 Days** | Role-specific 30-60-90 day execution plans (Audit → Build → Scale) for final interviews. |
+| **☁️ G-Suite Sync** | Google Sheets/Docs integration for live data lake management. |
 
 ---
 
-## 🚀 Quick Start (Deploy Your Own)
+## 📊 THE CLOSED LOOP
 
-Want to build your own Career OS? Fork this repo.
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/BasinLeon/basin-signal-engine.git
-cd basin-signal-engine
-
-# 2. Install dependencies (Requires Python 3.10+)
-pip install -r requirements.txt
-pip install gTTS  # For Voice Features
-
-# 3. Set your API Keys (Linux/Mac)
-export GROQ_API_KEY="gsk_..."
-export OPENAI_API_KEY="sk-..." # Optional for Whisper
-
-# 4. Launch the Command Center
-streamlit run app.py
+```
+┌─────────────────────────────────────────────────────────────────┐
+│  📡 DISCOVER (Signal Radar)                                     │
+│      ↓ "Mistral AI just raised Series C"                        │
+│  📄 RESEARCH (Company Intel)                                    │
+│      ↓ "Their bleeding neck is partner churn"                   │
+│  🥊 PRACTICE (Neural Dojo)                                      │
+│      ↓ "WPM: 142 | Fillers: 2 | Metrics: ✅"                     │
+│  💰 NEGOTIATE (Compensation Architect)                          │
+│      ↓ "Counter-offer script generated"                         │
+│  📈 TRACK (Pipeline CRM)                                        │
+│      ↓ "Win/Loss logged → System learns"                        │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 👨‍💻 About The Architect
+## 📈 PERFORMANCE METRICS
 
-**Leon Basin** is a GTM Systems Architect and Revenue Operator.
-*   **Ex-Fudo Security:** 160% Pipeline Growth (Re-architected Outbound).
-*   **Ex-Sense:** $10M Pipeline Generation (Sales Systems).
-*   **Ex-Google/NetApp:** Operations Rigor & Process Scale.
+This system is built on the same principles I use to scale GTM teams:
 
-**"I don't just talk about process. I code it."**
-
-[LinkedIn](https://www.linkedin.com/in/leonbasin/) | [Portfolio](https://basinleon.github.io/) | [X / Twitter](https://x.com/basin_leon)
+| Metric | Result |
+|--------|--------|
+| **YoY Pipeline Increase** | 160% (Fudo Security) |
+| **Generated Pipeline** | $10M (Sense) |
+| **Churn Reduction** | 12% via Automation |
 
 ---
 
-> *Built at 4:00 AM. Because builders build.*
+## 🚀 TECH STACK
+
+| Layer | Technology |
+|-------|------------|
+| **Core** | Python, Streamlit |
+| **Intelligence** | Groq (Llama 3.3 70B, Mixtral 8x7B, Whisper), Google Gemini, Anthropic Claude |
+| **Voice** | gTTS (Text-to-Speech), Groq Whisper (Transcription) |
+| **Signals** | Feedparser (RSS), NewsAPI |
+| **Data Lake** | Google Sheets/Docs (G-Suite Integration) |
+
+---
+
+## 🏃 QUICK START
+
+```bash
+# Clone the repo
+git clone https://github.com/BasinLeon/basin-signal-engine.git
+cd basin-signal-engine
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Set your API key
+export GROQ_API_KEY="your-key-here"
+
+# Run the system
+streamlit run app.py
+```
+
+**Get a free Groq API key:** [console.groq.com](https://console.groq.com)
+
+---
+
+## 👤 ABOUT THE ARCHITECT
+
+**Leon Basin** — Revenue Architect & GTM Systems Builder
+
+- 15+ years building GTM infrastructure for high-growth startups
+- 160% pipeline growth through systems engineering
+- Expert in RevOps, Partner Ecosystems, and AI-augmented Sales
+
+**This is my operating system. It's also my resume.**
+
+[LinkedIn](https://www.linkedin.com/in/leonbasin/) | [GitHub](https://github.com/BasinLeon)
+
+---
+
+## 📜 LICENSE
+
+MIT License — Build on this. Make it yours.
