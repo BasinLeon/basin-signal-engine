@@ -81,408 +81,542 @@ components.html("""
 
 st.markdown("""
 <style>
-    /* === BASIN::NEXUS PREMIUM DARK PROTOCOL === */
+    /* ═══════════════════════════════════════════════════════════════
+       BASIN::NEXUS EXECUTIVE OS — GOLDEN PROTOCOL v2.0
+       Luxurious Command Center Aesthetic
+    ═══════════════════════════════════════════════════════════════ */
     
-    /* Core Background - Softer Dark Gray (not pure black) */
-    .stApp {
-        background: linear-gradient(180deg, #0f1419 0%, #1a1f2e 100%);
+    /* === TYPOGRAPHY IMPORTS === */
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+    
+    /* === ROOT VARIABLES === */
+    :root {
+        --gold-primary: #D4AF37;
+        --gold-light: #FFD700;
+        --gold-dark: #B8860B;
+        --gold-glow: rgba(212, 175, 55, 0.6);
+        --gold-subtle: rgba(212, 175, 55, 0.15);
+        --gold-border: rgba(212, 175, 55, 0.3);
+        --bg-deep: #050508;
+        --bg-card: #0a0a0f;
+        --bg-elevated: #0f0f15;
+        --text-primary: #f0e6d3;
+        --text-secondary: #8b8573;
+        --text-muted: #5a584f;
+        --success: #4ade80;
+        --warning: #fbbf24;
+        --danger: #f87171;
     }
     
-    /* Main container */
+    /* === CORE BACKGROUND === */
+    .stApp {
+        background: 
+            radial-gradient(ellipse at top, rgba(212, 175, 55, 0.03) 0%, transparent 50%),
+            radial-gradient(ellipse at bottom right, rgba(212, 175, 55, 0.02) 0%, transparent 40%),
+            linear-gradient(180deg, #050508 0%, #0a0a0f 50%, #050508 100%);
+        background-attachment: fixed;
+    }
+    
+    /* === SUBTLE GRID PATTERN === */
+    .stApp::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: 
+            linear-gradient(rgba(212, 175, 55, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(212, 175, 55, 0.02) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+        z-index: -1;
+    }
+    
+    /* === MAIN CONTAINER === */
     .main .block-container {
         padding-top: 2rem;
         max-width: 1400px;
     }
     
-    /* Global text color - better contrast */
-    .stApp, .stApp p, .stApp span, .stApp div {
-        color: #e6e8eb !important;
+    /* === GLOBAL TYPOGRAPHY === */
+    .stApp, .stApp p, .stApp span, .stApp div, .stApp li {
+        color: var(--text-primary) !important;
+        font-family: 'JetBrains Mono', 'SF Mono', monospace !important;
     }
     
-    /* Headers more visible */
-    h1, h2, h3, h4 {
-        color: #ffffff !important;
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Orbitron', sans-serif !important;
+        color: var(--gold-primary) !important;
+        text-transform: uppercase;
+        letter-spacing: 2px;
     }
     
-    /* === TYPOGRAPHY === */
+    h1 {
+        font-size: 2.2rem !important;
+        font-weight: 700 !important;
+        text-shadow: 0 0 30px var(--gold-glow);
+    }
     
-    /* Header - Signal Amber gradient */
+    h2 {
+        font-size: 1.4rem !important;
+        font-weight: 600 !important;
+    }
+    
+    h3 {
+        font-size: 1.1rem !important;
+        font-weight: 500 !important;
+    }
+    
+    /* === EXECUTIVE HEADER STYLES === */
     .nexus-header {
-        font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-        background: linear-gradient(90deg, #FFBF00 0%, #FFD700 50%, #FFBF00 100%);
+        font-family: 'Orbitron', sans-serif;
+        background: linear-gradient(135deg, #D4AF37 0%, #FFD700 25%, #D4AF37 50%, #B8860B 75%, #D4AF37 100%);
+        background-size: 200% 200%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        background-clip: text;
         font-size: 2.8rem;
-        font-weight: 800;
-        letter-spacing: -1px;
-        margin-bottom: 0;
-        text-shadow: 0 0 40px rgba(255, 191, 0, 0.3);
+        font-weight: 900;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        animation: shimmer 3s ease-in-out infinite;
+    }
+    
+    @keyframes shimmer {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
     }
     
     .nexus-subtitle {
-        color: #708090;
-        font-family: 'SF Mono', monospace;
-        font-size: 0.9rem;
-        letter-spacing: 2px;
+        color: var(--text-secondary);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.8rem;
+        letter-spacing: 4px;
         text-transform: uppercase;
-        margin-top: 5px;
+        margin-top: 8px;
     }
     
     /* === STATUS INDICATORS === */
-    
     .status-live {
-        background: linear-gradient(135deg, #FFBF00 0%, #FFD700 100%);
-        color: #000;
-        padding: 6px 16px;
+        background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-primary) 50%, var(--gold-light) 100%);
+        color: #000 !important;
+        padding: 8px 20px;
         border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: 700;
-        font-family: 'SF Mono', monospace;
-        letter-spacing: 1px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        font-family: 'Orbitron', sans-serif;
+        letter-spacing: 2px;
+        text-transform: uppercase;
         display: inline-block;
-        box-shadow: 0 0 20px rgba(255, 191, 0, 0.4);
+        box-shadow: 
+            0 0 20px var(--gold-glow),
+            inset 0 1px 0 rgba(255,255,255,0.3);
+        animation: pulse-glow 2s ease-in-out infinite;
     }
     
-    .status-ready {
-        background: transparent;
-        border: 1px solid #FFBF00;
-        color: #FFBF00;
-        padding: 6px 16px;
-        border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        font-family: 'SF Mono', monospace;
-        letter-spacing: 1px;
-        display: inline-block;
+    @keyframes pulse-glow {
+        0%, 100% { box-shadow: 0 0 20px var(--gold-glow); }
+        50% { box-shadow: 0 0 40px var(--gold-glow), 0 0 60px rgba(212, 175, 55, 0.3); }
     }
     
-    /* === CARDS & CONTAINERS === */
-    
+    /* === PREMIUM CARD CONTAINERS === */
     .nexus-card {
-        background: rgba(255, 191, 0, 0.03);
-        border: 1px solid rgba(255, 191, 0, 0.2);
-        border-radius: 8px;
+        background: linear-gradient(145deg, var(--bg-card) 0%, var(--bg-deep) 100%);
+        border: 1px solid var(--gold-border);
+        border-radius: 12px;
         padding: 24px;
-        margin: 12px 0;
-        backdrop-filter: blur(10px);
+        margin: 16px 0;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .nexus-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+        opacity: 0.6;
     }
     
     .nexus-card:hover {
-        border-color: rgba(255, 191, 0, 0.4);
-        box-shadow: 0 0 30px rgba(255, 191, 0, 0.1);
+        border-color: var(--gold-primary);
+        box-shadow: 
+            0 0 30px rgba(212, 175, 55, 0.15),
+            inset 0 0 60px rgba(212, 175, 55, 0.03);
+        transform: translateY(-2px);
     }
     
-    /* Output card - highlighted */
-    .output-card {
-        background: rgba(255, 191, 0, 0.05);
-        border: 1px solid rgba(255, 191, 0, 0.3);
-        border-radius: 8px;
+    /* === METRIC CARDS (Executive Dashboard) === */
+    [data-testid="stMetric"] {
+        background: linear-gradient(145deg, var(--bg-elevated) 0%, var(--bg-card) 100%);
+        border: 1px solid var(--gold-border);
+        border-radius: 12px;
         padding: 20px;
-        margin: 10px 0;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
     }
     
-    /* === BUTTONS === */
+    [data-testid="stMetric"]::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+    }
     
+    [data-testid="stMetric"]::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(180deg, var(--gold-primary), transparent);
+    }
+    
+    [data-testid="stMetric"]:hover {
+        border-color: var(--gold-primary);
+        box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+        transform: translateY(-3px);
+    }
+    
+    [data-testid="stMetricValue"] {
+        color: var(--gold-light) !important;
+        font-family: 'Orbitron', sans-serif !important;
+        font-weight: 700 !important;
+        font-size: 1.8rem !important;
+        text-shadow: 0 0 20px var(--gold-glow);
+    }
+    
+    [data-testid="stMetricLabel"] {
+        color: var(--text-secondary) !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        font-size: 0.75rem !important;
+    }
+    
+    [data-testid="stMetricDelta"] {
+        color: var(--success) !important;
+    }
+    
+    /* === BUTTONS (Golden Command) === */
     .stButton > button {
-        background: linear-gradient(135deg, #FFBF00 0%, #E6AC00 100%);
+        background: linear-gradient(145deg, var(--gold-dark) 0%, var(--gold-primary) 50%, var(--gold-light) 100%);
         color: #000 !important;
+        font-family: 'Orbitron', sans-serif;
         font-weight: 700;
-        font-family: 'SF Mono', monospace;
-        letter-spacing: 1px;
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
         border: none;
         border-radius: 6px;
-        padding: 12px 24px;
+        padding: 14px 28px;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(255, 191, 0, 0.3);
+        box-shadow: 
+            0 4px 15px rgba(212, 175, 55, 0.3),
+            inset 0 1px 0 rgba(255,255,255,0.2);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .stButton > button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .stButton > button:hover::before {
+        left: 100%;
     }
     
     .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 25px rgba(255, 191, 0, 0.5);
+        transform: translateY(-3px);
+        box-shadow: 
+            0 8px 30px rgba(212, 175, 55, 0.4),
+            0 0 40px rgba(212, 175, 55, 0.2);
     }
     
-    .stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #FFBF00 0%, #FFD700 100%);
+    .stButton > button:active {
+        transform: translateY(-1px);
     }
     
-    /* === INPUTS === */
-    
-    .stTextInput > div > div > input,
-    .stTextArea > div > div > textarea,
-    .stSelectbox > div > div > div {
-        background: rgba(0, 0, 0, 0.8) !important;
-        border: 1px solid rgba(255, 191, 0, 0.3) !important;
-        border-radius: 6px !important;
-        color: #fff !important;
-    }
-    
-    .stTextInput > div > div > input:focus,
-    .stTextArea > div > div > textarea:focus {
-        border-color: #FFBF00 !important;
-        box-shadow: 0 0 10px rgba(255, 191, 0, 0.2) !important;
-    }
-    
-    /* === DIVIDERS === */
-    
-    .divider {
-        height: 1px;
-        background: linear-gradient(90deg, transparent, rgba(255, 191, 0, 0.3), transparent);
-        margin: 24px 0;
-    }
-    
-    .divider-solid {
-        height: 1px;
-        background: rgba(255, 191, 0, 0.2);
-        margin: 20px 0;
-    }
-    
-    /* === METRICS & SCORES === */
-    
-    .score-high {
-        color: #00D67E;
-        font-weight: 700;
-        font-size: 1.5rem;
-    }
-    
-    .score-mid {
-        color: #FFBF00;
-        font-weight: 700;
-        font-size: 1.5rem;
-    }
-    
-    .score-low {
-        color: #FF4B4B;
-        font-weight: 700;
-        font-size: 1.5rem;
-    }
-    
-    /* === SIDEBAR === */
-    
+    /* === SIDEBAR (Command Panel) === */
     [data-testid="stSidebar"] {
-        background: #0a0a0a;
-        border-right: 1px solid rgba(255, 191, 0, 0.1);
+        background: linear-gradient(180deg, #050508 0%, #0a0a0f 100%);
+        border-right: 1px solid var(--gold-border);
+        position: relative;
+    }
+    
+    [data-testid="stSidebar"]::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 1px;
+        height: 100%;
+        background: linear-gradient(180deg, var(--gold-primary), transparent 50%, var(--gold-primary));
+        opacity: 0.5;
     }
     
     [data-testid="stSidebar"] h1,
     [data-testid="stSidebar"] h2,
-    [data-testid="stSidebar"] h3 {
-        color: #FFBF00 !important;
+    [data-testid="stSidebar"] h3,
+    [data-testid="stSidebar"] h4 {
+        color: var(--gold-primary) !important;
+        font-family: 'Orbitron', sans-serif !important;
     }
     
-    /* === EXPANDERS === */
+    /* === INPUTS (Terminal Style) === */
+    input, textarea, [data-testid="stTextInput"] input {
+        background: var(--bg-deep) !important;
+        border: 1px solid var(--gold-border) !important;
+        border-radius: 8px !important;
+        color: var(--text-primary) !important;
+        font-family: 'JetBrains Mono', monospace !important;
+        transition: all 0.3s ease;
+    }
     
+    input:focus, textarea:focus {
+        border-color: var(--gold-primary) !important;
+        box-shadow: 
+            0 0 15px rgba(212, 175, 55, 0.2),
+            inset 0 0 20px rgba(212, 175, 55, 0.05) !important;
+        outline: none !important;
+    }
+    
+    /* === SELECT BOXES === */
+    [data-testid="stSelectbox"] > div {
+        background: var(--bg-deep);
+        border: 1px solid var(--gold-border);
+        border-radius: 8px;
+    }
+    
+    [data-testid="stSelectbox"] > div:hover {
+        border-color: var(--gold-primary);
+    }
+    
+    /* === EXPANDERS (Mission Briefing Style) === */
     .streamlit-expanderHeader {
-        background: rgba(255, 191, 0, 0.05);
-        border: 1px solid rgba(255, 191, 0, 0.2);
-        border-radius: 6px;
+        background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-deep) 100%);
+        border: 1px solid var(--gold-border);
+        border-radius: 8px;
+        font-family: 'Orbitron', sans-serif;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
     }
     
-    /* === TABS === */
+    .streamlit-expanderHeader:hover {
+        border-color: var(--gold-primary);
+        box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+    }
     
+    /* === TABS (Mission Control) === */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
+        background: transparent;
     }
     
     .stTabs [data-baseweb="tab"] {
-        background: transparent;
-        border: 1px solid rgba(255, 191, 0, 0.3);
-        border-radius: 6px;
-        color: #FFBF00;
+        background: var(--bg-card);
+        border: 1px solid var(--gold-border);
+        border-radius: 8px 8px 0 0;
+        color: var(--text-secondary);
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+    }
+    
+    .stTabs [data-baseweb="tab"]:hover {
+        color: var(--gold-primary);
+        border-color: var(--gold-primary);
     }
     
     .stTabs [aria-selected="true"] {
-        background: rgba(255, 191, 0, 0.2) !important;
-        border-color: #FFBF00 !important;
-    }
-    
-    /* === ANIMATIONS === */
-    
-    /* HIDE STREAMLIT CHROME */
-    #MainMenu {visibility: hidden;}
-    header {visibility: hidden;}
-    footer {visibility: hidden;}
-    .stDeployButton {display:none;}
-
-    @keyframes pulse-amber {
-        0%, 100% { box-shadow: 0 0 20px rgba(255, 191, 0, 0.3); }
-        50% { box-shadow: 0 0 40px rgba(255, 191, 0, 0.6); }
-    }
-    
-    .pulse-active {
-        animation: pulse-amber 2s infinite;
-    }
-    
-    /* === SUCCESS/ERROR STATES === */
-    
-    .stSuccess {
-        background: rgba(0, 214, 126, 0.1);
-        border-left: 4px solid #00D67E;
-    }
-    
-    .stError {
-        background: rgba(255, 75, 75, 0.1);
-        border-left: 4px solid #FF4B4B;
-    }
-    
-    .stWarning {
-        background: rgba(255, 191, 0, 0.1);
-        border-left: 4px solid #FFBF00;
-    }
-    
-    /* === PREMIUM CARD CONTAINERS === */
-    
-    .nexus-card {
-        background: linear-gradient(135deg, #0d0d1a 0%, #0a0a0f 100%);
-        border: 1px solid rgba(255, 191, 0, 0.15);
-        border-radius: 12px;
-        padding: 24px;
-        margin: 16px 0;
-        transition: all 0.3s ease;
-    }
-    
-    .nexus-card:hover {
-        border-color: rgba(255, 191, 0, 0.4);
-        box-shadow: 0 8px 32px rgba(255, 191, 0, 0.1);
-    }
-    
-    .nexus-card-title {
-        color: #FFBF00;
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin-bottom: 8px;
-    }
-    
-    .nexus-card-body {
-        color: #8892b0;
-        font-size: 0.9rem;
-        line-height: 1.6;
-    }
-    
-    /* === METRIC CARDS === */
-    
-    [data-testid="stMetric"] {
-        background: linear-gradient(135deg, #0d0d1a 0%, #0a0a0f 100%);
-        border: 1px solid rgba(255, 191, 0, 0.15);
-        border-radius: 10px;
-        padding: 16px;
-    }
-    
-    [data-testid="stMetricValue"] {
-        color: #FFBF00 !important;
-        font-weight: 700;
-    }
-    
-    [data-testid="stMetricDelta"] {
-        color: #00ff88 !important;
-    }
-    
-    /* === BUTTONS === */
-    
-    .stButton > button {
-        background: linear-gradient(135deg, #FFBF00 0%, #FFD700 100%);
-        color: #000;
-        border: none;
-        border-radius: 8px;
-        font-weight: 600;
-        transition: all 0.3s ease;
-    }
-    
-    .stButton > button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(255, 191, 0, 0.3);
+        background: linear-gradient(180deg, rgba(212, 175, 55, 0.2) 0%, var(--bg-card) 100%) !important;
+        border-color: var(--gold-primary) !important;
+        color: var(--gold-primary) !important;
+        border-bottom: none !important;
     }
     
     /* === FILE UPLOADER === */
-    
     [data-testid="stFileUploader"] {
-        background: rgba(255, 191, 0, 0.05) !important;
-        border: 2px dashed rgba(255, 191, 0, 0.3) !important;
+        background: var(--bg-card) !important;
+        border: 2px dashed var(--gold-border) !important;
         border-radius: 12px !important;
-        padding: 16px !important;
+        padding: 20px !important;
+        transition: all 0.3s ease;
     }
     
-    [data-testid="stFileUploader"] > div {
-        background: transparent !important;
+    [data-testid="stFileUploader"]:hover {
+        border-color: var(--gold-primary) !important;
+        box-shadow: inset 0 0 30px rgba(212, 175, 55, 0.05);
     }
     
     [data-testid="stFileUploader"] section {
-        background: rgba(0, 0, 0, 0.4) !important;
-        border: 1px dashed rgba(255, 191, 0, 0.2) !important;
+        background: var(--bg-deep) !important;
+        border: 1px dashed var(--gold-border) !important;
         border-radius: 8px !important;
     }
     
-    [data-testid="stFileUploader"] section > div {
-        background: transparent !important;
+    /* === PROGRESS BARS === */
+    .stProgress > div > div {
+        background: linear-gradient(90deg, var(--gold-dark), var(--gold-primary), var(--gold-light));
+        box-shadow: 0 0 10px var(--gold-glow);
     }
     
-    [data-testid="stFileUploader"] small {
-        color: #8892b0 !important;
-    }
-    
-    [data-testid="stFileUploader"] button {
-        background: rgba(255, 191, 0, 0.1) !important;
-        border: 1px solid rgba(255, 191, 0, 0.3) !important;
-        color: #FFBF00 !important;
-    }
-    
-    /* File uploader drag zone */
-    [data-testid="stFileUploaderDropzone"] {
-        background: rgba(0, 0, 0, 0.5) !important;
-        border-color: rgba(255, 191, 0, 0.3) !important;
-    }
-    
-    [data-testid="stFileUploaderDropzone"] * {
-        color: #8892b0 !important;
-    }
-    
-    /* === SCROLLBAR === */
-    
+    /* === SCROLLBAR (Executive) === */
     ::-webkit-scrollbar {
         width: 8px;
+        height: 8px;
     }
     
     ::-webkit-scrollbar-track {
-        background: #0a0a0a;
+        background: var(--bg-deep);
     }
     
     ::-webkit-scrollbar-thumb {
-        background: rgba(255, 191, 0, 0.3);
+        background: linear-gradient(180deg, var(--gold-dark), var(--gold-primary));
         border-radius: 4px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: rgba(255, 191, 0, 0.5);
+        background: var(--gold-primary);
+        box-shadow: 0 0 10px var(--gold-glow);
     }
     
-    /* === CARD HOVER ANIMATIONS === */
-    
-    .nexus-card, [data-testid="stMetric"] {
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    /* === DIVIDERS === */
+    .divider {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-primary), transparent);
+        margin: 24px 0;
+        opacity: 0.5;
     }
     
-    .nexus-card:hover, [data-testid="stMetric"]:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+    hr {
+        border: none;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--gold-border), transparent);
+        margin: 20px 0;
     }
     
-    /* === RADIO BUTTON STYLING === */
+    /* === ALERTS & NOTIFICATIONS === */
+    .stSuccess {
+        background: linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(74, 222, 128, 0.05) 100%);
+        border: 1px solid rgba(74, 222, 128, 0.3);
+        border-left: 4px solid var(--success);
+        border-radius: 8px;
+    }
     
+    .stError {
+        background: linear-gradient(135deg, rgba(248, 113, 113, 0.1) 0%, rgba(248, 113, 113, 0.05) 100%);
+        border: 1px solid rgba(248, 113, 113, 0.3);
+        border-left: 4px solid var(--danger);
+        border-radius: 8px;
+    }
+    
+    .stWarning {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+        border: 1px solid var(--gold-border);
+        border-left: 4px solid var(--gold-primary);
+        border-radius: 8px;
+    }
+    
+    .stInfo {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(212, 175, 55, 0.03) 100%);
+        border: 1px solid var(--gold-border);
+        border-left: 4px solid var(--gold-dark);
+        border-radius: 8px;
+    }
+    
+    /* === TOAST NOTIFICATIONS === */
+    [data-testid="stToast"] {
+        background: linear-gradient(135deg, var(--bg-card), var(--bg-deep)) !important;
+        border: 1px solid var(--gold-border) !important;
+        border-radius: 12px !important;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+    
+    /* === RADIO BUTTONS === */
     [data-testid="stRadio"] > label {
         display: flex;
         align-items: center;
-        padding: 8px 12px;
+        padding: 10px 14px;
         margin: 4px 0;
         border-radius: 8px;
-        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
         cursor: pointer;
     }
     
     [data-testid="stRadio"] > label:hover {
-        background: rgba(255, 191, 0, 0.1);
+        background: rgba(212, 175, 55, 0.08);
+        border-color: var(--gold-border);
+    }
+    
+    /* === LOADING SPINNER === */
+    .stSpinner > div {
+        border-top-color: var(--gold-primary) !important;
+    }
+    
+    /* === DATAFRAMES / TABLES === */
+    .stDataFrame {
+        border: 1px solid var(--gold-border);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    .stDataFrame thead th {
+        background: var(--bg-card) !important;
+        color: var(--gold-primary) !important;
+        font-family: 'Orbitron', sans-serif !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .stDataFrame tbody td {
+        background: var(--bg-deep) !important;
+        color: var(--text-primary) !important;
+        border-color: var(--gold-border) !important;
+    }
+    
+    /* === HIDE STREAMLIT CHROME === */
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    .stDeployButton {display: none;}
+    
+    /* === ANIMATIONS === */
+    @keyframes glow-border {
+        0%, 100% { border-color: var(--gold-border); }
+        50% { border-color: var(--gold-primary); }
+    }
+    
+    @keyframes scan-line {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100vh); }
+    }
+    
+    .pulse-active {
+        animation: pulse-glow 2s infinite;
     }
     
     /* === MOBILE RESPONSIVE === */
-    
     @media (max-width: 768px) {
         .main .block-container {
             padding: 1rem;
@@ -490,53 +624,41 @@ st.markdown("""
         
         .nexus-header {
             font-size: 1.8rem !important;
+            letter-spacing: 2px;
+        }
+        
+        h1 {
+            font-size: 1.6rem !important;
         }
         
         [data-testid="stMetric"] {
-            padding: 12px;
+            padding: 14px;
+        }
+        
+        [data-testid="stMetricValue"] {
+            font-size: 1.4rem !important;
         }
         
         [data-testid="stSidebar"] {
             min-width: 280px;
         }
+        
+        .stButton > button {
+            padding: 12px 20px;
+            font-size: 0.75rem;
+        }
     }
     
-    /* === LOADING SPINNER === */
-    
-    .stSpinner > div {
-        border-top-color: #FFBF00 !important;
+    /* === PRINT STYLES === */
+    @media print {
+        .stApp {
+            background: white !important;
+        }
+        
+        * {
+            color: black !important;
+        }
     }
-    
-    /* === INPUT FIELDS === */
-    
-    input, textarea, [data-testid="stTextInput"] input {
-        background: rgba(255, 191, 0, 0.05) !important;
-        border: 1px solid rgba(255, 191, 0, 0.2) !important;
-        border-radius: 8px !important;
-        color: white !important;
-    }
-    
-    input:focus, textarea:focus {
-        border-color: #FFBF00 !important;
-        box-shadow: 0 0 0 2px rgba(255, 191, 0, 0.2) !important;
-    }
-    
-    /* === SELECT BOXES === */
-    
-    [data-testid="stSelectbox"] > div {
-        background: rgba(255, 191, 0, 0.05);
-        border: 1px solid rgba(255, 191, 0, 0.2);
-        border-radius: 8px;
-    }
-    
-    /* === TOAST NOTIFICATIONS === */
-    
-    [data-testid="stToast"] {
-        background: linear-gradient(135deg, #0d0d1a, #0a0a0f) !important;
-        border: 1px solid rgba(255, 191, 0, 0.3) !important;
-        border-radius: 12px !important;
-    }
-
 </style>
 """, unsafe_allow_html=True)
 
