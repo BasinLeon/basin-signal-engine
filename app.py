@@ -830,20 +830,97 @@ if show_dashboard:
     
     st.markdown("---")
     
-    # --- 2. PIPELINE METRICS ---
-    st.markdown("### 📊 CAMPAIGN STATUS")
+    # --- 2. JOB PROBABILITY CALCULATOR ---
+    st.markdown("### 🎯 JOB PROBABILITY CALCULATOR")
+    st.caption("Based on your CRM data, relationship strength, and practice sessions.")
     
-    pipeline_data = st.session_state.get('pipeline_crm', [])
-    active_deals = len(pipeline_data)
-    interviews = sum(1 for d in pipeline_data if d.get('stage') in ['Interview', 'Final', 'Offer']) if pipeline_data else 0
+    # Gather all data for calculation
+    deals = st.session_state.get('crm_deals', [])
+    contacts = st.session_state.get('crm_contacts', [])
+    voice_sessions = st.session_state.get('voice_sessions', [])
+    wins = st.session_state.get('win_loss_memory', {}).get('wins', [])
     
-    k1, k2, k3, k4 = st.columns(4)
-    k1.metric("PIPELINE VELOCITY", f"{active_deals} Active", "Deals in Flight")
-    k2.metric("INTERVIEW PREP", f"{interviews} Pending", "Needs Dojo Reps")
-    k3.metric("SYSTEM VERSION", "v14.5", "Neural Learning")
-    k4.metric("TARGET OTE", "$220k+", "Director GTM")
+    # Calculate scores
+    interview_count = sum(1 for d in deals if d.get('Stage') in ['Interview', 'Interview Scheduled', 'Final', 'Offer']) if deals else 0
+    final_rounds = sum(1 for d in deals if d.get('Stage') in ['Final', 'Offer']) if deals else 0
+    active_deals = len(deals) if deals else 0
+    
+    # Relationship Strength Score (count strong connections)
+    strong_connections = sum(1 for c in contacts if '🔗🔗🔗' in c.get('Strength', '')) if contacts else 0
+    champion_connections = sum(1 for c in contacts if '🔗🔗🔗🔗🔗' in c.get('Strength', '')) if contacts else 0
+    
+    # Practice Score
+    practice_sessions = len(voice_sessions) if voice_sessions else 0
+    
+    # Calculate probability (weighted formula)
+    base_score = 10  # Everyone starts at 10%
+    pipeline_score = min(active_deals * 5, 25)  # Up to 25% from pipeline
+    interview_score = interview_count * 10  # 10% per interview
+    final_score = final_rounds * 15  # 15% per final round
+    network_score = min(strong_connections * 3 + champion_connections * 7, 20)  # Up to 20% from network
+    practice_score = min(practice_sessions * 2, 10)  # Up to 10% from practice
+    
+    total_probability = min(base_score + pipeline_score + interview_score + final_score + network_score + practice_score, 95)
+    
+    # Display the probability meter
+    prob_color = "#00ff88" if total_probability >= 60 else "#ffd700" if total_probability >= 35 else "#ff6b6b"
+    
+    st.markdown(f"""
+    <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 100%); 
+                border: 2px solid {prob_color}; border-radius: 16px; padding: 24px; text-align: center;">
+        <p style="color: #8892b0; margin: 0 0 8px 0; font-size: 0.9rem;">🎯 PROBABILITY OF LANDING $200K+ ROLE IN 30 DAYS</p>
+        <h1 style="color: {prob_color}; margin: 0; font-size: 3.5rem;">{total_probability}%</h1>
+        <p style="color: #8892b0; margin: 8px 0 0 0; font-size: 0.8rem;">Based on {active_deals} deals, {interview_count} interviews, {strong_connections} strong connections</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("")
+    
+    # Breakdown
+    with st.expander("📊 SCORE BREAKDOWN"):
+        breakdown_cols = st.columns(5)
+        breakdown_cols[0].metric("Pipeline", f"+{pipeline_score}%", f"{active_deals} deals")
+        breakdown_cols[1].metric("Interviews", f"+{interview_score}%", f"{interview_count} active")
+        breakdown_cols[2].metric("Final Rounds", f"+{final_score}%", f"{final_rounds} active")
+        breakdown_cols[3].metric("Network", f"+{network_score}%", f"{strong_connections} strong")
+        breakdown_cols[4].metric("Practice", f"+{practice_score}%", f"{practice_sessions} sessions")
+        
+        st.markdown("---")
+        st.markdown("**How to increase your probability:**")
+        
+        if interview_count < 3:
+            st.info("📈 **+30% potential:** Get 3+ interviews scheduled")
+        if strong_connections < 5:
+            st.info("🔗 **+15% potential:** Build 5+ strong relationships (🔗🔗🔗+)")
+        if practice_sessions < 5:
+            st.info("🎤 **+10% potential:** Complete 5+ voice practice sessions")
+        if final_rounds == 0:
+            st.info("🏆 **+15% potential:** Advance 1 deal to final round")
     
     st.markdown("---")
+    
+    # --- 3. NETWORK HEALTH SCORE ---
+    st.markdown("### 🔗 NETWORK HEALTH")
+    
+    network_cols = st.columns(4)
+    cold_contacts = sum(1 for c in contacts if c.get('Strength', '🔗') == '🔗') if contacts else 0
+    warm_contacts = sum(1 for c in contacts if '🔗🔗' in c.get('Strength', '') and '🔗🔗🔗' not in c.get('Strength', '')) if contacts else 0
+    
+    network_cols[0].metric("❄️ COLD", cold_contacts, "Need nurturing")
+    network_cols[1].metric("🌤️ WARM", warm_contacts, "Keep engaged")
+    network_cols[2].metric("🔥 STRONG", strong_connections, "Leverage for intros")
+    network_cols[3].metric("👑 CHAMPIONS", champion_connections, "Ask for referrals")
+    
+    # Network Actions
+    if cold_contacts > 5:
+        st.warning(f"⚠️ You have {cold_contacts} cold contacts. Consider sending follow-ups to warm them up.")
+    if champion_connections > 0:
+        st.success(f"🎯 You have {champion_connections} champions! Ask them for warm intros to your target companies.")
+    
+    st.markdown("---")
+    
+    # --- 4. PIPELINE METRICS ---
+    st.markdown("### 📊 CAMPAIGN STATUS")
     
     # --- 3. CRITICAL ACTIONS (Next 24H) ---
     st.markdown("### 🚨 CRITICAL ACTIONS (NEXT 24H)")
@@ -2451,11 +2528,12 @@ start with full focus on day one. Is that something we can add?"
             ]
         
         # CRM Tabs
-        # CRM Tabs (Your Full Tab Structure)
-        crm_tab1, crm_tab2, crm_tab3, crm_tab4, crm_tab5, crm_tab6 = st.tabs([
+        # CRM Tabs (Your Full Tab Structure) - Added NETWORK BUILDER
+        crm_tab1, crm_tab2, crm_tab3, crm_tab4, crm_tab5, crm_tab6, crm_tab7 = st.tabs([
             "📋 DAILY BRIEFING", 
             "👤 CONTACTS", 
             "📈 DEALS", 
+            "🔗 NETWORK BUILDER",
             "👥 RECRUITERS", 
             "🏢 ENRICH", 
             "📦 ARCHIVE"
@@ -2824,9 +2902,167 @@ start with full focus on day one. Is that something we can add?"
                         st.write(f"*{l['reason'][:50]}...*" if len(l['reason']) > 50 else f"*{l['reason']}*")
         
         # ═══════════════════════════════════════════════════════════════
-        # TAB 4: RECRUITERS & NETWORK
+        # TAB 4: NETWORK BUILDER (NEW!)
         # ═══════════════════════════════════════════════════════════════
         with crm_tab4:
+            st.markdown("### 🔗 NETWORK BUILDER")
+            st.caption("Strengthen relationships. Get warm intros. Build your network systematically.")
+            
+            network_sub_tab1, network_sub_tab2, network_sub_tab3 = st.tabs([
+                "📊 NETWORK HEALTH", "📝 OUTREACH TEMPLATES", "🚀 INTRO REQUESTS"
+            ])
+            
+            # --- NETWORK HEALTH ---
+            with network_sub_tab1:
+                st.markdown("#### 📊 RELATIONSHIP STRENGTH ANALYSIS")
+                
+                contacts = st.session_state.get('crm_contacts', [])
+                
+                # Count by strength
+                strength_counts = {
+                    "❄️ Cold (🔗)": sum(1 for c in contacts if c.get('Strength', '🔗') == '🔗'),
+                    "🌤️ Warm (🔗🔗)": sum(1 for c in contacts if c.get('Strength', '') == '🔗🔗'),
+                    "🔥 Strong (🔗🔗🔗)": sum(1 for c in contacts if '🔗🔗🔗' in c.get('Strength', '') and '🔗🔗🔗🔗' not in c.get('Strength', '')),
+                    "💪 Very Strong (🔗🔗🔗🔗)": sum(1 for c in contacts if '🔗🔗🔗🔗' in c.get('Strength', '') and '🔗🔗🔗🔗🔗' not in c.get('Strength', '')),
+                    "👑 Champion (🔗🔗🔗🔗🔗)": sum(1 for c in contacts if '🔗🔗🔗🔗🔗' in c.get('Strength', '')),
+                }
+                
+                for level, count in strength_counts.items():
+                    st.metric(level, count)
+                
+                st.markdown("---")
+                
+                # Contacts needing attention
+                st.markdown("#### ⚠️ NEEDS ATTENTION (Cold Contacts)")
+                cold_contacts = [c for c in contacts if c.get('Strength', '🔗') == '🔗']
+                
+                if cold_contacts:
+                    for c in cold_contacts[:5]:
+                        col1, col2 = st.columns([3, 1])
+                        with col1:
+                            st.write(f"**{c['Name']}** @ {c['Company']}")
+                            st.caption(f"Last: {c.get('Last Touch', 'Never')}")
+                        with col2:
+                            if st.button(f"📧 Warm Up", key=f"warm_{c['Name']}"):
+                                st.session_state['warmup_target'] = c
+                else:
+                    st.success("✅ No cold contacts! Great networking.")
+                
+                st.markdown("---")
+                
+                # Champions who can help
+                st.markdown("#### 👑 YOUR CHAMPIONS")
+                champions = [c for c in contacts if '🔗🔗🔗🔗🔗' in c.get('Strength', '')]
+                
+                if champions:
+                    for c in champions:
+                        st.markdown(f"""
+                        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #ffd700; border-radius: 8px; padding: 12px; margin: 8px 0;">
+                            <p style="color: #ffd700; margin: 0;"><b>{c['Name']}</b> @ {c['Company']}</p>
+                            <p style="color: #8892b0; font-size: 0.8rem; margin: 4px 0 0 0;">Can intro you to: {c.get('Sector', 'General')} companies</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.info("Build your first champion by strengthening 1 relationship to 🔗🔗🔗🔗🔗")
+            
+            # --- OUTREACH TEMPLATES ---
+            with network_sub_tab2:
+                st.markdown("#### 📝 AI OUTREACH TEMPLATES")
+                
+                template_type = st.selectbox("Template Type", [
+                    "🤝 Reconnection (Cold → Warm)",
+                    "🎯 Intro Request",
+                    "📣 Value-First Message",
+                    "🙏 Thank You + Ask for Referral"
+                ])
+                
+                target_name = st.text_input("Target Person", placeholder="e.g., Sarah Chen")
+                target_company = st.text_input("Their Company", placeholder="e.g., Anthropic")
+                
+                if st.button("🤖 GENERATE MESSAGE", type="primary", use_container_width=True):
+                    if target_name:
+                        from logic.generator import generate_plain_text
+                        
+                        template_prompts = {
+                            "🤝 Reconnection (Cold → Warm)": f"""
+                            Write a short LinkedIn message to reconnect with {target_name} at {target_company}.
+                            
+                            Context: Leon is a Director-level GTM executive looking for opportunities in AI/SaaS/Security.
+                            Approach: Warm, casual, value-first. Ask about them, not about yourself.
+                            Length: Under 100 words.
+                            End with: A soft ask to catch up
+                            """,
+                            "🎯 Intro Request": f"""
+                            Write a LinkedIn message asking {target_name} for an introduction to someone at their company or network.
+                            
+                            Context: Leon achieved 160% pipeline growth and built $10M+ pipelines.
+                            Approach: Brief, respectful of their time, specific about what help looks like.
+                            Length: Under 80 words.
+                            """,
+                            "📣 Value-First Message": f"""
+                            Write a LinkedIn message to {target_name} that provides value first (an insight, article, or congrats).
+                            
+                            Context: Congratulate them on something or share an insight about {target_company}.
+                            Approach: No ask in this message - just pure value.
+                            Length: Under 60 words.
+                            """,
+                            "🙏 Thank You + Ask for Referral": f"""
+                            Write a thank you message to {target_name} after they helped you, with a soft referral ask.
+                            
+                            Context: They gave you advice, an intro, or feedback.
+                            Approach: Genuine gratitude first, then ask if they know 1-2 others.
+                            Length: Under 80 words.
+                            """
+                        }
+                        
+                        model_id = st.session_state.get('selected_model_id', 'llama-3.3-70b-versatile')
+                        message = generate_plain_text(template_prompts[template_type], model_name=model_id)
+                        
+                        st.markdown("---")
+                        st.markdown("#### 📧 YOUR MESSAGE")
+                        st.text_area("Copy this message:", value=message, height=150)
+            
+            # --- INTRO REQUESTS ---
+            with network_sub_tab3:
+                st.markdown("#### 🚀 INTRO REQUEST TRACKER")
+                st.caption("Track who you've asked for intros and outcomes.")
+                
+                if 'intro_requests' not in st.session_state:
+                    st.session_state['intro_requests'] = [
+                        {"Asker": "Virginia Bowers", "Target_Company": "Mistral AI", "Status": "Pending", "Date": "Dec 1", "Outcome": ""},
+                        {"Asker": "Christine Covert", "Target_Company": "OpenAI", "Status": "Intro Made", "Date": "Nov 28", "Outcome": "Got meeting with Head of Partnerships"},
+                    ]
+                
+                st.dataframe(st.session_state['intro_requests'], use_container_width=True)
+                
+                st.markdown("---")
+                
+                # Add new intro request
+                st.markdown("**➕ ADD NEW INTRO REQUEST**")
+                ir_cols = st.columns([2, 2, 2])
+                with ir_cols[0]:
+                    new_asker = st.text_input("Who are you asking?", placeholder="e.g., Sarah Chen")
+                with ir_cols[1]:
+                    new_target = st.text_input("Target Company/Person", placeholder="e.g., Anthropic")
+                with ir_cols[2]:
+                    new_date = st.text_input("Date", placeholder="e.g., Dec 6")
+                
+                if st.button("➕ ADD REQUEST"):
+                    if new_asker and new_target:
+                        st.session_state['intro_requests'].append({
+                            "Asker": new_asker,
+                            "Target_Company": new_target,
+                            "Status": "Pending",
+                            "Date": new_date or "Today",
+                            "Outcome": ""
+                        })
+                        st.success(f"Intro request to {new_target} via {new_asker} added!")
+                        st.rerun()
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 5: RECRUITERS & NETWORK (was TAB 4)
+        # ═══════════════════════════════════════════════════════════════
+        with crm_tab5:
             st.markdown("### 👥 RECRUITERS & NETWORK")
             st.caption("Track your recruiter relationships and network contacts.")
             
@@ -2866,9 +3102,9 @@ start with full focus on day one. Is that something we can add?"
                     st.rerun()
         
         # ═══════════════════════════════════════════════════════════════
-        # TAB 5: COMPANY ENRICHMENT (AI AUTO-FILL)
+        # TAB 6: COMPANY ENRICHMENT (AI AUTO-FILL) - was TAB 5
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab5:
+        with crm_tab6:
             st.markdown("### 🏢 COMPANY ENRICHMENT (AI AUTO-FILL)")
             st.caption("Paste a company name or website URL → AI fills in key intel.")
             
@@ -2911,9 +3147,9 @@ start with full focus on day one. Is that something we can add?"
                             st.info("Use the Contact tab to add a new contact with this company.")
         
         # ═══════════════════════════════════════════════════════════════
-        # TAB 6: ARCHIVE & CLOSED
+        # TAB 7: ARCHIVE & CLOSED - was TAB 6
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab6:
+        with crm_tab7:
             st.markdown("### 📦 ARCHIVE & CLOSED")
             st.caption("Closed opportunities and archived contacts.")
             
