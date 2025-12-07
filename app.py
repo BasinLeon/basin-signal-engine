@@ -802,8 +802,8 @@ with st.sidebar:
         "📡 Market Radar": "📡 Market Radar",
         "📊 Analytics (Oracle)": "📊 Analytics",
         "🔬 Company Intel": "🔬 Company Intel",
-        "🔥 Swipe Mode (Job Tinder)": "🔥 Swipe Mode",
         "☁️ G-Suite Sync (Data Lake)": "☁️ G-Suite Sync",
+        "🔮 Oracle Deck (Career Tarot)": "🔮 Oracle Deck",
         "📈 Pipeline CRM": "📈 Pipeline CRM",
         "📣 Social Command Center": "📣 Social Command Center",
         "🚀 First 90 Days": "🚀 First 90 Days",
@@ -812,6 +812,18 @@ with st.sidebar:
         "💰 Negotiation (Comp)": "💰 Negotiation"
     }
     
+    # 4. DAILY MANNA (HIDDEN DOJO)
+    st.sidebar.markdown("---")
+    if st.sidebar.button("👁️ OPEN THIRD EYE"):
+        manna = [
+            "The vessel expands only when it cracks.",
+            "Silence is the loudest frequency in the code.",
+            "To build the city, first measure the desert.",
+            "The light you seek is the fire you already carry."
+        ]
+        import random
+        st.sidebar.info(f"✨ {random.choice(manna)}")
+
     input_mode = tool_map.get(st.session_state.selected_tool_label, "📄 Intel")
 
     st.markdown("---")
@@ -3122,11 +3134,11 @@ with col1:
             st.success("✅ ALL 7 VECTORS DEPLOYED. Execute each link to initiate sweep.")
 
     # ==============================================================================
-    # 🔥 MODE 12: SWIPE MODE (JOB TINDER)
+    # 🔮 MODE 12: ORACLE DECK (CAREER TAROT)
     # ==============================================================================
-    elif input_mode == "🔥 Swipe Mode":
-        st.markdown("## 🔥 SWIPE MODE: JOB TINDER")
-        st.caption("PROTOCOL: Swipe through 15+ high-value opportunities. Build your pipeline fast.")
+    elif input_mode == "🔮 Oracle Deck":
+        st.markdown("## 🔮 ORACLE DECK: CAREER TAROT")
+        st.caption("PROTOCOL: Consult the cards. Align your Soul Vector with Market Opportunities.")
         
         # UPGRADED: 15+ jobs with more detail
         if 'swipe_jobs' not in st.session_state:
@@ -7022,8 +7034,8 @@ Best,
     # 🎯 MODE: SNIPER PROSPECTING SCOPE
     # ==============================================================================
     elif input_mode == "🎯 Sniper Prospecting":
-        st.markdown("## 🎯 SNIPER SCOPE")
-        st.caption("PROTOCOL: Deep Dive Intelligence · High-Value Target Acquisition")
+        st.markdown("## 🎯 OPS INTEL: SNIPER SCOPE")
+        st.caption("PROTOCOL: Deep Dive Intelligence · High-Value Target Acquisition · Operations Lead Dojo")
         
         try:
             from logic.integrations import analyze_sniper_target
@@ -7043,8 +7055,32 @@ Best,
                 
                 st.info("💡 **Sniper Philosophy**\n\nDon't spray and pray. Analyze deeply. Find the pain. Pitch the specific cure.")
                 
+                # OPS LEAD DOJO (Quizlet Style)
+                if target_company:
+                    st.markdown("### 🥋 OPS LEAD DOJO")
+                    if st.button("🎓 START KNOWLEDGE DRILL"):
+                        st.session_state['quiz_active'] = True
+                        st.toast(f"Drill Initiated for {target_company}", icon="🥋")
+
             with col2:
                 if target_company:
+                    # MOCK STOCK TICKER / FINANCIALS
+                    st.markdown(f"""
+                    <div style="background: #111; padding: 10px 20px; border-radius: 8px; border: 1px solid #333; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                        <div>
+                            <span style="color: #fff; font-weight: bold; font-size: 1.2rem;">{target_company.upper()[:4]}</span>
+                            <span style="color: #666; font-size: 0.8rem;"> (NYSE)</span>
+                        </div>
+                        <div>
+                            <span style="color: #00ff88; font-weight: bold; font-size: 1.2rem;">$142.50</span>
+                            <span style="color: #00ff88; font-size: 0.8rem;"> ▲ 1.2%</span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: #888;">
+                            MARKET CAP: <strong>$12.4B</strong>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
                     if st.button("🛰️ SATELLITE SCAN (ANALYZE)", type="primary"):
                         with st.spinner(f"Acquiring signal on {target_company}..."):
                             import time
@@ -7052,6 +7088,19 @@ Best,
                             analysis = analyze_sniper_target(target_company, target_sector)
                             st.session_state['sniper_intel'] = analysis
                 
+                # QUIZ DISPLAY
+                if st.session_state.get('quiz_active'):
+                    st.markdown(f"#### 🧠 KNOWLEDGE VAULT: {target_company}")
+                    with st.expander("Q1: REVENUE MODEL?", expanded=True):
+                        st.write("What is likely the Primary Revenue Driver for this sector?")
+                        if st.button("Reveal Answer Q1"):
+                             st.success(f"Usage-based pricing (Compute/Seats) typical for {target_sector}.")
+                    
+                    with st.expander("Q2: FOUNDER DNA?"):
+                         st.write("Who founded the company and what is their ethos?")
+                         if st.button("Reveal Answer Q2"):
+                             st.success("Analysis required. (Check 'Company Intel' tab).")
+
                 if 'sniper_intel' in st.session_state:
                     intel = st.session_state['sniper_intel']
                     
@@ -7681,7 +7730,7 @@ Curious if this resonates?""", height=150)
                         
                 with gtm_col2:
                     st.markdown("#### 📢 WAR ROOM")
-                    if st.button("📣 ANNOUNCE STATUS", type="primary", use_container_width=True):
+                    if st.button("📣 BROADCAST", type="primary", use_container_width=True):
                         with st.spinner("Forging Battle Update..."):
                             update_posts = generate_chess_update(strategy, moves_made)
                             st.session_state['chess_update'] = update_posts
