@@ -1362,6 +1362,7 @@ Tone:
 If type is 'journal': Write a raw, first-person entry about the struggle and glory of building.
 If type is 'play': Write a Socratic dialogue between "The Architect" (wisdom) and "The Builder" (action).
 If type is 'report': Write a "Business Elevation Report" analyzing the topic through a spiritual-commercial lens.
+If type is 'saga': Write the next chapter of "Sam & Ink". A surreal narrative about a scribe (Ink) and a navigator (Sam) building a city of glass in a desert of noise. Metaphor for startup life.
 
 Output format: Markdown. Use horizontal rules (---) to separate sections.
 """
@@ -1373,6 +1374,23 @@ Output format: Markdown. Use horizontal rules (---) to separate sections.
         
     except Exception as e:
         return f"Error inscribing scroll: {str(e)}"
+
+def calculate_possibilities(loc: int, files: int) -> str:
+    """
+    Gamification: Calculates 'Chess-like Possibilities' (Branching Factor).
+    Symbolic metric of complexity.
+    """
+    # Simply a fun large number representation
+    base = 1.05
+    possibilities = (base ** files) * (loc / 100)
+    
+    if possibilities > 1000000:
+        return f"{possibilities/1000000:.1f}M"
+    elif possibilities > 1000:
+        return f"{possibilities/1000:.1f}K"
+    else:
+        return f"{int(possibilities)}"
+
 
 
 

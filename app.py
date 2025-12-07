@@ -883,16 +883,19 @@ if show_dashboard:
     
     # 1. GAMIFICATION ENGINE (LOC & BUILD TRACKER)
     try:
-        from logic.integrations import count_project_lines, get_build_stats, squash_bug
+        from logic.integrations import count_project_lines, get_build_stats, squash_bug, calculate_possibilities
         
         # Scan current directory for LOC
         loc_stats = count_project_lines(".")
         # Load RPG Save File
         build_stats = get_build_stats()
+        # Calculate Branching Factor
+        possibility_metric = calculate_possibilities(loc_stats.get('total_lines', 0), loc_stats.get('file_count', 0))
         
     except ImportError:
         loc_stats = {"level": 1, "total_lines": 0, "xp_current": 0, "xp_needed": 500, "progress": 0}
         build_stats = {"hours_coded": 17.5, "bugs_squashed": 0, "level": 1}
+        possibility_metric = "∞"
 
     # HERO HEADER (Cinematic)
     st.markdown(f"""
@@ -905,7 +908,7 @@ if show_dashboard:
                 <h1 style="color: #fff; font-size: 3.5rem; margin: 10px 0 5px 0; text-shadow: 0 4px 20px rgba(0,0,0,0.8); font-weight: 800;">SEASON 1: THE PIVOT</h1>
                 <p style="color: #e6e6e6; font-size: 1.1rem; max-width: 600px; line-height: 1.6;">
                     The code is the leverage. The network is the moat. 
-                    <br><span style="color: #FFD700;">{build_stats['hours_coded']} HOURS</span> on the clock. <span style="color: #FF4B4B;">{build_stats['bugs_squashed']} BUGS</span> squashed.
+                    <br><span style="color: #FFD700;">{build_stats['hours_coded']} HOURS</span>. <span style="color: #FF4B4B;">{build_stats['bugs_squashed']} BUGS</span>. <span style="color: #00d4ff;">{possibility_metric} POSSIBILITIES</span>.
                 </p>
                 <div style="margin-top: 20px; display: flex; gap: 15px;">
                     <button style="background: #fff; color: black; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; cursor: pointer;">▶ RESUME</button>
@@ -7573,7 +7576,7 @@ Curious if this resonates?""", height=150)
                     
                     with scroll_col1:
                         scroll_topic = st.text_input("Scroll Topic", placeholder="e.g., The death of the resume and the rise of the portfolio")
-                        scroll_type = st.selectbox("Artifact Type", ["journal", "play", "report"], format_func=lambda x: x.upper())
+                        scroll_type = st.selectbox("Artifact Type", ["journal", "play", "report", "saga"], format_func=lambda x: x.upper())
                         
                         if st.button("📜 INSCRIBE SCROLL", type="primary"):
                             if scroll_topic:
@@ -7584,7 +7587,7 @@ Curious if this resonates?""", height=150)
                                 st.warning("The archive requires a topic.")
                                 
                     with scroll_col2:
-                        st.info("🏛️ **Library Protocol**\n\n- **Journal:** Raw, first-person builder logs.\n- **Play:** Socratic dialogue (Achitect vs Builder).\n- **Report:** Spiritual business analysis.")
+                        st.info("🏛️ **Library Protocol**\n\n- **Journal:** Raw, first-person builder logs.\n- **Play:** Socratic dialogue.\n- **Report:** Spiritual business analysis.\n- **Saga:** Sam & Ink chapters (Surreal narrative).")
 
                     if 'generated_scroll' in st.session_state:
                         st.markdown("---")
