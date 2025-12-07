@@ -7642,7 +7642,7 @@ Curious if this resonates?""", height=150)
                     </div>
                     """, unsafe_allow_html=True)
                     
-                    st.image("https://images.unsplash.com/photo-1529699211952-734e80c4d42b", caption="BASIN::NEXUS // VISUAL ARTIFACT", use_column_width=True)
+                    st.image("https://images.unsplash.com/photo-1529699211952-734e80c4d42b", caption="BASIN::NEXUS // VISUAL ARTIFACT", use_container_width=True)
                     
                 with gm_col2:
                     # Strategy & Puzzle
@@ -7653,12 +7653,12 @@ Curious if this resonates?""", height=150)
                     
                     st.info(f"**TACTIC:** {strategy['current_tactic']}")
                     
-                    # CHESS.COM EMBED
+                    # CHESS PUZZLE EMBED (Switched to Lichess for stability)
                     st.markdown("---")
                     st.caption("🧩 DAILY TACTICS PUZZLE (Train Your Pattern Recognition)")
                     import streamlit.components.v1 as components
-                    # Embedding Daily Puzzle from Chess.com
-                    components.iframe("https://www.chess.com/daily_puzzle", height=450, scrolling=False)
+                    # Lichess Dark Mode Frame
+                    components.iframe("https://lichess.org/training/frame?theme=icpieces&bg=dark", height=450, scrolling=False)
                     
                     if st.button("♟️ LOG MOVE (SESSION COMPLETE)"):
                          st.toast("Move Recorded. Entropy Reduced.", icon="♟️")

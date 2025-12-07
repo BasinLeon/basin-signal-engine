@@ -1,12 +1,5 @@
 streamlit
-groq
-openai
-google-generativeai
-anthropic
-python-dotenv
-gTTS
-feedparser
+pandas
+plotly
+striprtf
 requests
-google-auth-oauthlib
-google-api-python-client
-yfinance
