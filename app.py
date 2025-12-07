@@ -715,6 +715,38 @@ with col_status:
 
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
+# ═══════════════════════════════════════════════════════════════
+# PRIVACY NOTICE & ORACLE TELEMETRY (THE KABBALAH LAYER)
+# ═══════════════════════════════════════════════════════════════
+
+# Privacy Banner (Collapsible)
+with st.expander("🔐 PRIVACY & DATA NOTICE", expanded=False):
+    st.markdown("""
+    <div style="background: rgba(255, 191, 0, 0.05); border: 1px solid rgba(255, 191, 0, 0.2); border-radius: 8px; padding: 16px;">
+        <h4 style="color: #FFBF00; margin: 0 0 8px 0;">⚠️ Data Handling Policy</h4>
+        <ul style="color: #8892b0; margin: 0; padding-left: 20px;">
+            <li><b>No Storage:</b> Your resumes and job descriptions are NOT stored on our servers.</li>
+            <li><b>Session Only:</b> All data exists only during your active session and is cleared when you close the browser.</li>
+            <li><b>API Transit:</b> Text is sent to AI providers (Groq, OpenAI) for processing. Review their privacy policies.</li>
+            <li><b>No PII Collection:</b> We do not collect names, emails, or identifying information.</li>
+        </ul>
+        <p style="color: #FFBF00; margin: 12px 0 0 0; font-size: 0.85rem;">
+            <b>Recommendation:</b> Do not paste highly confidential or proprietary information.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Oracle Feedback Hook (Future Telemetry)
+    st.markdown("---")
+    st.caption("🧠 **THE ORACLE LEARNS (Anonymously)**")
+    st.markdown("""
+    <p style="color: #8892b0; font-size: 0.8rem;">
+    When you rate outputs (coming soon), the system learns which prompts work best — without ever seeing your data. 
+    <br>This is <b>aggregate intelligence</b>: the Oracle gets smarter, but your secrets stay yours.
+    </p>
+    """, unsafe_allow_html=True)
+
+
 # Check if we should show Dashboard (default on first load)
 show_dashboard = input_mode == "📄 Intel" and not st.session_state.get('resume_vault') and not st.session_state.resume_text
 
