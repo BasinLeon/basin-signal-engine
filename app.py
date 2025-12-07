@@ -3748,10 +3748,10 @@ start with full focus on day one. Is that something we can add?"
             ]
         
         # CRM Tabs
-        # CRM Tabs (Your Full Tab Structure) - Added NETWORK BUILDER + TREE OF LIFE
+        # CRM Tabs (Your Full Tab Structure) - Added NETWORK BUILDER + THE BLUEPRINT
         crm_tab1, crm_tab2, crm_tab3, crm_tab4, crm_tab5, crm_tab6, crm_tab7, crm_tab8 = st.tabs([
             "📋 DAILY BRIEFING", 
-            "✡️ TREE OF LIFE",
+            "🔮 THE BLUEPRINT",
             "👤 CONTACTS", 
             "📈 DEALS", 
             "🔗 NETWORK BUILDER",
@@ -3761,130 +3761,140 @@ start with full focus on day one. Is that something we can add?"
         ])
         
         # ═══════════════════════════════════════════════════════════════
-        # TAB: ✡️ TREE OF LIFE (KABBALAH CRM)
+        # TAB: 🔮 THE BLUEPRINT (THE ARCHITECT'S FRAMEWORK)
         # ═══════════════════════════════════════════════════════════════
         with crm_tab2:
-            st.markdown("## ✡️ TREE OF LIFE (ETZ CHAIM)")
-            st.caption("PROTOCOL: Your career journey mapped to the 10 Sefirot - Divine emanations of manifestation.")
+            st.markdown("## 🔮 THE ARCHITECT'S BLUEPRINT")
+            st.caption("PROTOCOL: The 10 Pillars of manifestation. A framework as old as strategy itself.")
             
-            # The 10 Sefirot with career stage mapping
-            sefirot = [
+            # The 10 Pillars (Universal Archetypes)
+            pillars = [
                 {
-                    "name": "כֶּתֶר",
-                    "english": "KETER",
-                    "meaning": "Crown — Divine Will",
+                    "symbol": "◇",
+                    "name": "THE CROWN",
+                    "essence": "Pure Potential",
                     "career_stage": "Signed Offer",
                     "color": "#FFFFFF",
                     "glow": "rgba(255,255,255,0.5)",
-                    "action": "Accept with gratitude. This is the manifestation of your highest intent.",
-                    "meditation": "I am aligned with my highest purpose. The crown of success rests upon me.",
-                    "position": (50, 5)
+                    "action": "Receive with gratitude. This is the moment intention becomes reality.",
+                    "calibration": "I am aligned with my highest outcome. Success flows through me.",
+                    "position": (50, 5),
+                    "energy": "Stillness before creation"
                 },
                 {
-                    "name": "חָכְמָה",
-                    "english": "CHOKHMAH",
-                    "meaning": "Wisdom — Flash of Insight",
+                    "symbol": "☉",
+                    "name": "THE SAGE",
+                    "essence": "Intuitive Wisdom",
                     "career_stage": "Final Round",
                     "color": "#A0A0FF",
                     "glow": "rgba(160,160,255,0.5)",
-                    "action": "Trust your intuition. The wisdom you've built speaks through you.",
-                    "meditation": "I access deep wisdom. Divine insight flows through my words.",
-                    "position": (75, 20)
+                    "action": "Trust your inner knowing. Years of pattern recognition speak through you now.",
+                    "calibration": "I access wisdom beyond logic. Insight arrives when I stop forcing.",
+                    "position": (75, 20),
+                    "energy": "Lightning flash of clarity"
                 },
                 {
-                    "name": "בִּינָה",
-                    "english": "BINAH",
-                    "meaning": "Understanding — Deep Analysis",
+                    "symbol": "△",
+                    "name": "THE ANALYST",
+                    "essence": "Structured Understanding",
                     "career_stage": "2nd Interview",
                     "color": "#00FF88",
                     "glow": "rgba(0,255,136,0.5)",
-                    "action": "Understand their needs deeply. Ask probing questions.",
-                    "meditation": "I comprehend all layers. Understanding illuminates my path.",
-                    "position": (25, 20)
+                    "action": "Decode their deeper needs. The question behind the question reveals everything.",
+                    "calibration": "I see the architecture beneath the surface. Understanding is my advantage.",
+                    "position": (25, 20),
+                    "energy": "Deep processing"
                 },
                 {
-                    "name": "חֶסֶד",
-                    "english": "CHESED",
-                    "meaning": "Loving-kindness — Expansion",
+                    "symbol": "∞",
+                    "name": "THE GIVER",
+                    "essence": "Expansive Generosity",
                     "career_stage": "1st Interview",
                     "color": "#00D4FF",
                     "glow": "rgba(0,212,255,0.5)",
-                    "action": "Lead with generosity. Give value before asking for anything.",
-                    "meditation": "I expand with love. Abundance flows through giving.",
-                    "position": (75, 40)
+                    "action": "Lead with value. Give insights freely. Abundance attracts abundance.",
+                    "calibration": "I expand by giving. The more value I offer, the more returns to me.",
+                    "position": (75, 40),
+                    "energy": "Overflowing outward"
                 },
                 {
-                    "name": "גְּבוּרָה",
-                    "english": "GEVURAH",
-                    "meaning": "Strength — Discipline",
+                    "symbol": "⚔",
+                    "name": "THE WARRIOR",
+                    "essence": "Focused Discipline",
                     "career_stage": "Follow-Up",
                     "color": "#FF6B6B",
                     "glow": "rgba(255,107,107,0.5)",
-                    "action": "Be persistent but not desperate. Strength is knowing when to push.",
-                    "meditation": "I am strong in my conviction. Discipline creates breakthroughs.",
-                    "position": (25, 40)
+                    "action": "Apply calibrated pressure. Persistence without desperation. Know when to push.",
+                    "calibration": "My discipline creates breakthroughs. Strength is precision, not force.",
+                    "position": (25, 40),
+                    "energy": "Contained power"
                 },
                 {
-                    "name": "תִּפְאֶרֶת",
-                    "english": "TIFERET",
-                    "meaning": "Beauty — Harmony",
+                    "symbol": "⬡",
+                    "name": "THE HARMONIZER",
+                    "essence": "Dynamic Balance",
                     "career_stage": "Engaged",
                     "color": "#FFD700",
                     "glow": "rgba(255,215,0,0.5)",
-                    "action": "Find the balance. Connect your story to their needs harmoniously.",
-                    "meditation": "I embody beauty in action. My presence creates harmony.",
-                    "position": (50, 45)
+                    "action": "Find the synthesis. Your story and their needs are one pattern.",
+                    "calibration": "I am the bridge between worlds. My presence creates resonance.",
+                    "position": (50, 45),
+                    "energy": "Heart of the system"
                 },
                 {
-                    "name": "נֶצַח",
-                    "english": "NETZACH",
-                    "meaning": "Victory — Persistence",
+                    "symbol": "↑",
+                    "name": "THE VICTOR",
+                    "essence": "Eternal Persistence",
                     "career_stage": "Warm Lead",
                     "color": "#00FF88",
                     "glow": "rgba(0,255,136,0.5)",
-                    "action": "Keep nurturing the relationship. Victory comes to those who persist.",
-                    "meditation": "Eternal victory is mine. I persist with joy.",
-                    "position": (70, 60)
+                    "action": "Nurture the connection. Victory belongs to those who outlast doubt.",
+                    "calibration": "I persist with joy, not desperation. Momentum compounds.",
+                    "position": (70, 60),
+                    "energy": "Upward thrust"
                 },
                 {
-                    "name": "הוֹד",
-                    "english": "HOD",
-                    "meaning": "Glory — Acknowledgment",
+                    "symbol": "✧",
+                    "name": "THE BEACON",
+                    "essence": "Authentic Radiance",
                     "career_stage": "Response Received",
                     "color": "#FF9500",
                     "glow": "rgba(255,149,0,0.5)",
-                    "action": "Acknowledge their response. Show gratitude for attention.",
-                    "meditation": "I radiate authentic glory. My worth is self-evident.",
-                    "position": (30, 60)
+                    "action": "Your signal was received. Acknowledge this with genuine appreciation.",
+                    "calibration": "My authentic presence is magnetic. Worth needs no convincing.",
+                    "position": (30, 60),
+                    "energy": "Radiant stillness"
                 },
                 {
-                    "name": "יְסוֹד",
-                    "english": "YESOD",
-                    "meaning": "Foundation — Connection",
+                    "symbol": "⬢",
+                    "name": "THE BUILDER",
+                    "essence": "Solid Foundation",
                     "career_stage": "Outreach Sent",
                     "color": "#9B59B6",
                     "glow": "rgba(155,89,182,0.5)",
-                    "action": "Build the foundation. Your outreach is the first brick.",
-                    "meditation": "I establish strong foundations. Connection begins with action.",
-                    "position": (50, 75)
+                    "action": "The first brick is laid. Connection begins with courageous action.",
+                    "calibration": "I build with intention. Every outreach is an investment in the structure.",
+                    "position": (50, 75),
+                    "energy": "Grounded creation"
                 },
                 {
-                    "name": "מַלְכוּת",
-                    "english": "MALKHUT",
-                    "meaning": "Kingdom — Manifestation",
+                    "symbol": "◆",
+                    "name": "THE SEED",
+                    "essence": "Grounded Intention",
                     "career_stage": "Identified",
                     "color": "#8B4513",
                     "glow": "rgba(139,69,19,0.5)",
-                    "action": "Ground your intention. Identify the opportunity clearly.",
-                    "meditation": "The kingdom manifests through me. I am ready to receive.",
-                    "position": (50, 95)
+                    "action": "Name the target clearly. Identification is the birth of manifestation.",
+                    "calibration": "I plant seeds with clear vision. What I name, I can claim.",
+                    "position": (50, 95),
+                    "energy": "Potential in stillness"
                 }
             ]
             
-            # TREE OF LIFE VISUALIZATION
+            # THE BLUEPRINT VISUALIZATION
             st.markdown("""
             <style>
-            .tree-container {
+            .blueprint-container {
                 position: relative;
                 width: 100%;
                 height: 600px;
@@ -3892,7 +3902,7 @@ start with full focus on day one. Is that something we can add?"
                 border-radius: 20px;
                 overflow: hidden;
             }
-            .sefira {
+            .pillar {
                 position: absolute;
                 width: 80px;
                 height: 80px;
@@ -3905,42 +3915,34 @@ start with full focus on day one. Is that something we can add?"
                 transition: all 0.3s ease;
                 text-align: center;
             }
-            .sefira:hover {
+            .pillar:hover {
                 transform: scale(1.2);
                 z-index: 10;
             }
-            .sefira-name {
-                font-size: 1.5rem;
+            .pillar-symbol {
+                font-size: 2rem;
                 font-weight: bold;
             }
-            .sefira-english {
-                font-size: 0.6rem;
-                color: rgba(255,255,255,0.7);
-            }
-            .path {
-                position: absolute;
-                background: rgba(255,255,255,0.1);
-                height: 2px;
-                transform-origin: 0 0;
+            .pillar-name {
+                font-size: 0.55rem;
+                color: rgba(255,255,255,0.8);
+                margin-top: 4px;
             }
             </style>
             """, unsafe_allow_html=True)
             
-            # Build tree HTML
-            tree_html = '<div class="tree-container">'
+            # Build blueprint HTML
+            tree_html = '<div class="blueprint-container">'
             
-            # Add paths (simplified - connecting major sefirot)
-            # In a full implementation, you'd draw 22 paths for the Hebrew letters
-            
-            # Add sefirot circles
-            for i, s in enumerate(sefirot):
-                x, y = s["position"]
+            # Add pillar circles
+            for i, p in enumerate(pillars):
+                x, y = p["position"]
                 tree_html += f'''
-                <div class="sefira" style="left: calc({x}% - 40px); top: calc({y}% - 40px); 
-                     background: radial-gradient(circle, {s["color"]}40, {s["color"]}20);
-                     border: 2px solid {s["color"]}; box-shadow: 0 0 20px {s["glow"]};">
-                    <span class="sefira-name" style="color: {s["color"]};">{s["name"]}</span>
-                    <span class="sefira-english">{s["english"]}</span>
+                <div class="pillar" style="left: calc({x}% - 40px); top: calc({y}% - 40px); 
+                     background: radial-gradient(circle, {p["color"]}40, {p["color"]}20);
+                     border: 2px solid {p["color"]}; box-shadow: 0 0 20px {p["glow"]};">
+                    <span class="pillar-symbol" style="color: {p["color"]};">{p["symbol"]}</span>
+                    <span class="pillar-name">{p["name"]}</span>
                 </div>
                 '''
             
@@ -3949,48 +3951,48 @@ start with full focus on day one. Is that something we can add?"
             
             st.markdown("---")
             
-            # DEAL MAPPING TO SEFIROT
-            st.markdown("### 📊 YOUR DEALS ON THE TREE")
+            # DEAL MAPPING TO PILLARS
+            st.markdown("### 📊 YOUR DEALS ON THE BLUEPRINT")
             
             deals = st.session_state.get('crm_deals', [])
             
-            # Map stages to sefirot
-            stage_to_sefira = {
-                "Identified": "MALKHUT",
-                "Outreach Sent": "YESOD",
-                "Response Received": "HOD",
-                "Warm": "NETZACH",
-                "Engaged": "TIFERET",
-                "Under Review": "GEVURAH",
-                "1st Interview": "CHESED",
-                "2nd Interview": "BINAH",
-                "Final Round": "CHOKHMAH",
-                "Offer": "KETER",
-                "Interview Scheduled": "CHESED",
-                "Intro Pending": "YESOD",
-                "Under Review (HM)": "GEVURAH",
-                "Active": "TIFERET"
+            # Map stages to pillars
+            stage_to_pillar = {
+                "Identified": "THE SEED",
+                "Outreach Sent": "THE BUILDER",
+                "Response Received": "THE BEACON",
+                "Warm": "THE VICTOR",
+                "Engaged": "THE HARMONIZER",
+                "Under Review": "THE WARRIOR",
+                "1st Interview": "THE GIVER",
+                "2nd Interview": "THE ANALYST",
+                "Final Round": "THE SAGE",
+                "Offer": "THE CROWN",
+                "Interview Scheduled": "THE GIVER",
+                "Intro Pending": "THE BUILDER",
+                "Under Review (HM)": "THE WARRIOR",
+                "Active": "THE HARMONIZER"
             }
             
-            # Group deals by sefira
-            deals_by_sefira = {}
+            # Group deals by pillar
+            deals_by_pillar = {}
             for deal in deals:
                 stage = deal.get('Stage', 'Identified')
-                sefira_name = stage_to_sefira.get(stage, "MALKHUT")
-                if sefira_name not in deals_by_sefira:
-                    deals_by_sefira[sefira_name] = []
-                deals_by_sefira[sefira_name].append(deal)
+                pillar_name = stage_to_pillar.get(stage, "THE SEED")
+                if pillar_name not in deals_by_pillar:
+                    deals_by_pillar[pillar_name] = []
+                deals_by_pillar[pillar_name].append(deal)
             
-            # Display deals grouped by sefira
-            for s in sefirot:
-                eng = s["english"]
-                if eng in deals_by_sefira:
-                    deal_list = deals_by_sefira[eng]
+            # Display deals grouped by pillar
+            for p in pillars:
+                name = p["name"]
+                if name in deals_by_pillar:
+                    deal_list = deals_by_pillar[name]
                     st.markdown(f"""
-                    <div style="background: linear-gradient(135deg, {s['color']}10, {s['color']}05);
-                                border-left: 4px solid {s['color']}; padding: 16px; margin: 12px 0; border-radius: 0 12px 12px 0;">
-                        <h4 style="color: {s['color']}; margin: 0 0 8px 0;">{s['name']} {eng} — {s['meaning']}</h4>
-                        <p style="color: #8892b0; font-size: 0.85rem; margin: 0 0 12px 0;">{s['career_stage']}</p>
+                    <div style="background: linear-gradient(135deg, {p['color']}10, {p['color']}05);
+                                border-left: 4px solid {p['color']}; padding: 16px; margin: 12px 0; border-radius: 0 12px 12px 0;">
+                        <h4 style="color: {p['color']}; margin: 0 0 8px 0;">{p['symbol']} {name} — {p['essence']}</h4>
+                        <p style="color: #8892b0; font-size: 0.85rem; margin: 0 0 12px 0;">{p['career_stage']}</p>
                     </div>
                     """, unsafe_allow_html=True)
                     
@@ -3999,33 +4001,37 @@ start with full focus on day one. Is that something we can add?"
             
             st.markdown("---")
             
-            # DAILY KAVANAH (INTENTION)
-            st.markdown("### 🕯️ DAILY KAVANAH (Intention)")
+            # DAILY CALIBRATION (Renamed from Kavanah)
+            st.markdown("### 🎯 DAILY CALIBRATION")
+            st.caption("Set your intention. Align your energy. Execute with precision.")
             
             import random
-            daily_sefira = random.choice(sefirot)
+            daily_pillar = random.choice(pillars)
             
             st.markdown(f"""
-            <div style="background: linear-gradient(135deg, {daily_sefira['color']}15, transparent);
-                        border: 2px solid {daily_sefira['color']}; border-radius: 16px; padding: 24px; text-align: center;">
-                <p style="color: #8892b0; margin: 0; font-size: 0.9rem;">TODAY'S FOCUS</p>
-                <h1 style="color: {daily_sefira['color']}; margin: 12px 0; font-size: 3rem;">{daily_sefira['name']}</h1>
-                <h3 style="color: {daily_sefira['color']}; margin: 0 0 16px 0;">{daily_sefira['english']} — {daily_sefira['meaning']}</h3>
-                <p style="color: #ccd6f6; font-size: 1.1rem; font-style: italic; margin: 0 0 16px 0;">"{daily_sefira['meditation']}"</p>
-                <p style="color: #8892b0; margin: 0;">🎯 <b>Action:</b> {daily_sefira['action']}</p>
+            <div style="background: linear-gradient(135deg, {daily_pillar['color']}15, transparent);
+                        border: 2px solid {daily_pillar['color']}; border-radius: 16px; padding: 24px; text-align: center;">
+                <p style="color: #8892b0; margin: 0; font-size: 0.9rem;">TODAY'S ARCHETYPE</p>
+                <h1 style="color: {daily_pillar['color']}; margin: 12px 0; font-size: 3.5rem;">{daily_pillar['symbol']}</h1>
+                <h2 style="color: {daily_pillar['color']}; margin: 0 0 8px 0;">{daily_pillar['name']}</h2>
+                <p style="color: #ccd6f6; font-size: 0.95rem; margin: 0 0 16px 0;">{daily_pillar['essence']} — <i>{daily_pillar['energy']}</i></p>
+                <p style="color: #ccd6f6; font-size: 1.1rem; font-style: italic; margin: 0 0 16px 0;">"{daily_pillar['calibration']}"</p>
+                <p style="color: #8892b0; margin: 0;">🎯 <b>Action:</b> {daily_pillar['action']}</p>
             </div>
             """, unsafe_allow_html=True)
             
             st.markdown("---")
             
-            # SEFIRA DETAIL EXPANDERS
-            st.markdown("### 📖 SEFIROT GUIDE")
+            # PILLAR GUIDE
+            st.markdown("### 📖 THE 10 PILLARS")
+            st.caption("Ancient wisdom for modern dealmakers.")
             
-            for s in sefirot:
-                with st.expander(f"{s['name']} {s['english']} — {s['meaning']}"):
-                    st.markdown(f"**Career Stage:** {s['career_stage']}")
-                    st.markdown(f"**Action:** {s['action']}")
-                    st.markdown(f"**Meditation:** *{s['meditation']}*")
+            for p in pillars:
+                with st.expander(f"{p['symbol']} {p['name']} — {p['essence']}"):
+                    st.markdown(f"**Stage:** {p['career_stage']}")
+                    st.markdown(f"**Energy:** *{p['energy']}*")
+                    st.markdown(f"**Action:** {p['action']}")
+                    st.markdown(f"**Calibration:** *\"{p['calibration']}\"*")
         
         # ═══════════════════════════════════════════════════════════════
         # TAB 0: DAILY BRIEFING (AUTOMATIC TASK ENGINE)
