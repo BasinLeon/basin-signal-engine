@@ -1485,10 +1485,15 @@ with col1:
             </div>
             """, unsafe_allow_html=True)
             
-            # Quick Apply Link
-            if job.get('url') and job['url'] != "#":
-                st.markdown(f"[🚀 **QUICK APPLY →** {job['url']}]({job['url']})")
-            
+            # Quick Apply & Crunchbase Links
+            q_cols = st.columns(2)
+            with q_cols[0]:
+                if job.get('url') and job['url'] != "#":
+                    st.markdown(f"[🚀 **QUICK APPLY**]({job['url']})")
+            with q_cols[1]:
+                cb_url = f"https://www.crunchbase.com/organization/{job['company'].lower().replace(' ', '-')}"
+                st.markdown(f"[💰 **CRUNCHBASE**]({cb_url})")
+
             # Swipe Buttons
             st.markdown("### MAKE YOUR MOVE")
             
@@ -1501,15 +1506,46 @@ with col1:
             
             with col_up:
                 if st.button("⭐ PRIORITY 1", use_container_width=True, key="swipe_up"):
+                    # Add to Local List
                     st.session_state.swiped_priority.append(job)
                     st.session_state.swipe_index += 1
-                    st.toast(f"🌟 {job['company']} added to PRIORITY 1!", icon="⭐")
+                    
+                    # Add to MAIN CRM PIPELINE
+                    if 'crm_pipeline' in st.session_state:
+                        # Check if already exists to avoid dupes
+                        exists = any(d['Company'] == job['company'] for d in st.session_state['crm_pipeline'])
+                        if not exists:
+                            st.session_state['crm_pipeline'].append({
+                                "Company": job['company'],
+                                "Role": job['title'],
+                                "Value": job['salary'],
+                                "Stage": "1. Identified",
+                                "Probability": "50%",
+                                "Next Step": "Find Hiring Manager"
+                            })
+                    
+                    st.toast(f"🌟 {job['company']} added to PRIORITY 1 & CRM!", icon="⭐")
                     st.rerun()
             
             with col_right:
                 if st.button("✅ ADD TO CRM", use_container_width=True, key="swipe_right"):
+                    # Add to Local List
                     st.session_state.swiped_right.append(job)
                     st.session_state.swipe_index += 1
+                    
+                    # Add to MAIN CRM PIPELINE
+                    if 'crm_pipeline' in st.session_state:
+                         exists = any(d['Company'] == job['company'] for d in st.session_state['crm_pipeline'])
+                         if not exists:
+                            st.session_state['crm_pipeline'].append({
+                                "Company": job['company'],
+                                "Role": job['title'],
+                                "Value": job['salary'],
+                                "Stage": "1. Identified",
+                                "Probability": "20%",
+                                "Next Step": "Research"
+                            })
+
                     st.toast(f"✅ {job['company']} added to Pipeline!", icon="✅")
                     st.rerun()
             
@@ -2530,6 +2566,28 @@ with col1:
                         
                         # Gamification Update
                         st.toast(f"📈 +50 XP GAINED: {target_company} SIMULATION")
+                        
+                        # Mentor Export (Collaboration Mode Only)
+                        if sim_mode == "collaborate":
+                            st.markdown("---")
+                            st.caption("📤 TAKE ACTION: SHARE WITH MENTOR")
+                            if st.button("📧 DRAFT EMAIL TO MENTOR"):
+                                email_body = f"""Hi [Mentor Name],
+
+I was brainstorming GTM strategy for {target_company} regarding {artifact_focus} and would love your gut check.
+
+Here is the approach I'm considering:
+--------------------------------------------------
+{feedback}
+--------------------------------------------------
+
+Does this align with what you're seeing in the market?
+
+Best,
+Leon"""
+                                st.code(email_body, language="text")
+                                st.success("📋 Copied to clipboard logic (Manual Copy for now)")
+
                 else:
                     st.error("⚠️ No audio transcript detected. Speak your answer!")
 
