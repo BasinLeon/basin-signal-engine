@@ -149,22 +149,22 @@ st.markdown("""
         font-family: 'Orbitron', sans-serif !important;
         color: var(--gold-primary) !important;
         text-transform: uppercase;
-        letter-spacing: 2px;
+        letter-spacing: 1px;
     }
     
     h1 {
-        font-size: 2.2rem !important;
+        font-size: 1.4rem !important;
         font-weight: 700 !important;
-        text-shadow: 0 0 30px var(--gold-glow);
+        text-shadow: 0 0 20px var(--gold-glow);
     }
     
     h2 {
-        font-size: 1.4rem !important;
+        font-size: 1.1rem !important;
         font-weight: 600 !important;
     }
     
     h3 {
-        font-size: 1.1rem !important;
+        font-size: 0.95rem !important;
         font-weight: 500 !important;
     }
     
@@ -176,9 +176,9 @@ st.markdown("""
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
-        font-size: 2.8rem;
+        font-size: 1.6rem;
         font-weight: 900;
-        letter-spacing: 4px;
+        letter-spacing: 2px;
         text-transform: uppercase;
         animation: shimmer 3s ease-in-out infinite;
     }
