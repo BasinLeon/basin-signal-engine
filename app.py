@@ -570,6 +570,10 @@ if "comms_target_name" not in st.session_state:
 if "comms_target_company" not in st.session_state:
     st.session_state.comms_target_company = ""
 
+# Mobile Practice Mode
+if "mobile_drill" not in st.session_state:
+    st.session_state.mobile_drill = None
+
 
 # ═══════════════════════════════════════════════════════════════
 # SIDEBAR: CONFIGURATION
@@ -2429,10 +2433,146 @@ with col1:
         st.markdown("## 🎙️ VOICE TELEMETRY LAB")
         st.caption("PROTOCOL: Cloud-Native Voice Recording + Executive Presence Scoring.")
         
+        # MODE SELECTOR: Desktop vs Mobile
+        voice_mode = st.radio("🎛️ PRACTICE MODE", 
+            ["🖥️ Desktop (Full Lab)", "📱 Mobile (Camera + Mic)"],
+            horizontal=True
+        )
+        
         st.markdown("---")
         
-        # 1. DRILL SETUP
-        col1, col2 = st.columns([2, 1])
+        # ═══════════════════════════════════════════════════════════════
+        # 📱 MOBILE PRACTICE MODE
+        # ═══════════════════════════════════════════════════════════════
+        if voice_mode == "📱 Mobile (Camera + Mic)":
+            st.markdown("### 📱 MOBILE PRACTICE STUDIO")
+            st.caption("OPTIMIZED: Large buttons, camera/mic access, quick drills.")
+            
+            # QUICK DRILL SELECTOR (Large Touch Buttons)
+            st.markdown("#### 🎯 SELECT DRILL")
+            
+            mobile_drills = [
+                ("🎤 Elevator Pitch", "Tell me about yourself in 60 seconds"),
+                ("💰 Why You?", "What makes you unique vs other candidates?"),
+                ("📊 160% Growth", "Walk me through your biggest achievement"),
+                ("🛡️ Weakness", "What's your greatest weakness?"),
+                ("❓ Questions", "What questions do you have for us?")
+            ]
+            
+            # Create 2x3 grid of large buttons
+            drill_cols = st.columns(2)
+            selected_mobile_drill = None
+            
+            for i, (emoji_title, question) in enumerate(mobile_drills):
+                with drill_cols[i % 2]:
+                    if st.button(emoji_title, use_container_width=True, key=f"mobile_drill_{i}"):
+                        st.session_state['mobile_drill'] = question
+                        st.toast(f"Drill loaded: {question}", icon="🎯")
+            
+            # Show selected drill
+            if st.session_state.get('mobile_drill'):
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, rgba(255,191,0,0.1), rgba(255,215,0,0.05)); 
+                            border: 2px solid #FFD700; border-radius: 16px; padding: 20px; margin: 16px 0; text-align: center;">
+                    <p style="color: #8892b0; margin: 0 0 8px 0; font-size: 0.9rem;">CURRENT DRILL</p>
+                    <h3 style="color: #FFBF00; margin: 0;">{st.session_state['mobile_drill']}</h3>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            # CAMERA INPUT (Video Practice)
+            st.markdown("#### 📹 VIDEO PRACTICE (Check Presence)")
+            st.caption("Record yourself to review body language, eye contact, and energy.")
+            
+            camera_input = st.camera_input("📷 Capture Practice Video", key="mobile_camera")
+            
+            if camera_input:
+                st.success("✅ Video captured! Review your presence below.")
+                st.image(camera_input, use_container_width=True)
+                
+                # Body Language Checklist
+                st.markdown("##### ✅ PRESENCE CHECKLIST")
+                bl_cols = st.columns(3)
+                bl_cols[0].checkbox("👁️ Eye contact?")
+                bl_cols[1].checkbox("😊 Smile/Energy?")
+                bl_cols[2].checkbox("🖐️ Hand gestures?")
+            
+            st.markdown("---")
+            
+            # AUDIO INPUT (Voice Practice)  
+            st.markdown("#### 🎤 VOICE PRACTICE (Record Answer)")
+            st.caption("Record your response and get AI feedback.")
+            
+            audio_input = st.audio_input("🎙️ Record Your Answer", key="mobile_audio")
+            
+            if audio_input:
+                st.audio(audio_input)
+                st.success("✅ Audio captured!")
+                
+                # Quick Analysis (placeholder - integrate Whisper for real transcription)
+                if st.button("🧠 ANALYZE RESPONSE", type="primary", use_container_width=True, key="mobile_analyze"):
+                    with st.spinner("Analyzing..."):
+                        from logic.generator import generate_plain_text
+                        
+                        feedback_prompt = f"""
+                        You are a professional interview coach.
+                        The candidate just practiced answering: "{st.session_state.get('mobile_drill', 'Tell me about yourself')}"
+                        
+                        Give quick feedback (3 bullet points max):
+                        1. What they likely did well
+                        2. One area to improve
+                        3. A power phrase to use next time
+                        
+                        Keep it short and actionable.
+                        """
+                        model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
+                        feedback = generate_plain_text(feedback_prompt, model_name=model_id)
+                        
+                        st.markdown("##### 💡 COACH FEEDBACK")
+                        st.success(feedback)
+            
+            st.markdown("---")
+            
+            # QUICK OBJECTION CARDS (One-Tap Answers)
+            st.markdown("#### 🛡️ QUICK OBJECTION CARDS")
+            st.caption("One-tap answers during live calls.")
+            
+            objections = [
+                ("💰 Too Expensive", "I understand budget is a concern. Let me ask—what's the cost of NOT solving this problem for another quarter?"),
+                ("⏰ Not Now", "I hear you. When would be the right time to revisit? I want to make sure I'm adding value, not pressure."),
+                ("🤔 Need to Think", "Totally fair. What specific concerns are top of mind so I can address them now or in a follow-up?"),
+                ("👥 Talk to Team", "Great idea. Would it help if I joined that conversation to answer technical questions directly?"),
+            ]
+            
+            for obj_title, obj_answer in objections:
+                with st.expander(obj_title):
+                    st.markdown(f"**Response:** {obj_answer}")
+                    st.markdown(f"""
+                    <button onclick="navigator.clipboard.writeText('{obj_answer}')" 
+                            style="background: #FFBF00; color: black; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; width: 100%;">
+                        📋 COPY
+                    </button>
+                    """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            # PRACTICE TIMER
+            st.markdown("#### ⏱️ PRACTICE TIMER")
+            timer_cols = st.columns(3)
+            if timer_cols[0].button("30 SEC", use_container_width=True, key="timer_30"):
+                st.toast("⏱️ 30 second timer started!", icon="⏱️")
+            if timer_cols[1].button("60 SEC", use_container_width=True, key="timer_60"):
+                st.toast("⏱️ 60 second timer started!", icon="⏱️")
+            if timer_cols[2].button("2 MIN", use_container_width=True, key="timer_120"):
+                st.toast("⏱️ 2 minute timer started!", icon="⏱️")
+        
+        # ═══════════════════════════════════════════════════════════════
+        # 🖥️ DESKTOP MODE (Full Lab) - Original Code
+        # ═══════════════════════════════════════════════════════════════
+        else:
+            # 1. DRILL SETUP
+            col1, col2 = st.columns([2, 1])
         with col1:
             drill_category = st.selectbox("QUESTION CATEGORY", [
                 "🎯 Core Pitch",
