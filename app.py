@@ -1999,6 +1999,55 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
                         st.success("🏆 **EXECUTIVE PRESENCE:** Strong data utilization and structured delivery!")
                         st.balloons()
                     
+                    st.markdown("---")
+                    
+                    # ═══════════════════════════════════════════════════════════════
+                    # NEW: AI-GENERATED IDEAL ANSWER (BEST OF THE BEST)
+                    # ═══════════════════════════════════════════════════════════════
+                    st.markdown("#### 🤖 AI-GENERATED IDEAL ANSWER")
+                    st.caption("See how an executive would answer this question:")
+                    
+                    if st.button("🧠 GENERATE IDEAL ANSWER", type="primary"):
+                        from logic.generator import generate_plain_text
+                        
+                        ideal_prompt = f"""
+                        You are a Director-level GTM executive interviewing for a $200k+ role.
+                        
+                        Question: {target_drill}
+                        
+                        Generate the IDEAL 60-second answer that includes:
+                        1. A strong opening hook (first 10 seconds)
+                        2. A specific metric or quantified result
+                        3. A clear story structure (STAR method)
+                        4. A confident close that ties to the role
+                        
+                        Use these real examples from your background:
+                        - 160% YoY pipeline growth at Fudo Security
+                        - $10M pipeline built at Sense
+                        - Partner Revenue OS that reduced CAC by 40%
+                        
+                        Keep it conversational, not scripted. Max 200 words.
+                        """
+                        
+                        model_id = st.session_state.get('selected_model_id', 'llama-3.3-70b-versatile')
+                        ideal_answer = generate_plain_text(ideal_prompt, model_name=model_id)
+                        
+                        st.session_state['ideal_answer'] = ideal_answer
+                    
+                    if st.session_state.get('ideal_answer'):
+                        st.success(st.session_state['ideal_answer'])
+                        
+                        # Compare side-by-side
+                        st.markdown("---")
+                        st.markdown("#### 📊 SIDE-BY-SIDE COMPARISON")
+                        comp_col1, comp_col2 = st.columns(2)
+                        with comp_col1:
+                            st.markdown("**YOUR ANSWER:**")
+                            st.text(transcript_text[:300] + "..." if len(transcript_text) > 300 else transcript_text)
+                        with comp_col2:
+                            st.markdown("**IDEAL ANSWER:**")
+                            st.text(st.session_state['ideal_answer'][:300] + "..." if len(st.session_state['ideal_answer']) > 300 else st.session_state['ideal_answer'])
+                    
                     # Save to Session History
                     if 'voice_sessions' not in st.session_state:
                         st.session_state['voice_sessions'] = []
@@ -2913,38 +2962,135 @@ start with full focus on day one. Is that something we can add?"
     # ==============================================================================
     elif input_mode == "🛡️ Objection Bank":
         st.markdown("## 🛡️ OBJECTION BANK (INTERVIEW ARMOR)")
-        st.caption("PROTOCOL: Pre-loaded responses to common interview challenges.")
+        st.caption("PROTOCOL: Pre-loaded responses + AI Practice Mode for interview challenges.")
         
-        # Initialize Objection Bank
+        # Initialize Objection Bank with MORE objections
         if 'objection_bank' not in st.session_state:
             st.session_state['objection_bank'] = {
+                # Career Transition
                 "Why did you leave your last role?": "I completed my mission—architecting the Revenue OS that drove 160% YoY pipeline growth. The next chapter requires a larger canvas where I can build at scale.",
+                "You've been consulting recently. Are you a builder?": "I operated as a consultant to build 'Zero-to-One' engines for multiple startups quickly. But my core DNA is Ownership. I spent 2 years at Fudo and 2 years at Sense building foundations. I'm looking for my next 5-year home.",
+                # Experience
                 "You don't have direct experience in [X industry].": "My systems are industry-agnostic. The Revenue OS I built reduced CAC by 40% and generated $10M pipeline—that methodology transfers to any B2B SaaS environment.",
                 "Why should we hire you over someone with more tenure?": "Tenure measures time; I measure impact. In 18 months, I built a GTM engine from zero that now generates 100+ qualified leads per week. I'm not looking for a job—I'm looking to build your next revenue machine.",
+                # Behavioral
                 "Tell me about a failure.": "Early in my career, I relied on 'sales activity' over 'sales architecture.' I was burning cycles instead of building systems. That failure taught me to think like an engineer—now I build once, scale infinitely.",
-                "What's your weakness?": "I can over-engineer solutions when speed is required. I've learned to ship MVPs fast, then iterate based on data—not perfectionism."
+                "What's your weakness?": "I can over-engineer solutions when speed is required. I've learned to ship MVPs fast, then iterate based on data—not perfectionism.",
+                # Compensation
+                "You're too expensive for this role.": "I understand. Let me share what $200k gets you: A Revenue OS architect who's built $10M pipelines and 160% growth engines. My compensation is an investment in infrastructure, not just a salary line.",
+                "What's your salary expectation?": "I'm targeting $180-220k base for Director-level roles, with meaningful equity. But I'm open to creative structures—I care more about the problem I'm solving than optimizing comp.",
+                # Team Fit
+                "You seem overqualified.": "I'm not looking for a title upgrade—I'm looking for a platform to build. I'd rather be the 'first 10' at the right company than VP at the wrong one.",
+                "How do you handle conflict with leadership?": "I lead with data, not ego. When I disagreed with our CEO on GTM strategy at Fudo, I built a prototype in 2 weeks and let the metrics speak. We pivoted, and pipeline grew 160%.",
             }
         
-        # Display Objections
-        st.markdown("#### 📖 YOUR PLAYBOOK")
+        # Tabs for different modes
+        obj_tab1, obj_tab2, obj_tab3 = st.tabs(["📖 PLAYBOOK", "🎯 PRACTICE MODE", "➕ ADD NEW"])
         
-        for objection, response in st.session_state['objection_bank'].items():
-            with st.expander(f"❓ {objection}"):
-                st.success(f"**YOUR RESPONSE:**\n\n{response}")
-                st.caption("💡 TIP: Practice saying this out loud 3x before your interview.")
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 1: PLAYBOOK (View All)
+        # ═══════════════════════════════════════════════════════════════
+        with obj_tab1:
+            st.markdown("#### 📖 YOUR OBJECTION PLAYBOOK")
+            st.caption(f"{len(st.session_state['objection_bank'])} objections loaded. Click to expand.")
+            
+            for objection, response in st.session_state['objection_bank'].items():
+                with st.expander(f"❓ {objection}"):
+                    st.success(f"**YOUR RESPONSE:**\n\n{response}")
+                    st.caption("💡 TIP: Practice saying this out loud 3x before your interview.")
         
-        st.markdown("---")
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 2: PRACTICE MODE (AI Drill)
+        # ═══════════════════════════════════════════════════════════════
+        with obj_tab2:
+            st.markdown("#### 🎯 OBJECTION PRACTICE MODE")
+            st.caption("The AI will throw objections at you. Practice your response.")
+            
+            # Random Objection Drill
+            objections_list = list(st.session_state['objection_bank'].keys())
+            
+            if st.button("🎲 RANDOM OBJECTION", type="primary", use_container_width=True):
+                import random
+                st.session_state['practice_objection'] = random.choice(objections_list)
+            
+            if st.session_state.get('practice_objection'):
+                st.error(f"🎤 **INTERVIEWER:** \"{st.session_state['practice_objection']}\"")
+                
+                user_response = st.text_area("Your Response:", height=150, placeholder="Type your answer here...", key="objection_practice_response")
+                
+                if st.button("📊 SCORE MY RESPONSE"):
+                    if user_response:
+                        from logic.generator import generate_plain_text
+                        
+                        score_prompt = f"""
+                        Evaluate this interview response on a 1-10 scale:
+                        
+                        OBJECTION: {st.session_state['practice_objection']}
+                        RESPONSE: {user_response}
+                        IDEAL RESPONSE: {st.session_state['objection_bank'][st.session_state['practice_objection']]}
+                        
+                        Score based on:
+                        1. Confidence (1-10)
+                        2. Data/Metrics used (1-10)
+                        3. Story structure (1-10)
+                        4. Closing strength (1-10)
+                        
+                        Give overall score and 2-sentence feedback.
+                        """
+                        
+                        model_id = st.session_state.get('selected_model_id', 'llama-3.3-70b-versatile')
+                        feedback = generate_plain_text(score_prompt, model_name=model_id)
+                        
+                        st.markdown("---")
+                        st.markdown("#### 📊 AI FEEDBACK")
+                        st.info(feedback)
+                        
+                        st.markdown("---")
+                        st.markdown("#### ✅ IDEAL RESPONSE")
+                        st.success(st.session_state['objection_bank'][st.session_state['practice_objection']])
         
-        # Add New Objection
-        st.markdown("#### ➕ ADD NEW OBJECTION")
-        new_objection = st.text_input("Objection/Question")
-        new_response = st.text_area("Your Polished Response", height=150)
-        
-        if st.button("SAVE TO BANK", type="primary"):
-            if new_objection and new_response:
-                st.session_state['objection_bank'][new_objection] = new_response
-                st.success(f"✅ Added to Objection Bank!")
-                st.rerun()
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 3: ADD NEW
+        # ═══════════════════════════════════════════════════════════════
+        with obj_tab3:
+            st.markdown("#### ➕ ADD NEW OBJECTION")
+            
+            new_objection = st.text_input("Objection/Question", key="new_obj_input")
+            new_response = st.text_area("Your Polished Response", height=150, key="new_obj_response")
+            
+            col1, col2 = st.columns([1, 1])
+            with col1:
+                if st.button("SAVE TO BANK", type="primary"):
+                    if new_objection and new_response:
+                        st.session_state['objection_bank'][new_objection] = new_response
+                        st.success(f"✅ Added to Objection Bank!")
+                        st.rerun()
+            
+            with col2:
+                if st.button("🤖 AI GENERATE RESPONSE"):
+                    if new_objection:
+                        from logic.generator import generate_plain_text
+                        
+                        gen_prompt = f"""
+                        You are a Director-level GTM executive. Generate a confident, data-backed response to this interview objection:
+                        
+                        OBJECTION: {new_objection}
+                        
+                        Use these real achievements:
+                        - 160% YoY pipeline growth at Fudo Security
+                        - $10M pipeline built at Sense
+                        - Partner Revenue OS that reduced CAC by 40%
+                        
+                        Keep it under 100 words. Be confident, not defensive.
+                        """
+                        
+                        model_id = st.session_state.get('selected_model_id', 'llama-3.3-70b-versatile')
+                        generated = generate_plain_text(gen_prompt, model_name=model_id)
+                        
+                        st.markdown("---")
+                        st.markdown("#### 🤖 AI-GENERATED RESPONSE")
+                        st.success(generated)
+                        st.caption("Edit and save this response to your bank.")
 
     # ==============================================================================
     # 🔬 MODE 10: COMPANY INTEL (DEEP DIVE)
