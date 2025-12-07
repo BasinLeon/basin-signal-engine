@@ -744,76 +744,25 @@ if "mobile_drill" not in st.session_state:
 # --- SIDEBAR: MISSION CONTROL (FLUID EXECUTIVE LIBRARY) ---
 with st.sidebar:
     # 1. HEADER & SYSTEM STATUS
-    st.markdown("### ▲ BASIN::NEXUS")
-    st.caption("v0.1 | REVENUE ARCHITECT OS | 🧠 FULL GROQ FLEET")
-    st.markdown("### ⚡ #IWrite:ICODE")
+    st.markdown("### ⚡ BASIN::NEXUS")
+    st.caption("v0.5 | EXECUTIVE OS")
+    
     st.markdown("---")
     
-    # 2. QUANTUM CORE (SYSTEM CONFIG)
-    with st.expander("⚛️ QUANTUM STATE: ACTIVE", expanded=False):
-        st.caption("Reality Distortion Field: 84%")
-        st.progress(0.84)
+    # STATUS INDICATOR
+    st.markdown("🟢 **ACTIVE** · LLM FLEET READY")
         
-    # 3. BIO-OS (PHYSICAL PROTOCOLS)
-    with st.expander("🧬 BIO-OS: OPTIMIZE MACHINE", expanded=False):
-        st.caption("The code is only as strong as the vessel.")
-        
-        # Session Tracking
-        import datetime
-        if 'session_start' not in st.session_state:
-            st.session_state.session_start = datetime.datetime.now()
-        if 'water_count' not in st.session_state:
-            st.session_state.water_count = 0
-        if 'workout_count' not in st.session_state:
-            st.session_state.workout_count = 0
-            
-        session_duration = datetime.datetime.now() - st.session_state.session_start
-        hours = int(session_duration.total_seconds() // 3600)
-        minutes = int((session_duration.total_seconds() % 3600) // 60)
-        
-        # Session Stats Row
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("⏱️ Session", f"{hours}h {minutes}m")
-        with col2:
-            st.metric("💧 Hydration", f"{st.session_state.water_count} glasses")
-        with col3:
-            st.metric("🏋️ Workouts", str(st.session_state.workout_count))
-        
-        # Break Alert
-        if hours >= 2:
-            st.warning("⚠️ 2+ HOURS — Time for a movement break!")
-        elif hours >= 1:
-            st.info("💡 1+ hour in session — Consider a stretch.")
-        
-        # Posture-Based Workout
-        st.markdown("---")
-        bio_modes = ["Standing", "Couch", "Floor", "Desk"]
-        current_posture = st.selectbox("Current Posture", bio_modes)
-        
-        col_a, col_b = st.columns(2)
-        with col_a:
-            if st.button("⚡ MICRO-WORKOUT"):
-                workouts = {
-                    "Standing": "10 Squats + 30s Calf Raises. Keep blood pumping.",
-                    "Couch": "Seated Leg Lifts (20 reps). Core activation.",
-                    "Floor": "Plank (1 min) + Cobra Stretch. Reset the spine.",
-                    "Desk": "Neck Rotations + Wrist Decompression. Protect the inputs."
-                }
-                st.session_state.workout_count += 1
-                st.success(f"🎯 {workouts[current_posture]}")
-        with col_b:
-            if st.button("💧 LOG WATER"):
-                st.session_state.water_count += 1
-                st.toast("💧 Hydration logged!", icon="✅")
-        
-        # Reset Session
-        if st.button("🔄 Reset Session", use_container_width=True):
-            st.session_state.session_start = datetime.datetime.now()
-            st.session_state.water_count = 0
-            st.session_state.workout_count = 0
-            st.toast("Session reset!", icon="🔄")
-    st.markdown("#### ⚙️ SYSTEM CORE")
+    # BIO-OS (Compact)
+    import datetime
+    if 'session_start' not in st.session_state:
+        st.session_state.session_start = datetime.datetime.now()
+    session_duration = datetime.datetime.now() - st.session_state.session_start
+    hours = int(session_duration.total_seconds() // 3600)
+    minutes = int((session_duration.total_seconds() % 3600) // 60)
+    st.caption(f"⏱️ Session: {hours}h {minutes}m")
+    
+    st.markdown("---")
+    st.markdown("##### ⚙️ ENGINE")
     
     # Check for Streamlit Secrets first (for always-on deployment)
     secret_key = None
@@ -917,7 +866,7 @@ with st.sidebar:
     st.markdown("---")
 
     # 3. MISSION PROTOCOL (THE 3-PHASE ARCHITECTURE)
-    st.markdown("#### 🧭 MISSION PROTOCOL")
+    st.markdown("##### 🧭 MODULES")
     
     # Initialize Logic for Mutual Exclusivity
     if 'prev_battle' not in st.session_state: st.session_state.prev_battle = "📄 Intel (Omni-Agent)"
@@ -926,39 +875,35 @@ with st.sidebar:
     if 'selected_tool_label' not in st.session_state: st.session_state.selected_tool_label = "📄 Intel (Omni-Agent)"
 
     # PHASE I: THE BATTLESTATION (PREP)
-    with st.expander("I. ⚔️ BATTLESTATION (PREP)", expanded=True):
-        st.caption("Protocol: Sharpen Narrative & Defense")
-        mode_battle = st.radio("Select Tool:", 
-            ["🎯 Prep Mode (Interview)",
-             "📄 Intel (Omni-Agent)", 
-             "🥊 Boardroom (Dojo)", 
-             "🎤 Voice (Practice)", 
-             "🛡️ Objection Bank"],
+    with st.expander("⚔️ BATTLESTATION", expanded=True):
+        mode_battle = st.radio("Select:", 
+            ["📋 INTERVIEW PREP",
+             "📄 INTEL AGENT", 
+             "🥊 DOJO", 
+             "🎤 VOICE LAB", 
+             "🛡️ OBJECTIONS"],
             label_visibility="collapsed", key="battle")
 
     # PHASE II: THE ORACLE ARRAY (SEARCH)
-    with st.expander("II. 🛰️ ORACLE ARRAY (HUNT)"):
-        st.caption("Protocol: Market Recon & Signal Detection")
-        mode_oracle = st.radio("Select Tool:", 
-            ["🎯 Hunt (Black Ops)",
-             "🎯 Sniper Prospecting", 
-             "📡 Market Radar", 
-             "📊 Analytics (Oracle)", 
-             "🔬 Company Intel", 
-             "🔥 Swipe Mode (Job Tinder)",
-             "☁️ G-Suite Sync (Data Lake)"],
+    with st.expander("🛰️ ORACLE ARRAY"):
+        mode_oracle = st.radio("Select:", 
+            ["🎯 HUNT MODE",
+             "📡 MARKET RADAR", 
+             "📊 ANALYTICS", 
+             "🔬 COMPANY INTEL", 
+             "🔥 SWIPE",
+             "☁️ G-SUITE"],
             label_visibility="collapsed", key="oracle")
 
     # PHASE III: THE BUILDER DECK (CLOSE)
-    with st.expander("III. 🏗️ BUILDER DECK (EXECUTE)"):
-        st.caption("Protocol: Pipeline Management & Closing")
-        mode_builder = st.radio("Select Tool:", 
-            ["📈 Pipeline CRM", 
-             "📣 Social Command Center",
-             "💰 Negotiation (Comp)",
-             "🚀 First 90 Days", 
-             "🔍 Talent Signal", 
-             "🎙️ Live Assist (Digital Twin)"],
+    with st.expander("🏗️ BUILDER DECK"):
+        mode_builder = st.radio("Select:", 
+            ["📈 PIPELINE CRM", 
+             "📣 SOCIAL HQ",
+             "💰 COMP CALC",
+             "🚀 FIRST 90", 
+             "🔍 TALENT SIGNAL", 
+             "🎙️ DIGITAL TWIN"],
             label_visibility="collapsed", key="builder")
 
     # LOGIC TO HANDLE MULTIPLE RADIOS (One Ring to Rule Them All)
@@ -975,52 +920,39 @@ with st.sidebar:
         st.session_state.selected_tool_label = st.session_state.builder
         st.session_state.prev_builder = st.session_state.builder
     
-    # MAPPING TO SYSTEM KERNEL
+    # MAPPING TO SYSTEM KERNEL (Netflix-style names to internal modes)
     tool_map = {
-        "🎯 Prep Mode (Interview)": "🎯 Prep Mode",
-        "📄 Intel (Omni-Agent)": "📄 Intel",
-        "🥊 Boardroom (Dojo)": "🥊 Practice (Dojo)",
-        "🎤 Voice (Practice)": "🎤 Voice",
-        "🛡️ Objection Bank": "🛡️ Objection Bank",
-        "🎯 Hunt (Black Ops)": "🎯 Hunt",
-        "🎯 Sniper Prospecting": "🎯 Sniper Prospecting",
-        "📡 Market Radar": "📡 Market Radar",
-        "📊 Analytics (Oracle)": "📊 Analytics",
-        "🔬 Company Intel": "🔬 Company Intel",
-        "☁️ G-Suite Sync (Data Lake)": "☁️ G-Suite Sync",
-        "🔮 Oracle Deck (Career Tarot)": "🔮 Oracle Deck",
-        "📈 Pipeline CRM": "📈 Pipeline CRM",
-        "📣 Social Command Center": "📣 Social Command Center",
-        "🚀 First 90 Days": "🚀 First 90 Days",
-        "🔍 Talent Signal": "🔍 Talent Signal",
-        "🎙️ Live Assist (Digital Twin)": "🎙️ Live Assist",
-        "💰 Negotiation (Comp)": "💰 Negotiation"
+        "📋 INTERVIEW PREP": "🎯 Prep Mode",
+        "📄 INTEL AGENT": "📄 Intel",
+        "🥊 DOJO": "🥊 Practice (Dojo)",
+        "🎤 VOICE LAB": "🎤 Voice",
+        "🛡️ OBJECTIONS": "🛡️ Objection Bank",
+        "🎯 HUNT MODE": "🎯 Hunt",
+        "📡 MARKET RADAR": "📡 Market Radar",
+        "📊 ANALYTICS": "📊 Analytics",
+        "🔬 COMPANY INTEL": "🔬 Company Intel",
+        "🔥 SWIPE": "🔥 Swipe Mode",
+        "☁️ G-SUITE": "☁️ G-Suite Sync",
+        "📈 PIPELINE CRM": "📈 Pipeline CRM",
+        "📣 SOCIAL HQ": "📣 Social Command Center",
+        "💰 COMP CALC": "💰 Negotiation",
+        "🚀 FIRST 90": "🚀 First 90 Days",
+        "🔍 TALENT SIGNAL": "🔍 Talent Signal",
+        "🎙️ DIGITAL TWIN": "🎙️ Live Assist"
     }
     
-    # 4. DAILY MANNA (HIDDEN DOJO)
+    # HIDDEN WISDOM
     st.sidebar.markdown("---")
-    if st.sidebar.button("👁️ OPEN THIRD EYE"):
-        manna = [
-            "The vessel expands only when it cracks.",
-            "Silence is the loudest frequency in the code.",
-            "To build the city, first measure the desert.",
-            "The light you seek is the fire you already carry."
-        ]
-        import random
-        st.sidebar.info(f"✨ {random.choice(manna)}")
 
     input_mode = tool_map.get(st.session_state.selected_tool_label, "📄 Intel")
 
     st.markdown("---")
 
-    # 4. SOUND EFFECTS & SETTINGS
-    st.session_state.sound_effects = st.checkbox("🔊 Sound Effects", value=st.session_state.sound_effects)
-    
-    st.markdown("---")
-
-    # 5. FINAL FOOTER
-    st.markdown("`OPERATOR: LEON BASIN`")
-    st.markdown("`STATUS: ONLINE`")
+    # FOOTER
+    st.markdown("""<div style='text-align: center; padding: 10px 0;'>
+        <span style='color: #D4AF37; font-family: Orbitron, monospace; font-size: 0.7rem;'>LEON BASIN</span><br/>
+        <span style='color: #5a5a5a; font-size: 0.65rem;'>OPERATOR ONLINE</span>
+    </div>""", unsafe_allow_html=True)
 
 
 # ═══════════════════════════════════════════════════════════════
