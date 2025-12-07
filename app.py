@@ -525,7 +525,7 @@ if "generated_audio" not in st.session_state:
 with st.sidebar:
     # 1. HEADER & SYSTEM STATUS
     st.markdown("### ▲ BASIN::NEXUS")
-    st.caption("v14 | REVENUE ARCHITECT OS | 🧠 FULL GROQ FLEET")
+    st.caption("v14.5 | REVENUE ARCHITECT OS | 🧠 FULL GROQ FLEET")
     st.markdown("---")
     
     # 2. SYSTEM CORE & CONFIGURATION (Terminal Style)
@@ -826,7 +826,7 @@ if show_dashboard:
     k1, k2, k3, k4 = st.columns(4)
     k1.metric("PIPELINE VELOCITY", f"{active_deals} Active", "Deals in Flight")
     k2.metric("INTERVIEW PREP", f"{interviews} Pending", "Needs Dojo Reps")
-    k3.metric("SYSTEM VERSION", "v14.0", "Full Arsenal")
+    k3.metric("SYSTEM VERSION", "v14.5", "Neural Learning")
     k4.metric("TARGET OTE", "$220k+", "Director GTM")
     
     st.markdown("---")
