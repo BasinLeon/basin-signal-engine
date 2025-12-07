@@ -768,8 +768,8 @@ with st.sidebar:
     secret_key = None
     try:
         secret_key = st.secrets.get("GROQ_API_KEY", None)
-    except:
-        pass
+    except Exception:
+        pass  # Secrets not available in local mode
     
     # Show input field for manual entry
     api_key = st.text_input("GROQ API KEY", type="password", placeholder="gsk_...", label_visibility="collapsed")
@@ -2743,7 +2743,7 @@ with col1:
                         # Simple text extraction simulation (or use logic.ingest)
                         text = f.read().decode("utf-8", errors='ignore') 
                         st.session_state['resume_vault'][f.name] = text
-                    except:
+                    except Exception:
                         st.session_state['resume_vault'][f.name] = "Content extracted..."
                 st.success(f"✅ Ingested {len(uploaded_files)} Assets into Vault")
 
@@ -2830,7 +2830,7 @@ with col1:
                                     st.markdown(f"• [{title}]({url})")
                             else:
                                 st.caption("*No recent hiring threads found.*")
-                    except:
+                    except Exception:
                         st.caption("*Search temporarily unavailable.*")
                     
                     st.info(f"💡 **TIP:** Copy the JD from {selected_company}'s careers page and paste below.")
@@ -2921,8 +2921,8 @@ with col1:
                                     context_str += f"- [HN] {title} ({url})\n"
                                     # Normalize for display
                                     news_items.append(SimpleNamespace(title=f"[HN] {title}", link=url))
-                        except:
-                            pass
+                        except Exception:
+                            pass  # HN search optional
                             
                         if not news_items:
                             context_str = "NO DIRECT NEWS FOUND. ANALYZE BASED ON GENERAL KNOWLEDGE."
@@ -5679,7 +5679,7 @@ start with full focus on day one. Is that something we can add?"
                                     st.caption("*No recent news. Company is operating quietly.*")
                             else:
                                 st.caption("*Intel unavailable.*")
-                        except:
+                        except Exception:
                             st.caption("*Intel feed offline.*")
                         
                         st.divider()
@@ -6804,7 +6804,7 @@ Best,
                             st.markdown(f"• [{title}]({url}) — {points} points")
                     else:
                         st.caption("*No recent HackerNews coverage.*")
-            except:
+            except Exception:
                 st.caption("*Unable to fetch live news.*")
             
             st.markdown("---")
@@ -7877,8 +7877,8 @@ Curious if this resonates?""", height=150)
                             import urllib.parse
                             intent_url = f"https://twitter.com/intent/tweet?text={urllib.parse.quote(post1)}"
                             st.markdown(f"[🚀 **POST #1 NOW**]({intent_url})")
-                        except:
-                            pass
+                        except Exception:
+                            pass  # Post parsing optional
                             
                 elif forge_mode == "📧 Substack (Newsletter)":
                     st.info("PROTOCOL: Generates a full markdown draft ready for basinleon.com")
