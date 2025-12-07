@@ -1,63 +1,116 @@
-# 🚀 BASIN::NEXUS DEPLOYMENT GUIDE
+# 🚀 BASIN::NEXUS — STREAMLIT CLOUD DEPLOYMENT
 
-## Quick Deploy to Streamlit Cloud
+## Quick Deploy (5 Minutes)
 
 ### Step 1: Go to Streamlit Cloud
-**URL:** https://share.streamlit.io
 
-### Step 2: Connect GitHub
-1. Click "Sign up" or "Log in" with GitHub
-2. Authorize Streamlit to access your repos
+Open: **<https://share.streamlit.io>**
 
-### Step 3: Deploy Your App
-1. Click "New app"
-2. Repository: `BasinLeon/basin-signal-engine`
-3. Branch: `main`
-4. Main file path: `app.py`
+### Step 2: Sign In with GitHub
+
+- Click "Sign up" or "Log in"
+- Authorize with your GitHub account (BasinLeon)
+
+### Step 3: Create New App
+
+1. Click **"New app"** button
+2. Fill in the form:
+
+| Field | Value |
+|-------|-------|
+| Repository | `BasinLeon/basin-signal-engine` |
+| Branch | `main` |
+| Main file path | `app.py` |
+| App URL | `basin-nexus` (makes it basin-nexus.streamlit.app) |
 
 ### Step 4: Configure Secrets
-In the "Advanced settings" section, add:
+
+1. Click **"Advanced settings"** before deploying
+2. In the **Secrets** section, paste:
 
 ```toml
-GROQ_API_KEY = "gsk_your_actual_groq_api_key_here"
+GROQ_API_KEY = "gsk_YOUR_ACTUAL_GROQ_API_KEY_HERE"
 ```
 
-### Step 5: Deploy!
-Click "Deploy!" and wait 2-3 minutes.
+**Get your Groq API key at:** <https://console.groq.com/keys>
 
-**Your app will be live at:** `basin-nexus.streamlit.app` (or similar)
+### Step 5: Deploy
+
+Click **"Deploy!"** — wait 2-3 minutes for build.
+
+---
+
+## 🔐 Required Secrets
+
+| Secret | Required | Description |
+|--------|----------|-------------|
+| `GROQ_API_KEY` | ✅ Yes | Powers all LLM features |
+| `OPENAI_API_KEY` | ❌ Optional | For GPT-4 fallback |
+| `GOOGLE_API_KEY` | ❌ Optional | For Gemini |
 
 ---
 
 ## ✅ Pre-Deployment Checklist
 
-- [x] `requirements.txt` exists and is complete
-- [x] `.streamlit/config.toml` has theme settings
+- [x] All code committed to main branch
+- [x] `requirements.txt` complete (35 dependencies)
+- [x] `.streamlit/config.toml` with golden theme
 - [x] `secrets.toml.example` for reference
-- [x] All code committed and pushed
 - [x] No hardcoded API keys in code
+- [x] All bare `except:` clauses fixed
+- [x] Session state centralized
+- [x] Caching added for performance
 
 ---
 
-## 🔗 After Deployment
+## 🌐 After Deployment
 
-1. **Update basinleon.github.io** with live NEXUS link
-2. **Update GitHub README** with deployed link
-3. **Post launch announcement** on LinkedIn
+**Your app will be live at:**
+`https://basin-nexus.streamlit.app`
 
----
+### Post-Launch Actions
 
-## Troubleshooting
-
-**If deployment fails:**
-- Check the logs in Streamlit Cloud dashboard
-- Ensure all packages in requirements.txt are compatible
-- Verify GROQ_API_KEY is set in secrets
-
-**If app shows errors:**
-- The app handles missing API keys gracefully
-- Most features work in demo mode without keys
+1. **Test all modules** — Interview Prep, Hunt Mode, Pipeline CRM
+2. **Update basinleon.github.io** — Add live NEXUS link
+3. **Update GitHub README** — Add deployed URL badge
+4. **Share on LinkedIn** — Announce with #IWriteICode
 
 ---
 
-*Generated: 2025-12-07 | BASIN::NEXUS v0.5*
+## 🔧 Troubleshooting
+
+### "ModuleNotFoundError"
+
+- Check `requirements.txt` includes all dependencies
+- Rebuild: Settings → Reboot app
+
+### "GROQ_API_KEY not found"
+
+- Verify secret is set in Streamlit Cloud settings
+- Format: `GROQ_API_KEY = "gsk_..."` (with quotes)
+
+### App shows but LLM not working
+
+- API key may be invalid or expired
+- Check Groq dashboard for quota
+
+### Slow performance
+
+- Caching is now enabled (5-10 min TTL)
+- First load may be slow, subsequent loads fast
+
+---
+
+## 📊 Current Metrics
+
+| Metric | Value |
+|--------|-------|
+| Lines of Code | 8,412 |
+| Modules | 18 |
+| Database Tables | 10 |
+| LLM Providers | 5 |
+| Version | v0.5 |
+
+---
+
+*Last Updated: 2025-12-07 | BASIN::NEXUS Executive OS*
