@@ -624,6 +624,7 @@ with st.sidebar:
     # 1. HEADER & SYSTEM STATUS
     st.markdown("### ▲ BASIN::NEXUS")
     st.caption("v0.1 | REVENUE ARCHITECT OS | 🧠 FULL GROQ FLEET")
+    st.markdown("### ⚡ #IWrite:ICODE")
     st.markdown("---")
     
     # 2. SYSTEM CORE & CONFIGURATION (Terminal Style)
@@ -7554,7 +7555,8 @@ Curious if this resonates?""", height=150)
                 "🏘️ COMMUNITY",
                 "🗣️ VOICE & REP",
                 "📧 JOIN BETA", 
-                "🌍 GLOBAL HQ"
+                "🌍 GLOBAL HQ",
+                "🛡️ RED TEAM"
             ])
             
             # TAB 0: BASIN POST FORGE
@@ -7891,7 +7893,6 @@ Curious if this resonates?""", height=150)
                 st.caption("Basin & Associates: Serving the world. No borders.")
                 
                 st.sidebar.markdown("---")
-                
                 # Map visualization (mock)
                 st.markdown(f"**Active Markets:** {len(ALL_COUNTRIES)} Countries")
                 
@@ -7917,6 +7918,47 @@ Curious if this resonates?""", height=150)
                 for i, country in enumerate(ALL_COUNTRIES[:20]):
                     tgt_cols[i % 4].markdown(f"📍 {country}")
                 st.caption(f"...and {len(ALL_COUNTRIES)-20} more.")
+
+            # TAB 9: RED TEAM (SELF-HACK)
+            with social_tabs[9]:
+                st.markdown("#### 🛡️ RED TEAM: CAREER PEN-TEST")
+                st.caption("Hack yourself before the market does. Identify weaknesses. Patch them with shipments.")
+                
+                st.markdown("---")
+                
+                rt_col1, rt_col2 = st.columns(2)
+                
+                with rt_col1:
+                    st.markdown("### 🎯 VULNERABILITY SCANNER")
+                    target_url = st.text_input("Target Asset (URL/Profile)", value="https://basinleon.com")
+                    
+                    if st.button("🛡️ INITIATE PEN-TEST"):
+                        with st.status("Running Red Team Protocols...", expanded=True) as status:
+                            st.write("📡 Pinging asset...")
+                            import time
+                            time.sleep(1)
+                            st.write("🔍 Scanning for 'Generic Corporate Speak'...")
+                            time.sleep(1)
+                            st.write("🔓 Checking 'Proof of Work' integrity...")
+                            time.sleep(1)
+                            st.write("⚠️ Detecting 'Imposter Syndrome' signatures...")
+                            time.sleep(0.5)
+                            status.update(label="AUDIT COMPLETE", state="error", expanded=True)
+                            
+                        st.error("🚨 CRITICAL VULNERABILITIES FOUND")
+                        st.markdown("""
+                        - **CVE-2024-001 (High):** Detected usage of "Passionate about" in bio. *Patch: Show, don't tell.*
+                        - **CVE-2024-002 (Medium):** 'Portfolio' section has high latency (Not enough projects). *Patch: Ship #IWrite:ICODE artifacts.*
+                        - **CVE-2024-003 (Low):** 'Network' firewall is too closed. *Patch: Open DMs.*
+                        """)
+                
+                with rt_col2:
+                    st.markdown("### 🩹 SECURITY PATCHES")
+                    st.info("**PATCH 1: SHIP CODE**\nDeploying a real project deletes 100% of 'Imposter Syndrome' vulnerabilities.")
+                    st.info("**PATCH 2: TELL TRUTH**\nRemoving 'Corporate Mask' increases 'Trust Score' by 50%.")
+                    st.info("**PATCH 3: #IWrite:ICODE**\nTransforming text into logic hardens your defense against AI replacement.")
+                    
+                    st.image("https://images.unsplash.com/photo-1555949963-ff9fe0c870eb", caption="CYBER-INDIVIDUALISM DETECTED")
 
 
 # ==============================================================================
