@@ -560,6 +560,16 @@ if "target_company" not in st.session_state:
 if "first_run" not in st.session_state:
     st.session_state.first_run = True
 
+# Sound Effects Toggle
+if "sound_effects" not in st.session_state:
+    st.session_state.sound_effects = True
+
+# Comms Studio Metadata
+if "comms_target_name" not in st.session_state:
+    st.session_state.comms_target_name = ""
+if "comms_target_company" not in st.session_state:
+    st.session_state.comms_target_company = ""
+
 
 # ═══════════════════════════════════════════════════════════════
 # SIDEBAR: CONFIGURATION
@@ -755,7 +765,12 @@ with st.sidebar:
 
     st.markdown("---")
 
-    # 4. FINAL FOOTER
+    # 4. SOUND EFFECTS & SETTINGS
+    st.session_state.sound_effects = st.checkbox("🔊 Sound Effects", value=st.session_state.sound_effects)
+    
+    st.markdown("---")
+
+    # 5. FINAL FOOTER
     st.markdown("`OPERATOR: LEON BASIN`")
     st.markdown("`STATUS: ONLINE`")
 
@@ -1031,6 +1046,123 @@ if show_dashboard:
         st.warning(f"⚠️ You have {cold_contacts} cold contacts. Consider sending follow-ups to warm them up.")
     if champion_connections > 0:
         st.success(f"🎯 You have {champion_connections} champions! Ask them for warm intros to your target companies.")
+    
+    st.markdown("---")
+    
+    # --- 4. GAMIFICATION: MISSION XP & ACHIEVEMENTS ---
+    st.markdown("### 🎮 MISSION XP & ACHIEVEMENTS")
+    
+    # Calculate XP
+    xp_pipeline = active_deals * 50
+    xp_interviews = interview_count * 200
+    xp_finals = final_rounds * 500
+    xp_network = (strong_connections * 30) + (champion_connections * 100)
+    xp_practice = practice_sessions * 25
+    xp_wins = len(wins) * 1000 if wins else 0
+    
+    total_xp = xp_pipeline + xp_interviews + xp_finals + xp_network + xp_practice + xp_wins
+    
+    # Determine Rank
+    if total_xp >= 5000:
+        rank = "🏆 REVENUE LEGEND"
+        rank_color = "#FFD700"
+    elif total_xp >= 2500:
+        rank = "⚔️ DEAL HUNTER"
+        rank_color = "#C0C0C0"
+    elif total_xp >= 1000:
+        rank = "🎯 PIPELINE BUILDER"
+        rank_color = "#CD7F32"
+    else:
+        rank = "🌱 PROSPECT"
+        rank_color = "#8892b0"
+    
+    # XP Display
+    xp_cols = st.columns([2, 1])
+    with xp_cols[0]:
+        st.markdown(f"""
+        <div style="background: linear-gradient(135deg, #1a1a2e in 0%, #0a0a1a 100%); 
+                    border: 2px solid {rank_color}; border-radius: 12px; padding: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <p style="color: #8892b0; margin: 0; font-size: 0.8rem;">CURRENT RANK</p>
+                    <h2 style="color: {rank_color}; margin: 4px 0;">{rank}</h2>
+                </div>
+                <div style="text-align: right;">
+                    <p style="color: #8892b0; margin: 0; font-size: 0.8rem;">TOTAL XP</p>
+                    <h2 style="color: #FFBF00; margin: 4px 0;">{total_xp:,}</h2>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with xp_cols[1]:
+        # XP Breakdown
+        st.caption("XP Sources:")
+        st.caption(f"Pipeline: +{xp_pipeline} | Interviews: +{xp_interviews}")
+        st.caption(f"Network: +{xp_network} | Practice: +{xp_practice}")
+    
+    # Achievements
+    st.markdown("##### 🏅 ACHIEVEMENTS UNLOCKED")
+    achievement_cols = st.columns(5)
+    
+    achievements = []
+    if active_deals >= 5: achievements.append(("📊", "Pipeline Pro", "5+ Deals"))
+    if interview_count >= 3: achievements.append(("🎤", "Interview Ready", "3+ Interviews"))
+    if champion_connections >= 1: achievements.append(("👑", "Champion Builder", "1+ Champion"))
+    if practice_sessions >= 5: achievements.append(("🎯", "Voice Master", "5+ Sessions"))
+    if total_xp >= 1000: achievements.append(("⭐", "First 1K", "1000+ XP"))
+    
+    if achievements:
+        for i, (emoji, name, desc) in enumerate(achievements[:5]):
+            with achievement_cols[i]:
+                st.markdown(f"""
+                <div style="background: rgba(255,215,0,0.1); border: 1px solid #FFD700; border-radius: 8px; padding: 12px; text-align: center;">
+                    <p style="font-size: 1.5rem; margin: 0;">{emoji}</p>
+                    <p style="color: #FFD700; font-size: 0.75rem; margin: 4px 0 0 0; font-weight: bold;">{name}</p>
+                    <p style="color: #8892b0; font-size: 0.6rem; margin: 0;">{desc}</p>
+                </div>
+                """, unsafe_allow_html=True)
+    else:
+        st.info("🎮 Complete actions to unlock achievements!")
+    
+    st.markdown("---")
+    
+    # --- 5. LINKEDIN RSS FEED (Target Company Monitor) ---
+    st.markdown("### 📡 COMPANY INTEL FEED")
+    st.caption("Real-time news from your target companies.")
+    
+    # Get top 3 companies from pipeline
+    if deals:
+        top_companies = list(set([d.get('Company', '') for d in deals[:5] if d.get('Company')]))
+    else:
+        top_companies = ["Anthropic", "Mistral AI", "OpenAI"]
+    
+    feed_company = st.selectbox("🎯 Monitor Company:", top_companies + ["Custom..."], key="feed_company")
+    
+    if feed_company == "Custom...":
+        feed_company = st.text_input("Enter company name:", key="custom_feed_company")
+    
+    if feed_company and feed_company != "Custom...":
+        import feedparser
+        import urllib.parse
+        
+        with st.spinner(f"Fetching intel for {feed_company}..."):
+            encoded = urllib.parse.quote(feed_company)
+            rss_url = f"https://news.google.com/rss/search?q={encoded}+hiring+OR+funding+OR+layoffs&hl=en-US&gl=US&ceid=US:en"
+            feed = feedparser.parse(rss_url)
+            
+            if feed.entries:
+                for entry in feed.entries[:4]:
+                    st.markdown(f"""
+                    <div style="background: rgba(255,191,0,0.05); border-left: 3px solid #FFBF00; padding: 12px; margin: 8px 0;">
+                        <a href="{entry.link}" target="_blank" style="color: #ccd6f6; text-decoration: none; font-weight: 500;">
+                            {entry.title}
+                        </a>
+                        <p style="color: #8892b0; font-size: 0.75rem; margin: 4px 0 0 0;">{entry.get('published', '')}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+            else:
+                st.caption("No recent news found for this company.")
     
     st.markdown("---")
     
@@ -2579,6 +2711,32 @@ with col1:
                     st.markdown(f"**Session {len(st.session_state['voice_sessions']) - i}:** {session['drill']}")
                     st.caption(f"Words: {session['words']} | Fillers: {session['fillers']} | Metrics: {'✅' if session['has_metric'] else '❌'}")
                     st.markdown("---")
+                
+                # EXPORT SESSION HISTORY
+                st.markdown("##### 📥 EXPORT TRAINING LOG")
+                
+                # Build export content
+                export_lines = ["# BASIN::NEXUS Voice Training Log\n", f"**Total Sessions:** {len(st.session_state['voice_sessions'])}\n\n"]
+                export_lines.append("---\n\n")
+                
+                for i, session in enumerate(st.session_state['voice_sessions']):
+                    export_lines.append(f"## Session {i+1}: {session['drill']}\n")
+                    export_lines.append(f"- **Word Count:** {session['words']}\n")
+                    export_lines.append(f"- **Filler Words:** {session['fillers']}\n")
+                    export_lines.append(f"- **Used Metrics:** {'Yes' if session['has_metric'] else 'No'}\n")
+                    if session.get('transcript'):
+                        export_lines.append(f"- **Transcript:** {session['transcript'][:200]}...\n")
+                    export_lines.append("\n---\n\n")
+                
+                export_content = "".join(export_lines)
+                
+                st.download_button(
+                    label="📄 DOWNLOAD TRAINING LOG (MD)",
+                    data=export_content,
+                    file_name="basin_nexus_voice_training_log.md",
+                    mime="text/markdown",
+                    use_container_width=True
+                )
     
     # ─────────────────────────────────────────────────────────────
     # VIDEO MODE - THE GAME CHANGER
@@ -3491,6 +3649,31 @@ start with full focus on day one. Is that something we can add?"
                 # 3. INPUTS
                 st.markdown('<div class="divider-solid"></div>', unsafe_allow_html=True)
                 
+                # NEW: ICP Persona Selector
+                i0_col1, i0_col2 = st.columns(2)
+                with i0_col1:
+                    target_persona = st.selectbox("👤 Target Persona (ICP)", [
+                        "🎯 Hiring Manager",
+                        "🔍 Recruiter / Talent Acquisition", 
+                        "👔 CEO / Founder",
+                        "📈 VP of Sales / CRO",
+                        "⚙️ RevOps / GTM Ops",
+                        "🤝 HR / People Ops",
+                        "🏗️ Investor / Board Member"
+                    ])
+                with i0_col2:
+                    st.caption("Persona adjusts tone and talking points automatically.")
+                    persona_tips = {
+                        "🎯 Hiring Manager": "Focus on solving THEIR problems. Lead with outcomes.",
+                        "🔍 Recruiter / Talent Acquisition": "Make THEIR job easy. Be clear on fit.",
+                        "👔 CEO / Founder": "Time is precious. Lead with impact. Bold claims OK.",
+                        "📈 VP of Sales / CRO": "Talk revenue. Use numbers. Peer language.",
+                        "⚙️ RevOps / GTM Ops": "Talk systems, efficiency, scale. Technical credibility.",
+                        "🤝 HR / People Ops": "Culture fit, team dynamics, long-term value.",
+                        "🏗️ Investor / Board Member": "Strategic vision, market timing, unfair advantages."
+                    }
+                    st.info(f"💡 {persona_tips.get(target_persona, '')}")
+                
                 i1, i2 = st.columns(2)
                 target_name = i1.text_input("Target Name", placeholder="e.g. Sarah Chen")
                 target_company = i2.text_input("Target Company", placeholder="e.g. Anthropic")
@@ -3507,10 +3690,18 @@ start with full focus on day one. Is that something we can add?"
                         TASK: Write a {comms_channel} script for the scenario: "{comms_scenario}".
                         
                         TARGET: {target_name} at {target_company}.
+                        TARGET PERSONA: {target_persona}
                         MY CONTEXT: {extra_context}
                         MY CORE STATS: 160% Pipeline Growth, $10M+ Pipeline Built.
                         
                         TONE: {comms_tone}.
+                        
+                        PERSONA-SPECIFIC GUIDANCE:
+                        - If targeting Hiring Manager: Focus on solving their specific pain. Lead with outcomes, not credentials.
+                        - If targeting Recruiter: Make it easy for them to pitch you internally. Clear value prop.
+                        - If targeting CEO/Founder: Be bold. Time is precious. Lead with strategic impact.
+                        - If targeting VP Sales/CRO: Speak their language. Revenue, pipeline, conversion.
+                        - If targeting RevOps: Talk systems, scalability, efficiency gains.
                         
                         CONSTRAINTS:
                         - If LinkedIn Connection: Under 300 chars.
@@ -3526,6 +3717,8 @@ start with full focus on day one. Is that something we can add?"
                         model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
                         comms_output = generate_plain_text(comms_prompt, model_name=model_id)
                         st.session_state.comms_output = comms_output
+                        st.session_state.comms_target_name = target_name
+                        st.session_state.comms_target_company = target_company
                         st.toast(f"✨ Script generated for {target_name}!", icon="🎯")
                 
                 # 5. OUTPUT DISPLAY
@@ -3544,6 +3737,43 @@ start with full focus on day one. Is that something we can add?"
                         st.caption(f"📊 Characters: {char_count}")
                     
                     st.code(st.session_state.comms_output, language="markdown" if comms_channel != "📧 Email" else "text")
+                    
+                    # ACTION BUTTONS
+                    action_cols = st.columns([1, 1, 1])
+                    
+                    with action_cols[0]:
+                        # COPY TO CLIPBOARD (JavaScript Injection)
+                        copy_js = f"""
+                        <script>
+                        function copyToClipboard() {{
+                            const text = `{st.session_state.comms_output.replace('`', "'")}`;
+                            navigator.clipboard.writeText(text).then(() => {{
+                                alert('Copied to clipboard!');
+                            }});
+                        }}
+                        </script>
+                        <button onclick="copyToClipboard()" style="background: #FFBF00; color: black; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">📋 COPY</button>
+                        """
+                        st.markdown(copy_js, unsafe_allow_html=True)
+                    
+                    with action_cols[1]:
+                        # OPEN IN GMAIL (mailto: link)
+                        if comms_channel == "📧 Email":
+                            import urllib.parse
+                            subject = f"Quick question for {st.session_state.get('comms_target_name', 'you')}"
+                            body = urllib.parse.quote(st.session_state.comms_output)
+                            mailto_link = f"mailto:?subject={urllib.parse.quote(subject)}&body={body}"
+                            st.markdown(f'<a href="{mailto_link}" target="_blank" style="display: block; background: #4285F4; color: white; text-align: center; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold;">📧 OPEN IN GMAIL</a>', unsafe_allow_html=True)
+                        else:
+                            st.caption("📧 Gmail (Email only)")
+                    
+                    with action_cols[2]:
+                        # SCHEDULE MEETING (Google Calendar)
+                        import urllib.parse
+                        cal_title = urllib.parse.quote(f"Meeting with {st.session_state.get('comms_target_name', 'Contact')}")
+                        cal_details = urllib.parse.quote(f"Follow-up on {st.session_state.get('comms_target_company', 'opportunity')}")
+                        gcal_link = f"https://calendar.google.com/calendar/render?action=TEMPLATE&text={cal_title}&details={cal_details}"
+                        st.markdown(f'<a href="{gcal_link}" target="_blank" style="display: block; background: #34A853; color: white; text-align: center; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold;">📅 SCHEDULE</a>', unsafe_allow_html=True)
                     
                     if comms_channel == "📧 Email":
                         st.info("💡 **Tip:** Subject lines like 'Quick question regarding [Goal]' often convert best.")
@@ -4013,6 +4243,48 @@ start with full focus on day one. Is that something we can add?"
     elif input_mode == "🎙️ Live Assist":
         st.markdown("## 🎙️ LIVE ASSIST (DIGITAL TWIN)")
         st.caption("PROTOCOL: Real-time coaching during live interviews. The Oracle speaks with you.")
+        
+        # AI AVATAR DISPLAY
+        avatar_col, info_col = st.columns([1, 2])
+        
+        with avatar_col:
+            # Animated Avatar with CSS
+            st.markdown("""
+            <style>
+            @keyframes avatar-pulse {
+                0%, 100% { box-shadow: 0 0 20px rgba(255, 191, 0, 0.4); transform: scale(1); }
+                50% { box-shadow: 0 0 40px rgba(255, 191, 0, 0.8); transform: scale(1.02); }
+            }
+            .ai-avatar {
+                width: 120px;
+                height: 120px;
+                background: linear-gradient(135deg, #FFD700, #FFBF00);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 3rem;
+                animation: avatar-pulse 2s ease-in-out infinite;
+                margin: 0 auto;
+            }
+            </style>
+            <div class="ai-avatar">🧠</div>
+            <p style="text-align: center; color: #FFD700; margin-top: 12px; font-weight: bold;">THE ORACLE</p>
+            <p style="text-align: center; color: #8892b0; font-size: 0.75rem;">Digital Twin v2.0</p>
+            """, unsafe_allow_html=True)
+        
+        with info_col:
+            st.markdown("""
+            <div style="background: rgba(255,191,0,0.05); border: 1px solid rgba(255,191,0,0.3); border-radius: 12px; padding: 20px;">
+                <p style="color: #FFBF00; margin: 0 0 8px 0; font-weight: bold;">🎭 PERSONA LOADED</p>
+                <p style="color: #ccd6f6; margin: 0 0 12px 0;">Leon Basin - Director of GTM Systems</p>
+                <p style="color: #8892b0; font-size: 0.85rem; margin: 0;">
+                    <b>Core Metrics:</b> 160% Pipeline Growth | $10M+ Built<br>
+                    <b>Specialization:</b> Revenue Architecture, GTM Systems<br>
+                    <b>Mode:</b> Challenger Sale, Executive Presence
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
         
         st.warning("⚡ **ACTIVE MODE:** Use during actual interviews for real-time narrative support.")
         
