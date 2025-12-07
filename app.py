@@ -39,6 +39,25 @@ st.set_page_config(
 # BASIN::NEXUS - PREMIUM STYLING
 # ═══════════════════════════════════════════════════════════════
 
+# PWA META TAGS (For Mobile Installation)
+st.markdown("""
+<head>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href=".streamlit/manifest.json">
+    
+    <!-- iOS PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="BASIN::NEXUS">
+    
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#FFD700">
+    
+    <!-- Viewport for Mobile -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+""", unsafe_allow_html=True)
+
 st.markdown("""
 <style>
     /* === BASIN::NEXUS PREMIUM DARK PROTOCOL === */
@@ -1128,6 +1147,207 @@ if show_dashboard:
                 """, unsafe_allow_html=True)
     else:
         st.info("🎮 Complete actions to unlock achievements!")
+    
+    st.markdown("---")
+    
+    # ═══════════════════════════════════════════════════════════════
+    # ♟️ CAREER CHESS BOARD (THE GAME VISUALIZATION)
+    # ═══════════════════════════════════════════════════════════════
+    st.markdown("### ♟️ CAREER CHESS BOARD")
+    st.caption("Your job search as a strategic chess game. Every move counts.")
+    
+    # Calculate Chess Position (0-63, like a chess board)
+    chess_score = min(63, (interview_count * 8) + (final_rounds * 16) + (champion_connections * 4) + (active_deals * 2))
+    chess_row = chess_score // 8
+    chess_col = chess_score % 8
+    
+    # Determine Piece Level
+    if final_rounds >= 2:
+        piece = "👑"  # King - About to win
+        piece_name = "KING"
+    elif interview_count >= 3:
+        piece = "👸"  # Queen - Strong position
+        piece_name = "QUEEN"
+    elif interview_count >= 1:
+        piece = "🏰"  # Rook - Solid foundation
+        piece_name = "ROOK"
+    elif active_deals >= 5:
+        piece = "🐴"  # Knight - Active movement
+        piece_name = "KNIGHT"
+    elif strong_connections >= 3:
+        piece = "⛪"  # Bishop - Diagonal power
+        piece_name = "BISHOP"
+    else:
+        piece = "♟️"  # Pawn - Starting out
+        piece_name = "PAWN"
+    
+    # Chess Board Visual (8x8 grid)
+    st.markdown(f"""
+    <style>
+    .chess-board {{
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 2px;
+        max-width: 400px;
+        margin: 0 auto;
+    }}
+    .chess-cell {{
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        border-radius: 4px;
+    }}
+    .chess-light {{ background: rgba(255, 215, 0, 0.15); }}
+    .chess-dark {{ background: rgba(255, 191, 0, 0.05); }}
+    .chess-current {{ 
+        background: linear-gradient(135deg, #FFD700, #FFBF00) !important;
+        animation: pulse-piece 1.5s ease-in-out infinite;
+    }}
+    @keyframes pulse-piece {{
+        0%, 100% {{ transform: scale(1); }}
+        50% {{ transform: scale(1.1); }}
+    }}
+    </style>
+    
+    <div class="chess-board">
+    """, unsafe_allow_html=True)
+    
+    # Generate board
+    board_html = ""
+    for row in range(7, -1, -1):  # Top to bottom
+        for col in range(8):
+            cell_class = "chess-light" if (row + col) % 2 == 0 else "chess-dark"
+            cell_index = row * 8 + col
+            
+            if row == chess_row and col == chess_col:
+                cell_class = "chess-current"
+                content = piece
+            elif cell_index < chess_score:
+                content = "·"  # Passed squares
+            else:
+                content = ""
+            
+            board_html += f'<div class="chess-cell {cell_class}">{content}</div>'
+    
+    st.markdown(board_html + "</div>", unsafe_allow_html=True)
+    
+    # Position Intel
+    st.markdown(f"""
+    <div style="text-align: center; margin-top: 16px;">
+        <p style="color: #8892b0; margin: 0;">YOUR PIECE</p>
+        <h2 style="color: #FFD700; margin: 8px 0;">{piece} {piece_name}</h2>
+        <p style="color: #8892b0; font-size: 0.9rem;">Position: Row {chess_row + 1} / Col {chess_col + 1} | Score: {chess_score}/63</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Next Moves
+    st.markdown("##### ♟️ NEXT BEST MOVES")
+    move_cols = st.columns(3)
+    with move_cols[0]:
+        st.markdown("""
+        <div style="background: rgba(0,255,136,0.1); border: 1px solid #00ff88; border-radius: 8px; padding: 12px; text-align: center;">
+            <p style="font-size: 1.2rem; margin: 0;">🏃</p>
+            <p style="color: #00ff88; font-size: 0.8rem; margin: 4px 0;">ADVANCE</p>
+            <p style="color: #8892b0; font-size: 0.7rem; margin: 0;">Get 1 more interview</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with move_cols[1]:
+        st.markdown("""
+        <div style="background: rgba(0,212,255,0.1); border: 1px solid #00d4ff; border-radius: 8px; padding: 12px; text-align: center;">
+            <p style="font-size: 1.2rem; margin: 0;">🏰</p>
+            <p style="color: #00d4ff; font-size: 0.8rem; margin: 4px 0;">CASTLE</p>
+            <p style="color: #8892b0; font-size: 0.7rem; margin: 0;">Strengthen network</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with move_cols[2]:
+        st.markdown("""
+        <div style="background: rgba(255,191,0,0.1); border: 1px solid #FFBF00; border-radius: 8px; padding: 12px; text-align: center;">
+            <p style="font-size: 1.2rem; margin: 0;">⚔️</p>
+            <p style="color: #FFBF00; font-size: 0.8rem; margin: 4px 0;">ATTACK</p>
+            <p style="color: #8892b0; font-size: 0.7rem; margin: 0;">Send 3 cold outreaches</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # ═══════════════════════════════════════════════════════════════
+    # 🧠 CAREER READINESS BRAIN SCANNER
+    # ═══════════════════════════════════════════════════════════════
+    st.markdown("### 🧠 CAREER READINESS SCANNER")
+    st.caption("Live scan of your job-hunting vital signs. How close are you to landing?")
+    
+    # Calculate Skill Scores (0-100)
+    skill_networking = min(100, (strong_connections * 15) + (champion_connections * 25) + (warm_contacts * 5))
+    skill_communication = min(100, (practice_sessions * 10) + (interview_count * 15))
+    skill_pipeline = min(100, (active_deals * 10) + (final_rounds * 30))
+    skill_strategy = min(100, 30 + (interview_count * 10) + (final_rounds * 20))  # Base 30 for having a plan
+    skill_resilience = min(100, 20 + (practice_sessions * 8) + (active_deals * 5))  # Base 20 for showing up
+    
+    overall_readiness = (skill_networking + skill_communication + skill_pipeline + skill_strategy + skill_resilience) // 5
+    
+    # Animated Scanner Visual
+    readiness_color = "#00ff88" if overall_readiness >= 70 else "#FFD700" if overall_readiness >= 40 else "#ff6b6b"
+    
+    st.markdown(f"""
+    <style>
+    @keyframes scan-pulse {{
+        0% {{ box-shadow: 0 0 10px {readiness_color}40; }}
+        50% {{ box-shadow: 0 0 30px {readiness_color}80, 0 0 60px {readiness_color}40; }}
+        100% {{ box-shadow: 0 0 10px {readiness_color}40; }}
+    }}
+    .brain-scanner {{
+        background: linear-gradient(135deg, #0a0a1a, #1a1a2e);
+        border: 3px solid {readiness_color};
+        border-radius: 20px;
+        padding: 30px;
+        text-align: center;
+        animation: scan-pulse 2s ease-in-out infinite;
+    }}
+    </style>
+    
+    <div class="brain-scanner">
+        <p style="color: #8892b0; margin: 0; font-size: 0.9rem;">CAREER READINESS LEVEL</p>
+        <h1 style="color: {readiness_color}; margin: 10px 0; font-size: 4rem;">{overall_readiness}%</h1>
+        <p style="color: #8892b0; margin: 0;">{'🟢 READY TO LAND' if overall_readiness >= 70 else '🟡 BUILDING MOMENTUM' if overall_readiness >= 40 else '🔴 NEEDS WORK'}</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("")
+    
+    # Skill Radar / Brain Attributes
+    st.markdown("##### 🎯 SKILL ATTRIBUTES")
+    
+    skills_data = [
+        ("🔗 NETWORKING", skill_networking, "#00d4ff"),
+        ("🗣️ COMMUNICATION", skill_communication, "#00ff88"),
+        ("📊 PIPELINE", skill_pipeline, "#FFD700"),
+        ("🧠 STRATEGY", skill_strategy, "#ff6b6b"),
+        ("💪 RESILIENCE", skill_resilience, "#9b59b6"),
+    ]
+    
+    for skill_name, skill_value, skill_color in skills_data:
+        st.markdown(f"""
+        <div style="margin: 8px 0;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                <span style="color: #ccd6f6; font-size: 0.85rem;">{skill_name}</span>
+                <span style="color: {skill_color}; font-weight: bold;">{skill_value}/100</span>
+            </div>
+            <div style="background: rgba(255,255,255,0.1); border-radius: 10px; height: 10px; overflow: hidden;">
+                <div style="background: linear-gradient(90deg, {skill_color}80, {skill_color}); width: {skill_value}%; height: 100%; border-radius: 10px; transition: width 0.5s;"></div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Weakest Skill Alert
+    weakest_skill = min(skills_data, key=lambda x: x[1])
+    st.markdown(f"""
+    <div style="background: rgba(255,107,107,0.1); border: 1px solid #ff6b6b; border-radius: 8px; padding: 12px; margin-top: 16px;">
+        <p style="color: #ff6b6b; margin: 0; font-weight: bold;">⚠️ FOCUS AREA: {weakest_skill[0]}</p>
+        <p style="color: #8892b0; font-size: 0.85rem; margin: 4px 0 0 0;">This is your weakest attribute. Prioritize actions that boost it!</p>
+    </div>
+    """, unsafe_allow_html=True)
     
     st.markdown("---")
     
