@@ -849,7 +849,7 @@ with st.sidebar:
         
     # BIO-OS (Compact)
     import datetime
-    if 'session_start' not in st.session_state:
+    if st.session_state.session_start is None:
         st.session_state.session_start = datetime.datetime.now()
     session_duration = datetime.datetime.now() - st.session_state.session_start
     hours = int(session_duration.total_seconds() // 3600)
