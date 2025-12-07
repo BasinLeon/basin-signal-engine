@@ -7497,7 +7497,8 @@ Curious if this resonates?""", height=150)
                 BUSINESS_MODELS, PRICING_IDEAS, CONTENT_IDEAS,
                 calculate_reputation_score, generate_community_content,
                 generate_leon_posts, get_build_stats,
-                generate_scroll_content, ChessBattle
+                generate_scroll_content, ChessBattle,
+                generate_chess_update
             )
             integrations_loaded = True
         except ImportError:
@@ -7625,8 +7626,39 @@ Curious if this resonates?""", height=150)
                     st.markdown(f"**⚪ WHITE (YOU):** {strategy['white_pieces']}")
                     st.markdown(f"**⚫ BLACK (THE VOID):** {strategy['black_pieces']}")
                     
+                    # LOG MOVE BUTTON
                     if st.button("♟️ MAKE MOVE (LOG SESSION)"):
-                        st.toast("Move Recorded on the Astral Plane.", icon="♟️")
+                         st.toast("Move Recorded on the Astral Plane.", icon="♟️")
+                         
+                # GTM FOCUS MATRIX
+                st.markdown("---")
+                gtm_col1, gtm_col2 = st.columns([3, 1])
+                
+                with gtm_col1:
+                    st.markdown("#### 📡 GTM PENETRATION RADAR")
+                    # Logic: If moves > 200, shift focus to External
+                    focus_val = min(moves_made / 300.0, 1.0) # 300 moves = 100% External Focus
+                    st.progress(focus_val, text="FOCUS: INTERNAL BUILD ⟷ EXTERNAL SIGNAL")
+                    if focus_val < 0.5:
+                        st.caption("⚠️ **STRATEGY: BUILD.** The product is the leverage. Do not sell vaporware.")
+                    else:
+                        st.caption("🚀 **STRATEGY: SIGNAL.** The engine is ready. Capture the eyeballs. Pay with pieces.")
+                        
+                with gtm_col2:
+                    st.markdown("#### 📢 WAR ROOM")
+                    if st.button("📣 ANNOUNCE STATUS", type="primary", use_container_width=True):
+                        with st.spinner("Forging Battle Update..."):
+                            update_posts = generate_chess_update(strategy, moves_made)
+                            st.session_state['chess_update'] = update_posts
+                            
+                if 'chess_update' in st.session_state:
+                    st.markdown(f"""
+                    <div style="background: #111; border: 1px solid #333; padding: 15px; border-radius: 8px;">
+                        <h4 style="color: #FFD700;">♟️ BATTLE BROADCAST GENERATED</h4>
+                        <pre style="white-space: pre-wrap; font-family: monospace; color: #ccc;">{st.session_state['chess_update']}</pre>
+                        <p style="text-align: right; color: #666; font-size: 0.8rem;">A BASIN::NEXUS ARTIFACT</p>
+                    </div>
+                    """, unsafe_allow_html=True)
 
             # TAB 2: THREAD WEAVER (X-First)
             with social_tabs[2]:

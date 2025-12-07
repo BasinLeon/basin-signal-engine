@@ -1436,6 +1436,37 @@ class ChessBattle:
         # 1 Hour = 4 Moves. 1 Bug = 2 Moves.
         return int((hours * 4) + (bugs * 2))
 
+def generate_chess_update(strategy: dict, moves: int) -> str:
+    """
+    Generates an X post regarding the current 'Chess Battle'.
+    Tone: Basketball flow, Wrestling with Hashem, Cryptic, High-Agency.
+    """
+    from logic.generator import generate_plain_text
+    
+    prompt = f"""
+    Write 3 variations of an X post (Twitter) for Leon Basin.
+    
+    Context:
+    - He is "wrestling with God" through code.
+    - He views his startup build as a Chess Match (or NBA Finals).
+    - Current State: {strategy['opening']}
+    - Current Tactic: {strategy['current_tactic']}
+    - Moves Played Today: {moves}
+    
+    Tone:
+    - "Sam & Ink" vibes (surreal, ancient).
+    - "Basketball Flow" (fast, rhythm).
+    - Minimalist. Do NOT reveal the exact product features.
+    - MUST include "Basin::Nexus" branding/hashtag subtly.
+    
+    Format:
+    1. [Post 1]
+    2. [Post 2]
+    3. [Post 3]
+    """
+    return generate_plain_text(prompt, model_name="llama-3.3-70b-versatile")
+
+
 
 
 
