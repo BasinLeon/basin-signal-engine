@@ -1197,26 +1197,52 @@ with col1:
             if st.button("📡 SCAN FOR TRIGGERS", type="primary", use_container_width=True):
                 if s_company:
                     from logic.generator import generate_plain_text
+                    import feedparser
+                    import urllib.parse
                     
-                    with st.spinner("Intercepting Signals..."):
+                    with st.spinner(f"Intercepting Signals for {s_company}..."):
+                        # 1. FETCH REAL-TIME INTEL (Google News RSS)
+                        encoded_company = urllib.parse.quote(s_company)
+                        rss_url = f"https://news.google.com/rss/search?q={encoded_company}+when:30d&hl=en-US&gl=US&ceid=US:en"
+                        feed = feedparser.parse(rss_url)
+                        
+                        news_items = []
+                        context_str = "NO DIRECT NEWS FOUND. ANALYZE BASED ON GENERAL KNOWLEDGE."
+                        
+                        if feed.entries:
+                            context_str = "RECENT NEWS INTERCEPTS:\n"
+                            for entry in feed.entries[:7]:
+                                context_str += f"- {entry.title} ({entry.link})\n"
+                                news_items.append(entry)
+                        
+                        # 2. ANALYZE WITH AI
                         signal_prompt = f"""
                         ACT AS: Deep State Commercial Intelligence Analyst.
                         TARGET: {s_company}
                         
-                        MISSION: Identify 3 high-probability "Buying Triggers" for a Revenue/GTM Architecture deal.
+                        INTELLIGENCE FEED:
+                        {context_str}
+                        
+                        MISSION: Identify 3 high-probability "Buying Triggers" for a Revenue/GTM Architecture deal based on this news or general market status.
                         
                         LOOK FOR:
-                        1. Recent Funding (Speed needed)
+                        1. Recent Funding (Speed needed) (Check news for $ amounts)
                         2. Hiring Spree (Chaos in Ops)
                         3. New Market Expansion (Process needed)
-                        4. Bad Press/Reviews (Fix needed)
+                        4. Leadership Changes (New mandate)
                         
                         OUTPUT FORMAT:
-                        **1. [TRIGGER TYPE]**: [Specific Observation] -> [The Opening]
+                        **1. [TRIGGER TYPE]**: [Specific News/Observation] -> [The Opening]
                         """
                         model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
                         signals = generate_plain_text(signal_prompt, model_name=model_id)
+                        
                         st.markdown(signals)
+                        
+                        if news_items:
+                            with st.expander("📰 SOURCE INTELLIGENCE"):
+                                for item in news_items:
+                                    st.markdown(f"- [{item.title}]({item.link})")
 
         with osint_tab3:
             st.caption("PROTOCOL: Full-Spectrum Corporate Analysis.")
