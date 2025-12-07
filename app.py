@@ -928,32 +928,36 @@ if show_dashboard:
         build_stats = {"hours_coded": 17.5, "bugs_squashed": 0, "level": 1}
         possibility_metric = "∞"
 
-    # HERO HEADER (Cinematic)
+    # MISSION BRIEFING HEADER (Gold/Black)
     st.markdown(f"""
-    <div style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b'); background-size: cover; border-radius: 16px; padding: 40px; margin-bottom: 30px; border: 1px solid rgba(255, 191, 0, 0.2); position: relative; overflow: hidden;">
-        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #FFD700 {loc_stats.get('progress', 0)*100}%, rgba(255,255,255,0.1) 0%);"></div>
-        
-        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-            <div>
-                <span style="background: #E50914; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.7rem; letter-spacing: 1px;">SERIES ORIGINAL</span>
-                <h1 style="color: #fff; font-size: 3.5rem; margin: 10px 0 5px 0; text-shadow: 0 4px 20px rgba(0,0,0,0.8); font-weight: 800;">SEASON 1: THE PIVOT</h1>
-                <p style="color: #e6e6e6; font-size: 1.1rem; max-width: 600px; line-height: 1.6;">
-                    The code is the leverage. The network is the moat. 
-                    <br><span style="color: #FFD700;">{build_stats['hours_coded']} HOURS</span>. <span style="color: #FF4B4B;">{build_stats['bugs_squashed']} BUGS</span>. <span style="color: #00d4ff;">{possibility_metric} POSSIBILITIES</span>.
-                </p>
-                <div style="margin-top: 20px; display: flex; gap: 15px;">
-                    <button style="background: #fff; color: black; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; cursor: pointer;">▶ RESUME</button>
-                    <button style="background: rgba(109, 109, 110, 0.7); color: white; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; cursor: pointer;">ℹ EPISODES</button>
+        <div style="background:linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b'); background-size: cover; border-radius: 16px; padding: 40px; margin-bottom: 30px; border: 1px solid #FFD700;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1 style="color: #FFD700; font-size: 3.5rem; margin: 0; text-shadow: 0 4px 20px rgba(0,0,0,0.8); font-weight: 800;">BASIN::NEXUS</h1>
+                    <p style="color: #fff; font-size: 1.2rem; font-family: monospace;">
+                        <span style="color: #00ff88;">● ONLINE</span> | 
+                        <span style="color: #FFD700;">📡 NETWORK VELOCITY: 12.5 TB/s</span>
+                    </p>
+                </div>
+                
+                <div style="text-align: right; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 8px; backdrop-filter: blur(5px); border: 1px solid #FFD700;">
+                     <div style="color: #888; font-size: 0.8rem; letter-spacing: 2px;">JOB PROBABILITY</div>
+                     <div style="color: #FFD700; font-size: 2.5rem; font-weight: 800;">85%</div>
+                     <div style="color: #00ff88; font-size: 0.8rem;">CALCULATED WIN RATE</div>
                 </div>
             </div>
             
-            <div style="text-align: right; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1);">
-                <div style="color: #FFD700; font-size: 0.8rem; font-weight: bold;">BUILDER LEVEL {loc_stats.get('level', 1)}</div>
-                <div style="color: #fff; font-size: 2rem; font-weight: 800; font-family: monospace;">{loc_stats.get('total_lines', 0):,} LOC</div>
-                <div style="color: #8892b0; font-size: 0.75rem;">XP: {loc_stats.get('xp_current', 0)} / {loc_stats.get('xp_needed', 500)}</div>
+            <div style="margin-top: 30px; display: flex; gap: 20px;">
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 15px 25px; border-radius: 8px; border: 1px solid #333;">
+                    <div style="color: #888; font-size: 0.8rem;">TOTAL DEALS</div>
+                    <div style="color: #fff; font-size: 1.5rem; font-weight: bold;">12 ↗</div>
+                </div>
+                 <div style="background: rgba(255, 255, 255, 0.05); padding: 15px 25px; border-radius: 8px; border: 1px solid #333;">
+                    <div style="color: #888; font-size: 0.8rem;">ACTIVE / HOT</div>
+                    <div style="color: #FF4B4B; font-size: 1.5rem; font-weight: bold;">5 🔥</div>
+                </div>
             </div>
         </div>
-    </div>
     """, unsafe_allow_html=True)
     
     # GAMIFICATION INTERACTION (Hidden Controls)
@@ -7102,18 +7106,75 @@ Best,
 
 
     # ==============================================================================
-    # 🎯 MODE: SNIPER PROSPECTING SCOPE
+    # 🎯 MODE: BLACK OPS AGENT (INTEL & RECON)
     # ==============================================================================
     elif input_mode == "🎯 Sniper Prospecting":
-        st.markdown("## 🎯 OPS INTEL: SNIPER SCOPE")
-        st.caption("PROTOCOL: Deep Dive Intelligence · High-Value Target Acquisition · Operations Lead Dojo")
+        st.markdown("""
+        <h1 style='color: #FFD700;'>3. BLACK OPS AGENT (INTEL & RECON)</h1>
+        """, unsafe_allow_html=True)
+        
+        # TABBED INTERFACE for Black Ops
+        bo_tabs = st.tabs(["🕵️ CONTACT HUNTER", "⚡ SIGNAL RADAR", "🌐 360 RECON"])
+        
+        with bo_tabs[0]: # CONTACT HUNTER
+            st.markdown("""
+            <div style='background: #111; padding: 20px; border: 1px solid #333; border-radius: 10px;'>
+                <h4 style='color: #FFD700; margin-top: 0;'>TARGET PARAMS</h4>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            c1, c2 = st.columns(2)
+            with c1:
+                target_name = st.text_input("Target Name", placeholder="e.g. Leon Basin")
+            with c2:
+                target_domain = st.text_input("Company Domain", placeholder="e.g. anthropic.com")
+                
+            if st.button("🔓 GENERATE INTELLIGENCE LINKS", type="primary", use_container_width=True):
+                if target_name and target_domain:
+                    # Mock Intelligence Generation
+                    safe_name = target_name.replace(' ', '+')
+                    st.success("✅ INTELLIGENCE ACQUIRED")
+                    
+                    st.markdown("##### ##### 🎯 DIRECT CONTACT LINKS")
+                    
+                    l_col1, l_col2, l_col3 = st.columns(3)
+                    with l_col1:
+                        st.markdown(f"""
+                        <a href="https://www.google.com/search?q={safe_name}+email+{target_domain}" target="_blank" style="text-decoration: none;">
+                            <div style="border: 1px solid #FFD700; padding: 10px; text-align: center; border-radius: 5px; color: #FFD700;">
+                                📩 Find Email<br><span style="font-size: 0.8em; color: #888;">(Google Dorks)</span>
+                            </div>
+                        </a>
+                        """, unsafe_allow_html=True)
+                    with l_col2:
+                         st.markdown(f"""
+                        <a href="https://www.google.com/search?q={safe_name}+phone+number" target="_blank" style="text-decoration: none;">
+                            <div style="border: 1px solid #FFD700; padding: 10px; text-align: center; border-radius: 5px; color: #FFD700;">
+                                📞 Find Phone<br><span style="font-size: 0.8em; color: #888;">(TrueCaller)</span>
+                            </div>
+                        </a>
+                        """, unsafe_allow_html=True)
+                    with l_col3:
+                         st.markdown(f"""
+                        <a href="https://www.google.com/search?q=site:calendly.com+{safe_name}" target="_blank" style="text-decoration: none;">
+                            <div style="border: 1px solid #FFD700; padding: 10px; text-align: center; border-radius: 5px; color: #FFD700;">
+                                📅 Find Calendly<br><span style="font-size: 0.8em; color: #888;">(Calendar Hack)</span>
+                            </div>
+                        </a>
+                        """, unsafe_allow_html=True)
+                        
+                    st.markdown("---")
+                    st.markdown("##### 👤 KEY DECISION MAKERS (PREDICTED)")
+                    st.markdown("**VP Sales • CRO • CTO**")
+                    
+        with bo_tabs[1]: # SIGNAL RADAR
+            target_company = st.text_input("Target Company Ticker", placeholder="e.g. VERCEL")
         
         try:
             from logic.integrations import analyze_sniper_target
             sniper_available = True
         except ImportError:
             sniper_available = False
-            st.error("Sniper module missing.")
             
         if sniper_available:
             col1, col2 = st.columns([1, 2])
@@ -7978,32 +8039,57 @@ Curious if this resonates?""", height=150)
                          st.markdown("**🔥 Challenge**")
                          st.text_area("Challenge", value=posts['challenge'], height=150)
 
-            # TAB 6: VOICE & REP
+            # TAB 6: VOICE & REP (TELEMETRY LAB)
             with social_tabs[6]:
-                st.markdown("#### 🗣️ VOICE CALIBRATION & REPUTATION")
+                st.markdown("#### 🎙️ VOICE TELEMETRY LAB")
+                st.caption("PROTOCOL: Cloud-Native Voice Recording + Executive Presence Scoring.")
                 
-                r_col1, r_col2 = st.columns(2)
+                vt_col1, vt_col2 = st.columns([2, 1])
                 
-                with r_col1:
-                    st.markdown("### 🆙 REPUTATION CALCULATOR")
-                    f_count = st.number_input("Followers (Total)", value=1000)
-                    streak = st.slider("Shipping Streak (Days)", 0, 365, 15)
-                    eng_rate = st.slider("Engagement Rate (%)", 0.0, 10.0, 2.5) / 100
+                with vt_col1:
+                    # QUESTION CATEGORY
+                    q_cat = st.selectbox("QUESTION CATEGORY", ["🎯 Core Pitch", "🧠 Behavioral", "💼 Case Study"], index=0)
                     
-                    if st.button("🧮 CALCULATE SCORE"):
-                        score_data = calculate_reputation_score(f_count, streak, eng_rate)
-                        st.metric("VIBE SCORE", score_data['score'], score_data['tier'])
-                        st.progress(score_data['score'] / 100)
-                        st.caption(score_data['message'])
+                    # DRILL SCENARIO (Dynamic)
+                    if q_cat == "🎯 Core Pitch":
+                        drills = [
+                            "Tell me about yourself (The Pitch)",
+                            "Walk me through your resume",
+                            "Why are you interested in this role?",
+                            "What makes you unique vs. other candidates?",
+                            "Walk me through the 160% Growth metric",
+                            "Where do you see yourself in 5 years?"
+                        ]
+                    else:
+                        drills = ["Tell me about a time you failed...", "How do you handle conflict?"]
                         
-                with r_col2:
-                    st.markdown("### 🎙️ VOICE CALIBRATION")
-                    st.caption("Paste your best content so AI learns your style.")
-                    voice_sample = st.text_area("Your Best Tweets/Posts", height=200, 
-                        placeholder="Paste 3-5 of your top performing posts here...")
+                    drill = st.selectbox("SELECT DRILL SCENARIO", drills)
+                    
+                    st.info(f"💡 **TIP:** Speak for 45-90 seconds. Include at least one metric.")
+                    
+                    # RECORDING UI
+                    st.markdown("""
+                    <div style="background: #222; border-radius: 10px; padding: 20px; text-align: center; border: 1px dashed #444;">
+                        <span style="color: #FF0000;">🔴 REC</span>
+                        <h2 style="font-family: monospace; color: white;">00:00</h2>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    if st.button("🎙️ PRESS TO RECORD RESPONSE"):
+                        with st.spinner("Recording Telemetry..."):
+                            import time
+                            time.sleep(2)
+                        st.success("✅ RECORDING CAPTURED. ANALYZING WAVEFORMS...")
+                        st.metric("Executive Presence Score", "88/100", "+5% vs last session")
+                        
+                with vt_col2:
+                    st.markdown("### 📈 SESSION ANALYTICS")
+                    st.image("https://images.unsplash.com/photo-1551288049-bebda4e38f71", caption="VOICEPRINT ANALYSIS", use_container_width=True)
+                    st.metric("Pace (WPM)", "145", "Optimal")
+                    st.metric("Filler Words", "2", "-3 vs avg")
                     
                     if st.button("💾 SAVE VOICE PROFILE"):
-                        st.session_state['voice_profile'] = voice_sample
+                        st.session_state['voice_profile'] = "Recorded Session 1"
                         st.success("Voice profile updated! Future content will match this style.")
             
             # TAB 7: JOIN BETA / WAITLIST
