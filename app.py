@@ -2404,10 +2404,105 @@ start with full focus on day one. Is that something we can add?"
     # 📡 MODE 14: MARKET SENTIMENT RADAR (The Oracle Dashboard)
     # ==============================================================================
     elif input_mode == "📡 Market Radar":
-        st.markdown("## 📡 MARKET SENTIMENT RADAR")
-        st.caption("PROTOCOL: Economics → Execution. Real-time intelligence on market conditions, job seeker sentiment, and opportunity windows.")
+        st.markdown("## 📡 SIGNAL RADAR: PROSPECTING COMMAND CENTER")
+        st.caption("PROTOCOL: Aggregate Pre-Hiring Signals (Funding, Social, Jobs) → Discover → Practice.")
         
-        # Hero Stats Bar
+        # ═══════════════════════════════════════════════════════════════
+        # OMNI-SEARCH (The "One Search to Rule Them All")
+        # ═══════════════════════════════════════════════════════════════
+        with st.expander("🔭 OMNI-SEARCH (Deep Dive on Target)", expanded=True):
+            c1, c2 = st.columns([3, 1])
+            with c1:
+                target_company = st.text_input("Target Company / Sector", placeholder="e.g. 'Mistral AI' or 'Zero Trust Startups'", key="omni_search")
+            with c2:
+                st.markdown("###")  # Spacing
+                scan_clicked = st.button("🚀 SCAN ALL CHANNELS", use_container_width=True)
+
+            if target_company:
+                st.markdown("#### 🔗 DEEP DIVE LINKS (One-Click Intel)")
+                l1, l2, l3, l4, l5 = st.columns(5)
+                
+                # Smart Search Strings
+                q = target_company.replace(' ', '+')
+                
+                with l1:
+                    st.markdown(f"[**💰 Crunchbase**](https://www.google.com/search?q=site:crunchbase.com+{q}+funding+series)")
+                    st.caption("Check Cash Flow")
+                with l2:
+                    st.markdown(f"[**👔 LinkedIn**](https://www.linkedin.com/search/results/content/?keywords={q}%20hiring)")
+                    st.caption("Social Signal")
+                with l3:
+                    st.markdown(f"[**🐸 Glassdoor**](https://www.google.com/search?q=site:glassdoor.com+{q}+reviews)")
+                    st.caption("Culture/Churn")
+                with l4:
+                    st.markdown(f"[**🤖 Reddit**](https://www.reddit.com/search/?q={q}+hiring)")
+                    st.caption("Dev Chatter")
+                with l5:
+                    st.markdown(f"[**🐦 Twitter/X**](https://twitter.com/search?q={q}+hiring&src=typed_query)")
+                    st.caption("Real-Time")
+                
+                # PRACTICE THIS COMPANY BUTTON (Discovery → Practice Loop)
+                st.markdown("---")
+                practice_col1, practice_col2 = st.columns([2, 1])
+                with practice_col1:
+                    st.info(f"🎯 **Ready to practice for {target_company}?** Simulate an interview with their cultural profile.")
+                with practice_col2:
+                    if st.button("🥊 ENTER DOJO", use_container_width=True, key="practice_target"):
+                        # Save target for Dojo
+                        st.session_state['dojo_target_company'] = target_company
+                        st.session_state.selected_tool_label = "🥊 Boardroom (Dojo)"
+                        st.rerun()
+        
+        st.markdown("---")
+        
+        # ═══════════════════════════════════════════════════════════════
+        # LIVE SIGNAL STREAM (RSS AGGREGATOR)
+        # ═══════════════════════════════════════════════════════════════
+        st.markdown("### 🌊 LIVE SIGNAL STREAM (PRE-HIRING INDICATORS)")
+        
+        feeds = {
+            "💰 VC & Funding (TechCrunch)": "https://techcrunch.com/category/startups/feed/",
+            "🔥 Y Combinator (Who is Hiring)": "https://news.ycombinator.com/rss",
+            "🤖 AI & Tech Trends (Wired)": "https://www.wired.com/feed/category/business/latest/rss",
+        }
+        
+        selected_feed = st.selectbox("Select Signal Frequency:", list(feeds.keys()))
+        
+        try:
+            import feedparser
+            with st.spinner(f"Intercepting {selected_feed}..."):
+                feed_data = feedparser.parse(feeds[selected_feed])
+                st.caption(f"📡 Signal Strength: {len(feed_data.entries)} active items detected.")
+                
+                for entry in feed_data.entries[:8]:
+                    with st.container():
+                        st.markdown(f"##### [{entry.title}]({entry.link})")
+                        published = entry.get('published', 'Unknown Date')
+                        st.caption(f"🗓️ {published}")
+                        st.divider()
+        except ImportError:
+            st.warning("⚠️ `feedparser` not installed. Using mock data.")
+        except Exception as e:
+            st.warning(f"Signal interference: {e}. Falling back to mock data.")
+        
+        st.markdown("---")
+        
+        # ═══════════════════════════════════════════════════════════════
+        # PRE-HIRING SIGNAL DECODER
+        # ═══════════════════════════════════════════════════════════════
+        with st.expander("🕵️ PRE-HIRING SIGNAL DECODER (CHEAT SHEET)"):
+            st.markdown("""
+            **How to spot the job before it's posted:**
+            
+            * **Series B/C Funding:** Sales team doubles in 90 days. *Action: Pitch the VP of Sales immediately.*
+            * **New CTO/VP Engineering:** New tech stack coming. *Action: Pitch "GTM Systems" to align with new tech.*
+            * **"We are overwhelmed" on Reddit:** Support/Devs are drowning. *Action: Pitch "Efficiency/Process" role.*
+            * **Competitor Layoffs:** Talent is moving. *Action: Look for the company *absorbing* that talent.*
+            """)
+        
+        st.markdown("---")
+        
+        # Hero Stats Bar (Original)
         col_m1, col_m2, col_m3, col_m4 = st.columns(4)
         
         with col_m1:
@@ -2444,7 +2539,7 @@ start with full focus on day one. Is that something we can add?"
         
         st.markdown("---")
         
-        # Main Radar Dashboard
+        # Main Radar Dashboard (Original Tabs)
         radar_tab1, radar_tab2, radar_tab3 = st.tabs(["📰 HEADLINE INTEL", "🎭 SENTIMENT MAP", "🎯 OPPORTUNITY SIGNALS"])
         
         with radar_tab1:
