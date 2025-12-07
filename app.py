@@ -1194,6 +1194,14 @@ with col1:
                         meet_query = f'site:calendly.com "{o_name}"'
                         st.markdown(f"[📅 Find Calendly](https://www.google.com/search?q={meet_query})")
                         st.caption("Checks for public booking links")
+                    
+                    st.markdown("---")
+                    st.markdown("##### 👤 KEY DECISION MAKERS")
+                    dm1, dm2, dm3, dm4 = st.columns(4)
+                    dm1.markdown(f"[🎯 VP Sales](https://www.linkedin.com/search/results/people/?keywords={o_domain}%20VP%20Sales)")
+                    dm2.markdown(f"[🎯 CRO](https://www.linkedin.com/search/results/people/?keywords={o_domain}%20CRO)")
+                    dm3.markdown(f"[🎯 RevOps](https://www.linkedin.com/search/results/people/?keywords={o_domain}%20RevOps)")
+                    dm4.markdown(f"[🎯 CTO/Eng](https://www.linkedin.com/search/results/people/?keywords={o_domain}%20CTO)")
 
         with osint_tab2:
             st.caption("PROTOCOL: Pattern Recognition for Opportunity Analysis.")
@@ -1205,6 +1213,8 @@ with col1:
                     from logic.generator import generate_plain_text
                     import feedparser
                     import urllib.parse
+                    import requests
+                    from types import SimpleNamespace
                     
                     with st.spinner(f"Intercepting Signals for {s_company}..."):
                         # 1. FETCH REAL-TIME INTEL (Google News RSS)
@@ -1213,13 +1223,30 @@ with col1:
                         feed = feedparser.parse(rss_url)
                         
                         news_items = []
-                        context_str = "NO DIRECT NEWS FOUND. ANALYZE BASED ON GENERAL KNOWLEDGE."
+                        context_str = "Recent News Intercepts:\n"
                         
+                        # Google News
                         if feed.entries:
-                            context_str = "RECENT NEWS INTERCEPTS:\n"
-                            for entry in feed.entries[:7]:
-                                context_str += f"- {entry.title} ({entry.link})\n"
+                            for entry in feed.entries[:5]:
+                                context_str += f"- [NEWS] {entry.title} ({entry.link})\n"
                                 news_items.append(entry)
+                        
+                        # HackerNews (Enrichment)
+                        try:
+                            hn_url = f"https://hn.algolia.com/api/v1/search?query={encoded_company}&tags=story&hitsPerPage=3"
+                            r = requests.get(hn_url, timeout=2)
+                            if r.status_code == 200:
+                                for h in r.json().get('hits', []):
+                                    title = h.get('title')
+                                    url = h.get('url') or f"https://news.ycombinator.com/item?id={h.get('objectID')}"
+                                    context_str += f"- [HN] {title} ({url})\n"
+                                    # Normalize for display
+                                    news_items.append(SimpleNamespace(title=f"[HN] {title}", link=url))
+                        except:
+                            pass
+                            
+                        if not news_items:
+                            context_str = "NO DIRECT NEWS FOUND. ANALYZE BASED ON GENERAL KNOWLEDGE."
                         
                         # 2. ANALYZE WITH AI
                         signal_prompt = f"""
@@ -1232,10 +1259,11 @@ with col1:
                         MISSION: Identify 3 high-probability "Buying Triggers" for a Revenue/GTM Architecture deal based on this news or general market status.
                         
                         LOOK FOR:
-                        1. Recent Funding (Speed needed) (Check news for $ amounts)
+                        1. Recent Funding (Speed needed)
                         2. Hiring Spree (Chaos in Ops)
                         3. New Market Expansion (Process needed)
                         4. Leadership Changes (New mandate)
+                        5. Technical/Product Launches (Go-to-Market needs)
                         
                         OUTPUT FORMAT:
                         **1. [TRIGGER TYPE]**: [Specific News/Observation] -> [The Opening]
@@ -1249,7 +1277,7 @@ with col1:
                             with st.expander("📰 SOURCE INTELLIGENCE"):
                                 for item in news_items:
                                     st.markdown(f"- [{item.title}]({item.link})")
-
+                                    
         with osint_tab3:
             st.caption("PROTOCOL: Full-Spectrum Corporate Analysis.")
             r_company = st.text_input("Deep Dive Target", value=selected_company if 'selected_company' in locals() else "", placeholder="e.g. Stripe", key="osint_recon")
