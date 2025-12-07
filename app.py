@@ -2197,68 +2197,255 @@ start with full focus on day one. Is that something we can add?"
 
     # ==============================================================================
     # 📈 MODE 8: PIPELINE CRM (DEAL TRACKER)
-    # ==============================================================================
     elif input_mode == "📈 Pipeline CRM":
-        st.markdown("## 📈 PIPELINE CRM (DEAL TRACKER)")
-        st.caption("PROTOCOL: Track every opportunity from Application to Offer.")
+        st.markdown("## 📈 EXECUTIVE CRM (REVENUE COMMAND)")
+        st.caption("PROTOCOL: Complete Contact & Deal Management with AI Enrichment.")
         
-        # Initialize Pipeline Data
-        if 'pipeline_data' not in st.session_state:
-            st.session_state['pipeline_data'] = [
-                {"Company": "DepthFirst", "Role": "Dir. GTM", "Stage": "Final Round", "Next Action": "Follow-up CEO", "Priority": "🔥 HIGH", "Last Contact": "2024-12-05"},
-                {"Company": "Mistral AI", "Role": "GTM Lead", "Stage": "HM Interview", "Next Action": "Send 90-Day Plan", "Priority": "🔥 HIGH", "Last Contact": "2024-12-04"},
-                {"Company": "Ambient.ai", "Role": "Rev Ops", "Stage": "Screen", "Next Action": "Prep Recruiter Q's", "Priority": "⚡ MED", "Last Contact": "2024-12-03"},
-                {"Company": "Verkada", "Role": "Sr. GTM", "Stage": "Applied", "Next Action": "Wait", "Priority": "⏳ LOW", "Last Contact": "2024-12-02"},
+        # Initialize Contact Database with your actual data
+        if 'crm_contacts' not in st.session_state:
+            st.session_state['crm_contacts'] = [
+                {"Name": "Samuel Burns", "Company": "DepthFirst", "Role": "GTM Lead", "Channel": "LinkedIn DM", "Status": "Warm", "Last Touch": "11/19", "Next Step": "Send resume summary", "Priority": "🔥 HIGH"},
+                {"Name": "Cyrus Akrami", "Company": "DepthFirst", "Role": "CRO", "Channel": "Referral", "Status": "Not Contacted", "Last Touch": "N/A", "Next Step": "Wait for intro", "Priority": "🔥 HIGH"},
+                {"Name": "Kayleigh", "Company": "Aikido Security", "Role": "Recruiter", "Channel": "Email + Referral", "Status": "Warm", "Last Touch": "11/15", "Next Step": "Follow-up", "Priority": "🔥 HIGH"},
+                {"Name": "Justin Dedrickson", "Company": "Verkada", "Role": "Sr Sales Recruiter", "Channel": "LinkedIn DM", "Status": "Sent", "Last Touch": "11/18", "Next Step": "Follow-up 11/21", "Priority": "⚡ MED"},
+                {"Name": "Nicole Ceranna", "Company": "Ambient.ai", "Role": "Recruiter", "Channel": "Direct", "Status": "Under Review (HM)", "Last Touch": "12/04", "Next Step": "Check for reply", "Priority": "🔥 HIGH"},
+                {"Name": "Virginia Bowers", "Company": "Sellers Hub", "Role": "Recruiter", "Channel": "Email", "Status": "Warm", "Last Touch": "11/03", "Next Step": "Follow-up", "Priority": "⚡ MED"},
+                {"Name": "Kyu Kim", "Company": "Spray.io", "Role": "Founder", "Channel": "Slack", "Status": "Warm", "Last Touch": "11/17", "Next Step": "Scope doc", "Priority": "⚡ MED"},
+                {"Name": "Karan Shah", "Company": "SolveJet", "Role": "Founder", "Channel": "Slack", "Status": "Warm", "Last Touch": "11/17", "Next Step": "Review GTM proposal", "Priority": "⚡ MED"},
+                {"Name": "Asaph Wutawunashe", "Company": "FYM Partners", "Role": "Chairman", "Channel": "Direct", "Status": "Hot", "Last Touch": "11/18", "Next Step": "Deliver GTM system", "Priority": "🔥 HIGH"},
+                {"Name": "Michael Rosenberg", "Company": "CRS Credit API", "Role": "Enterprise AE", "Channel": "Direct", "Status": "Interview Scheduled", "Last Touch": "12/05", "Next Step": "Prep for Interview", "Priority": "🔥 HIGH"},
+                {"Name": "Alex Rosen", "Company": "Sense", "Role": "Co-Founder", "Channel": "LinkedIn DM", "Status": "Outreach Sent", "Last Touch": "12/02", "Next Step": "Founder Network ask", "Priority": "⚡ MED"},
+                {"Name": "Andon Cowie", "Company": "Nooks", "Role": "Head of Talent", "Channel": "LinkedIn DM", "Status": "Outreach Sent", "Last Touch": "12/02", "Next Step": "Check for reply", "Priority": "⚡ MED"},
+                {"Name": "Alexandre Pereira", "Company": "2501.ai", "Role": "BD Director", "Channel": "Direct", "Status": "Outreach Sent", "Last Touch": "12/04", "Next Step": "Check for reply", "Priority": "🔥 HIGH"},
+                {"Name": "Ryan Freeman", "Company": "Deel", "Role": "Head of Partnerships", "Channel": "Direct", "Status": "Outreach Sent", "Last Touch": "12/04", "Next Step": "Check for reply", "Priority": "🔥 HIGH"},
+                {"Name": "Jaime Muirhead", "Company": "Skypoint", "Role": "CRO", "Channel": "LinkedIn DM", "Status": "Outreach Sent", "Last Touch": "12/04", "Next Step": "Monitor for Reply", "Priority": "🔥 HIGH"},
             ]
         
-        # Pipeline Metrics
-        k1, k2, k3, k4 = st.columns(4)
-        stages = [d["Stage"] for d in st.session_state['pipeline_data']]
-        k1.metric("TOTAL ACTIVE", len(st.session_state['pipeline_data']))
-        k2.metric("FINAL ROUNDS", stages.count("Final Round"))
-        k3.metric("HM INTERVIEWS", stages.count("HM Interview"))
-        k4.metric("SCREENS", stages.count("Screen"))
+        # Initialize Deal Pipeline
+        if 'crm_deals' not in st.session_state:
+            st.session_state['crm_deals'] = [
+                {"Company": "DepthFirst", "Role": "Account Executive", "Stage": "Intro Pending", "Priority": 1, "Signal": "Very High", "Notes": "CRO intro pending"},
+                {"Company": "Aikido Security", "Role": "Account Executive US", "Stage": "Under Review", "Priority": 1, "Signal": "High", "Notes": "Top cybersecurity fit"},
+                {"Company": "Mistral AI", "Role": "Account Executive US", "Stage": "Under Review", "Priority": 1, "Signal": "High", "Notes": "Tier 1 AI opportunity"},
+                {"Company": "Ambient.ai", "Role": "Head of RevOps", "Stage": "Under Review (HM)", "Priority": 1, "Signal": "High", "Notes": "Recruiter forwarded to CFO"},
+                {"Company": "CRS Credit API", "Role": "Enterprise AE", "Stage": "Interview Scheduled", "Priority": 1, "Signal": "High", "Notes": "Dec 5 @ 11:30 AM"},
+                {"Company": "2501.ai", "Role": "BD Director", "Stage": "Outreach Sent", "Priority": 1, "Signal": "High", "Notes": "First US Hire opportunity"},
+                {"Company": "Hightouch", "Role": "Mid Market AE West", "Stage": "Under Review", "Priority": 2, "Signal": "High", "Notes": "Strong AI + GTM match"},
+                {"Company": "Spray.io", "Role": "Fractional GTM", "Stage": "Active", "Priority": 2, "Signal": "Medium", "Notes": "$1-2K/mo pilot"},
+                {"Company": "SolveJet", "Role": "Fractional GTM", "Stage": "Active", "Priority": 2, "Signal": "Medium", "Notes": "$1.5-3K/mo pilot"},
+                {"Company": "FYM Partners", "Role": "Portfolio GTM Provider", "Stage": "Active", "Priority": 1, "Signal": "Very High", "Notes": "$3-10K/mo retainer"},
+            ]
         
-        st.markdown("---")
+        # CRM Tabs
+        crm_tab1, crm_tab2, crm_tab3, crm_tab4 = st.tabs(["👤 CONTACTS", "📈 DEALS", "🏢 ENRICH COMPANY", "⏰ FOLLOW-UPS"])
         
-        # Editable Pipeline Table
-        st.markdown("#### 📋 ACTIVE PIPELINE")
-        edited_df = st.data_editor(
-            st.session_state['pipeline_data'],
-            num_rows="dynamic",
-            use_container_width=True,
-            column_config={
-                "Stage": st.column_config.SelectboxColumn(
-                    options=["Applied", "Screen", "HM Interview", "Final Round", "Offer", "Closed Won", "Closed Lost"]
-                ),
-                "Priority": st.column_config.SelectboxColumn(
-                    options=["🔥 HIGH", "⚡ MED", "⏳ LOW"]
-                )
-            }
-        )
-        st.session_state['pipeline_data'] = edited_df
-        
-        # Quick Add
-        st.markdown("---")
-        with st.expander("➕ QUICK ADD OPPORTUNITY"):
-            c1, c2, c3 = st.columns(3)
-            new_company = c1.text_input("Company Name")
-            new_role = c2.text_input("Role Title")
-            new_stage = c3.selectbox("Stage", ["Applied", "Screen", "HM Interview", "Final Round"])
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 1: CONTACT DATABASE
+        # ═══════════════════════════════════════════════════════════════
+        with crm_tab1:
+            st.markdown("### 👤 CONTACT DATABASE")
             
-            if st.button("ADD TO PIPELINE", type="primary"):
-                if new_company and new_role:
-                    new_entry = {
-                        "Company": new_company,
-                        "Role": new_role,
-                        "Stage": new_stage,
-                        "Next Action": "TBD",
-                        "Priority": "⚡ MED",
-                        "Last Contact": "2024-12-06"
-                    }
-                    st.session_state['pipeline_data'].append(new_entry)
-                    st.success(f"✅ Added {new_company} to Pipeline!")
-                    st.rerun()
+            # Metrics
+            contacts = st.session_state['crm_contacts']
+            hot_count = sum(1 for c in contacts if c['Status'] in ['Hot', 'Warm', 'Interview Scheduled'])
+            
+            k1, k2, k3 = st.columns(3)
+            k1.metric("TOTAL CONTACTS", len(contacts))
+            k2.metric("ACTIVE/HOT", hot_count)
+            k3.metric("PENDING FOLLOW-UP", sum(1 for c in contacts if 'Follow' in c.get('Next Step', '')))
+            
+            st.markdown("---")
+            
+            # Filter
+            status_filter = st.multiselect("Filter by Status:", ["Warm", "Hot", "Sent", "Under Review", "Interview Scheduled", "Outreach Sent", "Not Contacted"], default=[])
+            
+            # Display Contacts
+            display_contacts = [c for c in contacts if not status_filter or c['Status'] in status_filter]
+            
+            edited_contacts = st.data_editor(
+                display_contacts,
+                num_rows="dynamic",
+                use_container_width=True,
+                column_config={
+                    "Status": st.column_config.SelectboxColumn(
+                        options=["Hot", "Warm", "Sent", "Under Review", "Interview Scheduled", "Outreach Sent", "Not Contacted", "Closed"]
+                    ),
+                    "Priority": st.column_config.SelectboxColumn(
+                        options=["🔥 HIGH", "⚡ MED", "⏳ LOW"]
+                    ),
+                    "Channel": st.column_config.SelectboxColumn(
+                        options=["LinkedIn DM", "Email", "Slack", "Referral", "Direct", "InMail", "Website"]
+                    )
+                }
+            )
+            st.session_state['crm_contacts'] = edited_contacts
+            
+            # Quick Add Contact
+            st.markdown("---")
+            with st.expander("➕ ADD NEW CONTACT"):
+                ac1, ac2, ac3 = st.columns(3)
+                new_name = ac1.text_input("Name", key="new_contact_name")
+                new_company = ac2.text_input("Company", key="new_contact_company")
+                new_role = ac3.text_input("Role", key="new_contact_role")
+                
+                ac4, ac5, ac6 = st.columns(3)
+                new_channel = ac4.selectbox("Channel", ["LinkedIn DM", "Email", "Slack", "Referral", "Direct"], key="new_contact_channel")
+                new_status = ac5.selectbox("Status", ["Outreach Sent", "Warm", "Under Review"], key="new_contact_status")
+                new_priority = ac6.selectbox("Priority", ["🔥 HIGH", "⚡ MED", "⏳ LOW"], key="new_contact_priority")
+                
+                if st.button("ADD CONTACT", type="primary", key="add_contact_btn"):
+                    if new_name and new_company:
+                        st.session_state['crm_contacts'].append({
+                            "Name": new_name,
+                            "Company": new_company,
+                            "Role": new_role,
+                            "Channel": new_channel,
+                            "Status": new_status,
+                            "Last Touch": "12/06",
+                            "Next Step": "TBD",
+                            "Priority": new_priority
+                        })
+                        st.success(f"✅ Added {new_name} at {new_company}")
+                        st.rerun()
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 2: DEAL PIPELINE
+        # ═══════════════════════════════════════════════════════════════
+        with crm_tab2:
+            st.markdown("### 📈 DEAL PIPELINE")
+            
+            deals = st.session_state['crm_deals']
+            
+            # Pipeline Metrics
+            k1, k2, k3, k4 = st.columns(4)
+            stages = [d.get("Stage", "") for d in deals]
+            k1.metric("TOTAL DEALS", len(deals))
+            k2.metric("INTERVIEWS", sum(1 for s in stages if 'Interview' in s))
+            k3.metric("UNDER REVIEW", sum(1 for s in stages if 'Review' in s))
+            k4.metric("ACTIVE", sum(1 for s in stages if s == 'Active'))
+            
+            st.markdown("---")
+            
+            # Editable Deal Table
+            edited_deals = st.data_editor(
+                deals,
+                num_rows="dynamic",
+                use_container_width=True,
+                column_config={
+                    "Stage": st.column_config.SelectboxColumn(
+                        options=["Outreach Sent", "Under Review", "Under Review (HM)", "Interview Scheduled", "Final Round", "Active", "Offer", "Closed Won", "Closed Lost"]
+                    ),
+                    "Priority": st.column_config.NumberColumn(min_value=1, max_value=3),
+                    "Signal": st.column_config.SelectboxColumn(
+                        options=["Very High", "High", "Medium", "Low"]
+                    )
+                }
+            )
+            st.session_state['crm_deals'] = edited_deals
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 3: COMPANY ENRICHMENT (AI AUTO-FILL)
+        # ═══════════════════════════════════════════════════════════════
+        with crm_tab3:
+            st.markdown("### 🏢 COMPANY ENRICHMENT (AI AUTO-FILL)")
+            st.caption("Paste a company name or website URL → AI fills in key intel.")
+            
+            enrich_input = st.text_input("Company Name or Website URL", placeholder="e.g., 'Mistral AI' or 'https://mistral.ai'")
+            
+            if st.button("🔍 ENRICH COMPANY", type="primary", use_container_width=True):
+                if enrich_input:
+                    with st.spinner("Gathering intel..."):
+                        from logic.generator import generate_plain_text
+                        
+                        prompt = f"""
+                        ACT AS: A research analyst gathering company intelligence.
+                        
+                        TARGET: {enrich_input}
+                        
+                        Provide a structured intel brief with:
+                        
+                        **COMPANY:** [Name]
+                        **SECTOR:** [Industry/vertical]
+                        **STAGE:** [Seed/Series A/B/C/Public]
+                        **SIZE:** [Employee count estimate]
+                        **HQ:** [Location]
+                        **RECENT FUNDING:** [Amount if known, or "Unknown"]
+                        **KEY PAIN POINTS:** [What problems do they solve? What internal challenges might they have?]
+                        **GTM SIGNAL:** [Are they hiring? Expanding? Product launch?]
+                        **DECISION MAKERS TO TARGET:** [Likely titles: VP Sales, CRO, Head of GTM, etc.]
+                        **TALKING POINTS FOR INTERVIEW:** [3 bullet points on how to pitch yourself]
+                        
+                        Be concise. Use real data if you know it.
+                        """
+                        
+                        result = generate_plain_text(prompt, model_name=selected_model)
+                        
+                        st.markdown("---")
+                        st.markdown("### 📊 COMPANY INTEL BRIEF")
+                        st.markdown(result)
+                        
+                        # Option to add to contacts
+                        if st.button("➕ ADD TO CRM FROM THIS INTEL"):
+                            st.info("Use the Contact tab to add a new contact with this company.")
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 4: FOLLOW-UP ENGINE
+        # ═══════════════════════════════════════════════════════════════
+        with crm_tab4:
+            st.markdown("### ⏰ FOLLOW-UP ENGINE")
+            st.caption("What needs attention TODAY and this week.")
+            
+            contacts = st.session_state['crm_contacts']
+            
+            # Due Today (based on next step containing dates or "Follow")
+            st.markdown("#### 🔥 DUE TODAY / URGENT")
+            urgent = [c for c in contacts if c['Priority'] == '🔥 HIGH' and c['Status'] not in ['Closed', 'Interview Scheduled']]
+            
+            if urgent:
+                for c in urgent[:5]:
+                    st.markdown(f"**{c['Name']}** @ {c['Company']} — *{c.get('Next Step', 'TBD')}*")
+                    st.caption(f"Status: {c['Status']} | Last: {c.get('Last Touch', 'N/A')}")
+                    st.divider()
+            else:
+                st.success("✅ No urgent follow-ups!")
+            
+            st.markdown("---")
+            
+            # Pending Outreach
+            st.markdown("#### 📤 PENDING RESPONSES (Awaiting Reply)")
+            pending = [c for c in contacts if c['Status'] in ['Outreach Sent', 'Sent', 'Under Review']]
+            
+            if pending:
+                for c in pending[:8]:
+                    col1, col2 = st.columns([3, 1])
+                    with col1:
+                        st.write(f"**{c['Name']}** @ {c['Company']}")
+                        st.caption(f"Channel: {c.get('Channel', 'Unknown')} | Last: {c.get('Last Touch', 'N/A')}")
+                    with col2:
+                        if st.button("✅ Mark Replied", key=f"replied_{c['Name']}"):
+                            for contact in st.session_state['crm_contacts']:
+                                if contact['Name'] == c['Name']:
+                                    contact['Status'] = 'Warm'
+                                    break
+                            st.rerun()
+            else:
+                st.info("No pending outreach.")
+            
+            st.markdown("---")
+            
+            # Export Option
+            if st.button("📥 EXPORT CRM DATA (JSON)", use_container_width=True):
+                import json
+                export_data = {
+                    "contacts": st.session_state['crm_contacts'],
+                    "deals": st.session_state['crm_deals']
+                }
+                st.download_button(
+                    "💾 Download CRM Export",
+                    data=json.dumps(export_data, indent=2),
+                    file_name="basin_nexus_crm_export.json",
+                    mime="application/json"
+                )
 
     # ==============================================================================
     # 🛡️ MODE 9: OBJECTION BANK (INTERVIEW ARMOR)
