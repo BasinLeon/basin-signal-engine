@@ -1859,14 +1859,66 @@ Be direct. Be specific. Give the hiring manager a clear recommendation."""
         # 1. DRILL SETUP
         col1, col2 = st.columns([2, 1])
         with col1:
-            target_drill = st.selectbox("SELECT DRILL SCENARIO", [
-                "Tell me about yourself (The Pitch)",
-                "Walk me through the 160% Growth metric",
-                "Why did you leave your last role?",
-                "Handle Objection: 'You are too expensive'",
-                "What's your management philosophy?",
-                "Describe a time you built a system from scratch"
+            drill_category = st.selectbox("QUESTION CATEGORY", [
+                "🎯 Core Pitch",
+                "💼 Behavioral (STAR)",
+                "📈 Sales-Specific",
+                "👔 Leadership",
+                "🧠 Situational",
+                "⚡ Rapid Fire"
             ])
+            
+            # 2024/2025 Top Interview Questions by Category
+            drill_options = {
+                "🎯 Core Pitch": [
+                    "Tell me about yourself (The Pitch)",
+                    "Walk me through your resume",
+                    "Why are you interested in this role?",
+                    "What makes you unique vs. other candidates?",
+                    "Walk me through the 160% Growth metric",
+                    "Where do you see yourself in 5 years?"
+                ],
+                "💼 Behavioral (STAR)": [
+                    "Describe a time you built a system from scratch",
+                    "Tell me about a time you failed",
+                    "Describe your biggest professional achievement",
+                    "Tell me about a conflict with a coworker",
+                    "When did you go above and beyond?",
+                    "Describe a time you had to learn quickly"
+                ],
+                "📈 Sales-Specific": [
+                    "Walk me through your sales process",
+                    "How do you handle a lost deal?",
+                    "Tell me about your biggest closed deal",
+                    "How do you prospect and build pipeline?",
+                    "How do you handle price objections?",
+                    "What's your approach to discovery calls?"
+                ],
+                "👔 Leadership": [
+                    "What's your management philosophy?",
+                    "How do you motivate underperformers?",
+                    "Describe your leadership style",
+                    "How do you build team culture?",
+                    "Tell me about a time you coached someone"
+                ],
+                "🧠 Situational": [
+                    "Handle Objection: 'You are too expensive'",
+                    "Handle Objection: 'We're happy with current vendor'",
+                    "Handle: 'Why should we hire you over others?'",
+                    "Handle: 'You lack industry experience'",
+                    "Why did you leave your last role?"
+                ],
+                "⚡ Rapid Fire": [
+                    "Salary expectations?",
+                    "Why this company?",
+                    "What's your greatest weakness?",
+                    "What questions do you have for us?",
+                    "When can you start?"
+                ]
+            }
+            
+            target_drill = st.selectbox("SELECT DRILL SCENARIO", drill_options.get(drill_category, drill_options["🎯 Core Pitch"]))
+        
         with col2:
             st.info("💡 **TIP:** Speak for 45-90 seconds. Include at least one metric.")
 
@@ -2293,24 +2345,24 @@ start with full focus on day one. Is that something we can add?"
         st.markdown("## 📈 EXECUTIVE CRM (REVENUE COMMAND)")
         st.caption("PROTOCOL: Complete Contact & Deal Management with AI Enrichment.")
         
-        # Initialize Contact Database with your actual data
+        # Initialize Contact Database with your actual data + Relationship Strength
         if 'crm_contacts' not in st.session_state:
             st.session_state['crm_contacts'] = [
-                {"Name": "Samuel Burns", "Company": "DepthFirst", "Role": "GTM Lead", "Channel": "LinkedIn DM", "Status": "Warm", "Last Touch": "11/19", "Next Step": "Send resume summary", "Priority": "🔥 HIGH"},
-                {"Name": "Cyrus Akrami", "Company": "DepthFirst", "Role": "CRO", "Channel": "Referral", "Status": "Not Contacted", "Last Touch": "N/A", "Next Step": "Wait for intro", "Priority": "🔥 HIGH"},
-                {"Name": "Kayleigh", "Company": "Aikido Security", "Role": "Recruiter", "Channel": "Email + Referral", "Status": "Warm", "Last Touch": "11/15", "Next Step": "Follow-up", "Priority": "🔥 HIGH"},
-                {"Name": "Justin Dedrickson", "Company": "Verkada", "Role": "Sr Sales Recruiter", "Channel": "LinkedIn DM", "Status": "Sent", "Last Touch": "11/18", "Next Step": "Follow-up 11/21", "Priority": "⚡ MED"},
-                {"Name": "Nicole Ceranna", "Company": "Ambient.ai", "Role": "Recruiter", "Channel": "Direct", "Status": "Under Review (HM)", "Last Touch": "12/04", "Next Step": "Check for reply", "Priority": "🔥 HIGH"},
-                {"Name": "Virginia Bowers", "Company": "Sellers Hub", "Role": "Recruiter", "Channel": "Email", "Status": "Warm", "Last Touch": "11/03", "Next Step": "Follow-up", "Priority": "⚡ MED"},
-                {"Name": "Kyu Kim", "Company": "Spray.io", "Role": "Founder", "Channel": "Slack", "Status": "Warm", "Last Touch": "11/17", "Next Step": "Scope doc", "Priority": "⚡ MED"},
-                {"Name": "Karan Shah", "Company": "SolveJet", "Role": "Founder", "Channel": "Slack", "Status": "Warm", "Last Touch": "11/17", "Next Step": "Review GTM proposal", "Priority": "⚡ MED"},
-                {"Name": "Asaph Wutawunashe", "Company": "FYM Partners", "Role": "Chairman", "Channel": "Direct", "Status": "Hot", "Last Touch": "11/18", "Next Step": "Deliver GTM system", "Priority": "🔥 HIGH"},
-                {"Name": "Michael Rosenberg", "Company": "CRS Credit API", "Role": "Enterprise AE", "Channel": "Direct", "Status": "Interview Scheduled", "Last Touch": "12/05", "Next Step": "Prep for Interview", "Priority": "🔥 HIGH"},
-                {"Name": "Alex Rosen", "Company": "Sense", "Role": "Co-Founder", "Channel": "LinkedIn DM", "Status": "Outreach Sent", "Last Touch": "12/02", "Next Step": "Founder Network ask", "Priority": "⚡ MED"},
-                {"Name": "Andon Cowie", "Company": "Nooks", "Role": "Head of Talent", "Channel": "LinkedIn DM", "Status": "Outreach Sent", "Last Touch": "12/02", "Next Step": "Check for reply", "Priority": "⚡ MED"},
-                {"Name": "Alexandre Pereira", "Company": "2501.ai", "Role": "BD Director", "Channel": "Direct", "Status": "Outreach Sent", "Last Touch": "12/04", "Next Step": "Check for reply", "Priority": "🔥 HIGH"},
-                {"Name": "Ryan Freeman", "Company": "Deel", "Role": "Head of Partnerships", "Channel": "Direct", "Status": "Outreach Sent", "Last Touch": "12/04", "Next Step": "Check for reply", "Priority": "🔥 HIGH"},
-                {"Name": "Jaime Muirhead", "Company": "Skypoint", "Role": "CRO", "Channel": "LinkedIn DM", "Status": "Outreach Sent", "Last Touch": "12/04", "Next Step": "Monitor for Reply", "Priority": "🔥 HIGH"},
+                {"Name": "Samuel Burns", "Company": "DepthFirst", "Role": "GTM Lead", "Channel": "LinkedIn DM", "Status": "Warm", "Last Touch": "11/19", "Next Step": "Send resume summary", "Priority": "🔥 HIGH", "Strength": "🔗🔗🔗"},
+                {"Name": "Cyrus Akrami", "Company": "DepthFirst", "Role": "CRO", "Channel": "Referral", "Status": "Not Contacted", "Last Touch": "N/A", "Next Step": "Wait for intro", "Priority": "🔥 HIGH", "Strength": "🔗"},
+                {"Name": "Kayleigh", "Company": "Aikido Security", "Role": "Recruiter", "Channel": "Email + Referral", "Status": "Warm", "Last Touch": "11/15", "Next Step": "Follow-up", "Priority": "🔥 HIGH", "Strength": "🔗🔗🔗"},
+                {"Name": "Justin Dedrickson", "Company": "Verkada", "Role": "Sr Sales Recruiter", "Channel": "LinkedIn DM", "Status": "Sent", "Last Touch": "11/18", "Next Step": "Follow-up 11/21", "Priority": "⚡ MED", "Strength": "🔗"},
+                {"Name": "Nicole Ceranna", "Company": "Ambient.ai", "Role": "Recruiter", "Channel": "Direct", "Status": "Under Review (HM)", "Last Touch": "12/04", "Next Step": "Check for reply", "Priority": "🔥 HIGH", "Strength": "🔗🔗"},
+                {"Name": "Virginia Bowers", "Company": "Sellers Hub", "Role": "Recruiter", "Channel": "Email", "Status": "Warm", "Last Touch": "11/03", "Next Step": "Follow-up", "Priority": "⚡ MED", "Strength": "🔗🔗🔗"},
+                {"Name": "Kyu Kim", "Company": "Spray.io", "Role": "Founder", "Channel": "Slack", "Status": "Warm", "Last Touch": "11/17", "Next Step": "Scope doc", "Priority": "⚡ MED", "Strength": "🔗🔗🔗🔗"},
+                {"Name": "Karan Shah", "Company": "SolveJet", "Role": "Founder", "Channel": "Slack", "Status": "Warm", "Last Touch": "11/17", "Next Step": "Review GTM proposal", "Priority": "⚡ MED", "Strength": "🔗🔗🔗🔗"},
+                {"Name": "Asaph Wutawunashe", "Company": "FYM Partners", "Role": "Chairman", "Channel": "Direct", "Status": "Hot", "Last Touch": "11/18", "Next Step": "Deliver GTM system", "Priority": "🔥 HIGH", "Strength": "🔗🔗🔗🔗🔗"},
+                {"Name": "Michael Rosenberg", "Company": "CRS Credit API", "Role": "Enterprise AE", "Channel": "Direct", "Status": "Interview Scheduled", "Last Touch": "12/05", "Next Step": "Prep for Interview", "Priority": "🔥 HIGH", "Strength": "🔗🔗"},
+                {"Name": "Alex Rosen", "Company": "Sense", "Role": "Co-Founder", "Channel": "LinkedIn DM", "Status": "Outreach Sent", "Last Touch": "12/02", "Next Step": "Founder Network ask", "Priority": "⚡ MED", "Strength": "🔗"},
+                {"Name": "Andon Cowie", "Company": "Nooks", "Role": "Head of Talent", "Channel": "LinkedIn DM", "Status": "Outreach Sent", "Last Touch": "12/02", "Next Step": "Check for reply", "Priority": "⚡ MED", "Strength": "🔗"},
+                {"Name": "Alexandre Pereira", "Company": "2501.ai", "Role": "BD Director", "Channel": "Direct", "Status": "Outreach Sent", "Last Touch": "12/04", "Next Step": "Check for reply", "Priority": "🔥 HIGH", "Strength": "🔗🔗"},
+                {"Name": "Ryan Freeman", "Company": "Deel", "Role": "Head of Partnerships", "Channel": "Direct", "Status": "Outreach Sent", "Last Touch": "12/04", "Next Step": "Check for reply", "Priority": "🔥 HIGH", "Strength": "🔗🔗"},
+                {"Name": "Jaime Muirhead", "Company": "Skypoint", "Role": "CRO", "Channel": "LinkedIn DM", "Status": "Outreach Sent", "Last Touch": "12/04", "Next Step": "Monitor for Reply", "Priority": "🔥 HIGH", "Strength": "🔗"},
             ]
         
         # Initialize Deal Pipeline
@@ -2542,6 +2594,11 @@ start with full focus on day one. Is that something we can add?"
                     ),
                     "Channel": st.column_config.SelectboxColumn(
                         options=["LinkedIn DM", "Email", "Slack", "Referral", "Direct", "InMail", "Website"]
+                    ),
+                    "Strength": st.column_config.SelectboxColumn(
+                        "Relationship",
+                        options=["🔗", "🔗🔗", "🔗🔗🔗", "🔗🔗🔗🔗", "🔗🔗🔗🔗🔗"],
+                        help="Network strength: 🔗=Cold, 🔗🔗🔗🔗🔗=Strong"
                     )
                 }
             )
