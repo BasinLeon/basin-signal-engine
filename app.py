@@ -1312,61 +1312,308 @@ with col1:
     # ▲ MODE 6: ORACLE (DIGITAL ETHER & PREDICTIVE INDEXING)
     # ==============================================================================
     elif input_mode == "📊 Analytics":
-        st.markdown("## ▲ ORACLE: CAREER SYNTHESIS PORTAL")
-        st.caption("PROTOCOL: Predictive Indexing & Digital Ether Stream")
-
-        # --- 1. THE REVENUE OS DASHBOARD (CRM DATA SYNTHESIS) ---
-        st.markdown("#### 1. REVENUE OS PIPELINE INTELLIGENCE")
-        st.info("Data sourced from LeonOS Executive GTM CRM (Active Opps, Fractional Deals)")
-
-        # Key Metrics derived from uploaded CRM sheets (Simulated Synthesis)
-        PIPELINE_VALUE = 245000  # Weighted value of DepthFirst, Mistral, CRS deals
-        FRACTIONAL_VALUE = 7500   # Max potential monthly value from FYM, SolveJet, Spray.io
-        OFFER_PROBABILITY = 65    # Based on 1 Final Round + 3 Active Screens
+        st.markdown("## 📊 PERFORMANCE ANALYTICS & INVESTOR INTELLIGENCE")
+        st.caption("PROTOCOL: Track Everything. Learn from Outcomes. Understand the Funding Lifecycle.")
         
-        k1, k2, k3, k4 = st.columns(4)
-        k1.metric("ACTIVE PIPELINE VALUE", f"${PIPELINE_VALUE:,.0f}", "Weighted OTE Forecast")
-        k2.metric("FRACTIONAL VALUE (Monthly)", f"${FRACTIONAL_VALUE:,.0f}", "Market Presence Maintained")
-        k3.metric("OFFER_PROBABILITY", f"{OFFER_PROBABILITY}%", "High Confidence Signal")
-        k4.metric("CRITICAL FOLLOW-UPS", "5", "Verkada/Aikido/Hightouch")
-
-        st.markdown("---")
-
-        # --- 2. THE DIGITAL ETHER STREAM (NEWS & MARKET TRENDS) ---
-        st.markdown("#### 2. DIGITAL ETHER STREAM (BUSINESS ACADEMIC INDEXING)")
-        st.caption("Protocol: Connect GTM Strategy to Global Tech/Cyber Trends.")
-
-        # Using actual search results to simulate the news feed
-        trend_data = [
-            ("AI Agents & IAM Crisis", "The transition to Zero Trust 2.0 requires treating AI Agents as distinct digital actors, making Identity Access Management (IAM) the new battleground for security.", "Cybersecurity"),
-            ("DevSecOps Growth & GRC Shift", "The DevSecOps market is projected to reach $20.2 Billion by 2030 (13.2% CAGR). GRC must shift from compliance to continuous, interconnected risk architecture.", "DevSecOps/GRC"),
-            ("AI GTM: Hard Hat Work", "AI in GTM is moving from 'hype to hard hat' work, demanding a focus on tangible, secure business outcomes rather than superficial features.", "GTM/AI Strategy"),
-            ("Supply Chain & SBOM", "Security is evolving from simple vendor assessment to continuous supply-chain assurance using Software Bills of Materials (SBOMs).", "Cybersecurity"),
-            ("GTM Architect (The Fix)", "AI enables startups to optimize GTM in minutes, drastically improving time-to-market. AI-driven systems are non-negotiable for hyper-growth.", "Software/AI")
-        ]
+        # Tabs for different analytics views
+        analytics_tab1, analytics_tab2, analytics_tab3 = st.tabs(["🎤 VOICE ANALYTICS", "📈 PIPELINE METRICS", "💰 INVESTOR INTELLIGENCE"])
         
-        # RENDER THE STREAM
-        for title, snippet, category in trend_data:
-            st.markdown(f"**[{category}]** {title}")
-            st.write(snippet)
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 1: VOICE SESSION ANALYTICS
+        # ═══════════════════════════════════════════════════════════════
+        with analytics_tab1:
+            st.markdown("### 🎤 VOICE SESSION ANALYTICS")
+            st.caption("Track your interview practice progress over time.")
+            
+            voice_sessions = st.session_state.get('voice_sessions', [])
+            
+            if voice_sessions:
+                # Summary Metrics
+                total_sessions = len(voice_sessions)
+                avg_words = sum(s['words'] for s in voice_sessions) / total_sessions
+                avg_fillers = sum(s['fillers'] for s in voice_sessions) / total_sessions
+                metric_rate = sum(1 for s in voice_sessions if s['has_metric']) / total_sessions * 100
+                
+                k1, k2, k3, k4 = st.columns(4)
+                k1.metric("TOTAL SESSIONS", total_sessions)
+                k2.metric("AVG WORDS/RESPONSE", f"{avg_words:.0f}", "Target: 150-200")
+                k3.metric("AVG FILLER WORDS", f"{avg_fillers:.1f}", "Target: <3", delta_color="inverse")
+                k4.metric("METRIC USAGE RATE", f"{metric_rate:.0f}%", "Target: 100%")
+                
+                st.markdown("---")
+                
+                # Session History Table
+                st.markdown("#### 📜 SESSION HISTORY")
+                
+                for i, session in enumerate(reversed(voice_sessions[-10:])):
+                    col1, col2, col3, col4 = st.columns([3, 1, 1, 1])
+                    with col1:
+                        st.write(f"**{session['drill'][:40]}...**" if len(session['drill']) > 40 else f"**{session['drill']}**")
+                    with col2:
+                        st.caption(f"Words: {session['words']}")
+                    with col3:
+                        st.caption(f"Fillers: {session['fillers']}")
+                    with col4:
+                        st.caption("✅ Metric" if session['has_metric'] else "❌ No Metric")
+                    st.divider()
+                
+                # Trend Analysis
+                st.markdown("#### 📈 IMPROVEMENT TREND")
+                if total_sessions >= 3:
+                    first_half = voice_sessions[:total_sessions//2]
+                    second_half = voice_sessions[total_sessions//2:]
+                    
+                    first_fillers = sum(s['fillers'] for s in first_half) / len(first_half)
+                    second_fillers = sum(s['fillers'] for s in second_half) / len(second_half)
+                    
+                    improvement = first_fillers - second_fillers
+                    
+                    if improvement > 0:
+                        st.success(f"🎯 **FILLER WORD REDUCTION:** -{improvement:.1f} per response. You're improving!")
+                    else:
+                        st.warning(f"⚠️ **FILLER WORDS:** +{abs(improvement):.1f} per response. Focus on pausing instead of filling.")
+                else:
+                    st.info("Complete 3+ sessions to see improvement trends.")
+            else:
+                st.info("🎤 No voice sessions recorded yet. Go to **Voice Telemetry Lab** to start practicing.")
+                if st.button("→ Go to Voice Lab"):
+                    st.session_state.selected_tool_label = "🎤 Voice (Practice)"
+                    st.rerun()
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 2: PIPELINE METRICS
+        # ═══════════════════════════════════════════════════════════════
+        with analytics_tab2:
+            st.markdown("### 📈 PIPELINE VELOCITY METRICS")
+            st.caption("Track your job search like an Enterprise Sales pipeline.")
+            
+            pipeline_data = st.session_state.get('pipeline_data', [])
+            
+            if pipeline_data:
+                # Stage Distribution
+                stages = [d.get("Stage", "Unknown") for d in pipeline_data]
+                stage_counts = {}
+                for stage in stages:
+                    stage_counts[stage] = stage_counts.get(stage, 0) + 1
+                
+                # Funnel Metrics
+                total_deals = len(pipeline_data)
+                final_rounds = stage_counts.get("Final Round", 0)
+                interviews = stage_counts.get("HM Interview", 0) + stage_counts.get("Screen", 0)
+                
+                k1, k2, k3, k4 = st.columns(4)
+                k1.metric("TOTAL ACTIVE", total_deals)
+                k2.metric("FINAL ROUNDS", final_rounds, f"{(final_rounds/total_deals*100):.0f}% of pipeline")
+                k3.metric("IN INTERVIEW", interviews)
+                k4.metric("CONVERSION RATE", f"{(final_rounds/total_deals*100):.0f}%", "Industry avg: 15%")
+                
+                st.markdown("---")
+                
+                # Stage Breakdown
+                st.markdown("#### 📊 STAGE BREAKDOWN")
+                for stage, count in stage_counts.items():
+                    pct = count / total_deals * 100
+                    st.progress(pct / 100, text=f"{stage}: {count} ({pct:.0f}%)")
+            else:
+                st.info("📈 No pipeline data yet. Go to **Pipeline CRM** to add opportunities.")
+                if st.button("→ Go to Pipeline CRM"):
+                    st.session_state.selected_tool_label = "📈 Pipeline CRM"
+                    st.rerun()
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TAB 3: INVESTOR INTELLIGENCE (Funding Lifecycle)
+        # ═══════════════════════════════════════════════════════════════
+        with analytics_tab3:
+            st.markdown("### 💰 INVESTOR INTELLIGENCE: THE FUNDING LIFECYCLE")
+            st.caption("Understand each funding stage and what it means for hiring.")
+            
             st.markdown("---")
-
-        # --- 3. BUSINESS ACADEMIC ACTION (HERALD AGENT) ---
-        st.markdown("#### 3. BUSINESS ACADEMIC ACTION")
-        st.caption("Trigger content creation based on current market intelligence.")
-        
-        if st.button("GENERATE ACADEMIC MANIFESTO OUTLINE (Based on Stream)", type="primary", use_container_width=True):
-            st.success("✅ HERALD AGENT TASK: DRAFTING")
-            st.info("PROTOCOL: Use the 'Zero Trust to Revenue' bridge.")
             
-            st.write(f"""
-            **TOPIC MANIFESTO:** "The Triad: Why GTM Strategy Must Converge with AI Agent Identity."
+            # Funding Stage Selector
+            funding_stage = st.selectbox("Select Funding Stage to Analyze:", [
+                "🌱 Pre-Seed / Friends & Family",
+                "🌿 Seed ($500K - $3M)",
+                "🚀 Series A ($5M - $15M)",
+                "📈 Series B ($15M - $50M)",
+                "🏢 Series C ($50M - $100M+)",
+                "🏛️ Series D/E (Late Stage)",
+                "🔔 Pre-IPO",
+                "📊 IPO & Public"
+            ])
             
-            **CONTENT OUTLINE (For www.basinleon.com):**
-            1.  **THE HOOK (The Identity Crisis):** Use the 'CEO deepfake/AI Identity' threat to establish urgency.
-            2.  **THE ARCHITECT'S SOLUTION:** Explain how your **Revenue OS** (Python/Automation) is the necessary antidote to this chaos.
-            3.  **THE METRIC:** Conclude with the **160% pipeline growth** as the verifiable proof that your architectural approach works.
-            """)
+            st.markdown("---")
+            
+            # Dynamic Content Based on Stage
+            if funding_stage == "🌱 Pre-Seed / Friends & Family":
+                st.markdown("""
+                ### 🌱 PRE-SEED / FRIENDS & FAMILY
+                
+                **Typical Raise:** $50K - $500K  
+                **Valuation:** $1M - $5M  
+                **Investors:** Founders, Angels, Accelerators (YC, Techstars)
+                
+                #### 🎯 WHAT TO LOOK FOR
+                | Signal | What It Means |
+                |--------|---------------|
+                | Team background | Are founders ex-FAANG, ex-unicorn? |
+                | Problem clarity | Is the pain clearly articulated? |
+                | YC/Techstars batch | Accelerator stamp = signal boost |
+                
+                #### 👔 HIRING SIGNALS
+                - **Roles:** Usually just founders. Maybe 1-2 engineers.
+                - **Opportunity for you:** If you know the founders, offer advisory.
+                - **Risk:** High uncertainty, equity-heavy compensation.
+                """)
+                
+            elif funding_stage == "🌿 Seed ($500K - $3M)":
+                st.markdown("""
+                ### 🌿 SEED ($500K - $3M)
+                
+                **Typical Raise:** $500K - $3M  
+                **Valuation:** $5M - $15M  
+                **Investors:** Angels, Seed VCs (First Round, Precursor)
+                
+                #### 🎯 WHAT TO LOOK FOR
+                | Signal | What It Means |
+                |--------|---------------|
+                | Early traction | 10-50 customers, $10-50K MRR |
+                | Team expansion | First non-founder hires |
+                | Product clarity | MVP is live and getting feedback |
+                
+                #### 👔 HIRING SIGNALS
+                - **Roles:** First GTM hire (often "Head of Growth" or "Founding AE")
+                - **Opportunity:** High equity, high impact, shape the GTM motion
+                - **Risk:** Runway is short (12-18 months). Must show ROI fast.
+                """)
+                
+            elif funding_stage == "🚀 Series A ($5M - $15M)":
+                st.markdown("""
+                ### 🚀 SERIES A ($5M - $15M)
+                
+                **Typical Raise:** $5M - $15M  
+                **Valuation:** $20M - $60M  
+                **Investors:** A16Z, Sequoia, Accel, Bessemer
+                
+                #### 🎯 WHAT TO LOOK FOR
+                | Signal | What It Means |
+                |--------|---------------|
+                | Product-Market Fit | Repeatable customer acquisition |
+                | $100K+ MRR | Revenue velocity proving demand |
+                | Board involvement | Tier 1 VC on board = talent magnet |
+                
+                #### 👔 HIRING SIGNALS
+                - **Roles:** VP of Sales, Director of GTM, Head of Partnerships
+                - **Opportunity:** Build the revenue engine from scratch
+                - **Your Pitch:** "I've scaled from 0→1. Here's my 90-day plan."
+                - **Comp:** $150-200K OTE + 0.1-0.5% equity
+                """)
+                
+            elif funding_stage == "📈 Series B ($15M - $50M)":
+                st.markdown("""
+                ### 📈 SERIES B ($15M - $50M)
+                
+                **Typical Raise:** $15M - $50M  
+                **Valuation:** $80M - $200M  
+                **Investors:** Insight, Tiger Global, General Catalyst
+                
+                #### 🎯 WHAT TO LOOK FOR
+                | Signal | What It Means |
+                |--------|---------------|
+                | Scaling revenue | $1-5M ARR, 2-3x YoY growth |
+                | Team explosion | 50-150 employees |
+                | Process gaps | Growing pains = need for systems |
+                
+                #### 👔 HIRING SIGNALS
+                - **Roles:** Director/VP of RevOps, GTM Systems, Partner Lead
+                - **Opportunity:** Bring order to chaos. Build the Revenue OS.
+                - **Your Pitch:** "I've seen this movie before. Here's the playbook."
+                - **Comp:** $180-250K OTE + equity refresh
+                """)
+                
+            elif funding_stage == "🏢 Series C ($50M - $100M+)":
+                st.markdown("""
+                ### 🏢 SERIES C ($50M - $100M+)
+                
+                **Typical Raise:** $50M - $150M  
+                **Valuation:** $300M - $1B  
+                **Investors:** Coatue, D1, SoftBank
+                
+                #### 🎯 WHAT TO LOOK FOR
+                | Signal | What It Means |
+                |--------|---------------|
+                | Category leader | Clear market position |
+                | International expansion | Multi-geo GTM |
+                | M&A activity | Acquiring competitors |
+                
+                #### 👔 HIRING SIGNALS
+                - **Roles:** VP International, M&A Integration, Enterprise GTM
+                - **Opportunity:** Scale existing engine globally
+                - **Comp:** $220-350K OTE + strong equity
+                """)
+                
+            elif funding_stage == "🏛️ Series D/E (Late Stage)":
+                st.markdown("""
+                ### 🏛️ SERIES D/E (LATE STAGE)
+                
+                **Typical Raise:** $100M - $500M  
+                **Valuation:** $1B+ (Unicorn)  
+                **Investors:** PE (Vista, Thoma Bravo), Crossover funds
+                
+                #### 🎯 WHAT TO LOOK FOR
+                | Signal | What It Means |
+                |--------|---------------|
+                | IPO prep | S-1 filing rumors |
+                | EBITDA focus | Profitability over growth |
+                | Executive turnover | New CFO = IPO mode |
+                
+                #### 👔 HIRING SIGNALS
+                - **Roles:** IPO-readiness roles, Investor Relations, Chief of Staff
+                - **Opportunity:** Be part of the exit
+                - **Comp:** $250-400K OTE + pre-IPO equity (liquidity incoming)
+                """)
+                
+            elif funding_stage == "🔔 Pre-IPO":
+                st.markdown("""
+                ### 🔔 PRE-IPO
+                
+                **Status:** Filing S-1, 6-18 months from listing  
+                **Valuation:** $5B+  
+                **Key Events:** Quiet period, lockup discussions
+                
+                #### 🎯 WHAT TO LOOK FOR
+                | Signal | What It Means |
+                |--------|---------------|
+                | S-1 filing | Financials now public |
+                | PIPE rounds | Last private equity infusion |
+                | Heavy recruiting | IPO team buildout |
+                
+                #### 👔 HIRING SIGNALS
+                - **Roles:** Investor Relations, SOX Compliance, Enterprise Expansion
+                - **Opportunity:** Pre-IPO equity = potential windfall
+                - **Risk:** Lockup period (can't sell for 6 months post-IPO)
+                """)
+                
+            else:  # IPO & Public
+                st.markdown("""
+                ### 📊 IPO & PUBLIC COMPANY
+                
+                **Status:** Publicly traded  
+                **Valuation:** Market cap  
+                **Key Focus:** Quarterly earnings, analyst relations
+                
+                #### 🎯 WHAT TO LOOK FOR
+                | Signal | What It Means |
+                |--------|---------------|
+                | Revenue growth rate | Wall Street expectation |
+                | Rule of 40 | Growth % + Margin % > 40 |
+                | Executive changes | New CEO = strategy shift |
+                
+                #### 👔 HIRING SIGNALS
+                - **Roles:** Enterprise, Strategic Partnerships, M&A
+                - **Opportunity:** Stable comp, RSUs, brand name
+                - **Trade-off:** Less equity upside, more process
+                - **Comp:** $200-400K OTE + RSUs (4-year vest)
+                """)
 
     
     # ─────────────────────────────────────────────────────────────
