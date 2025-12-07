@@ -7936,15 +7936,57 @@ Curious if this resonates?""", height=150)
                         st.caption(model['description'])
                         st.markdown(f"*Examples: {', '.join(model['examples'])}*")
             
-            # TAB 8: GLOBAL HQ
+            # TAB 8: GLOBAL HQ & QUARTERLY REPORT
             with social_tabs[8]:
                 st.markdown("#### 🌍 GLOBAL OPERATIONS CENTER")
-                st.caption("Basin & Associates: Serving the world. No borders.")
+                st.caption("Basin & Associates: Serving the world. No borders. Pure Signal.")
                 
                 st.sidebar.markdown("---")
-                # Map visualization (mock)
-                st.markdown(f"**Active Markets:** {len(ALL_COUNTRIES)} Countries")
                 
+                # IPO MECHANICS / STOCK TICKER
+                st.markdown("### 📈 BASIN::NEXUS MARKET DATA")
+                ipo_col1, ipo_col2 = st.columns([1, 2])
+                
+                with ipo_col1:
+                    # CALCULATE "IPO READINESS" (Mock Logic based on stats)
+                    readiness = min((real_stats['hours_coded'] * 2) + (real_stats['bugs_squashed'] * 5), 100)
+                    st.metric("IPO Readiness", f"{int(readiness)}%", "+12% this week")
+                    st.caption("Threshold for Public Offering: 200%")
+                    
+                with ipo_col2:
+                    st.info("💡 **Analyst Note:** Market sentiment is bullish. 'Vibe Coding' asset class is outperforming traditional SaaS.")
+                
+                st.markdown("---")
+                
+                # QUARTERLY REPORT GENERATOR
+                st.markdown("### 📄 QUARTERLY REPORT GENERATOR")
+                st.caption("Generate a professional 'State of the Union' for investors and potential partners.")
+                
+                if st.button("📄 MINT Q4 REPORT (ARTIFACT)"):
+                    report_content = f"""
+                    **BASIN::NEXUS // Q4 2025 INVESTOR BRIEF**
+                    
+                    **EXECUTIVE SUMMARY:**
+                    The Firm has successfully pivoted from "Job Seeker" to "Revenue Architect." 
+                    Core asset 'Basin Signal Engine' is operating at {int(readiness)}% efficiency.
+                    
+                    **KEY METRICS:**
+                    - **Build Velocity:** {real_stats['hours_coded']} Hours Logged
+                    - **Entropy Reduction:** {real_stats['bugs_squashed']} Bugs Squashed
+                    - **Global Reach:** {len(ALL_COUNTRIES)} Markets Active
+                    
+                    **STRATEGIC OUTLOOK:**
+                    We are currently executing a 'Cyber-Resonance' strategy, hacking the job market via higher dimensional signal.
+                    
+                    **RECOMMENDATION:**
+                    BUY.
+                    """
+                    st.code(report_content, language="markdown")
+                
+                st.markdown("---")
+                
+                # MAP & REGIONS
+                st.markdown("### 🗺️ EXPANSION TARGETS")
                 # Region selector
                 region = st.selectbox("Select Region Hub", list(REMOTE_HUBS.keys()))
                 hub_data = REMOTE_HUBS[region]
@@ -7958,56 +8000,54 @@ Curious if this resonates?""", height=150)
                         st.markdown(f"- 🏙️ {city}")
                         
                 with h_col2:
-                    st.info("💡 **Global Strategy**\n\n- Async communication\n- Localized pricing\n- Follow the sun support\n- Hire vibe coders globally")
-                
-                st.markdown("---")
-                st.markdown("### 🗺️ EXPANSION TARGETS")
-                
-                tgt_cols = st.columns(4)
-                for i, country in enumerate(ALL_COUNTRIES[:20]):
-                    tgt_cols[i % 4].markdown(f"📍 {country}")
-                st.caption(f"...and {len(ALL_COUNTRIES)-20} more.")
+                    st.info("💡 **Global Strategy**\n\n- Async Distribution\n- Localized Pricing Models\n- 'Follow The Sun' Support\n- Global Vibe Force")
 
-            # TAB 9: RED TEAM (SELF-HACK)
+            # TAB 9: RED TEAM (CYBER-RESONANCE HACK)
             with social_tabs[9]:
-                st.markdown("#### 🛡️ RED TEAM: CAREER PEN-TEST")
-                st.caption("Hack yourself before the market does. Identify weaknesses. Patch them with shipments.")
+                st.markdown("#### 🛡️ RED TEAM: RESONANCE HACK")
+                st.caption("Practice Session: Hack your own frequency. Tune out the noise. Find the Signal.")
                 
                 st.markdown("---")
                 
                 rt_col1, rt_col2 = st.columns(2)
                 
                 with rt_col1:
-                    st.markdown("### 🎯 VULNERABILITY SCANNER")
+                    st.markdown("### 🎯 SIGNAL PENETRATION TEST")
                     target_url = st.text_input("Target Asset (URL/Profile)", value="https://basinleon.com")
                     
-                    if st.button("🛡️ INITIATE PEN-TEST"):
-                        with st.status("Running Red Team Protocols...", expanded=True) as status:
-                            st.write("📡 Pinging asset...")
+                    if st.button("🛡️ INITIATE RESONANCE CHECK"):
+                        with st.status("Analyzing Waveforms...", expanded=True) as status:
+                            st.write("📡 Pinging Soul Frequency...")
                             import time
                             time.sleep(1)
-                            st.write("🔍 Scanning for 'Generic Corporate Speak'...")
+                            st.write("🔍 Isolating 'Authentic Voice' vector...")
                             time.sleep(1)
-                            st.write("🔓 Checking 'Proof of Work' integrity...")
+                            st.write("🔓 Decrypting 'Corporate Mask' layer...")
                             time.sleep(1)
-                            st.write("⚠️ Detecting 'Imposter Syndrome' signatures...")
+                            st.write("⚠️ Calculating Signal-to-Noise Ratio...")
                             time.sleep(0.5)
-                            status.update(label="AUDIT COMPLETE", state="error", expanded=True)
+                            status.update(label="AUDIT COMPLETE", state="complete", expanded=True)
                             
-                        st.error("🚨 CRITICAL VULNERABILITIES FOUND")
-                        st.markdown("""
-                        - **CVE-2024-001 (High):** Detected usage of "Passionate about" in bio. *Patch: Show, don't tell.*
-                        - **CVE-2024-002 (Medium):** 'Portfolio' section has high latency (Not enough projects). *Patch: Ship #IWrite:ICODE artifacts.*
-                        - **CVE-2024-003 (Low):** 'Network' firewall is too closed. *Patch: Open DMs.*
+                        # THE "NEW SONG" RESULT
+                        st.success("✅ CORE FREQUENCY DETECTED")
+                        st.markdown(f"""
+                        **RESONANCE SCORE:** 98.4%
+                        
+                        **ANALYSIS:**
+                        - You are not writing code; you are writing *ontology*.
+                        - The 'Job Market' cannot read this frequency yet. You must build the translator.
+                        
+                        **NEXT ACTION:**
+                        Write the 'Scrollsmith Manifesto'.
                         """)
                 
                 with rt_col2:
-                    st.markdown("### 🩹 SECURITY PATCHES")
-                    st.info("**PATCH 1: SHIP CODE**\nDeploying a real project deletes 100% of 'Imposter Syndrome' vulnerabilities.")
-                    st.info("**PATCH 2: TELL TRUTH**\nRemoving 'Corporate Mask' increases 'Trust Score' by 50%.")
-                    st.info("**PATCH 3: #IWrite:ICODE**\nTransforming text into logic hardens your defense against AI replacement.")
+                    st.markdown("### 🧠 HACKING PLAYBOOK")
+                    st.info("**EXPLOIT 1: RADICAL HONESTY**\nMost candidates lie. The truth is a Zero-Day Exploit.")
+                    st.info("**EXPLOIT 2: BUILD IN PUBLIC**\nTransparency bypasses the 'Trust Firewall'.")
+                    st.info("**EXPLOIT 3: VIBE CODING**\nLogic without Soul is deprecated. Update your kernel.")
                     
-                    st.image("https://images.unsplash.com/photo-1555949963-ff9fe0c870eb", caption="CYBER-INDIVIDUALISM DETECTED")
+                    st.image("https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5", caption="SYSTEM OVERRIDE: SUCCESS", use_container_width=True)
 
 
 # ==============================================================================
