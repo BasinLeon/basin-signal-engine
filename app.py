@@ -2482,6 +2482,72 @@ start with full focus on day one. Is that something we can add?"
         
         st.markdown("---")
         
+        # ═══════════════════════════════════════════════════════════════
+        # GLOBAL SEARCH AGGREGATOR (Search Across Platforms)
+        # ═══════════════════════════════════════════════════════════════
+        st.markdown("### 🔍 GLOBAL SEARCH AGGREGATOR")
+        st.caption("Search across HackerNews, Reddit, X, and Google from one place.")
+        
+        search_query = st.text_input("🌐 Search the Digital Ether", placeholder="e.g. 'AI Agent trends 2025' or 'Series B startup hiring'", key="global_search")
+        
+        if search_query:
+            q_encoded = search_query.replace(' ', '+')
+            q_url = search_query.replace(' ', '%20')
+            
+            # Quick Links Row
+            st.markdown("#### 🔗 SEARCH ALL CHANNELS")
+            link_cols = st.columns(5)
+            
+            with link_cols[0]:
+                st.markdown(f"[**🔥 HackerNews**](https://hn.algolia.com/?q={q_url})")
+            with link_cols[1]:
+                st.markdown(f"[**🤖 Reddit**](https://www.reddit.com/search/?q={q_url})")
+            with link_cols[2]:
+                st.markdown(f"[**🐦 X/Twitter**](https://twitter.com/search?q={q_url})")
+            with link_cols[3]:
+                st.markdown(f"[**🔍 Google**](https://www.google.com/search?q={q_encoded})")
+            with link_cols[4]:
+                st.markdown(f"[**💼 LinkedIn**](https://www.linkedin.com/search/results/content/?keywords={q_url})")
+            
+            st.markdown("---")
+            
+            # HackerNews Live Search (Free Algolia API)
+            st.markdown("#### 🔥 HACKERNEWS LIVE RESULTS")
+            
+            try:
+                import requests
+                
+                with st.spinner("Scanning HackerNews..."):
+                    hn_url = f"https://hn.algolia.com/api/v1/search?query={q_url}&tags=story&hitsPerPage=10"
+                    response = requests.get(hn_url, timeout=10)
+                    
+                    if response.status_code == 200:
+                        data = response.json()
+                        hits = data.get('hits', [])
+                        
+                        if hits:
+                            st.caption(f"📡 Found {len(hits)} discussions")
+                            
+                            for hit in hits[:8]:
+                                title = hit.get('title', 'No Title')
+                                url = hit.get('url') or f"https://news.ycombinator.com/item?id={hit.get('objectID')}"
+                                points = hit.get('points', 0)
+                                comments = hit.get('num_comments', 0)
+                                author = hit.get('author', 'anon')
+                                
+                                st.markdown(f"**[{title}]({url})**")
+                                st.caption(f"⬆️ {points} pts | 💬 {comments} comments | 👤 {author}")
+                                st.divider()
+                        else:
+                            st.info("No HackerNews discussions found for this query.")
+                    else:
+                        st.warning("HackerNews API unavailable. Use the direct links above.")
+                        
+            except Exception as e:
+                st.warning(f"Search error: {e}. Use the direct links above.")
+        
+        st.markdown("---")
+        
         # Hero Stats Bar (Original)
         col_m1, col_m2, col_m3, col_m4 = st.columns(4)
         

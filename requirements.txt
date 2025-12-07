@@ -6,3 +6,4 @@ anthropic
 python-dotenv
 gTTS
 feedparser
+requests
