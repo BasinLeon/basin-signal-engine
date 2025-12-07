@@ -22,6 +22,135 @@ from logic.video import analyze_video_pitch, validate_video, get_video_info
 
 # Note: Using native st.audio_input instead of audio_recorder_streamlit for Cloud compatibility
 
+import feedparser
+import requests
+
+
+# ═══════════════════════════════════════════════════════════════
+# PERFORMANCE OPTIMIZATIONS: CACHED DATA FETCHING
+# ═══════════════════════════════════════════════════════════════
+
+@st.cache_data(ttl=300, show_spinner=False)  # Cache for 5 minutes
+def fetch_company_news(company_name: str) -> list:
+    """Fetch and cache company news from Google RSS. Returns list of news items."""
+    import urllib.parse
+    encoded = urllib.parse.quote(company_name)
+    rss_url = f"https://news.google.com/rss/search?q={encoded}&hl=en-US&gl=US&ceid=US:en"
+    try:
+        feed = feedparser.parse(rss_url)
+        return feed.entries[:10] if feed.entries else []
+    except Exception:
+        return []
+
+@st.cache_data(ttl=300, show_spinner=False)  # Cache for 5 minutes
+def fetch_hackernews(query: str) -> list:
+    """Fetch and cache HackerNews search results."""
+    import urllib.parse
+    encoded = urllib.parse.quote(query)
+    url = f"https://hn.algolia.com/api/v1/search?query={encoded}&tags=story&hitsPerPage=5"
+    try:
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            return response.json().get('hits', [])
+    except Exception:
+        pass
+    return []
+
+@st.cache_data(ttl=600, show_spinner=False)  # Cache for 10 minutes
+def check_model_availability(api_key: str) -> dict:
+    """Check which LLM models are available with the current API key."""
+    result = {"groq": False, "models": []}
+    if not api_key or not api_key.startswith("gsk_"):
+        return result
+    try:
+        from groq import Groq
+        client = Groq(api_key=api_key)
+        models = client.models.list()
+        result["groq"] = True
+        result["models"] = [m.id for m in models.data] if hasattr(models, 'data') else []
+    except Exception:
+        pass
+    return result
+
+
+# ═══════════════════════════════════════════════════════════════
+# SESSION STATE INITIALIZATION (CENTRALIZED)
+# ═══════════════════════════════════════════════════════════════
+
+def init_session_state():
+    """Initialize all session state variables with defaults."""
+    defaults = {
+        # Core Resume/JD State
+        "resume_text": "",
+        "jd_text": "",
+        "voice_resume_text": "",
+        "voice_jd_text": "",
+        "generated_audio": None,
+        
+        # Identity & Mindset
+        "identity_script": None,
+        "identity_audio": None,
+        
+        # Voice Lab
+        "voice_sessions": [],
+        "ideal_answer": None,
+        
+        # Boardroom Simulator
+        "sim_active": False,
+        "current_q": None,
+        "sim_mode": None,
+        
+        # Career Planning
+        "90_day_plan": None,
+        "path_result": None,
+        
+        # Comms Studio
+        "comms_output": None,
+        "comms_target_name": "",
+        "comms_target_company": "",
+        
+        # Global State
+        "target_company": "",
+        "first_run": True,
+        "sound_effects": True,
+        "mobile_drill": None,
+        
+        # Resume Vault
+        "resume_vault": {},
+        
+        # CRM
+        "crm_deals": [],
+        "calendar_events": [],
+        
+        # G-Suite
+        "gsuite_connected": False,
+        "sheet_url": "",
+        "doc_url": "",
+        
+        # Prep Checklist
+        "prep_checklist": {},
+        
+        # Bio-OS
+        "session_start": None,
+        
+        # Model Health
+        "model_health_checked": False,
+    }
+    
+    for key, default_value in defaults.items():
+        if key not in st.session_state:
+            st.session_state[key] = default_value
+    
+    # Auto-load Master Profile if it exists
+    if st.session_state.resume_text == "":
+        master_profile_path = "assets/MASTER_PROFILE.md"
+        if os.path.exists(master_profile_path):
+            with open(master_profile_path, "r") as f:
+                st.session_state.resume_text = f.read()
+
+# Initialize session state immediately
+init_session_state()
+
 
 # ═══════════════════════════════════════════════════════════════
 # PAGE CONFIGURATION
@@ -664,77 +793,10 @@ st.markdown("""
 
 
 # ═══════════════════════════════════════════════════════════════
-# SESSION STATE INITIALIZATION (COMPREHENSIVE)
+# SESSION STATE (Initialized via init_session_state() at top of file)
 # ═══════════════════════════════════════════════════════════════
-
-# Core Resume/JD State
-if "resume_text" not in st.session_state:
-    st.session_state.resume_text = ""
-    # Auto-load Master Profile if it exists
-    master_profile_path = "assets/MASTER_PROFILE.md"
-    if os.path.exists(master_profile_path):
-        with open(master_profile_path, "r") as f:
-            st.session_state.resume_text = f.read()
-if "jd_text" not in st.session_state:
-    st.session_state.jd_text = ""
-if "voice_resume_text" not in st.session_state:
-    st.session_state.voice_resume_text = ""
-if "voice_jd_text" not in st.session_state:
-    st.session_state.voice_jd_text = ""
-if "generated_audio" not in st.session_state:
-    st.session_state.generated_audio = None
-
-# Identity & Mindset Programming
-if "identity_script" not in st.session_state:
-    st.session_state.identity_script = None
-if "identity_audio" not in st.session_state:
-    st.session_state.identity_audio = None
-
-# Voice Lab / Practice Sessions
-if "voice_sessions" not in st.session_state:
-    st.session_state.voice_sessions = []
-if "ideal_answer" not in st.session_state:
-    st.session_state.ideal_answer = None
-
-# Boardroom Simulator
-if "sim_active" not in st.session_state:
-    st.session_state.sim_active = False
-if "current_q" not in st.session_state:
-    st.session_state.current_q = None
-if "sim_mode" not in st.session_state:
-    st.session_state.sim_mode = None
-
-# Career Planning
-if "90_day_plan" not in st.session_state:
-    st.session_state["90_day_plan"] = None
-if "path_result" not in st.session_state:
-    st.session_state.path_result = None
-
-# Comms Studio
-if "comms_output" not in st.session_state:
-    st.session_state.comms_output = None
-
-# Global Target Company (for cross-feature linking)
-if "target_company" not in st.session_state:
-    st.session_state.target_company = ""
-
-# First Run Flag (for onboarding)
-if "first_run" not in st.session_state:
-    st.session_state.first_run = True
-
-# Sound Effects Toggle
-if "sound_effects" not in st.session_state:
-    st.session_state.sound_effects = True
-
-# Comms Studio Metadata
-if "comms_target_name" not in st.session_state:
-    st.session_state.comms_target_name = ""
-if "comms_target_company" not in st.session_state:
-    st.session_state.comms_target_company = ""
-
-# Mobile Practice Mode
-if "mobile_drill" not in st.session_state:
-    st.session_state.mobile_drill = None
+# All session state defaults are now centralized in init_session_state()
+# This reduces code duplication and makes maintenance easier.
 
 
 # ═══════════════════════════════════════════════════════════════
