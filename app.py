@@ -257,6 +257,12 @@ st.markdown("""
     
     /* === ANIMATIONS === */
     
+    /* HIDE STREAMLIT CHROME */
+    #MainMenu {visibility: hidden;}
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+    .stDeployButton {display:none;}
+
     @keyframes pulse-amber {
         0%, 100% { box-shadow: 0 0 20px rgba(255, 191, 0, 0.3); }
         50% { box-shadow: 0 0 40px rgba(255, 191, 0, 0.6); }
