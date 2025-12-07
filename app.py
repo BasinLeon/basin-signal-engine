@@ -623,7 +623,7 @@ if "mobile_drill" not in st.session_state:
 with st.sidebar:
     # 1. HEADER & SYSTEM STATUS
     st.markdown("### ▲ BASIN::NEXUS")
-    st.caption("v14.5 | REVENUE ARCHITECT OS | 🧠 FULL GROQ FLEET")
+    st.caption("v0.1 | REVENUE ARCHITECT OS | 🧠 FULL GROQ FLEET")
     st.markdown("---")
     
     # 2. SYSTEM CORE & CONFIGURATION (Terminal Style)
@@ -7493,7 +7493,8 @@ Curious if this resonates?""", height=150)
                 generate_waitlist_cta, ALL_COUNTRIES, REMOTE_HUBS,
                 BUSINESS_MODELS, PRICING_IDEAS, CONTENT_IDEAS,
                 calculate_reputation_score, generate_community_content,
-                generate_leon_posts, get_build_stats
+                generate_leon_posts, get_build_stats,
+                generate_scroll_content
             )
             integrations_loaded = True
         except ImportError:
@@ -7529,39 +7530,69 @@ Curious if this resonates?""", height=150)
             # TAB 0: BASIN POST FORGE
             with social_tabs[0]:
                 st.markdown("#### 🖤 BASIN POST FORGE (SCROLLSMITH)")
-                st.caption("Generate X posts in the exact @basin_leon voice — poetic, precise, zero-trust mysticism.")
+                st.caption("Generate artifacts in the exact @basin_leon voice.")
                 
-                forge_col1, forge_col2 = st.columns([2, 1])
+                # Mode Selection
+                forge_mode = st.radio("Forge Protocol", ["🐦 Micropost (X)", "📜 The Ancient Scroll (Long Form)"], horizontal=True)
                 
-                with forge_col1:
-                    forge_topic = st.text_area("Topic / Spark / Hook", height=120, 
-                        placeholder="e.g. Just shipped v0.3 of LeonOS in a 16-hour flow state\nor\nWhy most GTM advice is dead on arrival")
+                if forge_mode == "🐦 Micropost (X)":
+                    forge_col1, forge_col2 = st.columns([2, 1])
                     
-                    if st.button("🔥 FORGE POSTS", type="primary"):
-                        if forge_topic:
-                            with st.spinner("Scrollsmith is writing..."):
-                                posts = generate_leon_posts(forge_topic)
-                                st.session_state['forged_posts'] = posts
-                        else:
-                            st.warning("Give me a spark.")
+                    with forge_col1:
+                        forge_topic = st.text_area("Topic / Spark / Hook", height=120, 
+                            placeholder="e.g. Just shipped v0.3 of LeonOS in a 16-hour flow state\nor\nWhy most GTM advice is dead on arrival")
+                        
+                        if st.button("🔥 FORGE POSTS", type="primary"):
+                            if forge_topic:
+                                with st.spinner("Scrollsmith is writing..."):
+                                    posts = generate_leon_posts(forge_topic)
+                                    st.session_state['forged_posts'] = posts
+                            else:
+                                st.warning("Give me a spark.")
+                                
+                    with forge_col2:
+                        st.info("🎙️ **Voice Protocol**\n\n- Zero-trust metaphors\n- Calm commander tone\n- No hype-bro language\n- Signature terms: Signal, Runway, Scrollsmith")
+                    
+                    if 'forged_posts' in st.session_state:
+                        st.markdown("---")
+                        st.markdown("### 🔥 FORGED ARTIFACTS")
+                        st.markdown(st.session_state['forged_posts'].replace("1.", "**1.**").replace("2.", "\n\n**2.**").replace("3.", "\n\n**3.**"))
+                        
+                        # Intent links for quick posting
+                        try:
+                            # Extract post 1 roughly (assuming standard format)
+                            post1 = st.session_state['forged_posts'].split("1.")[1].split("2.")[0].strip()
+                            import urllib.parse
+                            intent_url = f"https://twitter.com/intent/tweet?text={urllib.parse.quote(post1)}"
+                            st.markdown(f"[🚀 **POST #1 NOW**]({intent_url})")
+                        except:
+                            pass
                             
-                with forge_col2:
-                    st.info("🎙️ **Voice Protocol**\n\n- Zero-trust metaphors\n- Calm commander tone\n- No hype-bro language\n- Signature terms: Signal, Runway, Scrollsmith")
-                
-                if 'forged_posts' in st.session_state:
-                    st.markdown("---")
-                    st.markdown("### 🔥 FORGED ARTIFACTS")
-                    st.markdown(st.session_state['forged_posts'].replace("1.", "**1.**").replace("2.", "\n\n**2.**").replace("3.", "\n\n**3.**"))
+                else: # SCROLL MODE
+                    scroll_col1, scroll_col2 = st.columns([2, 1])
                     
-                    # Intent links for quick posting
-                    try:
-                        # Extract post 1 roughly (assuming standard format)
-                        post1 = st.session_state['forged_posts'].split("1.")[1].split("2.")[0].strip()
-                        import urllib.parse
-                        intent_url = f"https://twitter.com/intent/tweet?text={urllib.parse.quote(post1)}"
-                        st.markdown(f"[🚀 **POST #1 NOW**]({intent_url})")
-                    except:
-                        pass
+                    with scroll_col1:
+                        scroll_topic = st.text_input("Scroll Topic", placeholder="e.g., The death of the resume and the rise of the portfolio")
+                        scroll_type = st.selectbox("Artifact Type", ["journal", "play", "report"], format_func=lambda x: x.upper())
+                        
+                        if st.button("📜 INSCRIBE SCROLL", type="primary"):
+                            if scroll_topic:
+                                with st.spinner("Accessing the Ancient Library..."):
+                                    scroll_content = generate_scroll_content(scroll_topic, scroll_type)
+                                    st.session_state['generated_scroll'] = scroll_content
+                            else:
+                                st.warning("The archive requires a topic.")
+                                
+                    with scroll_col2:
+                        st.info("🏛️ **Library Protocol**\n\n- **Journal:** Raw, first-person builder logs.\n- **Play:** Socratic dialogue (Achitect vs Builder).\n- **Report:** Spiritual business analysis.")
+
+                    if 'generated_scroll' in st.session_state:
+                        st.markdown("---")
+                        st.markdown("### 📜 RECOVERED ARTIFACT")
+                        with st.container(height=400):
+                            st.markdown(st.session_state['generated_scroll'])
+                        
+                        st.caption("Copy this to basinleon.com")
             
             # TAB 1: THREAD WEAVER (X-First)
             with social_tabs[1]:

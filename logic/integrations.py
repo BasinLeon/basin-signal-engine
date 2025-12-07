@@ -1342,6 +1342,40 @@ TOPIC: {topic}
         return f"Error forging posts: {str(e)}"
 
 
+def generate_scroll_content(topic: str, type: str = "journal") -> str:
+    """
+    Generates long-form content for basinleon.com (The Ancient Library).
+    Styles: 'journal' (personal reflection), 'play' (dialogue), 'report' (spiritual/business).
+    """
+    try:
+        from logic.generator import generate_plain_text
+        
+        system_prompt = """
+You are the Scrollsmith, the keeper of the Basin Library.
+Your task is to write a "Scroll" - a piece of content that feels like a recovered artifact or a news clipping from a wiser timeline.
+
+Tone: 
+- Timeless, contemplative, yet grounded in high-tech architectural business logic.
+- Blends spiritual elevation (Kabbalah/Mysticism) with rigid Engineering principles.
+- Format: "Date: [Current Date] | Log: v0.1 | Status: Recording"
+
+If type is 'journal': Write a raw, first-person entry about the struggle and glory of building.
+If type is 'play': Write a Socratic dialogue between "The Architect" (wisdom) and "The Builder" (action).
+If type is 'report': Write a "Business Elevation Report" analyzing the topic through a spiritual-commercial lens.
+
+Output format: Markdown. Use horizontal rules (---) to separate sections.
+"""
+        user_prompt = f"Write a {type} about: {topic}"
+        
+        full_prompt = f"{system_prompt}\n\n{user_prompt}"
+        
+        return generate_plain_text(full_prompt, model_name="llama-3.3-70b-versatile")
+        
+    except Exception as e:
+        return f"Error inscribing scroll: {str(e)}"
+
+
+
 
 # ═══════════════════════════════════════════════════════════════
 # GLOBAL BUSINESS - ALL COUNTRIES
