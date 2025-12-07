@@ -1155,7 +1155,7 @@ with col1:
         # --- 3. BLACK OPS AGENT (OSINT) ---
         st.markdown("#### 3. BLACK OPS AGENT (INTEL & RECON)")
         
-        osint_tab1, osint_tab2 = st.tabs(["🕵️ CONTACT HUNTER", "⚡ SIGNAL RADAR"])
+        osint_tab1, osint_tab2, osint_tab3 = st.tabs(["🕵️ CONTACT HUNTER", "⚡ SIGNAL RADAR", "🌐 360° RECON"])
         
         with osint_tab1:
             st.caption("PROTOCOL: Open Source Intelligence (OSINT) Link Generators.")
@@ -1217,7 +1217,32 @@ with col1:
                         model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
                         signals = generate_plain_text(signal_prompt, model_name=model_id)
                         st.markdown(signals)
-            
+
+        with osint_tab3:
+            st.caption("PROTOCOL: Full-Spectrum Corporate Analysis.")
+            r_company = st.text_input("Deep Dive Target", value=selected_company if 'selected_company' in locals() else "", placeholder="e.g. Stripe", key="osint_recon")
+            if r_company:
+                q = r_company.replace(' ', '+')
+                d_c1, d_c2, d_c3 = st.columns(3)
+                
+                with d_c1:
+                    st.markdown("#### 🗣️ CULTURE")
+                    st.markdown(f"• [**Blind** (Insider/WLB)](https://www.google.com/search?q=site:teamblind.com+{q})")
+                    st.markdown(f"• [**Reddit** (Real Talk)](https://www.google.com/search?q=site:reddit.com+{q}+work+culture)")
+                    st.markdown(f"• [**Glassdoor** (Interviews)](https://www.google.com/search?q=site:glassdoor.com+{q}+interview+questions)")
+
+                with d_c2:
+                    st.markdown("#### 💰 TRIBE")
+                    st.markdown(f"• [**Levels.fyi** (Salaries)](https://www.levels.fyi/companies/{r_company.lower().replace(' ', '-')}/salaries)")
+                    st.markdown(f"• [**Crunchbase** (Funding)](https://www.crunchbase.com/organization/{r_company.lower().replace(' ', '-')})")
+                    st.markdown(f"• [**Founder Search**](https://twitter.com/search?q={q}%20(hiring%20OR%20vision))")
+
+                with d_c3:
+                    st.markdown("#### 🛠️ STACK")
+                    st.markdown(f"• [**GitHub** (Eng Stack)](https://github.com/search?q={q}&type=repositories)")
+                    st.markdown(f"• [**StackShare** (Tech)](https://stackshare.io/{r_company.lower()})")
+                    st.markdown(f"• [**RocketReach** (Contacts)](https://rocketreach.co/{r_company.lower().replace(' ', '-')}-profile)")
+
         st.markdown("---")
         
         # --- 4. TARGET VECTOR (Manual JD Input) ---
@@ -3324,7 +3349,7 @@ start with full focus on day one. Is that something we can add?"
                 # 1. STRATEGY CONFIGURATION
                 c_conf1, c_conf2 = st.columns(2)
                 with c_conf1:
-                    comms_channel = st.selectbox("📡 Channel", ["🟦 LinkedIn", "📧 Email", "📞 Phone / Voice", "📱 SMS / Text"])
+                    comms_channel = st.selectbox("📡 Channel", ["🟦 LinkedIn", "📧 Email", "📞 Phone / Voice", "📱 SMS / Text", "🚁 Guerrilla / Creative"])
                 with c_conf2:
                     comms_tone = st.selectbox("🎭 Tone", ["Professional (Safe)", "Casual (Startup)", "The Challenger (Bold)"])
 
@@ -3338,6 +3363,8 @@ start with full focus on day one. Is that something we can add?"
                     scenarios = ["⚡ Cold Call Opener (30s)", "📼 Voicemail Drop", "🛡️ Gatekeeper Bypass"]
                 elif comms_channel == "📱 SMS / Text":
                     scenarios = ["📅 Confirm Meeting", "👋 Post-Event Follow Up", "👀 Quick Check-in (Warm)", "🚀 Update/News Share"]
+                elif comms_channel == "🚁 Guerrilla / Creative":
+                    scenarios = ["📹 Loom Video Pitch (60s)", "🕵️ The 'Audit' (Value Add)", "🧪 User Testing Feedback", "🎁 The 'Gift' Strategy"]
                 
                 comms_scenario = st.selectbox("🎯 Scenario", scenarios)
                 
@@ -3370,6 +3397,7 @@ start with full focus on day one. Is that something we can add?"
                         - If Email: Subject Line + Body. Short paragraphs.
                         - If Phone: Script format with [Pause] indicators.
                         - If SMS: Under 160 chars. Casual but crisp. No "Dear [Name]".
+                        - If Guerrilla: Creative instructions + script. Focus on pattern interruption.
                         - "The Challenger" tone should be direct, quantifying the cost of inaction.
                         
                         Write only the final output. No fluff.
