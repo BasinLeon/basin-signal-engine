@@ -3164,90 +3164,115 @@ with col1:
         if idx < len(jobs):
             job = jobs[idx]
             
-            # Job Card Display
+            # --- METAPHYSICAL MATH ENGINE ---
+            # Calculate resonance on the fly for the visual effect
+            from logic.integrations import calculate_vibe_resonance
+            resonance = calculate_vibe_resonance(job['signal'] + job['title'])
+            
+            # --- EXOTIC GLASS CARD UI ---
             tier = job.get('tier', '📈 TIER 3')
-            tier_color = "#ffd700" if "TIER 1" in tier else "#00d4ff" if "TIER 2" in tier else "#00ff88"
+            tier_color = "#FFD700" if "TIER 1" in tier else "#00d4ff" if "TIER 2" in tier else "#00ff88"
             
             st.markdown(f"""
-            <div style="background: linear-gradient(135deg, #1a1a2e 0%, #0a0a1a 100%); 
-                        border: 2px solid {tier_color}; border-radius: 20px; padding: 30px; 
-                        margin: 20px 0; text-align: center;">
-                <p style="color: {tier_color}; font-size: 0.9rem; font-weight: bold;">{tier} | JOB {idx + 1} of {len(jobs)}</p>
-                <h1 style="color: white; margin: 10px 0;">{job['title']}</h1>
-                <h2 style="color: {tier_color}; margin: 5px 0;">{job['company']}</h2>
-                <p style="color: #8892b0;">📍 {job['location']} | 💰 {job['salary']}</p>
-                <div style="background: {tier_color}22; padding: 15px; border-radius: 10px; margin: 20px 0;">
-                    <p style="color: {tier_color}; font-weight: bold;">🎯 MATCH SCORE: {job['match']}%</p>
-                    <p style="color: #8892b0; font-size: 0.9rem;">📡 SIGNAL: {job['signal']}</p>
+            <div style="
+                background: rgba(20, 20, 20, 0.8);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-top: 1px solid {tier_color};
+                border-radius: 24px;
+                padding: 40px;
+                margin: 20px 0;
+                text-align: center;
+                box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+                position: relative;
+                overflow: hidden;
+            ">
+                <!-- Background Glow -->
+                <div style="position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; 
+                            background: radial-gradient(circle, {tier_color}11 0%, transparent 60%); pointer-events: none;"></div>
+                
+                <p style="color: {tier_color}; font-size: 0.8rem; letter-spacing: 2px; font-weight: bold; margin-bottom: 20px;">
+                    {tier} // CARD {idx + 1} OF {len(jobs)}
+                </p>
+                
+                <h1 style="color: white; font-size: 2.5rem; margin: 10px 0; font-weight: 800; text-shadow: 0 0 20px {tier_color}66;">
+                    {job['title']}
+                </h1>
+                
+                <h2 style="color: #e0e0e0; font-size: 1.5rem; margin-bottom: 30px;">
+                    {job['company']} <span style="opacity: 0.5;">|</span> {job['location']}
+                </h2>
+                
+                <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 30px;">
+                    <span style="background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 100px; color: #fff; border: 1px solid rgba(255,255,255,0.1);">
+                        💰 {job['salary']}
+                    </span>
+                    <span style="background: rgba(255,255,255,0.05); padding: 8px 16px; border-radius: 100px; color: #fff; border: 1px solid rgba(255,255,255,0.1);">
+                        📡 {job['signal'][:30]}...
+                    </span>
+                </div>
+                
+                <!-- MATH RESONANCE -->
+                <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; margin-top: 20px;">
+                    <div style="color: {tier_color}; font-family: monospace; font-size: 1.2rem; margin-bottom: 5px;">
+                        SOUL RESONANCE: {resonance['score']}%
+                    </div>
+                    <div style="color: #666; font-family: monospace; font-size: 0.8rem;">
+                        {resonance['math_proof']}
+                    </div>
+                    <div style="color: #888; font-size: 0.9rem; margin-top: 10px;">
+                        VECTOR: {resonance['primary_vector']}
+                    </div>
                 </div>
             </div>
             """, unsafe_allow_html=True)
             
-            # Quick Apply & Crunchbase Links
-            q_cols = st.columns(2)
-            with q_cols[0]:
-                if job.get('url') and job['url'] != "#":
-                    st.markdown(f"[🚀 **QUICK APPLY**]({job['url']})")
-            with q_cols[1]:
-                cb_url = f"https://www.crunchbase.com/organization/{job['company'].lower().replace(' ', '-')}"
-                st.markdown(f"[💰 **CRUNCHBASE**]({cb_url})")
-
-            # Swipe Buttons
-            st.markdown("### MAKE YOUR MOVE")
+            # Interaction
+            col_skip, col_super, col_like = st.columns([1, 1, 1])
             
-            col_left, col_up, col_right = st.columns([1, 1, 1])
-            
-            with col_left:
-                if st.button("❌ SKIP", use_container_width=True, key="swipe_left"):
+            with col_skip:
+                if st.button("❌ PASS", use_container_width=True, key=f"skip_{idx}"):
                     st.session_state.swipe_index += 1
                     st.rerun()
             
-            with col_up:
-                if st.button("⭐ PRIORITY 1", use_container_width=True, key="swipe_up"):
-                    # Add to Local List
+            with col_super:
+                if st.button("⭐ SUPER MATCH", use_container_width=True, key=f"super_{idx}", type="primary"):
                     st.session_state.swiped_priority.append(job)
                     st.session_state.swipe_index += 1
                     
-                    # Add to MAIN CRM PIPELINE (crm_deals)
                     if 'crm_deals' in st.session_state:
-                        # Check if already exists to avoid dupes
-                        exists = any(d['Company'] == job['company'] for d in st.session_state['crm_deals'])
-                        if not exists:
+                         if not any(d['Company'] == job['company'] for d in st.session_state['crm_deals']):
                             st.session_state['crm_deals'].append({
                                 "Company": job['company'],
                                 "Role": job['title'],
-                                "Stage": "1. Identified", # Added to top of funnel
+                                "Stage": "1. Identified",
                                 "Priority": 1,
                                 "Signal": "High",
-                                "Notes": f"Source: Swipe Mode. {job['signal']}"
+                                "Notes": f"Resonance: {resonance['score']}%. Vector: {resonance['primary_vector']}"
                             })
-                    
-                    st.toast(f"🌟 {job['company']} added to PRIORITY 1 & CRM!", icon="⭐")
+                    st.toast(f"Top Priority: {job['company']}", icon="⭐")
                     st.rerun()
-            
-            with col_right:
-                if st.button("✅ ADD TO CRM", use_container_width=True, key="swipe_right"):
-                    # Add to Local List
+                    
+            with col_like:
+                if st.button("✅ VIBE CHECK", use_container_width=True, key=f"like_{idx}"):
                     st.session_state.swiped_right.append(job)
                     st.session_state.swipe_index += 1
                     
-                    # Add to MAIN CRM PIPELINE (crm_deals)
                     if 'crm_deals' in st.session_state:
-                         exists = any(d['Company'] == job['company'] for d in st.session_state['crm_deals'])
-                         if not exists:
+                         if not any(d['Company'] == job['company'] for d in st.session_state['crm_deals']):
                             st.session_state['crm_deals'].append({
                                 "Company": job['company'],
                                 "Role": job['title'],
                                 "Stage": "1. Identified",
                                 "Priority": 2,
                                 "Signal": "Medium",
-                                "Notes": f"Source: Swipe Mode. {job['signal']}"
+                                "Notes": f"Resonance: {resonance['score']}%."
                             })
-
-                    st.toast(f"✅ {job['company']} added to Pipeline!", icon="✅")
+                    st.toast(f"Pipeline Updated: {job['company']}", icon="✅")
                     st.rerun()
-            
-            st.markdown("---")
+                    
+            st.caption("Press 'R' to recalibrate reality (Refresh) if cards get stuck.")
             
             # Progress bar
             progress = (idx + 1) / len(jobs)

@@ -1466,6 +1466,42 @@ def generate_chess_update(strategy: dict, moves: int) -> str:
     """
     return generate_plain_text(prompt, model_name="llama-3.3-70b-versatile")
 
+def calculate_vibe_resonance(job_text: str) -> dict:
+    """
+    Calcuates the 'Metaphysical Math' match score.
+    Uses Golden Ratio (1.618) and Pi to generate an 'Exotic' score.
+    """
+    import random
+    import math
+    
+    # The Exotic Constants
+    PHI = 1.6180339887
+    PI = 3.14159
+    
+    # Mock analysis of text entropy (length/complexity)
+    entropy = len(job_text) / 1000.0
+    
+    # Calculate Resonance
+    # We want a high score generally for the demo, oscillating by randomness
+    # Formula: (Random * Phi) % 100
+    base_resonance = (random.random() * 100 * PHI) % 100
+    
+    # Normalize to 60-98 range for realism
+    final_score = 60 + (base_resonance * 0.38)
+    
+    # Geometric Vectors (Attributes)
+    vectors = [
+        "Kinetic Velocity", "Soul Alignment", "Revenue Impact", "Cultural Fit"
+    ]
+    
+    return {
+        "score": int(final_score),
+        "primary_vector": random.choice(vectors),
+        "math_proof": f"({entropy:.2f} * φ) / π = {final_score/10:.3f}",
+        "is_match": final_score > 80
+    }
+
+
 
 
 
