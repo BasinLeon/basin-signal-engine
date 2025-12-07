@@ -1510,18 +1510,18 @@ with col1:
                     st.session_state.swiped_priority.append(job)
                     st.session_state.swipe_index += 1
                     
-                    # Add to MAIN CRM PIPELINE
-                    if 'crm_pipeline' in st.session_state:
+                    # Add to MAIN CRM PIPELINE (crm_deals)
+                    if 'crm_deals' in st.session_state:
                         # Check if already exists to avoid dupes
-                        exists = any(d['Company'] == job['company'] for d in st.session_state['crm_pipeline'])
+                        exists = any(d['Company'] == job['company'] for d in st.session_state['crm_deals'])
                         if not exists:
-                            st.session_state['crm_pipeline'].append({
+                            st.session_state['crm_deals'].append({
                                 "Company": job['company'],
                                 "Role": job['title'],
-                                "Value": job['salary'],
-                                "Stage": "1. Identified",
-                                "Probability": "50%",
-                                "Next Step": "Find Hiring Manager"
+                                "Stage": "1. Identified", # Added to top of funnel
+                                "Priority": 1,
+                                "Signal": "High",
+                                "Notes": f"Source: Swipe Mode. {job['signal']}"
                             })
                     
                     st.toast(f"🌟 {job['company']} added to PRIORITY 1 & CRM!", icon="⭐")
@@ -1533,17 +1533,17 @@ with col1:
                     st.session_state.swiped_right.append(job)
                     st.session_state.swipe_index += 1
                     
-                    # Add to MAIN CRM PIPELINE
-                    if 'crm_pipeline' in st.session_state:
-                         exists = any(d['Company'] == job['company'] for d in st.session_state['crm_pipeline'])
+                    # Add to MAIN CRM PIPELINE (crm_deals)
+                    if 'crm_deals' in st.session_state:
+                         exists = any(d['Company'] == job['company'] for d in st.session_state['crm_deals'])
                          if not exists:
-                            st.session_state['crm_pipeline'].append({
+                            st.session_state['crm_deals'].append({
                                 "Company": job['company'],
                                 "Role": job['title'],
-                                "Value": job['salary'],
                                 "Stage": "1. Identified",
-                                "Probability": "20%",
-                                "Next Step": "Research"
+                                "Priority": 2,
+                                "Signal": "Medium",
+                                "Notes": f"Source: Swipe Mode. {job['signal']}"
                             })
 
                     st.toast(f"✅ {job['company']} added to Pipeline!", icon="✅")
