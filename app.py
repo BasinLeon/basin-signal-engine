@@ -754,7 +754,8 @@ with st.sidebar:
     with st.expander("II. 🛰️ ORACLE ARRAY (HUNT)"):
         st.caption("Protocol: Market Recon & Signal Detection")
         mode_oracle = st.radio("Select Tool:", 
-            ["🎯 Hunt (Black Ops)", 
+            ["🎯 Hunt (Black Ops)",
+             "🎯 Sniper Prospecting", 
              "📡 Market Radar", 
              "📊 Analytics (Oracle)", 
              "🔬 Company Intel", 
@@ -767,6 +768,7 @@ with st.sidebar:
         st.caption("Protocol: Pipeline Management & Closing")
         mode_builder = st.radio("Select Tool:", 
             ["📈 Pipeline CRM", 
+             "📣 Social Command Center",
              "💰 Negotiation (Comp)",
              "🚀 First 90 Days", 
              "🔍 Talent Signal", 
@@ -795,12 +797,14 @@ with st.sidebar:
         "🎤 Voice (Practice)": "🎤 Voice",
         "🛡️ Objection Bank": "🛡️ Objection Bank",
         "🎯 Hunt (Black Ops)": "🎯 Hunt",
+        "🎯 Sniper Prospecting": "🎯 Sniper Prospecting",
         "📡 Market Radar": "📡 Market Radar",
         "📊 Analytics (Oracle)": "📊 Analytics",
         "🔬 Company Intel": "🔬 Company Intel",
         "🔥 Swipe Mode (Job Tinder)": "🔥 Swipe Mode",
         "☁️ G-Suite Sync (Data Lake)": "☁️ G-Suite Sync",
         "📈 Pipeline CRM": "📈 Pipeline CRM",
+        "📣 Social Command Center": "📣 Social Command Center",
         "🚀 First 90 Days": "🚀 First 90 Days",
         "🔍 Talent Signal": "🔍 Talent Signal",
         "🎙️ Live Assist (Digital Twin)": "🎙️ Live Assist",
@@ -874,33 +878,97 @@ show_dashboard = input_mode == "📄 Intel" and not st.session_state.get('resume
 
 if show_dashboard:
     # ═══════════════════════════════════════════════════════════════
-    # 🏠 MISSION BRIEFING (THE EXECUTIVE LANDING PAGE)
+    # 🎬 NETFLIX-STYLE DASHBOARD (SEASON 1: THE PIVOT)
     # ═══════════════════════════════════════════════════════════════
-    st.markdown("## ▲ MISSION BRIEFING")
-    st.caption("OPERATOR: LEON BASIN | TARGET: DIRECTOR OF GTM SYSTEMS ($220k+)")
     
-    # --- FIRST RUN ONBOARDING ---
-    if st.session_state.first_run:
-        with st.container():
-            st.markdown("""
-            <div style="background: linear-gradient(135deg, rgba(255,191,0,0.1), rgba(255,215,0,0.05)); border: 2px solid #FFD700; border-radius: 16px; padding: 24px; margin-bottom: 24px;">
-                <h3 style="color: #FFD700; margin: 0 0 16px 0;">🚀 WELCOME TO BASIN::NEXUS</h3>
-                <p style="color: #ccd6f6; margin-bottom: 16px;">Your AI-powered Career Intelligence Command Center. Here's how to get started:</p>
-                <ol style="color: #8892b0; margin-left: 20px;">
-                    <li><b style="color: #FFD700;">Upload Your Resume</b> → Go to "📄 Intel" and add your career assets to the Vault</li>
-                    <li><b style="color: #FFD700;">Target Companies</b> → Use "🎯 Hunt" or "🔥 Swipe Mode" to build your pipeline</li>
-                    <li><b style="color: #FFD700;">Practice & Prepare</b> → Hit the "🥊 Dojo" or "🎤 Voice Lab" to sharpen your pitch</li>
-                    <li><b style="color: #FFD700;">Generate Assets</b> → Deploy the AI Swarm to create emails, scripts, and strategies</li>
-                </ol>
+    # 1. GAMIFICATION ENGINE (LOC TRACKER)
+    try:
+        from logic.integrations import count_project_lines
+        # Scan current directory
+        project_stats = count_project_lines(".")
+    except ImportError:
+        project_stats = {"level": 1, "total_lines": 0, "xp_current": 0, "xp_needed": 500}
+
+    # HERO HEADER (Cinematic)
+    st.markdown(f"""
+    <div style="background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b'); background-size: cover; border-radius: 16px; padding: 40px; margin-bottom: 30px; border: 1px solid rgba(255, 191, 0, 0.2); position: relative; overflow: hidden;">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #FFD700 {project_stats.get('progress', 0)*100}%, rgba(255,255,255,0.1) 0%);"></div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div>
+                <span style="background: #E50914; color: white; padding: 4px 8px; border-radius: 4px; font-weight: bold; font-size: 0.7rem; letter-spacing: 1px;">SERIES ORIGINAL</span>
+                <h1 style="color: #fff; font-size: 3.5rem; margin: 10px 0 5px 0; text-shadow: 0 4px 20px rgba(0,0,0,0.8); font-weight: 800;">SEASON 1: THE PIVOT</h1>
+                <p style="color: #e6e6e6; font-size: 1.1rem; max-width: 600px; line-height: 1.6;">
+                    You are exactly where you need to be. The old world is gone. The new architecture is being written line by line. 
+                    Manage the signal. Ignore the noise. Build the empire.
+                </p>
+                <div style="margin-top: 20px; display: flex; gap: 15px;">
+                    <button style="background: #fff; color: black; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; cursor: pointer;">▶ RESUME EPISODE</button>
+                    <button style="background: rgba(109, 109, 110, 0.7); color: white; border: none; padding: 12px 24px; border-radius: 4px; font-weight: bold; cursor: pointer;">ℹ MORE INFO</button>
+                </div>
             </div>
-            """, unsafe_allow_html=True)
             
-            if st.button("✅ GOT IT - LET'S BEGIN", type="primary", use_container_width=True):
-                st.session_state.first_run = False
-                st.toast("🎯 Mission Activated! Your journey begins now.", icon="🚀")
-                st.rerun()
+            <div style="text-align: right; background: rgba(0,0,0,0.6); padding: 15px; border-radius: 8px; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1);">
+                <div style="color: #FFD700; font-size: 0.8rem; font-weight: bold;">BUILDER LEVEL {project_stats.get('level', 1)}</div>
+                <div style="color: #fff; font-size: 2rem; font-weight: 800; font-family: monospace;">{project_stats.get('total_lines', 0):,} LOC</div>
+                <div style="color: #8892b0; font-size: 0.75rem;">XP: {project_stats.get('xp_current', 0)} / {project_stats.get('xp_needed', 500)} TO NEXT LVL</div>
+            </div>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # EPISODE CARDS (Tools)
+    st.markdown("### 📺 CONTINUE WATCHING")
+    
+    ep_col1, ep_col2, ep_col3, ep_col4 = st.columns(4)
+    
+    with ep_col1:
+        st.info("EPISODE 1: THE HUNT")
+        st.caption("Use 'Sniper Prospecting' to find high-value targets.")
+        
+    with ep_col2:
+        st.success("EPISODE 2: THE BUILD")
+        st.caption("Craft your narrative in the 'Post Forge'.")
+        
+    with ep_col3:
+        st.warning("EPISODE 3: THE PITCH")
+        st.caption("Practice voice drills in the 'Combat Simulator'.")
+        
+    with ep_col4:
+        st.error("EPISODE 4: THE CLOSE")
+        st.caption("Manage pipeline deals in the 'CRM'.")
+        
+    st.markdown("---")
+    
+    # "Trending Now" Row
+    st.markdown("### 🔥 TRENDING NOW")
+    trend_col1, trend_col2 = st.columns(2)
+    
+    with trend_col1:
+        st.markdown(f"""
+        <div style="background: #141414; padding: 20px; border-radius: 8px; border-left: 4px solid #FFD700;">
+            <h4 style="color: white; margin: 0;">VIBE CODING COMMUNITY</h4>
+            <p style="color: #999; font-size: 0.9rem;">New Strategy: "Shipping Velocity"</p>
+            <p style="color: #FFD700; font-size: 0.8rem;">98% MATCH FOR YOU</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with trend_col2:
+        st.markdown(f"""
+        <div style="background: #141414; padding: 20px; border-radius: 8px; border-left: 4px solid #00ff88;">
+            <h4 style="color: white; margin: 0;">MARKET RADAR</h4>
+            <p style="color: #999; font-size: 0.9rem;">Signal: Fintech Hiring Surge</p>
+            <p style="color: #00ff88; font-size: 0.8rem;">NEW INTEL DROPPED</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # --- FIRST RUN ONBOARDING (Hidden usually, logic kept for safety) ---
+    if st.session_state.first_run:
+        st.session_state.first_run = False # Auto-acknowledge
+
     
     st.markdown("---")
+
     
     # --- 1. THE 4-PHASE PIPELINE (Strategic Navigation) ---
     st.markdown("### 🧭 WHERE ARE YOU IN THE HUNT?")
@@ -1655,7 +1723,7 @@ with col1:
         # ═══════════════════════════════════════════════════════════════
         # PREP TABS
         # ═══════════════════════════════════════════════════════════════
-        prep_tabs = st.tabs(["📋 CHECKLIST", "🔍 INTEL", "🎤 DRILLS", "🧠 MINDSET", "❓ KILL Qs", "📅 DAY-OF"])
+        prep_tabs = st.tabs(["📋 CHECKLIST", "🔍 INTEL", "🎮 COMBAT", "🧠 MINDSET", "❓ KILL Qs", "📅 DAY-OF"])
         
         # ─────────────────────────────────────────────────────────────
         # TAB 1: PRE-INTERVIEW CHECKLIST
@@ -1775,82 +1843,560 @@ with col1:
                     st.markdown(brief)
         
         # ─────────────────────────────────────────────────────────────
-        # TAB 3: VOICE DRILLS (Role-Specific)
+        # TAB 3: COMBAT SIMULATOR (Duolingo-Style Practice)
         # ─────────────────────────────────────────────────────────────
         with prep_tabs[2]:
-            st.markdown(f"### 🎤 VOICE DRILLS: {role}")
-            st.caption("Practice the exact questions they'll ask. Record yourself.")
+            from logic.database import (
+                save_combat_session, get_combat_sessions, get_combat_analytics,
+                get_persona_stats, get_streak_info, save_to_question_bank,
+                update_question_performance
+            )
+            from logic.whisper_transcriber import get_transcriber, analyze_speech
             
-            # Role-specific drills
-            drill_categories = {
-                "Core Pitch": [
-                    "Tell me about yourself.",
-                    "Walk me through your resume.",
-                    "Why are you interested in this role?",
-                    "What do you know about our company?"
-                ],
-                "Results & Metrics": [
-                    "Walk me through your biggest deal.",
-                    "Tell me about a time you exceeded quota.",
-                    "How did you achieve 160% growth?",
-                    "What's your average deal size and sales cycle?"
-                ],
-                "Behavioral (STAR)": [
-                    "Tell me about a difficult customer situation.",
-                    "Describe a time you had to learn quickly.",
-                    "Give an example of cross-functional collaboration.",
-                    "When did you fail? What did you learn?"
-                ],
-                "Role-Specific": [
-                    f"Why do you want to work at {company}?",
-                    "What's your 30-60-90 day plan?",
-                    "How would you ramp up in this territory?",
-                    "What's your approach to building pipeline?"
-                ]
-            }
+            st.markdown(f"### 🎮 INTERVIEW COMBAT SIMULATOR")
+            st.caption(f"Deep practice for {role} @ {company}. Train like it's real.")
             
-            selected_category = st.selectbox("Select drill category:", list(drill_categories.keys()), key="prep_drill_cat")
+            # ═══════════════════════════════════════════════════════════════
+            # XP & STREAK DASHBOARD (Duolingo Style)
+            # ═══════════════════════════════════════════════════════════════
+            streak_info = get_streak_info()
             
-            drill_options = drill_categories[selected_category]
-            selected_drill = st.selectbox("Select question:", drill_options, key="prep_drill_q")
+            xp_cols = st.columns(4)
+            with xp_cols[0]:
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, rgba(255,107,107,0.15), transparent);
+                            border: 2px solid #ff6b6b; border-radius: 12px; padding: 16px; text-align: center;">
+                    <p style="color: #8892b0; margin: 0; font-size: 0.75rem;">🔥 STREAK</p>
+                    <h2 style="color: #ff6b6b; margin: 8px 0;">{streak_info['streak']} days</h2>
+                </div>
+                """, unsafe_allow_html=True)
             
+            with xp_cols[1]:
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, rgba(0,212,255,0.15), transparent);
+                            border: 2px solid #00d4ff; border-radius: 12px; padding: 16px; text-align: center;">
+                    <p style="color: #8892b0; margin: 0; font-size: 0.75rem;">⚡ LEVEL</p>
+                    <h2 style="color: #00d4ff; margin: 8px 0;">{streak_info['level']}</h2>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with xp_cols[2]:
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, rgba(255,215,0,0.15), transparent);
+                            border: 2px solid #FFD700; border-radius: 12px; padding: 16px; text-align: center;">
+                    <p style="color: #8892b0; margin: 0; font-size: 0.75rem;">✨ TOTAL XP</p>
+                    <h2 style="color: #FFD700; margin: 8px 0;">{streak_info['total_xp']}</h2>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with xp_cols[3]:
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.15), transparent);
+                            border: 2px solid #00ff88; border-radius: 12px; padding: 16px; text-align: center;">
+                    <p style="color: #8892b0; margin: 0; font-size: 0.75rem;">📊 TODAY</p>
+                    <h2 style="color: #00ff88; margin: 8px 0;">{streak_info['today_sessions']} rounds</h2>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # XP Progress Bar
             st.markdown(f"""
-            <div style="background: linear-gradient(135deg, rgba(0,212,255,0.1), transparent);
-                        border: 2px solid #00d4ff; border-radius: 12px; padding: 20px; margin: 16px 0; text-align: center;">
-                <p style="color: #8892b0; margin: 0 0 8px 0; font-size: 0.9rem;">PRACTICE THIS QUESTION</p>
-                <h3 style="color: #00d4ff; margin: 0;">"{selected_drill}"</h3>
+            <div style="margin: 16px 0;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                    <span style="color: #8892b0; font-size: 0.8rem;">Level {streak_info['level']}</span>
+                    <span style="color: #FFD700; font-size: 0.8rem;">{streak_info['xp_in_level']}/100 XP</span>
+                </div>
+                <div style="background: rgba(255,255,255,0.1); border-radius: 10px; height: 8px; overflow: hidden;">
+                    <div style="background: linear-gradient(90deg, #FFD700, #ff6b6b); width: {streak_info['xp_in_level']}%; height: 100%; border-radius: 10px;"></div>
+                </div>
             </div>
             """, unsafe_allow_html=True)
             
-            # Audio recording
-            st.markdown("#### 🎙️ RECORD YOUR ANSWER")
-            audio = st.audio_input("Click to record", key="prep_audio")
+            st.markdown("---")
+            
+            # ═══════════════════════════════════════════════════════════════
+            # INTERVIEWER PERSONA SELECTOR
+            # ═══════════════════════════════════════════════════════════════
+            st.markdown("### 👥 SELECT YOUR OPPONENT")
+            st.caption("Each interviewer type asks different questions. Master them all.")
+            
+            # Interviewer Personas with question banks
+            INTERVIEWER_PERSONAS = {
+                "🎯 Recruiter": {
+                    "description": "Initial screen. Testing fit, communication, salary expectations.",
+                    "style": "Friendly but probing. Looking for red flags.",
+                    "color": "#00d4ff",
+                    "questions": {
+                        "Opener": [
+                            "Tell me about yourself.",
+                            "Walk me through your background.",
+                            "Why are you looking to leave your current role?",
+                            "What attracted you to this position?"
+                        ],
+                        "Logistics": [
+                            "What are your salary expectations?",
+                            "When can you start?",
+                            "Are you interviewing elsewhere?",
+                            "What's your ideal work environment?"
+                        ],
+                        "Fit Check": [
+                            "Why do you want to work here?",
+                            "What do you know about our company?",
+                            "Where do you see yourself in 5 years?",
+                            "What's your biggest weakness?"
+                        ]
+                    }
+                },
+                "👔 Hiring Manager": {
+                    "description": "Deep dive. Testing skills, experience, and team fit.",
+                    "style": "Direct and tactical. Wants specifics and proof.",
+                    "color": "#FFD700",
+                    "questions": {
+                        "Experience Deep Dive": [
+                            "Walk me through your biggest deal/project.",
+                            "How did you achieve [your key metric]?",
+                            "Tell me about a time you exceeded expectations.",
+                            "What's your typical approach to [core skill]?"
+                        ],
+                        "Situational": [
+                            "How would you handle [specific scenario]?",
+                            "What would your first 30 days look like?",
+                            "How do you prioritize competing demands?",
+                            "Describe a time you disagreed with leadership."
+                        ],
+                        "Team Dynamics": [
+                            "How do you work with cross-functional teams?",
+                            "Tell me about a conflict with a colleague.",
+                            "How do you handle feedback?",
+                            "What's your management style (if applicable)?"
+                        ]
+                    }
+                },
+                "🏢 Staffing Recruiter": {
+                    "description": "Agency recruiter. Quick screen, selling you to client.",
+                    "style": "Fast-paced. Wants highlights and flexibility.",
+                    "color": "#9b59b6",
+                    "questions": {
+                        "Quick Screen": [
+                            "Give me your 60-second pitch.",
+                            "What's your must-have in the next role?",
+                            "What's your non-negotiable compensation?",
+                            "How flexible is your timeline?"
+                        ],
+                        "Client Fit": [
+                            "Why would you be perfect for this client?",
+                            "What industries have you worked in?",
+                            "Are you open to contract-to-hire?",
+                            "What size company do you prefer?"
+                        ],
+                        "Red Flag Check": [
+                            "Why did you leave your last role?",
+                            "Any gaps in your resume to explain?",
+                            "What would a reference say about you?",
+                            "What's your ideal company culture?"
+                        ]
+                    }
+                },
+                "👑 CEO / Founder": {
+                    "description": "Vision alignment. Testing culture fit and drive.",
+                    "style": "Big picture. Wants passion and long-term thinking.",
+                    "color": "#ff6b6b",
+                    "questions": {
+                        "Vision & Mission": [
+                            "What excites you about our mission?",
+                            "Where do you see this industry in 5 years?",
+                            "What would you do if you had unlimited resources?",
+                            "How do you stay current in your field?"
+                        ],
+                        "Character": [
+                            "Tell me about your biggest failure.",
+                            "What drives you professionally?",
+                            "How do you handle ambiguity?",
+                            "What would you change about your career if you could?"
+                        ],
+                        "Impact": [
+                            "What's the biggest impact you've had in a role?",
+                            "How would you make an impact in year one here?",
+                            "What's a risk you took that paid off?",
+                            "Why should I bet on you?"
+                        ]
+                    }
+                },
+                "🤝 Team Member / Peer": {
+                    "description": "Culture and collaboration check. Testing day-to-day fit.",
+                    "style": "Casual but observant. Assessing if you're easy to work with.",
+                    "color": "#00ff88",
+                    "questions": {
+                        "Collaboration": [
+                            "How do you like to communicate with teammates?",
+                            "Tell me about a time you helped a colleague succeed.",
+                            "How do you handle disagreements on a team?",
+                            "What does good teamwork look like to you?"
+                        ],
+                        "Work Style": [
+                            "How do you organize your day?",
+                            "What tools do you love using?",
+                            "How do you handle stress or tight deadlines?",
+                            "What would your current team say about you?"
+                        ],
+                        "Culture Vibe": [
+                            "What do you do outside of work?",
+                            "What kind of manager brings out your best?",
+                            "What's your ideal team dynamic?",
+                            "What makes a job fun for you?"
+                        ]
+                    }
+                },
+                "📊 VP / Director": {
+                    "description": "Strategic evaluation. Testing leadership and scalability.",
+                    "style": "Results-focused. Wants metrics and strategic thinking.",
+                    "color": "#e67e22",
+                    "questions": {
+                        "Strategic Thinking": [
+                            "How would you build/scale [function] here?",
+                            "What's your framework for [key decision]?",
+                            "How do you balance short-term wins vs. long-term goals?",
+                            "Tell me about a strategy you developed and executed."
+                        ],
+                        "Leadership": [
+                            "How do you develop your team members?",
+                            "Tell me about a difficult personnel decision.",
+                            "How do you handle underperformers?",
+                            "What's your philosophy on accountability?"
+                        ],
+                        "Metrics & Results": [
+                            "What metrics do you obsess over?",
+                            f"How did you drive {company}'s key objectives?",
+                            "Tell me about a time you missed a goal. What happened?",
+                            "How do you report to executives?"
+                        ]
+                    }
+                }
+            }
+            
+            # Persona selector with mastery indicators
+            persona_stats = get_persona_stats()
+            persona_mastery = {p['persona_type']: p for p in persona_stats}
+            
+            persona_cols = st.columns(3)
+            for i, (persona_name, persona_data) in enumerate(INTERVIEWER_PERSONAS.items()):
+                col_idx = i % 3
+                with persona_cols[col_idx]:
+                    mastery = persona_mastery.get(persona_name, {}).get('mastery_level', 0)
+                    avg_score = persona_mastery.get(persona_name, {}).get('avg_score', 0)
+                    sessions = persona_mastery.get(persona_name, {}).get('total_sessions', 0)
+                    
+                    # Mastery stars
+                    stars = "⭐" * min(5, mastery) + "☆" * max(0, 5 - mastery)
+                    
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, {persona_data['color']}15, transparent);
+                                border: 1px solid {persona_data['color']}50; border-radius: 12px; padding: 12px; margin: 4px 0;
+                                text-align: center; cursor: pointer; transition: all 0.3s;"
+                         onmouseover="this.style.borderColor='{persona_data['color']}'; this.style.transform='translateY(-2px)';"
+                         onmouseout="this.style.borderColor='{persona_data['color']}50'; this.style.transform='translateY(0)';">
+                        <p style="color: {persona_data['color']}; margin: 0; font-size: 1.1rem; font-weight: bold;">{persona_name}</p>
+                        <p style="color: #8892b0; margin: 4px 0; font-size: 0.7rem;">{persona_data['description'][:50]}...</p>
+                        <p style="color: #FFD700; margin: 0; font-size: 0.8rem;">{stars}</p>
+                        <p style="color: #8892b0; margin: 0; font-size: 0.65rem;">{sessions} sessions | Avg: {int(avg_score)}%</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            st.markdown("")
+            selected_persona = st.selectbox(
+                "Choose your interviewer:",
+                list(INTERVIEWER_PERSONAS.keys()),
+                key="combat_persona_select"
+            )
+            
+            persona = INTERVIEWER_PERSONAS[selected_persona]
+            
+            # Show persona details
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, {persona['color']}20, transparent);
+                        border-left: 4px solid {persona['color']}; padding: 16px; margin: 8px 0;">
+                <h4 style="color: {persona['color']}; margin: 0;">{selected_persona}</h4>
+                <p style="color: #ccd6f6; margin: 8px 0;">{persona['description']}</p>
+                <p style="color: #8892b0; font-size: 0.85rem; margin: 0;"><b>Style:</b> {persona['style']}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.markdown("---")
+            
+            # ═══════════════════════════════════════════════════════════════
+            # QUESTION CATEGORY & SELECTION
+            # ═══════════════════════════════════════════════════════════════
+            st.markdown("### 🎯 SELECT BATTLE ROUND")
+            
+            # Difficulty selector
+            difficulty_cols = st.columns(3)
+            with difficulty_cols[0]:
+                if st.button("🟢 EASY", use_container_width=True, key="diff_easy"):
+                    st.session_state['combat_difficulty'] = "Easy"
+            with difficulty_cols[1]:
+                if st.button("🟡 MEDIUM", use_container_width=True, key="diff_medium"):
+                    st.session_state['combat_difficulty'] = "Medium"
+            with difficulty_cols[2]:
+                if st.button("🔴 HARD", use_container_width=True, key="diff_hard"):
+                    st.session_state['combat_difficulty'] = "Hard"
+            
+            current_difficulty = st.session_state.get('combat_difficulty', 'Medium')
+            st.caption(f"Current difficulty: **{current_difficulty}**")
+            
+            # Category selector
+            question_categories = list(persona['questions'].keys())
+            selected_category = st.selectbox("Question Category:", question_categories, key="combat_category")
+            
+            # Question selector
+            questions = persona['questions'][selected_category]
+            
+            # Add dynamic company-specific questions
+            dynamic_questions = [
+                f"Why do you want to work at {company}?",
+                f"What do you know about {company}'s recent news?",
+                f"How would you help {company} achieve its goals?",
+            ]
+            all_questions = questions + dynamic_questions
+            
+            selected_question = st.selectbox("Select question:", all_questions, key="combat_question")
+            
+            # Or random question
+            if st.button("🎲 RANDOM QUESTION", use_container_width=True, key="random_q"):
+                import random
+                all_persona_questions = []
+                for cat, qs in persona['questions'].items():
+                    all_persona_questions.extend(qs)
+                selected_question = random.choice(all_persona_questions)
+                st.session_state['combat_question'] = selected_question
+            
+            # Display the question prominently
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, {persona['color']}25, rgba(0,0,0,0.3));
+                        border: 3px solid {persona['color']}; border-radius: 16px; padding: 32px; margin: 20px 0; text-align: center;">
+                <p style="color: #8892b0; margin: 0 0 8px 0; font-size: 0.9rem;">{selected_persona} ASKS:</p>
+                <h2 style="color: {persona['color']}; margin: 0; font-size: 1.5rem; line-height: 1.4;">"{selected_question}"</h2>
+                <p style="color: #8892b0; margin: 16px 0 0 0; font-size: 0.8rem;">🎯 Role: {role} @ {company} | ⚡ Difficulty: {current_difficulty}</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Save question to bank for tracking
+            save_to_question_bank(selected_question, selected_category, selected_persona, current_difficulty)
+            
+            st.markdown("---")
+            
+            # ═══════════════════════════════════════════════════════════════
+            # COMBAT RECORDING & SCORING
+            # ═══════════════════════════════════════════════════════════════
+            st.markdown("### 🎙️ RECORD YOUR ANSWER")
+            st.caption("Hit record, answer as if it's real, then get AI scoring.")
+            
+            # Timer display
+            st.markdown("""
+            <div style="text-align: center; margin: 16px 0;">
+                <p style="color: #8892b0; margin: 0;">⏱️ Aim for 60-90 seconds (varies by question)</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            audio = st.audio_input("Click to start recording", key="combat_audio")
             
             if audio:
                 st.audio(audio)
-                st.success("✅ Recording captured! Listen back and self-assess.")
                 
-                if st.button("🧠 GET AI FEEDBACK", use_container_width=True, key="prep_voice_feedback"):
-                    with st.spinner("Analyzing..."):
-                        from logic.generator import generate_plain_text
-                        
-                        feedback_prompt = f"""
-                        As an elite interview coach, give feedback for answering this question:
-                        "{selected_drill}"
-                        
-                        Provide:
-                        1. Key points to hit (3 bullets)
-                        2. Example opening line
-                        3. Example closing line
-                        4. Common mistakes to avoid
-                        
-                        Make it specific to a {role} role at {company}.
-                        """
-                        
-                        model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
-                        feedback = generate_plain_text(feedback_prompt, model_name=model_id)
-                        
-                        st.markdown(feedback)
+                # Transcription option
+                transcribe_option = st.checkbox("🔤 Transcribe my answer (uses Groq Whisper)", value=True, key="combat_transcribe")
+                
+                col_analyze, col_tips = st.columns([1, 1])
+                
+                with col_analyze:
+                    if st.button("🧠 SCORE MY RESPONSE", type="primary", use_container_width=True, key="combat_score_btn"):
+                        with st.spinner("Analyzing your response..."):
+                            transcript = ""
+                            speech_analysis = {}
+                            
+                            # Transcribe if option selected and API key available
+                            if transcribe_option and st.session_state.get('groq_api_key'):
+                                try:
+                                    transcriber = get_transcriber(st.session_state.get('groq_api_key'))
+                                    if transcriber.is_available():
+                                        result = transcriber.transcribe(audio)
+                                        transcript = result.get('text', '')
+                                        if transcript:
+                                            speech_analysis = analyze_speech(transcript)
+                                            st.success("✅ Transcription complete!")
+                                except Exception as e:
+                                    st.warning(f"Transcription unavailable: {e}")
+                            
+                            # Generate AI feedback
+                            from logic.generator import generate_plain_text
+                            
+                            context_prompt = f"""
+                            You are a senior interview coach scoring a candidate's response.
+                            
+                            CONTEXT:
+                            - Interviewer Type: {selected_persona}
+                            - Question: "{selected_question}"
+                            - Role: {role}
+                            - Company: {company}
+                            - Difficulty: {current_difficulty}
+                            {"- Transcript: " + transcript if transcript else "- (No transcript available - provide general coaching)"}
+                            
+                            PROVIDE:
+                            1. **SCORE: X/100** (be honest but fair)
+                            2. **STRENGTHS** (2-3 bullets of what worked)
+                            3. **IMPROVEMENTS** (2-3 specific, actionable fixes)
+                            4. **EXAMPLE ANSWER** (Show a strong 60-second response)
+                            5. **PRO TIP** (One tactical insight for this interviewer type)
+                            
+                            Be specific to the interviewer type's perspective.
+                            """
+                            
+                            model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
+                            feedback = generate_plain_text(context_prompt, model_name=model_id)
+                            
+                            # Extract score from feedback (simple parse)
+                            import re
+                            score_match = re.search(r'SCORE[:\s]*(\d+)', feedback, re.IGNORECASE)
+                            score = int(score_match.group(1)) if score_match else 70
+                            
+                            # Save session to database
+                            session_id = save_combat_session(
+                                company=company,
+                                role=role,
+                                interviewer_type=selected_persona,
+                                question=selected_question,
+                                category=selected_category,
+                                difficulty=current_difficulty,
+                                transcript=transcript,
+                                score=score,
+                                feedback=feedback,
+                                word_count=speech_analysis.get('word_count', 0),
+                                filler_count=speech_analysis.get('filler_count', 0),
+                                has_metrics=speech_analysis.get('has_metric', False)
+                            )
+                            
+                            # Update question performance
+                            update_question_performance(selected_question, score, transcript if score > 80 else None)
+                            
+                            # Display score with visual
+                            score_color = "#00ff88" if score >= 80 else "#FFD700" if score >= 60 else "#ff6b6b"
+                            st.markdown(f"""
+                            <div style="background: linear-gradient(135deg, {score_color}20, transparent);
+                                        border: 3px solid {score_color}; border-radius: 16px; padding: 24px; margin: 16px 0; text-align: center;">
+                                <p style="color: #8892b0; margin: 0;">YOUR SCORE</p>
+                                <h1 style="color: {score_color}; margin: 8px 0; font-size: 4rem;">{score}</h1>
+                                <p style="color: #ccd6f6; margin: 0;">
+                                    {"🔥 EXCELLENT! You're ready!" if score >= 80 else "👍 Good, but room to improve." if score >= 60 else "💪 Keep practicing!"}
+                                </p>
+                                <p style="color: #8892b0; margin: 8px 0 0 0; font-size: 0.8rem;">+{10 + score // 10} XP Earned</p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                            
+                            # Show transcript if available
+                            if transcript:
+                                with st.expander("📝 YOUR TRANSCRIPT"):
+                                    st.write(transcript)
+                                    st.caption(f"Words: {speech_analysis.get('word_count', 0)} | Fillers: {speech_analysis.get('filler_count', 0)} | Metrics: {'Yes ✅' if speech_analysis.get('has_metric') else 'No ❌'}")
+                            
+                            # Show detailed feedback
+                            st.markdown("### 📋 DETAILED FEEDBACK")
+                            st.markdown(feedback)
+                            
+                            # XP animation
+                            st.balloons() if score >= 80 else None
+                
+                with col_tips:
+                    if st.button("💡 SHOW TIPS FIRST", use_container_width=True, key="combat_tips_btn"):
+                        with st.spinner("Loading tips..."):
+                            from logic.generator import generate_plain_text
+                            
+                            tips_prompt = f"""
+                            Give quick tips for answering this interview question:
+                            
+                            Interviewer: {selected_persona}
+                            Question: "{selected_question}"
+                            Role: {role}
+                            
+                            Provide:
+                            1. **Key Points to Hit** (3 bullets)
+                            2. **Strong Opening Line** (one example)
+                            3. **Strong Closing Line** (one example)
+                            4. **Time Target** (how long to speak)
+                            
+                            Be concise and tactical.
+                            """
+                            
+                            model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
+                            tips = generate_plain_text(tips_prompt, model_name=model_id)
+                            st.markdown(tips)
+            
+            st.markdown("---")
+            
+            # ═══════════════════════════════════════════════════════════════
+            # PRACTICE HISTORY & ANALYTICS
+            # ═══════════════════════════════════════════════════════════════
+            st.markdown("### 📊 YOUR COMBAT HISTORY")
+            
+            history_tabs = st.tabs(["📈 Recent Sessions", "👥 Persona Stats", "❓ Question Bank"])
+            
+            with history_tabs[0]:
+                sessions = get_combat_sessions(limit=10, company=company)
+                if sessions:
+                    for session in sessions:
+                        s_color = "#00ff88" if session['score'] >= 80 else "#FFD700" if session['score'] >= 60 else "#ff6b6b"
+                        st.markdown(f"""
+                        <div style="background: rgba(255,255,255,0.02); border-left: 3px solid {s_color}; padding: 12px; margin: 8px 0;">
+                            <div style="display: flex; justify-content: space-between;">
+                                <div>
+                                    <p style="color: #ccd6f6; margin: 0; font-size: 0.9rem;">{session['interviewer_type']}: "{session['question'][:60]}..."</p>
+                                    <p style="color: #8892b0; margin: 4px 0 0 0; font-size: 0.75rem;">{session['created_at'][:16]}</p>
+                                </div>
+                                <p style="color: {s_color}; font-weight: bold; font-size: 1.2rem; margin: 0;">{session['score']}%</p>
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.info("No practice sessions yet for this company. Start practicing!")
+            
+            with history_tabs[1]:
+                persona_stats = get_persona_stats()
+                if persona_stats:
+                    for ps in persona_stats:
+                        p_color = INTERVIEWER_PERSONAS.get(ps['persona_type'], {}).get('color', '#FFD700')
+                        stars = "⭐" * min(5, ps['mastery_level']) + "☆" * max(0, 5 - ps['mastery_level'])
+                        st.markdown(f"""
+                        <div style="background: linear-gradient(90deg, {p_color}10, transparent); padding: 12px; margin: 8px 0; border-radius: 8px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <p style="color: {p_color}; margin: 0; font-weight: bold;">{ps['persona_type']}</p>
+                                    <p style="color: #8892b0; margin: 0; font-size: 0.8rem;">{ps['total_sessions']} sessions | Best: {ps['best_score']}%</p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <p style="color: #FFD700; margin: 0;">{stars}</p>
+                                    <p style="color: #ccd6f6; margin: 0; font-size: 1.1rem;">Avg: {int(ps['avg_score'])}%</p>
+                                </div>
+                            </div>
+                        </div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.info("No persona stats yet. Start practicing with different interviewers!")
+            
+            with history_tabs[2]:
+                st.caption("Questions you've practiced, sorted by those needing most work.")
+                from logic.database import get_question_bank
+                q_bank = get_question_bank()
+                if q_bank:
+                    for q in q_bank[:10]:
+                        q_color = "#00ff88" if q['avg_score'] >= 80 else "#FFD700" if q['avg_score'] >= 60 else "#ff6b6b"
+                        st.markdown(f"""
+                        <div style="padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <p style="color: #ccd6f6; margin: 0;">{q['question'][:70]}...</p>
+                            <p style="color: #8892b0; margin: 4px 0 0 0; font-size: 0.75rem;">
+                                Practiced: {q['times_practiced']}x | Avg: <span style="color: {q_color};">{int(q['avg_score'])}%</span> | {q['category']}
+                            </p>
+                        </div>
+                        """, unsafe_allow_html=True)
+                else:
+                    st.info("Practice some questions to build your bank!")
+        
         
         # ─────────────────────────────────────────────────────────────
         # TAB 4: MINDSET CALIBRATION
@@ -4211,10 +4757,13 @@ start with full focus on day one. Is that something we can add?"
             ]
         
         # CRM Tabs
-        # CRM Tabs (Your Full Tab Structure) - Added NETWORK BUILDER + THE BLUEPRINT
-        crm_tab1, crm_tab2, crm_tab3, crm_tab4, crm_tab5, crm_tab6, crm_tab7, crm_tab8 = st.tabs([
+        # CRM Tabs (Your Full Tab Structure) - Added NETWORK BUILDER + THE BLUEPRINT + CALENDAR + MARKET + NETWORKING
+        crm_tab1, crm_tab2, crm_tab3, crm_tab4, crm_tab5, crm_tab6, crm_tab7, crm_tab8, crm_tab9, crm_tab10, crm_tab11 = st.tabs([
             "📋 DAILY BRIEFING", 
             "🔮 THE BLUEPRINT",
+            "📅 CALENDAR",
+            "📈 MARKET",
+            "🤝 NETWORKING",
             "👤 CONTACTS", 
             "📈 DEALS", 
             "🔗 NETWORK BUILDER",
@@ -4497,6 +5046,367 @@ start with full focus on day one. Is that something we can add?"
                     st.markdown(f"**Calibration:** *\"{p['calibration']}\"*")
         
         # ═══════════════════════════════════════════════════════════════
+        # TAB: 📅 CALENDAR (Google Calendar Integration)
+        # ═══════════════════════════════════════════════════════════════
+        with crm_tab3:
+            st.markdown("### 📅 INTERVIEW CALENDAR")
+            st.caption("Sync with Google Calendar to see all upcoming interviews and meetings.")
+            
+            deals = st.session_state.get('crm_deals', [])
+            calendar_events = st.session_state.get('calendar_events', [])
+            
+            # Google Calendar Integration Status
+            try:
+                from logic.integrations import (
+                    is_google_calendar_available, get_upcoming_calendar_events,
+                    get_interview_events, format_time_until
+                )
+                gcal_available = is_google_calendar_available()
+            except ImportError:
+                gcal_available = False
+            
+            # Connection Status Card
+            if gcal_available:
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, rgba(0,255,136,0.15), transparent);
+                            border: 2px solid #00ff88; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 2rem;">🔗</span>
+                        <div>
+                            <p style="color: #00ff88; margin: 0; font-weight: bold;">GOOGLE CALENDAR CONNECTED</p>
+                            <p style="color: #8892b0; margin: 0; font-size: 0.85rem;">Auto-syncing your interviews</p>
+                        </div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Fetch live calendar events
+                if st.button("🔄 SYNC CALENDAR", use_container_width=True, key="sync_gcal"):
+                    with st.spinner("Fetching from Google Calendar..."):
+                        try:
+                            events = get_upcoming_calendar_events(days=14)
+                            interview_events = [e for e in events if e.get('is_interview')]
+                            st.session_state['google_calendar_events'] = events
+                            st.session_state['google_calendar_interviews'] = interview_events
+                            st.success(f"✅ Synced {len(events)} events, {len(interview_events)} interviews detected!")
+                        except Exception as e:
+                            st.error(f"Sync failed: {e}")
+            else:
+                st.markdown("""
+                <div style="background: linear-gradient(135deg, rgba(255,191,0,0.15), transparent);
+                            border: 2px solid #FFD700; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 2rem;">📅</span>
+                        <div>
+                            <p style="color: #FFD700; margin: 0; font-weight: bold;">GOOGLE CALENDAR NOT CONNECTED</p>
+                            <p style="color: #8892b0; margin: 0; font-size: 0.85rem;">Add credentials to enable auto-sync</p>
+                        </div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                with st.expander("🔧 HOW TO CONNECT GOOGLE CALENDAR"):
+                    st.markdown("""
+                    **Setup Google Calendar OAuth:**
+                    
+                    1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+                    2. Create a new project or use existing
+                    3. Enable "Google Calendar API"
+                    4. Create OAuth 2.0 credentials (Desktop app type)
+                    5. Download the JSON file
+                    6. Save it as `google_credentials.json` in the app directory
+                    7. Restart the app and click "Sync Calendar"
+                    
+                    *First-time sync will open a browser window to authorize access.*
+                    """)
+            
+            st.markdown("---")
+            
+            # Display upcoming interviews from multiple sources
+            st.markdown("### 🎯 UPCOMING INTERVIEWS")
+            
+            # Combine sources: Google Calendar, manual entries, and CRM deals with interview stages
+            all_interviews = []
+            
+            # From CRM deals (interview stages)
+            interview_stages = ['Interview Scheduled', '1st Interview', '2nd Interview', 'Final Round', 'Phone Screen']
+            for deal in deals:
+                if deal.get('Stage') in interview_stages:
+                    all_interviews.append({
+                        'source': 'CRM',
+                        'company': deal.get('Company', 'Unknown'),
+                        'role': deal.get('Role', 'Unknown'),
+                        'stage': deal.get('Stage', 'Interview'),
+                        'notes': deal.get('Notes', ''),
+                        'date': 'TBD'
+                    })
+            
+            # From manual calendar entries
+            for event in calendar_events:
+                all_interviews.append({
+                    'source': 'Manual',
+                    'company': event.get('company', 'Unknown'),
+                    'role': event.get('title', 'Interview'),
+                    'stage': event.get('type', 'Interview'),
+                    'date': event.get('date', 'TBD'),
+                    'time': event.get('time', '')
+                })
+            
+            # From Google Calendar (if synced)
+            gcal_interviews = st.session_state.get('google_calendar_interviews', [])
+            for event in gcal_interviews:
+                all_interviews.append({
+                    'source': 'Google',
+                    'company': event.get('company', '') or 'Check Title',
+                    'role': event.get('title', 'Interview'),
+                    'stage': event.get('type', 'Interview'),
+                    'date': event.get('date', 'TBD'),
+                    'time': event.get('time', ''),
+                    'link': event.get('google_meet', '') or event.get('link', '')
+                })
+            
+            if all_interviews:
+                for i, interview in enumerate(all_interviews):
+                    source_icons = {'CRM': '📊', 'Manual': '✏️', 'Google': '🔗'}
+                    source_icon = source_icons.get(interview['source'], '📅')
+                    stage_color = "#00ff88" if 'Final' in interview.get('stage', '') else "#FFD700"
+                    
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, {stage_color}10, transparent);
+                                border-left: 4px solid {stage_color}; padding: 16px; margin: 8px 0; border-radius: 0 8px 8px 0;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <p style="color: {stage_color}; margin: 0; font-weight: bold; font-size: 1.1rem;">
+                                    {source_icon} {interview['company']}
+                                </p>
+                                <p style="color: #ccd6f6; margin: 4px 0;">{interview['role']}</p>
+                                <p style="color: #8892b0; margin: 0; font-size: 0.85rem;">
+                                    📍 {interview['stage']} | Source: {interview['source']}
+                                </p>
+                            </div>
+                            <div style="text-align: right;">
+                                <p style="color: {stage_color}; font-weight: bold; margin: 0;">{interview.get('date', 'TBD')}</p>
+                                <p style="color: #8892b0; margin: 0; font-size: 0.85rem;">{interview.get('time', '')}</p>
+                            </div>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Quick actions
+                    action_cols = st.columns(4)
+                    with action_cols[0]:
+                        if st.button("🎯 PREP", key=f"prep_int_{i}", use_container_width=True):
+                            st.session_state['prep_company'] = interview['company']
+                            st.toast(f"Go to Prep Mode for {interview['company']}")
+                    with action_cols[1]:
+                        if st.button("🎮 COMBAT", key=f"combat_int_{i}", use_container_width=True):
+                            st.toast("Practice in Combat Simulator!")
+                    with action_cols[2]:
+                        if st.button("📰 INTEL", key=f"intel_int_{i}", use_container_width=True):
+                            st.toast("Opening Company Intel...")
+                    with action_cols[3]:
+                        if interview.get('link'):
+                            st.markdown(f"[🔗 JOIN]({interview['link']})")
+            else:
+                st.info("📅 No upcoming interviews. Add them from your CRM deals or manually below!")
+            
+            st.markdown("---")
+            
+            # Add Manual Interview
+            st.markdown("### ➕ ADD INTERVIEW MANUALLY")
+            add_cols = st.columns([2, 2, 1, 1])
+            new_company = add_cols[0].text_input("Company", key="cal_new_company")
+            new_role = add_cols[1].text_input("Role/Title", key="cal_new_role")
+            new_date = add_cols[2].date_input("Date", key="cal_new_date")
+            new_type = add_cols[3].selectbox("Type", ["Phone Screen", "Hiring Manager", "Team Panel", "Final Round", "CEO/Exec"], key="cal_new_type")
+            
+            if st.button("📅 ADD TO CALENDAR", use_container_width=True, key="add_manual_interview"):
+                if new_company:
+                    if 'calendar_events' not in st.session_state:
+                        st.session_state['calendar_events'] = []
+                    st.session_state['calendar_events'].append({
+                        'title': f"{new_type} - {new_role}",
+                        'company': new_company,
+                        'date': str(new_date),
+                        'type': new_type,
+                        'time': ''
+                    })
+                    st.success(f"✅ Added interview with {new_company}!")
+                    st.rerun()
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TAB: 📈 MARKET (Stock Prices for Pipeline Companies)
+        # ═══════════════════════════════════════════════════════════════
+        with crm_tab4:
+            st.markdown("### 📈 MARKET INTEL")
+            st.caption("Live stock prices and market data for your pipeline companies.")
+            
+            deals = st.session_state.get('crm_deals', [])
+            
+            try:
+                from logic.integrations import get_stock_price, get_company_stock_symbol, get_job_board_links
+            except ImportError:
+                st.error("Integration module not available")
+                get_stock_price = None
+            
+            if get_stock_price:
+                # Get unique companies from pipeline
+                pipeline_companies = list(set([d['Company'] for d in deals]))
+                
+                st.markdown("### 📊 PIPELINE COMPANY STOCKS")
+                st.caption("Real-time market data for public companies in your pipeline.")
+                
+                # Stock data cache
+                if 'stock_cache' not in st.session_state:
+                    st.session_state['stock_cache'] = {}
+                
+                # Refresh button
+                if st.button("🔄 REFRESH PRICES", use_container_width=True, key="refresh_stocks"):
+                    st.session_state['stock_cache'] = {}
+                    st.rerun()
+                
+                st.markdown("")
+                
+                # Display stock cards - Grouped by type
+                public_companies = []
+                private_companies = []
+                nonprofit_companies = []
+                
+                for company in pipeline_companies:
+                    company_data = get_company_stock_symbol(company)
+                    company_type = company_data.get('type', 'unknown')
+                    
+                    if company_type == 'public' and company_data.get('symbol'):
+                        public_companies.append((company, company_data))
+                    elif company_type in ['nonprofit', 'intergovernmental', 'government']:
+                        nonprofit_companies.append((company, company_data))
+                    else:
+                        private_companies.append((company, company_data))
+                
+                # PUBLIC COMPANIES with stock data
+                if public_companies:
+                    st.markdown("#### 📈 PUBLIC COMPANIES")
+                    stock_cols = st.columns(3)
+                    col_idx = 0
+                    
+                    for company, company_data in public_companies:
+                        symbol = company_data.get('symbol')
+                        
+                        if symbol:
+                            # Check cache or fetch
+                            if symbol not in st.session_state['stock_cache']:
+                                stock_data = get_stock_price(symbol)
+                                st.session_state['stock_cache'][symbol] = stock_data
+                            else:
+                                stock_data = st.session_state['stock_cache'][symbol]
+                            
+                            with stock_cols[col_idx % 3]:
+                                if 'error' not in stock_data:
+                                    change = stock_data.get('change', 0)
+                                    change_pct = stock_data.get('change_percent', 0)
+                                    price = stock_data.get('price', 0)
+                                    
+                                    change_color = "#00ff88" if change >= 0 else "#ff6b6b"
+                                    change_icon = "▲" if change >= 0 else "▼"
+                                    country_flag = {'USA': '🇺🇸', 'UK': '🇬🇧', 'Germany': '🇩🇪', 'Japan': '🇯🇵', 'China': '🇨🇳', 'Canada': '🇨🇦', 'France': '🇫🇷', 'Switzerland': '🇨🇭'}.get(company_data.get('country', ''), '🌍')
+                                    
+                                    st.markdown(f"""
+                                    <div style="background: linear-gradient(135deg, rgba(255,215,0,0.1), transparent);
+                                                border: 1px solid rgba(255,215,0,0.3); border-radius: 12px; padding: 16px; margin: 8px 0;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                            <div>
+                                                <p style="color: #8892b0; margin: 0; font-size: 0.75rem;">{country_flag} {company}</p>
+                                                <p style="color: #FFD700; margin: 4px 0 0 0; font-weight: bold;">{symbol}</p>
+                                                <p style="color: #64ffda; margin: 2px 0 0 0; font-size: 0.65rem;">{company_data.get('industry', '')}</p>
+                                            </div>
+                                            <div style="text-align: right;">
+                                                <p style="color: #ccd6f6; margin: 0; font-size: 1.4rem; font-weight: bold;">${price:.2f}</p>
+                                                <p style="color: {change_color}; margin: 0; font-size: 0.9rem;">
+                                                    {change_icon} ${abs(change):.2f} ({change_pct:+.2f}%)
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <p style="color: #8892b0; margin: 8px 0 0 0; font-size: 0.7rem;">
+                                            {stock_data.get('market_state', '')} | {company_data.get('exchange', '')}
+                                        </p>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                                else:
+                                    st.markdown(f"""
+                                    <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.1); 
+                                                border-radius: 12px; padding: 16px; margin: 8px 0;">
+                                        <p style="color: #8892b0; margin: 0;">{company}</p>
+                                        <p style="color: #FFD700; margin: 4px 0;">{symbol}</p>
+                                        <p style="color: #ff6b6b; margin: 0; font-size: 0.8rem;">Data unavailable</p>
+                                    </div>
+                                    """, unsafe_allow_html=True)
+                            
+                            col_idx += 1
+                
+                # PRIVATE COMPANIES (Startups, Unicorns, etc.)
+                if private_companies:
+                    st.markdown("---")
+                    st.markdown("### 🔒 PRIVATE COMPANIES")
+                    st.caption("Startups, unicorns, and private companies in your pipeline:")
+                    
+                    private_cols = st.columns(3)
+                    for i, (company, data) in enumerate(private_companies[:12]):
+                        with private_cols[i % 3]:
+                            market_cap = data.get('market_cap', 'unknown')
+                            cap_badge = {'unicorn': '🦄', 'startup': '🚀', 'large': '🏢', 'mid': '📊', 'small': '💼'}.get(market_cap, '🏢')
+                            
+                            job_links = get_job_board_links(company)
+                            st.markdown(f"""
+                            <div style="background: rgba(147,112,219,0.08); border: 1px solid rgba(147,112,219,0.3);
+                                        border-radius: 12px; padding: 12px; margin: 6px 0;">
+                                <p style="color: #9370DB; margin: 0; font-weight: bold;">{cap_badge} {company}</p>
+                                <p style="color: #8892b0; margin: 2px 0; font-size: 0.75rem;">{data.get('industry', 'Unknown')} | {data.get('country', 'Unknown')}</p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                            st.markdown(f"[LinkedIn]({job_links['LinkedIn']}) | [Careers]({job_links['Company Careers']})")
+                
+                st.markdown("---")
+                
+                # Manual stock lookup
+                st.markdown("### 🔍 LOOKUP ANY STOCK")
+                lookup_cols = st.columns([3, 1])
+                manual_symbol = lookup_cols[0].text_input("Enter ticker symbol (e.g., AAPL, GOOGL):", key="manual_stock_lookup")
+                
+                if lookup_cols[1].button("📈 GET PRICE", key="get_manual_stock"):
+                    if manual_symbol:
+                        with st.spinner("Fetching..."):
+                            data = get_stock_price(manual_symbol.upper())
+                            if 'error' not in data:
+                                change = data.get('change', 0)
+                                change_color = "#00ff88" if change >= 0 else "#ff6b6b"
+                                st.success(f"**{data['symbol']}**: ${data['price']:.2f} ({data['change_percent']:+.2f}%)")
+                            else:
+                                st.error(f"Could not find: {manual_symbol}")
+                
+                # Market indices for context
+                st.markdown("---")
+                st.markdown("### 📊 MARKET INDICES")
+                
+                index_cols = st.columns(4)
+                indices = [('SPY', 'S&P 500'), ('QQQ', 'NASDAQ'), ('DIA', 'DOW'), ('IWM', 'Russell 2000')]
+                
+                for i, (symbol, name) in enumerate(indices):
+                    with index_cols[i]:
+                        if symbol not in st.session_state['stock_cache']:
+                            data = get_stock_price(symbol)
+                            st.session_state['stock_cache'][symbol] = data
+                        else:
+                            data = st.session_state['stock_cache'][symbol]
+                        
+                        if 'error' not in data:
+                            change_color = "#00ff88" if data.get('change', 0) >= 0 else "#ff6b6b"
+                            st.metric(name, f"${data['price']:.2f}", f"{data['change_percent']:+.2f}%")
+                        else:
+                            st.metric(name, "—", "N/A")
+            else:
+                st.warning("Stock price integration not available. Check the integrations module.")
+        
+        # ═══════════════════════════════════════════════════════════════
         # TAB 0: DAILY BRIEFING (AUTOMATIC TASK ENGINE)
         # ═══════════════════════════════════════════════════════════════
         with crm_tab1:
@@ -4664,9 +5574,205 @@ start with full focus on day one. Is that something we can add?"
             k4.metric("INTERVIEWS", len(interviews))
         
         # ═══════════════════════════════════════════════════════════════
+        # TAB: 🤝 NETWORKING HUB (Multi-Channel Messaging & Introductions)
+        # ═══════════════════════════════════════════════════════════════
+        with crm_tab5:
+            st.markdown("### 🤝 NETWORKING HUB")
+            st.caption("Multi-channel outreach · Warm introductions · Be the connector")
+            
+            try:
+                from logic.integrations import (
+                    generate_messaging_links, generate_intro_message, 
+                    get_social_links, ACHIEVEMENTS, check_achievements, get_achievement_display
+                )
+                networking_available = True
+            except ImportError:
+                networking_available = False
+                st.warning("Networking module not fully loaded")
+            
+            if networking_available:
+                contacts = st.session_state.get('crm_contacts', [])
+                
+                # Multi-Channel Quick Reach
+                st.markdown("---")
+                st.markdown("## 📱 QUICK REACH — MULTI-CHANNEL")
+                st.caption("Select a contact and reach out on any platform")
+                
+                # Contact selector
+                contact_names = [f"{c['Name']} @ {c['Company']}" for c in contacts]
+                selected_contact_idx = st.selectbox("Select Contact", range(len(contact_names)), 
+                                                    format_func=lambda x: contact_names[x] if contact_names else "No contacts", 
+                                                    key="net_contact_select")
+                
+                if contacts and selected_contact_idx is not None:
+                    selected_contact = contacts[selected_contact_idx]
+                    
+                    # Contact card
+                    contact_name = selected_contact.get('Name', 'Unknown')
+                    contact_company = selected_contact.get('Company', '')
+                    contact_email = selected_contact.get('Email', '')
+                    contact_phone = selected_contact.get('Phone', '')
+                    contact_linkedin = selected_contact.get('LinkedIn', '')
+                    
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, rgba(100,255,218,0.1), transparent);
+                                border: 1px solid rgba(100,255,218,0.3); border-radius: 12px; padding: 16px; margin: 16px 0;">
+                        <h4 style="color: #64ffda; margin: 0;">{contact_name}</h4>
+                        <p style="color: #ccd6f6;">{selected_contact.get('Role', '')} @ {contact_company}</p>
+                        <p style="color: #8892b0; font-size: 0.85rem;">
+                            📧 {contact_email or 'No email'} | 📱 {contact_phone or 'No phone'}
+                        </p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Message composer
+                    st.markdown("#### ✍️ COMPOSE MESSAGE")
+                    message_template = st.text_area("Message", 
+                        value=f"Hi {contact_name.split()[0] if contact_name else ''},\n\nHope you're doing well! I wanted to reach out about...",
+                        height=100, key="net_message_compose")
+                    
+                    # Generate deep links
+                    links = generate_messaging_links(
+                        phone=contact_phone,
+                        email=contact_email,
+                        name=contact_name,
+                        message=message_template,
+                        linkedin_url=contact_linkedin
+                    )
+                    
+                    # Channel buttons
+                    st.markdown("#### 🚀 SEND VIA")
+                    btn_cols = st.columns(6)
+                    
+                    if links.get('WhatsApp'):
+                        btn_cols[0].markdown(f"[💬 WhatsApp]({links['WhatsApp']})")
+                    if links.get('LinkedIn Message'):
+                        btn_cols[1].markdown(f"[💼 LinkedIn]({links['LinkedIn Message']})")
+                    if links.get('Email'):
+                        btn_cols[2].markdown(f"[📧 Email]({links['Email']})")
+                    if links.get('SMS'):
+                        btn_cols[3].markdown(f"[📱 SMS]({links['SMS']})")
+                    if links.get('Telegram'):
+                        btn_cols[4].markdown(f"[✈️ Telegram]({links['Telegram']})")
+                    if links.get('Phone'):
+                        btn_cols[5].markdown(f"[📞 Call]({links['Phone']})")
+                
+                st.markdown("---")
+                
+                # Warm Intro Generator
+                st.markdown("## 🔥 WARM INTRO GENERATOR")
+                st.caption("Generate personalized intro requests for any channel")
+                
+                intro_cols = st.columns(2)
+                your_name = intro_cols[0].text_input("Your Name", value="Leon", key="net_your_name")
+                target_person = intro_cols[1].text_input("Person You Want to Meet", placeholder="e.g., CEO of Target Co", key="net_target")
+                
+                connector_col, context_col = st.columns(2)
+                connector_name = connector_col.text_input("Who Can Introduce You?", placeholder="e.g., John Smith", key="net_connector")
+                intro_context = context_col.text_input("Context/Role", placeholder="e.g., VP Sales role", key="net_context")
+                
+                intro_type = st.selectbox("Message Type", 
+                    ["warm_intro", "referral_ask", "follow_up", "thank_you"],
+                    format_func=lambda x: {"warm_intro": "🤝 Warm Intro Request", "referral_ask": "📋 Referral Ask", 
+                                           "follow_up": "🔄 Follow Up", "thank_you": "🙏 Thank You"}.get(x, x),
+                    key="net_intro_type")
+                
+                if st.button("⚡ GENERATE MESSAGES", use_container_width=True, key="gen_intro_msgs"):
+                    if connector_name and your_name:
+                        messages = generate_intro_message(
+                            intro_type=intro_type,
+                            from_name=your_name,
+                            to_name=connector_name,
+                            target_name=target_person or "them",
+                            context=intro_context
+                        )
+                        
+                        st.markdown("#### 📧 EMAIL VERSION")
+                        st.code(messages.get('email', ''), language=None)
+                        
+                        st.markdown("#### 💼 LINKEDIN VERSION")
+                        st.code(messages.get('linkedin', ''), language=None)
+                        
+                        st.markdown("#### 💬 WHATSAPP VERSION")
+                        st.code(messages.get('whatsapp', ''), language=None)
+                
+                st.markdown("---")
+                
+                # Person Finder
+                st.markdown("## 🔍 FIND ANYONE")
+                st.caption("Search for someone across all platforms")
+                
+                find_cols = st.columns([2, 2, 1])
+                find_name = find_cols[0].text_input("Person's Name", key="net_find_name")
+                find_company = find_cols[1].text_input("Company (optional)", key="net_find_company")
+                
+                if find_cols[2].button("🔍 SEARCH", key="net_search_person"):
+                    if find_name:
+                        social_links = get_social_links(find_name, find_company)
+                        
+                        st.markdown("#### 🌐 SEARCH LINKS")
+                        link_cols = st.columns(3)
+                        for i, (platform, url) in enumerate(social_links.items()):
+                            link_cols[i % 3].markdown(f"[{platform}]({url})")
+                
+                st.markdown("---")
+                
+                # Matchmaker Mode
+                st.markdown("## 🎯 MATCHMAKER MODE")
+                st.caption("Be the connector. Help people in your network find each other.")
+                
+                st.info("💡 **Pro Tip:** Being a connector builds social capital. When you introduce two people who can help each other, they both remember you.")
+                
+                mm_cols = st.columns(2)
+                person_a = mm_cols[0].text_input("Person A", placeholder="Name @ Company", key="mm_person_a")
+                person_b = mm_cols[1].text_input("Person B", placeholder="Name @ Company", key="mm_person_b")
+                why_intro = st.text_area("Why Should They Meet?", placeholder="What value can they provide each other?", key="mm_why")
+                
+                if st.button("💌 GENERATE DOUBLE-OPT-IN INTRO", use_container_width=True, key="gen_doi"):
+                    if person_a and person_b:
+                        st.markdown("#### Step 1: Ask Person A")
+                        st.code(f"""Hi {person_a.split()[0] if person_a else 'there'},
+
+I wanted to check if you'd be open to an intro to {person_b}. 
+
+{why_intro or 'I think there could be some great synergy!'}
+
+Would it be okay if I introduced you two?
+
+Best,
+{your_name}""", language=None)
+                        
+                        st.markdown("#### Step 2: Ask Person B")
+                        st.code(f"""Hi {person_b.split()[0] if person_b else 'there'},
+
+I have someone in my network I think you should meet: {person_a}
+
+{why_intro or 'I think you two would really hit it off professionally.'}
+
+Would you be open to an intro?
+
+Best,
+{your_name}""", language=None)
+                        
+                        st.markdown("#### Step 3: Make The Intro (after both say yes)")
+                        st.code(f"""Hi {person_a.split()[0] if person_a else ''} and {person_b.split()[0] if person_b else ''},
+
+I'm excited to introduce you two!
+
+{person_a} — {person_b}
+{person_b} — {person_a}
+
+{why_intro or 'I thought there might be some great synergy here.'}
+
+I'll let you two take it from here!
+
+Best,
+{your_name}""", language=None)
+
+        # ═══════════════════════════════════════════════════════════════
         # TAB 2: CONTACT DATABASE (Original)
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab3:
+        with crm_tab6:
             st.markdown("### 👤 CONTACT DATABASE")
             
             # Metrics
@@ -4740,7 +5846,7 @@ start with full focus on day one. Is that something we can add?"
         # ═══════════════════════════════════════════════════════════════
         # TAB 3: DEAL PIPELINE
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab4:
+        with crm_tab7:
             st.markdown("### 📈 DEAL PIPELINE")
             
             deals = st.session_state['crm_deals']
@@ -4861,7 +5967,7 @@ start with full focus on day one. Is that something we can add?"
         # ═══════════════════════════════════════════════════════════════
         # TAB 4: NETWORK BUILDER (NEW!)
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab5:
+        with crm_tab8:
             st.markdown("### 🔗 NETWORK BUILDER")
             st.caption("Strengthen relationships. Get warm intros. Build your network systematically.")
             
@@ -5122,7 +6228,7 @@ start with full focus on day one. Is that something we can add?"
         # ═══════════════════════════════════════════════════════════════
         # TAB 5: RECRUITERS & NETWORK (was TAB 4)
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab6:
+        with crm_tab9:
             st.markdown("### 👥 RECRUITERS & NETWORK")
             st.caption("Track your recruiter relationships and network contacts.")
             
@@ -5164,7 +6270,7 @@ start with full focus on day one. Is that something we can add?"
         # ═══════════════════════════════════════════════════════════════
         # TAB 6: COMPANY ENRICHMENT (AI AUTO-FILL) - was TAB 5
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab7:
+        with crm_tab10:
             st.markdown("### 🏢 COMPANY ENRICHMENT (AI AUTO-FILL)")
             st.caption("Paste a company name or website URL → AI fills in key intel.")
             
@@ -5209,7 +6315,7 @@ start with full focus on day one. Is that something we can add?"
         # ═══════════════════════════════════════════════════════════════
         # TAB 7: ARCHIVE & CLOSED - was TAB 6
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab8:
+        with crm_tab11:
             st.markdown("### 📦 ARCHIVE & CLOSED")
             st.caption("Closed opportunities and archived contacts.")
             
@@ -5867,6 +6973,101 @@ start with full focus on day one. Is that something we can add?"
 
 
     # ==============================================================================
+    # 🎯 MODE: SNIPER PROSPECTING SCOPE
+    # ==============================================================================
+    elif input_mode == "🎯 Sniper Prospecting":
+        st.markdown("## 🎯 SNIPER SCOPE")
+        st.caption("PROTOCOL: Deep Dive Intelligence · High-Value Target Acquisition")
+        
+        try:
+            from logic.integrations import analyze_sniper_target
+            sniper_available = True
+        except ImportError:
+            sniper_available = False
+            st.error("Sniper module missing.")
+            
+        if sniper_available:
+            col1, col2 = st.columns([1, 2])
+            
+            with col1:
+                st.markdown("### 🔭 TARGET LOCK")
+                target_company = st.text_input("Target Company", placeholder="e.g. Vercel")
+                target_sector = st.selectbox("Sector Context", 
+                    ["SaaS / DevTools", "Fintech", "HealthTech", "Agency / Services", "E-commerce", "Enterprise / Legacy"])
+                
+                st.info("💡 **Sniper Philosophy**\n\nDon't spray and pray. Analyze deeply. Find the pain. Pitch the specific cure.")
+                
+            with col2:
+                if target_company:
+                    if st.button("🛰️ SATELLITE SCAN (ANALYZE)", type="primary"):
+                        with st.spinner(f"Acquiring signal on {target_company}..."):
+                            import time
+                            time.sleep(1.5) # Simulating scan
+                            analysis = analyze_sniper_target(target_company, target_sector)
+                            st.session_state['sniper_intel'] = analysis
+                
+                if 'sniper_intel' in st.session_state:
+                    intel = st.session_state['sniper_intel']
+                    
+                    st.markdown(f"### 📡 INTEL ACQUIRED: {intel['company'].upper()}")
+                    
+                    # Pain Points
+                    st.markdown("#### 🩸 HYPOTHESIZED PAIN POINTS")
+                    for pain in intel['pain_points']:
+                        st.markdown(f"- 🔴 {pain}")
+                        
+                    # Value Props
+                    st.markdown("#### 💊 YOUR VALUE ANGLE")
+                    for val in intel['value_props']:
+                        st.markdown(f"- 🟢 {val}")
+                        
+                    # Icebreakers
+                    st.markdown("#### 🧊 CONTEXTUAL ICEBREAKERS")
+                    for ice in intel['icebreakers']:
+                        st.code(ice, language=None)
+                        
+                    st.markdown("---")
+                    st.markdown("#### 💌 GENERATE OUTREACH")
+                    
+                    outreach_type = st.radio("Strategy", ["Cold Email", "LinkedIn DM", "Video Pitch Script"], horizontal=True)
+                    
+                    if outreach_type == "Cold Email":
+                        st.text_area("Draft", value=f"""Subject: Ideas for {intel['company']}'s GTM
+                        
+Hi [Name],
+
+{intel['icebreakers'][0]}
+
+Given you're in {target_sector}, I imagine you're seeing {intel['pain_points'][0].lower()}.
+
+I'm building a system to solve exactly that ({intel['value_props'][0]}).
+
+Worth a 5 min chat?
+
+Best,
+Leon""", height=250)
+                    
+                    elif outreach_type == "LinkedIn DM":
+                        st.text_area("Draft", value=f"""Hi [Name], {intel['icebreakers'][1]}
+
+Mental model: {intel['pain_points'][1]} -> {intel['value_props'][1]}.
+
+Curious if this resonates?""", height=150)
+
+                    elif outreach_type == "Video Pitch Script": 
+                         st.markdown("""
+                         **Scene:** Screen recording of their website.
+                         
+                         **Script:**
+                         "Hey team! I was analyzing your {Specific Page} and noticed...
+                         
+                         Most companies in {Sector} struggle with {Pain Point}.
+                         
+                         I mocked up a solution for you here..."
+                         """)
+
+
+    # ==============================================================================
     # 📡 MODE 14: MARKET SENTIMENT RADAR (The Oracle Dashboard)
     # ==============================================================================
     elif input_mode == "📡 Market Radar":
@@ -6258,6 +7459,314 @@ start with full focus on day one. Is that something we can add?"
                         """, unsafe_allow_html=True)
                 else:
                     st.warning("Enter a target sector or company to analyze.")
+
+    # ═══════════════════════════════════════════════════════════════
+    # ═══════════════════════════════════════════════════════════════
+    # MODE: 📣 SOCIAL COMMAND CENTER
+    # ═══════════════════════════════════════════════════════════════
+    elif input_mode == "📣 Social Command Center":
+        st.markdown("## 📣 SOCIAL COMMAND CENTER")
+        st.caption("PROTOCOL: X-First Distribution · Global Vibe Network · Audience Building")
+        
+        # Import integrations
+        try:
+            from logic.integrations import (
+                generate_x_thread, generate_multi_platform_content,
+                VIBE_COMMUNITIES, SOCIAL_PROFILES,
+                generate_waitlist_cta, ALL_COUNTRIES, REMOTE_HUBS,
+                BUSINESS_MODELS, PRICING_IDEAS, CONTENT_IDEAS,
+                calculate_reputation_score, generate_community_content,
+                generate_leon_posts
+            )
+            integrations_loaded = True
+        except ImportError:
+            st.error("⚠️ Signal Engine Integrations not found. Some features may be limited.")
+            integrations_loaded = False
+            
+        if integrations_loaded:
+            # Stats & Overview
+            st.markdown("### 📊 SIGNAL STRENGTH")
+            stat_cols = st.columns(4)
+            stat_cols[0].metric("Build Time", "17h 00m", "+15m")
+            stat_cols[1].metric("X Vibe Score", "High", "🔥")
+            stat_cols[2].metric("Global Reach", len(ALL_COUNTRIES), "Countries")
+            stat_cols[3].metric("Waitlist", "Beta", "Open")
+            
+            st.markdown("---")
+            
+            # Main Tabs
+            social_tabs = st.tabs([
+                "🖤 POST FORGE",
+                "🧵 THREAD WEAVER", 
+                "📡 OMNI-CHANNEL", 
+                "✨ VIBE NETWORK", 
+                "🏘️ COMMUNITY",
+                "🗣️ VOICE & REP",
+                "📧 JOIN BETA", 
+                "🌍 GLOBAL HQ"
+            ])
+            
+            # TAB 0: BASIN POST FORGE
+            with social_tabs[0]:
+                st.markdown("#### 🖤 BASIN POST FORGE (SCROLLSMITH)")
+                st.caption("Generate X posts in the exact @basin_leon voice — poetic, precise, zero-trust mysticism.")
+                
+                forge_col1, forge_col2 = st.columns([2, 1])
+                
+                with forge_col1:
+                    forge_topic = st.text_area("Topic / Spark / Hook", height=120, 
+                        placeholder="e.g. Just shipped v0.3 of LeonOS in a 16-hour flow state\nor\nWhy most GTM advice is dead on arrival")
+                    
+                    if st.button("🔥 FORGE POSTS", type="primary"):
+                        if forge_topic:
+                            with st.spinner("Scrollsmith is writing..."):
+                                posts = generate_leon_posts(forge_topic)
+                                st.session_state['forged_posts'] = posts
+                        else:
+                            st.warning("Give me a spark.")
+                            
+                with forge_col2:
+                    st.info("🎙️ **Voice Protocol**\n\n- Zero-trust metaphors\n- Calm commander tone\n- No hype-bro language\n- Signature terms: Signal, Runway, Scrollsmith")
+                
+                if 'forged_posts' in st.session_state:
+                    st.markdown("---")
+                    st.markdown("### 🔥 FORGED ARTIFACTS")
+                    st.markdown(st.session_state['forged_posts'].replace("1.", "**1.**").replace("2.", "\n\n**2.**").replace("3.", "\n\n**3.**"))
+                    
+                    # Intent links for quick posting
+                    try:
+                        # Extract post 1 roughly (assuming standard format)
+                        post1 = st.session_state['forged_posts'].split("1.")[1].split("2.")[0].strip()
+                        import urllib.parse
+                        intent_url = f"https://twitter.com/intent/tweet?text={urllib.parse.quote(post1)}"
+                        st.markdown(f"[🚀 **POST #1 NOW**]({intent_url})")
+                    except:
+                        pass
+            
+            # TAB 1: THREAD WEAVER (X-First)
+            with social_tabs[1]:
+                st.markdown("#### 🧵 X / TWITTER THREAD GENERATOR")
+                st.caption("Turn your building progress into viral threads.")
+                
+                # Input
+
+                thread_col1, thread_col2 = st.columns([2, 1])
+                with thread_col1:
+                    thread_topic = st.text_input("Hook / Topic", placeholder="e.g., I just built a career command center in 16 hours.")
+                    thread_points = st.text_area("Key Points (One per line)", height=200, 
+                        placeholder="1. Most CRMs suck for job seekers\n2. I gamified the process\n3. Added live stock collection\n4. Built a networking hub\n5. Open sourcing it soon")
+                    thread_cta = st.text_input("Call to Action (CTA)", value="Building in public. Follow @basinleon for the journey.")
+                
+                with thread_col2:
+                    st.info("💡 **Vibe Tips**\n\n- Start with a strong hook (numbers/conflict)\n- Use 'I' statements\n- Keep points punchy\n- Show, don't just tell (attach screenshots)")
+                    
+                    if st.button("🧶 WEAVE THREAD", type="primary", use_container_width=True):
+                        if thread_topic and thread_points:
+                            points_list = [p.strip() for p in thread_points.split('\n') if p.strip()]
+                            thread_tweets = generate_x_thread(thread_topic, points_list, thread_cta)
+                            
+                            st.session_state['generated_thread'] = thread_tweets
+                
+                # Output
+                if 'generated_thread' in st.session_state:
+                    st.markdown("#### 📱 THREAD PREVIEW")
+                    
+                    # Intent Link generator
+                    full_text = "\n\n".join(st.session_state['generated_thread'])
+                    import urllib.parse
+                    encoded_text = urllib.parse.quote(st.session_state['generated_thread'][0])
+                    intent_url = f"https://twitter.com/intent/tweet?text={encoded_text}"
+                    
+                    st.markdown(f"[🚀 **POST TWEET 1 NOW**]({intent_url})")
+                    
+                    for i, tweet in enumerate(st.session_state['generated_thread']):
+                        st.text_area(f"Tweet {i+1}/{len(st.session_state['generated_thread'])}", value=tweet, height=100)
+                        
+                    st.success("✅ Thread ready to post!")
+            
+            # TAB 2: OMNI-CHANNEL DISTRIBUTION
+            with social_tabs[1]:
+                st.markdown("#### 📡 CONTENT DISTRIBUTION ENGINE")
+                st.caption("Write once, distribute everywhere. Build your media empire.")
+                
+                # Content inputs
+                content_topic = st.text_input("Content Topic", placeholder="Building BASIN::NEXUS")
+                content_body = st.text_area("Core Content / Update", height=150, placeholder="Share your latest win, insight, or build update...")
+                content_link = st.text_input("Link (optional)", value="https://basinleon.com")
+                
+                # Idea Generator
+                with st.expander("💡 Need Content Ideas?"):
+                    st.write(CONTENT_IDEAS)
+                
+                if st.button("🚀 GENERATE MULTI-PLATFORM ASSETS", type="primary"):
+                    if content_topic and content_body:
+                        assets = generate_multi_platform_content(content_topic, content_body, content_link)
+                        
+                        # Display results in tabs
+                        p_tabs = st.tabs(["𝕏 Post", "💼 LinkedIn", "📫 Substack", "🦋 Bluesky"])
+                        
+                        with p_tabs[0]:
+                            st.markdown("**Short Form (X)**")
+                            st.code(assets['x_short'], language=None)
+                            st.markdown("**Thread Hook**")
+                            st.code(assets['x_thread_hook'], language=None)
+                            
+                        with p_tabs[1]:
+                            st.markdown("**LinkedIn Post**")
+                            st.code(assets['linkedin'], language=None)
+                            
+                        with p_tabs[2]:
+                            st.markdown("**Substack Section**")
+                            st.code(assets['substack_body'], language="markdown")
+                            
+                        with p_tabs[3]:
+                            st.markdown("**Bluesky Post**")
+                            st.code(assets['bluesky'], language=None)
+            
+            # TAB 3: VIBE NETWORK
+            with social_tabs[2]:
+                st.markdown("#### ✨ VIBE NETWORK FINDER")
+                st.caption("Find your tribe. Connect with builders, vibe coders, and marketers.")
+                
+                selected_vibe = st.selectbox("Select Community", list(VIBE_COMMUNITIES.keys()), 
+                                             format_func=lambda x: VIBE_COMMUNITIES[x]['name'])
+                
+                vibe_data = VIBE_COMMUNITIES[selected_vibe]
+                
+                v_col1, v_col2 = st.columns([2, 1])
+                
+                with v_col1:
+                    st.markdown(f"### {vibe_data['name']}")
+                    st.markdown(f"**Why here?** {vibe_data['why']}")
+                    st.markdown(f"**Strategy:** {vibe_data['strategy']}")
+                    
+                    if 'accounts_to_follow' in vibe_data:
+                        st.markdown("**🏆 Accounts to Follow:**")
+                        for acc in vibe_data['accounts_to_follow']:
+                            st.markdown(f"- {acc}")
+                            
+                    if 'hashtags' in vibe_data:
+                        st.markdown("**🏷️ Hashtags:**")
+                        st.code(" ".join(vibe_data['hashtags']))
+                        
+                with v_col2:
+                    st.markdown("### 🎯 ACTION PLAN")
+                    st.info("1. optimize profile\n2. reply to 5 top accounts\n3. post 1 insight\n4. dm 1 person")
+                    
+                    if 'url' in vibe_data:
+                        st.markdown(f"[🔗 GO TO {vibe_data['name'].upper()}]({vibe_data['url']})")
+
+            # TAB 4: COMMUNITY MANAGER (NEW)
+            with social_tabs[3]:
+                st.markdown("#### 🏘️ COMMUNITY MANAGER")
+                st.caption("Manage: 'Vibe Coding & Vibe Building'")
+                
+                comm_topic = st.text_input("Daily Topic / Theme", placeholder="e.g. Shipping Velocity")
+                
+                if st.button("✨ GENERATE ENGAGEMENT POSTS"):
+                    posts = generate_community_content("Vibe Coding & Vibe Building", comm_topic or "Building in Public")
+                    
+                    c_col1, c_col2 = st.columns(2)
+                    with c_col1:
+                        st.markdown("**👋 Welcome Post**")
+                        st.text_area("Welcome", value=posts['welcome_post'], height=150)
+                        
+                        st.markdown("**🧵 Daily Discussion**")
+                        st.text_area("Discussion", value=posts['daily_discussion'], height=150)
+                        
+                    with c_col2:
+                         st.markdown("**⭐ Member Spotlight**")
+                         st.text_area("Spotlight", value=posts['spotlight'], height=150)
+                         
+                         st.markdown("**🔥 Challenge**")
+                         st.text_area("Challenge", value=posts['challenge'], height=150)
+
+            # TAB 5: VOICE & REP (NEW)
+            with social_tabs[4]:
+                st.markdown("#### 🗣️ VOICE CALIBRATION & REPUTATION")
+                
+                r_col1, r_col2 = st.columns(2)
+                
+                with r_col1:
+                    st.markdown("### 🆙 REPUTATION CALCULATOR")
+                    f_count = st.number_input("Followers (Total)", value=1000)
+                    streak = st.slider("Shipping Streak (Days)", 0, 365, 15)
+                    eng_rate = st.slider("Engagement Rate (%)", 0.0, 10.0, 2.5) / 100
+                    
+                    if st.button("🧮 CALCULATE SCORE"):
+                        score_data = calculate_reputation_score(f_count, streak, eng_rate)
+                        st.metric("VIBE SCORE", score_data['score'], score_data['tier'])
+                        st.progress(score_data['score'] / 100)
+                        st.caption(score_data['message'])
+                        
+                with r_col2:
+                    st.markdown("### 🎙️ VOICE CALIBRATION")
+                    st.caption("Paste your best content so AI learns your style.")
+                    voice_sample = st.text_area("Your Best Tweets/Posts", height=200, 
+                        placeholder="Paste 3-5 of your top performing posts here...")
+                    
+                    if st.button("💾 SAVE VOICE PROFILE"):
+                        st.session_state['voice_profile'] = voice_sample
+                        st.success("Voice profile updated! Future content will match this style.")
+            
+            # TAB 6: JOIN BETA / WAITLIST
+            with social_tabs[5]:
+                st.markdown("#### 📧 BETA & NEWSLETTER STRATEGY")
+                st.caption("Capture interest. Build the list. Launch properly.")
+                
+                st.markdown(f"**Landing Page:** [{SOCIAL_PROFILES['website']}]({SOCIAL_PROFILES['website']})")
+                st.markdown(f"**Newsletter:** [{SOCIAL_PROFILES['substack']}]({SOCIAL_PROFILES['substack']})")
+                
+                st.markdown("---")
+                st.markdown("### 🎣 CALL TO ACTION GENERATOR")
+                
+                cta_context = st.selectbox("Context", ["twitter", "linkedin", "newsletter", "general", "referral"])
+                generated_cta = generate_waitlist_cta(cta_context)
+                
+                st.code(generated_cta, language=None)
+                
+                st.markdown("---")
+                st.markdown("### 💸 BUSINESS MODELS")
+                
+                bm_cols = st.columns(3)
+                for i, (key, model) in enumerate(BUSINESS_MODELS.items()):
+                    with bm_cols[i % 3]:
+                        st.markdown(f"**{model['name']}**")
+                        st.caption(model['description'])
+                        st.markdown(f"*Examples: {', '.join(model['examples'])}*")
+            
+            # TAB 7: GLOBAL HQ
+            with social_tabs[6]:
+                st.markdown("#### 🌍 GLOBAL OPERATIONS CENTER")
+                st.caption("Basin & Associates: Serving the world. No borders.")
+                
+                st.sidebar.markdown("---")
+                
+                # Map visualization (mock)
+                st.markdown(f"**Active Markets:** {len(ALL_COUNTRIES)} Countries")
+                
+                # Region selector
+                region = st.selectbox("Select Region Hub", list(REMOTE_HUBS.keys()))
+                hub_data = REMOTE_HUBS[region]
+                
+                h_col1, h_col2 = st.columns(2)
+                with h_col1:
+                    st.markdown(f"### {region} HUB")
+                    st.metric("Timezone", hub_data['timezone'])
+                    st.markdown("**Key Cities:**")
+                    for city in hub_data['hubs']:
+                        st.markdown(f"- 🏙️ {city}")
+                        
+                with h_col2:
+                    st.info("💡 **Global Strategy**\n\n- Async communication\n- Localized pricing\n- Follow the sun support\n- Hire vibe coders globally")
+                
+                st.markdown("---")
+                st.markdown("### 🗺️ EXPANSION TARGETS")
+                
+                tgt_cols = st.columns(4)
+                for i, country in enumerate(ALL_COUNTRIES[:20]):
+                    tgt_cols[i % 4].markdown(f"📍 {country}")
+                st.caption(f"...and {len(ALL_COUNTRIES)-20} more.")
 
 
 # ==============================================================================
