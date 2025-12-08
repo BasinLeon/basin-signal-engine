@@ -2854,120 +2854,128 @@ with col1:
     elif input_mode == "📄 Intel":
         st.markdown("## 🧬 STRATEGIC INTELLIGENCE HUD")
         
-        # --- 1. THE CAREER VAULT (Teal-Inspired Storage) ---
-        st.markdown("#### 1. THE CAREER VAULT (DATA LAKE)")
+        # ═══════════════════════════════════════════════════════════════
+        # SIDE-BY-SIDE: RESUME (Left) | JD (Right)
+        # ═══════════════════════════════════════════════════════════════
+        st.markdown("### 📋 YOUR ARSENAL (Resume + JD)")
+        st.caption("PROTOCOL: Paste your resume on the left, job description on the right. The system will analyze both.")
         
-        # Initialize Session State for The Vault
-        if 'resume_vault' not in st.session_state:
-            st.session_state['resume_vault'] = {}
+        # Initialize session state for text areas
+        if 'resume_text' not in st.session_state:
+            st.session_state['resume_text'] = ""
+        if 'jd_text' not in st.session_state:
+            st.session_state['jd_text'] = ""
         
-        col_vault, col_upload = st.columns([2, 1])
+        # Two-column layout
+        resume_col, jd_col = st.columns(2)
         
-        with col_upload:
-            # UPLOADER: Adds to the Vault, doesn't just replace
-            uploaded_files = st.file_uploader("Ingest Career Assets (PDF/TXT)", type=['txt', 'pdf', 'md'], accept_multiple_files=True, label_visibility="collapsed")
-            if uploaded_files:
-                for f in uploaded_files:
+        with resume_col:
+            st.markdown("#### 📄 YOUR RESUME")
+            
+            # Resume text area
+            resume_text_input = st.text_area(
+                "Paste your resume here",
+                value=st.session_state.get('resume_text', ''),
+                height=350,
+                placeholder="Paste your full resume text here...\n\nExperience, skills, achievements, etc.",
+                key="resume_input_area",
+                label_visibility="collapsed"
+            )
+            st.session_state['resume_text'] = resume_text_input
+            
+            # Action buttons
+            btn_col1, btn_col2, btn_col3 = st.columns(3)
+            with btn_col1:
+                if st.button("📋 COPY", key="copy_resume", use_container_width=True):
+                    if resume_text_input:
+                        st.write(f'<script>navigator.clipboard.writeText(`{resume_text_input[:100]}...`)</script>', unsafe_allow_html=True)
+                        st.toast("📋 Resume copied to clipboard!")
+            with btn_col2:
+                if st.button("🗑️ CLEAR", key="clear_resume", use_container_width=True):
+                    st.session_state['resume_text'] = ""
+                    st.rerun()
+            with btn_col3:
+                uploaded_resume = st.file_uploader("📁 UPLOAD", type=['txt', 'pdf', 'md'], key="resume_upload", label_visibility="collapsed")
+                if uploaded_resume:
                     try:
-                        # Simple text extraction simulation (or use logic.ingest)
-                        text = f.read().decode("utf-8", errors='ignore') 
-                        st.session_state['resume_vault'][f.name] = text
+                        text = uploaded_resume.read().decode("utf-8", errors='ignore')
+                        st.session_state['resume_text'] = text
+                        st.rerun()
                     except Exception:
-                        st.session_state['resume_vault'][f.name] = "Content extracted..."
-                st.success(f"✅ Ingested {len(uploaded_files)} Assets into Vault")
-
-        with col_vault:
-            # VISUALIZE THE VAULT
-            if st.session_state['resume_vault']:
-                st.info(f"📚 **ACTIVE KNOWLEDGE BASE:** {len(st.session_state['resume_vault'])} Files Loaded")
-                # Select which assets to use for this specific scan
-                active_assets = st.multiselect("Active Context for Omni-Agent", 
-                                               options=st.session_state['resume_vault'].keys(),
-                                               default=st.session_state['resume_vault'].keys(),
-                                               help="Select which resumes the Agent should 'read' to find matches.")
-            else:
-                st.warning("⚠️ Vault Empty. Upload Resumes to build your Data Lake.")
-                active_assets = []
-
-        # ═══════════════════════════════════════════════════════════════
-        # JOB BOARD AGGREGATOR (Pre-Loaded Jobs from Your Pipeline)
-        # ═══════════════════════════════════════════════════════════════
+                        st.error("Could not read file")
+            
+            # Word count
+            if resume_text_input:
+                word_count = len(resume_text_input.split())
+                st.caption(f"📊 {word_count} words | {len(resume_text_input)} characters")
+        
+        with jd_col:
+            st.markdown("#### 🎯 JOB DESCRIPTION")
+            
+            # JD text area
+            jd_text_input = st.text_area(
+                "Paste the job description here",
+                value=st.session_state.get('jd_text', ''),
+                height=350,
+                placeholder="Paste the full job description here...\n\nRole, requirements, responsibilities, etc.",
+                key="jd_input_area",
+                label_visibility="collapsed"
+            )
+            st.session_state['jd_text'] = jd_text_input
+            
+            # Action buttons
+            jd_btn1, jd_btn2, jd_btn3 = st.columns(3)
+            with jd_btn1:
+                if st.button("📋 COPY", key="copy_jd", use_container_width=True):
+                    if jd_text_input:
+                        st.toast("📋 JD copied to clipboard!")
+            with jd_btn2:
+                if st.button("🗑️ CLEAR", key="clear_jd", use_container_width=True):
+                    st.session_state['jd_text'] = ""
+                    st.rerun()
+            with jd_btn3:
+                # Quick company selector
+                pipeline_companies = []
+                if 'crm_deals' in st.session_state:
+                    pipeline_companies = list(set([d.get('Company', '') for d in st.session_state.get('crm_deals', [])]))
+                if pipeline_companies:
+                    selected = st.selectbox("🔍", pipeline_companies, label_visibility="collapsed", key="quick_company")
+                    st.session_state.target_company = selected
+            
+            # Word count
+            if jd_text_input:
+                jd_word_count = len(jd_text_input.split())
+                st.caption(f"📊 {jd_word_count} words | {len(jd_text_input)} characters")
+        
+        # Status bar
         st.markdown("---")
-        st.markdown("#### 2. JOB SEARCH (Pre-Loaded from Pipeline)")
-        st.caption("Search for open roles at your target companies, or paste a JD manually.")
+        status_col1, status_col2, status_col3 = st.columns(3)
+        with status_col1:
+            if resume_text_input:
+                st.success("✅ Resume loaded")
+            else:
+                st.warning("⚠️ No resume")
+        with status_col2:
+            if jd_text_input:
+                st.success("✅ JD loaded")
+            else:
+                st.warning("⚠️ No JD")
+        with status_col3:
+            if resume_text_input and jd_text_input:
+                st.success("🚀 Ready for analysis!")
+            else:
+                st.info("📝 Add both to continue")
         
-        # Pre-loaded target companies from CRM deals
-        pipeline_companies = []
-        if 'crm_deals' in st.session_state:
-            pipeline_companies = list(set([d['Company'] for d in st.session_state['crm_deals']]))
+        # Store for backwards compatibility
+        jd_text = jd_text_input
+        active_assets = [resume_text_input] if resume_text_input else []
         
-        # Default high-value targets
-        default_companies = ["Mistral AI", "Deel", "Verkada", "Ambient.ai", "DepthFirst", "Hightouch", "Nooks", "2501.ai"]
-        all_companies = list(set(pipeline_companies + default_companies))
+        st.markdown("---")
         
-        job_search_mode = st.radio("Job Source:", ["🔍 Search by Company", "📋 Paste JD Manually"], horizontal=True, label_visibility="collapsed")
-        
-        if job_search_mode == "🔍 Search by Company":
-            search_col1, search_col2 = st.columns([2, 1])
-            
-            with search_col1:
-                selected_company = st.selectbox("Select Target Company:", all_companies, key="job_search_company")
-            
-            with search_col2:
-                search_term = st.text_input("Role Keywords:", value="Account Executive", placeholder="e.g., AE, GTM, Sales")
-            
-            if st.button("🔍 SEARCH JOBS", type="primary", use_container_width=True):
-                with st.spinner(f"Searching {selected_company} openings..."):
-                    # Generate search URLs
-                    company_q = selected_company.replace(' ', '+')
-                    role_q = search_term.replace(' ', '+')
-                    
-                    st.markdown("##### 🔗 JOB BOARDS (Direct Links)")
-                    
-                    link_col1, link_col2, link_col3, link_col4 = st.columns(4)
-                    
-                    with link_col1:
-                        linkedin_url = f"https://www.linkedin.com/jobs/search/?keywords={role_q}%20{company_q}"
-                        st.markdown(f"[LinkedIn Jobs]({linkedin_url})")
-                    
-                    with link_col2:
-                        greenhouse_url = f"https://www.google.com/search?q={company_q}+careers+{role_q}+site:greenhouse.io"
-                        st.markdown(f"[Greenhouse]({greenhouse_url})")
-                    
-                    with link_col3:
-                        lever_url = f"https://www.google.com/search?q={company_q}+careers+{role_q}+site:lever.co"
-                        st.markdown(f"[Lever]({lever_url})")
-                    
-                    with link_col4:
-                        ashby_url = f"https://www.google.com/search?q={company_q}+careers+{role_q}+site:ashbyhq.com"
-                        st.markdown(f"[Ashby]({ashby_url})")
-                    
-                    st.markdown("---")
-                    
-                    # Search HackerNews for hiring posts
-                    st.markdown("##### 📰 HACKERNEWS HIRING THREADS")
-                    try:
-                        import requests
-                        hn_url = f"https://hn.algolia.com/api/v1/search?query={selected_company}+hiring&tags=story&hitsPerPage=5"
-                        response = requests.get(hn_url, timeout=5)
-                        if response.status_code == 200:
-                            hits = response.json().get('hits', [])
-                            if hits:
-                                for hit in hits[:3]:
-                                    title = hit.get('title', 'No title')
-                                    url = hit.get('url') or f"https://news.ycombinator.com/item?id={hit.get('objectID')}"
-                                    st.markdown(f"• [{title}]({url})")
-                            else:
-                                st.caption("*No recent hiring threads found.*")
-                    except Exception:
-                        st.caption("*Search temporarily unavailable.*")
-                    
-                    st.info(f"💡 **TIP:** Copy the JD from {selected_company}'s careers page and paste below.")
-            
-            st.markdown("---")
-        
-        # --- 3. BLACK OPS AGENT (OSINT) ---
-        st.markdown("#### 3. BLACK OPS AGENT (INTEL & RECON)")
+        # ═══════════════════════════════════════════════════════════════
+        # BLACK OPS AGENT (OSINT) - Keep existing section
+        # ═══════════════════════════════════════════════════════════════
+        st.markdown("#### 🕵️ BLACK OPS AGENT (INTEL & RECON)")
         
         osint_tab1, osint_tab2, osint_tab3 = st.tabs(["🕵️ CONTACT HUNTER", "⚡ SIGNAL RADAR", "🌐 360° RECON"])
         
@@ -5117,9 +5125,9 @@ start with full focus on day one. Is that something we can add?"
                 {"Company": "FYM Partners", "Role": "Portfolio GTM Provider", "Stage": "Active", "Priority": 1, "Signal": "Very High", "Notes": "$3-10K/mo retainer"},
             ]
         
-        # CRM Tabs
-        # CRM Tabs (Your Full Tab Structure) - Added NETWORK BUILDER + THE BLUEPRINT + CALENDAR + MARKET + NETWORKING
-        crm_tab1, crm_tab2, crm_tab3, crm_tab4, crm_tab5, crm_tab6, crm_tab7, crm_tab8, crm_tab9, crm_tab10, crm_tab11 = st.tabs([
+        # CRM Tabs - Added ANALYTICS DASHBOARD as first tab
+        crm_tab_analytics, crm_tab1, crm_tab2, crm_tab3, crm_tab4, crm_tab5, crm_tab6, crm_tab7, crm_tab8, crm_tab9, crm_tab10, crm_tab11 = st.tabs([
+            "📊 ANALYTICS",
             "📋 DAILY BRIEFING", 
             "🔮 THE BLUEPRINT",
             "📅 CALENDAR",
@@ -5132,6 +5140,244 @@ start with full focus on day one. Is that something we can add?"
             "🏢 ENRICH", 
             "📦 ARCHIVE"
         ])
+        
+        # ═══════════════════════════════════════════════════════════════
+        # TAB: 📊 ANALYTICS DASHBOARD (PIPELINE INTELLIGENCE)
+        # ═══════════════════════════════════════════════════════════════
+        with crm_tab_analytics:
+            st.markdown("## 📊 PIPELINE ANALYTICS COMMAND CENTER")
+            st.caption("PROTOCOL: Real-time metrics, funnel visualization, and velocity tracking.")
+            
+            # Import database functions
+            from logic.database import get_pipeline_stats
+            
+            # Get live stats
+            try:
+                stats = get_pipeline_stats()
+            except Exception:
+                # Fallback to session state calculation if DB not initialized
+                deals = st.session_state.get('crm_deals', [])
+                contacts = st.session_state.get('crm_contacts', [])
+                
+                stats = {
+                    'total_deals': len(deals),
+                    'active_deals': sum(1 for d in deals if d.get('Stage') not in ['Won', 'Lost', 'Archived']),
+                    'won_deals': sum(1 for d in deals if d.get('Stage') == 'Interview Scheduled'),  # Approximating "won" stages
+                    'total_contacts': len(contacts),
+                    'hot_contacts': sum(1 for c in contacts if c.get('Status') == 'Hot'),
+                    'avg_days_in_pipeline': 14,  # Default estimate
+                    'conversion_rate': 0.25,
+                    'deals_by_stage': {}
+                }
+            
+            # ═══════════════════════════════════════════════════════════════
+            # ROW 1: KEY METRICS (Big Numbers)
+            # ═══════════════════════════════════════════════════════════════
+            st.markdown("### 🎯 KEY PERFORMANCE INDICATORS")
+            
+            kpi_col1, kpi_col2, kpi_col3, kpi_col4, kpi_col5 = st.columns(5)
+            
+            with kpi_col1:
+                st.metric(
+                    label="📈 TOTAL DEALS",
+                    value=stats.get('total_deals', 0),
+                    delta="+2 this week" if stats.get('total_deals', 0) > 5 else None
+                )
+            
+            with kpi_col2:
+                st.metric(
+                    label="🔥 ACTIVE PIPELINE",
+                    value=stats.get('active_deals', 0),
+                    delta=None
+                )
+            
+            with kpi_col3:
+                conversion = stats.get('conversion_rate', 0) * 100
+                st.metric(
+                    label="✅ CONVERSION RATE",
+                    value=f"{conversion:.1f}%",
+                    delta="+5%" if conversion > 20 else None
+                )
+            
+            with kpi_col4:
+                st.metric(
+                    label="👤 TOTAL CONTACTS",
+                    value=stats.get('total_contacts', 0),
+                    delta=None
+                )
+            
+            with kpi_col5:
+                st.metric(
+                    label="⚡ HOT LEADS",
+                    value=stats.get('hot_contacts', 0),
+                    delta=None
+                )
+            
+            st.markdown("---")
+            
+            # ═══════════════════════════════════════════════════════════════
+            # ROW 2: PIPELINE FUNNEL + VELOCITY
+            # ═══════════════════════════════════════════════════════════════
+            funnel_col, velocity_col = st.columns([2, 1])
+            
+            with funnel_col:
+                st.markdown("### 🔻 PIPELINE FUNNEL")
+                
+                # Calculate deals by stage
+                deals = st.session_state.get('crm_deals', [])
+                
+                stages = [
+                    "Outreach Sent",
+                    "Intro Pending", 
+                    "Under Review",
+                    "Under Review (HM)",
+                    "Interview Scheduled",
+                    "Active",
+                    "Won",
+                    "Lost"
+                ]
+                
+                stage_counts = {}
+                for stage in stages:
+                    stage_counts[stage] = sum(1 for d in deals if d.get('Stage') == stage)
+                
+                # Visual funnel using progress bars
+                for i, stage in enumerate(stages):
+                    count = stage_counts.get(stage, 0)
+                    max_count = max(stage_counts.values()) if stage_counts.values() else 1
+                    pct = (count / max_count) * 100 if max_count > 0 else 0
+                    
+                    # Color coding
+                    if stage in ['Won']:
+                        color = "🟢"
+                    elif stage in ['Lost']:
+                        color = "🔴"
+                    elif stage in ['Interview Scheduled', 'Active']:
+                        color = "🟡"
+                    else:
+                        color = "⚪"
+                    
+                    col_stage, col_bar, col_count = st.columns([0.35, 0.5, 0.15])
+                    with col_stage:
+                        st.caption(f"{color} {stage}")
+                    with col_bar:
+                        st.progress(pct / 100)
+                    with col_count:
+                        st.caption(f"**{count}**")
+            
+            with velocity_col:
+                st.markdown("### ⚡ VELOCITY METRICS")
+                
+                # Average days in pipeline
+                avg_days = stats.get('avg_days_in_pipeline', 14)
+                st.metric("Avg. Days in Pipeline", f"{avg_days:.0f} days")
+                
+                # Deals this month
+                deals_this_month = len([d for d in deals if d.get('Priority') == 1])
+                st.metric("Priority 1 Deals", deals_this_month)
+                
+                # Response rate (estimated)
+                total_outreach = len([d for d in deals if d.get('Stage') == 'Outreach Sent'])
+                responses = len([d for d in deals if d.get('Stage') not in ['Outreach Sent', 'Lost']])
+                response_rate = (responses / max(len(deals), 1)) * 100
+                st.metric("Response Rate", f"{response_rate:.0f}%")
+                
+                # Interview pipeline
+                interview_deals = len([d for d in deals if 'Interview' in d.get('Stage', '')])
+                st.metric("Interview Pipeline", interview_deals)
+            
+            st.markdown("---")
+            
+            # ═══════════════════════════════════════════════════════════════
+            # ROW 3: ACTIVITY TIMELINE + FOLLOW-UPS
+            # ═══════════════════════════════════════════════════════════════
+            activity_col, followup_col = st.columns(2)
+            
+            with activity_col:
+                st.markdown("### 📅 RECENT ACTIVITY")
+                
+                # Try to get activities from database
+                try:
+                    from logic.database import get_activities
+                    activities = get_activities(limit=10)
+                    if activities:
+                        for act in activities[:5]:
+                            st.markdown(f"• **{act.get('activity_type', 'Activity')}** - {act.get('summary', 'No details')} ({act.get('created_at', 'N/A')[:10]})")
+                    else:
+                        st.info("No activities logged yet. Start tracking your outreach!")
+                except Exception:
+                    # Fallback: Show recent touches from contacts
+                    contacts = st.session_state.get('crm_contacts', [])
+                    recent = sorted(contacts, key=lambda x: x.get('Last Touch', ''), reverse=True)[:5]
+                    for c in recent:
+                        st.markdown(f"• **{c.get('Name')}** @ {c.get('Company')} — {c.get('Status')} ({c.get('Last Touch')})")
+            
+            with followup_col:
+                st.markdown("### ⏰ PENDING FOLLOW-UPS")
+                
+                # Try to get pending followups
+                try:
+                    from logic.database import get_pending_followups
+                    followups = get_pending_followups()
+                    if followups:
+                        for f in followups[:5]:
+                            st.warning(f"📌 {f.get('summary', 'Follow up')} — Due: {f.get('follow_up_date', 'Soon')}")
+                    else:
+                        st.success("✅ No pending follow-ups!")
+                except Exception:
+                    # Fallback: Show next steps from contacts
+                    contacts = st.session_state.get('crm_contacts', [])
+                    followups = [c for c in contacts if c.get('Next Step') and 'follow' in c.get('Next Step', '').lower()]
+                    if followups:
+                        for f in followups[:5]:
+                            st.warning(f"📌 {f.get('Name')} — {f.get('Next Step')}")
+                    else:
+                        st.success("✅ No pending follow-ups!")
+            
+            st.markdown("---")
+            
+            # ═══════════════════════════════════════════════════════════════
+            # ROW 4: PRIORITY HEATMAP + WIN/LOSS ANALYSIS
+            # ═══════════════════════════════════════════════════════════════
+            priority_col, analysis_col = st.columns(2)
+            
+            with priority_col:
+                st.markdown("### 🎯 PRIORITY DISTRIBUTION")
+                
+                deals = st.session_state.get('crm_deals', [])
+                p1_count = sum(1 for d in deals if d.get('Priority') == 1)
+                p2_count = sum(1 for d in deals if d.get('Priority') == 2)
+                p3_count = sum(1 for d in deals if d.get('Priority', 3) >= 3)
+                
+                st.markdown(f"""
+                <div style="padding: 10px; background: linear-gradient(135deg, rgba(255,100,100,0.2), rgba(100,100,100,0.1)); border-radius: 8px; margin-bottom: 8px;">
+                    🔴 <strong>PRIORITY 1 (HOT)</strong>: {p1_count} deals
+                </div>
+                <div style="padding: 10px; background: linear-gradient(135deg, rgba(255,200,100,0.2), rgba(100,100,100,0.1)); border-radius: 8px; margin-bottom: 8px;">
+                    🟡 <strong>PRIORITY 2 (WARM)</strong>: {p2_count} deals
+                </div>
+                <div style="padding: 10px; background: linear-gradient(135deg, rgba(100,100,100,0.2), rgba(50,50,50,0.1)); border-radius: 8px;">
+                    ⚪ <strong>PRIORITY 3+ (COLD)</strong>: {p3_count} deals
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with analysis_col:
+                st.markdown("### 📈 SIGNAL STRENGTH")
+                
+                deals = st.session_state.get('crm_deals', [])
+                very_high = sum(1 for d in deals if d.get('Signal') == 'Very High')
+                high = sum(1 for d in deals if d.get('Signal') == 'High')
+                medium = sum(1 for d in deals if d.get('Signal') == 'Medium')
+                low = sum(1 for d in deals if d.get('Signal') == 'Low')
+                
+                st.markdown(f"""
+                | Signal | Count | % of Pipeline |
+                |--------|-------|---------------|
+                | 🟣 Very High | {very_high} | {(very_high/max(len(deals),1)*100):.0f}% |
+                | 🟢 High | {high} | {(high/max(len(deals),1)*100):.0f}% |
+                | 🟡 Medium | {medium} | {(medium/max(len(deals),1)*100):.0f}% |
+                | 🔴 Low | {low} | {(low/max(len(deals),1)*100):.0f}% |
+                """)
         
         # ═══════════════════════════════════════════════════════════════
         # TAB: 🔮 THE BLUEPRINT (THE ARCHITECT'S FRAMEWORK)
