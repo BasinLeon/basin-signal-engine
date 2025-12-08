@@ -20,6 +20,7 @@ from logic.generator import generate_signal_output, estimate_tokens, get_model_o
 from logic.voice import transcribe_audio, generate_speech, get_voice_options, save_transcript_to_asset
 from logic.video import analyze_video_pitch, validate_video, get_video_info
 from logic.oracle_search import render_oracle_search
+from logic.interview_nexus import render_interview_nexus
 
 # Note: Using native st.audio_input instead of audio_recorder_streamlit for Cloud compatibility
 
@@ -722,49 +723,101 @@ st.markdown("""
         box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
     }
     
-    /* === FIX: Hide broken Material Icons showing as text === */
-    .streamlit-expanderHeader svg {
-        display: none !important;
+    /* ═══════════════════════════════════════════════════════════════
+       CRITICAL FIX: Material Icons Rendering as Garbled Text
+       The Streamlit Material Icons font causes "keyboard_arrow_right" 
+       to render as corrupted unicode (keyḃ̈a͠). 
+       This completely hides the broken font and uses pure CSS arrows.
+    ═══════════════════════════════════════════════════════════════ */
+    
+    /* NUCLEAR OPTION: Hide ALL Material Icons fonts */
+    @font-face {
+        font-family: 'Material Icons';
+        src: none;
+    }
+    @font-face {
+        font-family: 'Material Symbols Rounded';
+        src: none;
+    }
+    @font-face {
+        font-family: 'Material Symbols Outlined';
+        src: none;
     }
     
-    /* CRITICAL: Hide garbled Material Icons (keyboard_arrow_right renders as keyḃ̈a͠) */
-    /* This targets the span that contains the broken icon text */
-    [data-testid="stExpander"] summary > div > div:first-child > span:first-child,
-    .streamlit-expanderHeader > div > span:first-child {
+    /* Hide any element using Material Icons font */
+    [class*="material-icons"],
+    [class*="material-symbols"],
+    [style*="material-icons"],
+    [style*="Material Icons"] {
         font-size: 0 !important;
         width: 0 !important;
+        height: 0 !important;
         overflow: hidden !important;
+        display: none !important;
     }
     
-    /* Hide Material Icons font entirely in expanders */
-    [data-testid="stExpander"] [class*="material-icons"],
-    [data-testid="stExpander"] [class*="material-symbols"],
-    .streamlit-expanderHeader [class*="material-icons"],
-    .streamlit-expanderHeader [class*="material-symbols"] {
+    /* Hide the SVG toggle icons that render incorrectly */
+    [data-testid="stExpanderToggleIcon"],
+    .streamlit-expanderHeader svg,
+    summary svg {
+        display: none !important;
+    }
+    
+    /* Force expander summaries to have clean arrows via CSS */
+    [data-testid="stExpander"] summary {
+        position: relative;
+        padding-left: 24px !important;
+    }
+    
+    /* Add clean CSS arrow before expander header */
+    [data-testid="stExpander"] summary::before {
+        content: "▶" !important;
+        position: absolute;
+        left: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        color: var(--gold-primary);
+        transition: transform 0.3s ease;
+        font-family: Arial, sans-serif !important;
+    }
+    
+    /* Rotate arrow when expanded */
+    [data-testid="stExpander"][open] summary::before,
+    details[open] > summary::before {
+        transform: translateY(-50%) rotate(90deg) !important;
+    }
+    
+    /* Hide any stray text that starts with 'key' (the corrupted icon text) */
+    [data-testid="stExpander"] summary span[class*="icon"],
+    [data-testid="stExpander"] summary span[data-testid*="icon"],
+    .streamlit-expanderHeader span:first-child:empty,
+    summary > div > div:first-child > span:first-child {
         display: none !important;
         font-size: 0 !important;
+        width: 0 !important;
     }
     
-    /* Hide any text that starts with 'key' pattern (the garbled icon) */
-    [data-testid="stExpander"] summary::before {
-        content: "" !important;
-        display: none !important;
-    }
-    
-    /* Hide any stray icon text like 'keyboard_arrow_right' */
-    [data-testid="stExpander"] span[data-testid="stMarkdownContainer"] p {
+    /* Ensure expander header text is visible and clean */
+    [data-testid="stExpander"] summary > div > div > span[data-testid="stMarkdownContainer"],
+    .streamlit-expanderHeader p,
+    [data-testid="stExpander"] summary p {
+        font-family: 'Orbitron', sans-serif !important;
+        font-size: 0.9rem !important;
+        color: var(--gold-primary) !important;
+        letter-spacing: 1px !important;
         display: inline !important;
-    }
-    
-    /* Force text-only display for expander headers */
-    .streamlit-expanderHeader p {
         margin: 0 !important;
-        display: inline !important;
     }
     
-    /* Force the proper font on expander header text */
-    [data-testid="stExpander"] summary p,
-    [data-testid="stExpander"] summary span {
+    /* Style the expander header text specifically */
+    [data-testid="stExpander"] summary > div {
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    /* Remove any potential orphaned icon characters */
+    [data-testid="stExpander"] summary::first-letter {
         font-family: 'Orbitron', sans-serif !important;
     }
 
@@ -1023,7 +1076,7 @@ st.markdown("""
 with st.sidebar:
     # 1. HEADER & SYSTEM STATUS
     st.markdown("### ⚡ BASIN::NEXUS")
-    st.caption("v0.5 | EXECUTIVE OS")
+    st.caption("v1.0 | EXECUTIVE OS")
     
     st.markdown("---")
     
@@ -5006,221 +5059,13 @@ with col1:
     # 🥊 MODE 7: BOARDROOM (SWARM SYNTHESIS) - FINAL ARCHITECTURE
     # ==============================================================================
     # ==============================================================================
-    # 🥊 MODE 5: BOARDROOM SIMULATOR v2.0 (THE NEURAL DOJO)
+    # 🥊 MODE 5:INTERVIEW::NEXUS - THE NEURAL TRAINING LOOP
+    # ==============================================================================
+    # Full interview mastery system: AI Simulation + STAR Bank + Company Intel + Bio-Optimization
     # ==============================================================================
     elif input_mode == "🥊 Practice (Dojo)":
-        st.markdown("## ▲ BOARDROOM SIMULATOR v2.0")
-        st.caption("PROTOCOL: High-Fidelity Company Simulation & Speech Telemetry.")
-        
-        # 1. MISSION CONFIGURATION
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            target_company = st.selectbox("🎯 TARGET LOCK", 
-                ["NVIDIA (AI/Arch)", "LinkedIn (Values)", "eBay (Scale/Ops)", "Generic Series B"],
-                help="Configures the AI's personality and question logic.")
-        with c2:
-            # SHADOW CABINET PERSONAS
-            interviewer_style = st.selectbox("🗣️ SHADOW CABINET", 
-                [
-                    "👔 Marcus (The CRO) - Revenue & Forecasts",
-                    "💰 Sarah (The VC) - Metrics & Unit Economics", 
-                    "🦄 David (The Visionary) - Strategy & Scale",
-                    "⚙️ Alex (The CTO) - Systems & Data",
-                    "🤝 Elena (The People Leader) - Culture & Conflict"
-                ])
-        with c3:
-            artifact_focus = st.selectbox("📂 ARTIFACT DEFENSE", 
-                ["160% Pipeline Growth", "Revenue OS Architecture", "Leadership/Management", "General Background"])
+        render_interview_nexus()
 
-        # 2. THE SIMULATION LOOP
-        st.markdown("---")
-        
-        b1, b2 = st.columns(2)
-        
-        # ACTION 1: SIMULATION (Drilling)
-        with b1:
-            if st.button("🔴 INITIATE INTERVIEW SIM", type="primary", use_container_width=True):
-                with st.spinner(f"Summoning {interviewer_style}..."):
-                    from logic.generator import generate_plain_text
-                    
-                    # Persona Logic
-                    persona_prompt = ""
-                    if "Marcus" in interviewer_style:
-                        persona_prompt = "You are Marcus, a ruthless CRO. You care ONLY about forecast accuracy, pipeline velocity, and revenue predictability. You hate fluff. You want numbers."
-                    elif "Sarah" in interviewer_style:
-                        persona_prompt = "You are Sarah, a Sequoia Partner. You care about CAC, LTV, Magic Number, and Scalability. You want to know if this person understands the business model."
-                    elif "David" in interviewer_style:
-                        persona_prompt = "You are David, a Visionary Founder. You care about the 'Why', the 10x thinking, and the narrative. You want to be inspired."
-                    elif "Alex" in interviewer_style:
-                        persona_prompt = "You are Alex, a skeptical CTO. You care about how the systems actually work, data integrity, and API integrations. You smell BS instantly."
-                    elif "Elena" in interviewer_style:
-                        persona_prompt = "You are Elena, a VP of People. You care about EQ, conflict resolution, diversity, and how this person leads teams. You hate toxicity."
-
-                    # Company Context
-                    company_context = ""
-                    if "NVIDIA" in target_company:
-                        company_context = "Context: NVIDIA (First Principles, Speed, Innovation)."
-                    elif "LinkedIn" in target_company:
-                        company_context = "Context: LinkedIn (Economic Graph, Members First, Collaboration)."
-                    
-                    # Generate the Question
-                    q_prompt = f"""
-                    ACT AS: {persona_prompt}
-                    TARGET COMPANY: {target_company}.
-                    {company_context}
-                    CANDIDATE CLAIM: {artifact_focus} (Leon Basin).
-                    
-                    TASK: Ask ONE challenging, open-ended question to stress-test this claim. Stay in character (Marcus/Sarah/David/Alex/Elena).
-                    """
-                    
-                    model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
-                    st.session_state['current_q'] = generate_plain_text(q_prompt, model_name=model_id)
-                    st.session_state['sim_active'] = True
-                    st.session_state['sim_mode'] = "interview"
-
-        # ACTION 2: COLLABORATION (Brainstorming)
-        with b2:
-            if st.button("🔵 COLLABORATE / STRATEGY", use_container_width=True):
-                with st.spinner(f"Brainstorming with {interviewer_style}..."):
-                    from logic.generator import generate_plain_text
-                    
-                    # Persona Logic (Helper Mode)
-                    persona_prompt = "You are a helpful, brilliant strategic advisor."
-                    if "Marcus" in interviewer_style:
-                        persona_prompt = "You are Marcus, a seasoned CRO mentor. You want to help Leon build a bulletproof revenue engine."
-                    elif "Sarah" in interviewer_style:
-                        persona_prompt = "You are Sarah, a VC mentor. You want to help Leon frame his story for investors and board members."
-                    
-                    q_prompt = f"""
-                    ACT AS: {persona_prompt}
-                    TOPIC: {artifact_focus}
-                    
-                    TASK: Provide 3 strategic bullet points on how Leon should position this topic to impress a hiring manager at {target_company}.
-                    Be constructive and collaborative.
-                    """
-                    
-                    model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
-                    st.session_state['current_q'] = generate_plain_text(q_prompt, model_name=model_id)
-                    st.session_state['sim_active'] = True
-                    st.session_state['sim_mode'] = "collaborate"
-
-        # 3. INTERACTION LAYER
-        if st.session_state.get('sim_active'):
-            # A. THE QUESTION
-            st.info(f"🗣️ **INTERVIEWER:** {st.session_state['current_q']}")
-            
-            # Audio Playback (Text-to-Speech)
-            try:
-                from gtts import gTTS
-                from io import BytesIO
-                tts = gTTS(st.session_state['current_q'], lang='en', tld='us') # 'us' accent
-                audio_bytes = BytesIO()
-                tts.write_to_fp(audio_bytes)
-                st.audio(audio_bytes, format='audio/mp3')
-            except ImportError:
-                st.warning("⚠️ Install 'gTTS' (`pip install gTTS`) to hear the interviewer speak.")
-            except Exception as e:
-                st.caption(f"Audio generation skipped: {str(e)}")
-
-            # B. THE RESPONSE (Voice Input Simulation)
-            st.markdown("#### 🎙️ YOUR INPUT")
-            
-            sim_mode = st.session_state.get('sim_mode', 'interview')
-            input_placeholder = "[ Speak Answer Here ]" if sim_mode == "interview" else "[ Ask follow up question or refine strategy ]"
-            
-            st.caption(f"Instructions: Use your system's dictation tool (Fn+Fn on Mac) to speak into the box below. Mode: **{sim_mode.upper()}**")
-            user_transcript = st.text_area("Transcript Input", height=200, placeholder=input_placeholder)
-
-            # C. SPEECH TELEMETRY ENGINE
-            btn_label = "🛑 END & ANALYZE PERFORMANCE" if sim_mode == "interview" else "🛑 FINALIZE STRATEGY"
-            
-            if st.button(btn_label, use_container_width=True):
-                if user_transcript:
-                    with st.spinner("PROCESSING..."):
-                        from logic.generator import generate_plain_text
-                        
-                        # 1. LOGIC: WPM CALCULATION
-                        word_count = len(user_transcript.split())
-                        # Assuming average answer time is 90 seconds for a text block of this size
-                        est_wpm = int(word_count / 1.5) 
-                        
-                        # 2. LOGIC: FILLER WORD SCAN
-                        fillers = ['um', 'uh', 'like', 'you know', 'sort of', 'kind of', 'basically']
-                        filler_count = sum(user_transcript.lower().count(f) for f in fillers)
-                        filler_density = (filler_count / word_count) * 100 if word_count > 0 else 0
-                        
-                        # 3. LLM: CONTENT ANALYSIS
-                        if sim_mode == "interview":
-                            analysis_prompt = f"""
-                            ACT AS: Executive Communication Coach.
-                            CONTEXT: Company: {target_company}. Question: {st.session_state['current_q']}.
-                            TRANSCRIPT: "{user_transcript}"
-                            
-                            METRICS:
-                            - WPM: {est_wpm} (Target: 130-150)
-                            - Filler Density: {filler_density:.1f}% (Target: < 3%)
-                            
-                            TASK:
-                            1. Grade the answer (A-F) based on {target_company} culture.
-                            2. Did they mention the "160% Growth" or "$10M" metric?
-                            3. Rewrite the "Hook" (First 2 sentences) to be 2x more executive.
-                            """
-                        else:
-                            # COLLABORATION MODE
-                            analysis_prompt = f"""
-                            ACT AS: Strategic Advisor ({interviewer_style}).
-                            CONTEXT: We are brainstorming strategy for {target_company}.
-                            MY INPUT/FOLLOW UP: "{user_transcript}"
-                            PREVIOUS ADVICE: {st.session_state['current_q']}
-                            
-                            TASK:
-                            1. Refine the strategy based on my input.
-                            2. Provide a concrete "Next Step" or "Action Item".
-                            3. Draft a short email snippet I could send to {target_company} regarding this topic.
-                            """
-                        
-                        # Use existing generator function
-                        model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
-                        feedback = generate_plain_text(analysis_prompt, model_name=model_id)
-                        
-                        # D. THE SCOREBOARD
-                        st.markdown("### 📊 TELEMETRY REPORT")
-                        
-                        m1, m2, m3, m4 = st.columns(4)
-                        m1.metric("WORD COUNT", word_count)
-                        m2.metric("PACE (Est. WPM)", est_wpm, "Target: 140")
-                        m3.metric("FILLER WORDS", filler_count, "Target: 0", delta_color="inverse")
-                        m4.metric("METRIC DENSITY", "High" if "$" in user_transcript or "%" in user_transcript else "Low", "Critical")
-                        
-                        st.success("✅ ANALYSIS COMPLETE")
-                        st.markdown(feedback)
-                        
-                        # Gamification Update
-                        st.toast(f"📈 +50 XP GAINED: {target_company} SIMULATION")
-                        
-                        # Mentor Export (Collaboration Mode Only)
-                        if sim_mode == "collaborate":
-                            st.markdown("---")
-                            st.caption("📤 TAKE ACTION: SHARE WITH MENTOR")
-                            if st.button("📧 DRAFT EMAIL TO MENTOR"):
-                                email_body = f"""Hi [Mentor Name],
-
-I was brainstorming GTM strategy for {target_company} regarding {artifact_focus} and would love your gut check.
-
-Here is the approach I'm considering:
---------------------------------------------------
-{feedback}
---------------------------------------------------
-
-Does this align with what you're seeing in the market?
-
-Best,
-Leon"""
-                                st.code(email_body, language="text")
-                                st.success("📋 Copied to clipboard logic (Manual Copy for now)")
-
-                else:
-                    st.error("⚠️ No audio transcript detected. Speak your answer!")
 
     # ─────────────────────────────────────────────────────────────
     # FIRST 90 DAYS MODE (THE CLOSER)

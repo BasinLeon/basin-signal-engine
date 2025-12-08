@@ -1,8 +1,8 @@
-# ⚡ BASIN::NEXUS v0.5 | Executive Career Intelligence OS
+# ⚡ BASIN::NEXUS v1.0 | Executive Career Intelligence OS
 
 <p align="center">
-  <img src="https://img.shields.io/badge/VERSION-0.5_EXECUTIVE_OS-D4AF37?style=for-the-badge&labelColor=050508" alt="Version"/>
-  <img src="https://img.shields.io/badge/LINES-8,400+-00ff88?style=for-the-badge&labelColor=050508" alt="Lines"/>
+  <img src="https://img.shields.io/badge/VERSION-1.0_EXECUTIVE_OS-D4AF37?style=for-the-badge&labelColor=050508" alt="Version"/>
+  <img src="https://img.shields.io/badge/LINES-9,500+-00ff88?style=for-the-badge&labelColor=050508" alt="Lines"/>
   <img src="https://img.shields.io/badge/STATUS-LIVE-4ade80?style=for-the-badge&labelColor=050508" alt="Status"/>
 </p>
 
@@ -35,9 +35,17 @@ Traditional job searching is **linear**: Apply → Wait → Reject → Repeat.
 | Module | Function |
 |--------|----------|
 | **📋 Interview Prep** | Full pre-interview checklist, company intel, kill questions |
-| **🥊 Deal Intelligence** | Auto-link contacts to deals, track stage velocity, and manage pipeline. |
-| **🔮 Oracle Search** | RAG-powered semantic search to query your entire network and deal history naturally. |
-| **🎙️ Voice Lab** | Practice interview answers with AI coaching and sentiment analysis. |
+| **🥊 Interview::Nexus v3.0** | **The Ultimate Training System:** 11-layer interview gauntlet (Recruiter → CEO), live Gong-style coaching, STAR story bank, bio-optimization, Signal Bridge for outreach tools |
+| **🔮 Oracle Search** | RAG-powered semantic search to query your entire network and deal history naturally |
+| **🎙️ Voice Lab** | Practice interview answers with AI coaching and sentiment analysis |
+
+#### 🥋 Interview::Nexus v3.0 Features
+
+- **📄 Resume + JD Setup** — Paste your context, powers all simulations
+- **🎯 11-Layer Gauntlet** — From Recruiter to Board/Investor
+- **📊 Live Coaching** — Real-time Gong-style analytics as you type
+- **🔗 Signal Bridge** — Connect your outreach tools for voice calibration
+- **📝 STAR Story Bank** — 4 pre-loaded stories from your resume
 
 ### 🛰️ ORACLE ARRAY (Search)
 
