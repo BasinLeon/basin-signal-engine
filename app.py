@@ -6179,7 +6179,7 @@ Best,
                             "Role": new_role,
                             "Channel": new_channel,
                             "Status": new_status,
-                            "Last Touch": "12/06",
+                            "Last Touch": datetime.now().strftime("%m/%d"),
                             "Next Step": "TBD",
                             "Priority": new_priority
                         })
@@ -6249,7 +6249,7 @@ Best,
                             "company": win_company,
                             "stage": win_stage,
                             "what_worked": win_what_worked,
-                            "date": "12/06/2024"
+                            "date": datetime.now().strftime("%m/%d/%Y")
                         })
                         # Extract tactics
                         if "160%" in win_what_worked or "percent" in win_what_worked.lower():
@@ -6275,7 +6275,7 @@ Best,
                         st.session_state['win_loss_memory']['losses'].append({
                             "company": loss_company,
                             "reason": loss_reason,
-                            "date": "12/06/2024"
+                            "date": datetime.now().strftime("%m/%d/%Y")
                         })
                         st.info(f"📊 LOSS LOGGED. The system will learn to avoid this pattern.")
             

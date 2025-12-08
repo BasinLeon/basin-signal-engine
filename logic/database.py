@@ -21,32 +21,102 @@ def init_database():
     conn = get_connection()
     cursor = conn.cursor()
     
-    # CRM Deals Table
+    # CRM Deals Table - Enhanced v2.0
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS crm_deals (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         company TEXT NOT NULL,
         role TEXT,
+        job_url TEXT,
         stage TEXT DEFAULT '1. Identified',
+        substage TEXT,
         priority INTEGER DEFAULT 2,
         signal TEXT DEFAULT 'Medium',
+        base_salary_min INTEGER,
+        base_salary_max INTEGER,
+        ote_min INTEGER,
+        ote_max INTEGER,
+        equity_range TEXT,
+        remote_policy TEXT DEFAULT 'Unknown',
+        company_stage TEXT,
+        company_size TEXT,
+        hiring_manager TEXT,
+        recruiter_name TEXT,
+        source TEXT,
+        referral_contact_id INTEGER,
+        applied_date TIMESTAMP,
+        next_interview_date TIMESTAMP,
+        offer_deadline TIMESTAMP,
+        expected_close_date TIMESTAMP,
+        rejection_reason TEXT,
+        win_reason TEXT,
         notes TEXT,
+        tags TEXT,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)
     
-    # CRM Contacts Table
+    # CRM Contacts Table - Enhanced v2.0
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS crm_contacts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         company TEXT,
         role TEXT,
-        strength TEXT DEFAULT '🔗',
-        sector TEXT,
+        email TEXT,
+        phone TEXT,
+        linkedin_url TEXT,
+        twitter_handle TEXT,
+        relationship_strength INTEGER DEFAULT 1,
+        contact_type TEXT DEFAULT 'Other',
+        status TEXT DEFAULT 'Active',
+        channel TEXT,
+        last_contacted TIMESTAMP,
+        next_touchpoint TIMESTAMP,
+        total_interactions INTEGER DEFAULT 0,
         notes TEXT,
-        last_contact TIMESTAMP,
+        tags TEXT,
+        deal_id INTEGER,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+    
+    # Activity Timeline Table - Track all interactions
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS crm_activities (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        deal_id INTEGER,
+        contact_id INTEGER,
+        activity_type TEXT NOT NULL,
+        direction TEXT DEFAULT 'Outbound',
+        summary TEXT,
+        outcome TEXT,
+        follow_up_date TIMESTAMP,
+        follow_up_action TEXT,
+        sentiment TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+    """)
+    
+    # Interview Stages Table - Detailed interview tracking
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS interview_stages (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        deal_id INTEGER NOT NULL,
+        stage_name TEXT,
+        interviewer_name TEXT,
+        interviewer_role TEXT,
+        scheduled_date TIMESTAMP,
+        duration_minutes INTEGER,
+        format TEXT DEFAULT 'Video',
+        focus_area TEXT,
+        questions_asked TEXT,
+        your_questions TEXT,
+        score INTEGER,
+        feedback TEXT,
+        outcome TEXT DEFAULT 'Pending',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     """)
@@ -173,15 +243,37 @@ def init_database():
     conn.commit()
     conn.close()
 
-# === CRM DEALS ===
-def save_deal(company, role, stage="1. Identified", priority=2, signal="Medium", notes=""):
-    """Save a new deal to the database"""
+# === CRM DEALS (Enhanced v2.0) ===
+def save_deal(company, role, stage="1. Identified", priority=2, signal="Medium", notes="", **kwargs):
+    """Save a new deal to the database with enhanced fields"""
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO crm_deals (company, role, stage, priority, signal, notes)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (company, role, stage, priority, signal, notes))
+    
+    # Build dynamic column/value lists
+    base_cols = ['company', 'role', 'stage', 'priority', 'signal', 'notes']
+    base_vals = [company, role, stage, priority, signal, notes]
+    
+    # Add optional enhanced fields
+    enhanced_fields = [
+        'job_url', 'substage', 'base_salary_min', 'base_salary_max',
+        'ote_min', 'ote_max', 'equity_range', 'remote_policy',
+        'company_stage', 'company_size', 'hiring_manager', 'recruiter_name',
+        'source', 'referral_contact_id', 'applied_date', 'next_interview_date',
+        'offer_deadline', 'expected_close_date', 'rejection_reason', 'win_reason', 'tags'
+    ]
+    
+    for field in enhanced_fields:
+        if field in kwargs and kwargs[field] is not None:
+            base_cols.append(field)
+            base_vals.append(kwargs[field])
+    
+    placeholders = ', '.join(['?' for _ in base_vals])
+    cols = ', '.join(base_cols)
+    
+    cursor.execute(f"""
+        INSERT INTO crm_deals ({cols})
+        VALUES ({placeholders})
+    """, base_vals)
     conn.commit()
     deal_id = cursor.lastrowid
     conn.close()
@@ -214,15 +306,34 @@ def delete_deal(deal_id):
     conn.commit()
     conn.close()
 
-# === CRM CONTACTS ===
-def save_contact(name, company, role="", strength="🔗", sector="", notes=""):
-    """Save a new contact"""
+# === CRM CONTACTS (Enhanced v2.0) ===
+def save_contact(name, company, role="", notes="", **kwargs):
+    """Save a new contact with enhanced fields"""
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("""
-        INSERT INTO crm_contacts (name, company, role, strength, sector, notes)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (name, company, role, strength, sector, notes))
+    
+    base_cols = ['name', 'company', 'role', 'notes']
+    base_vals = [name, company, role, notes]
+    
+    enhanced_fields = [
+        'email', 'phone', 'linkedin_url', 'twitter_handle',
+        'relationship_strength', 'contact_type', 'status', 'channel',
+        'last_contacted', 'next_touchpoint', 'total_interactions',
+        'tags', 'deal_id'
+    ]
+    
+    for field in enhanced_fields:
+        if field in kwargs and kwargs[field] is not None:
+            base_cols.append(field)
+            base_vals.append(kwargs[field])
+    
+    placeholders = ', '.join(['?' for _ in base_vals])
+    cols = ', '.join(base_cols)
+    
+    cursor.execute(f"""
+        INSERT INTO crm_contacts ({cols})
+        VALUES ({placeholders})
+    """, base_vals)
     conn.commit()
     contact_id = cursor.lastrowid
     conn.close()
@@ -232,7 +343,7 @@ def get_all_contacts():
     """Get all contacts"""
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM crm_contacts ORDER BY strength DESC, name ASC")
+    cursor.execute("SELECT * FROM crm_contacts ORDER BY relationship_strength DESC, name ASC")
     contacts = [dict(row) for row in cursor.fetchall()]
     conn.close()
     return contacts
@@ -243,9 +354,169 @@ def update_contact(contact_id, **kwargs):
     cursor = conn.cursor()
     updates = ", ".join([f"{k} = ?" for k in kwargs.keys()])
     values = list(kwargs.values()) + [contact_id]
-    cursor.execute(f"UPDATE crm_contacts SET {updates} WHERE id = ?", values)
+    cursor.execute(f"UPDATE crm_contacts SET {updates}, updated_at = CURRENT_TIMESTAMP WHERE id = ?", values)
     conn.commit()
     conn.close()
+
+def delete_contact(contact_id):
+    """Delete a contact"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM crm_contacts WHERE id = ?", (contact_id,))
+    conn.commit()
+    conn.close()
+
+# === ACTIVITY TIMELINE ===
+def log_activity(activity_type, summary, deal_id=None, contact_id=None, direction="Outbound", 
+                 outcome=None, follow_up_date=None, follow_up_action=None, sentiment=None):
+    """Log an activity to the timeline"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO crm_activities 
+        (deal_id, contact_id, activity_type, direction, summary, outcome, 
+         follow_up_date, follow_up_action, sentiment)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (deal_id, contact_id, activity_type, direction, summary, outcome,
+          follow_up_date, follow_up_action, sentiment))
+    conn.commit()
+    activity_id = cursor.lastrowid
+    conn.close()
+    return activity_id
+
+def get_activities(deal_id=None, contact_id=None, limit=50):
+    """Get activities, optionally filtered by deal or contact"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    query = "SELECT * FROM crm_activities WHERE 1=1"
+    params = []
+    
+    if deal_id:
+        query += " AND deal_id = ?"
+        params.append(deal_id)
+    if contact_id:
+        query += " AND contact_id = ?"
+        params.append(contact_id)
+    
+    query += " ORDER BY created_at DESC LIMIT ?"
+    params.append(limit)
+    
+    cursor.execute(query, params)
+    activities = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return activities
+
+def get_pending_followups():
+    """Get activities with pending follow-ups"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT a.*, d.company, d.role, c.name as contact_name
+        FROM crm_activities a
+        LEFT JOIN crm_deals d ON a.deal_id = d.id
+        LEFT JOIN crm_contacts c ON a.contact_id = c.id
+        WHERE a.follow_up_date IS NOT NULL 
+        AND a.follow_up_date <= DATE('now', '+7 days')
+        ORDER BY a.follow_up_date ASC
+    """)
+    followups = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return followups
+
+# === INTERVIEW STAGES ===
+def save_interview_stage(deal_id, stage_name, interviewer_name=None, interviewer_role=None,
+                         scheduled_date=None, duration_minutes=None, format="Video",
+                         focus_area=None, questions_asked=None, your_questions=None,
+                         score=None, feedback=None, outcome="Pending"):
+    """Save an interview stage"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO interview_stages 
+        (deal_id, stage_name, interviewer_name, interviewer_role, scheduled_date,
+         duration_minutes, format, focus_area, questions_asked, your_questions,
+         score, feedback, outcome)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    """, (deal_id, stage_name, interviewer_name, interviewer_role, scheduled_date,
+          duration_minutes, format, focus_area, questions_asked, your_questions,
+          score, feedback, outcome))
+    conn.commit()
+    stage_id = cursor.lastrowid
+    conn.close()
+    return stage_id
+
+def get_interview_stages(deal_id):
+    """Get all interview stages for a deal"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT * FROM interview_stages 
+        WHERE deal_id = ? 
+        ORDER BY scheduled_date ASC
+    """, (deal_id,))
+    stages = [dict(row) for row in cursor.fetchall()]
+    conn.close()
+    return stages
+
+def update_interview_stage(stage_id, **kwargs):
+    """Update an interview stage"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    updates = ", ".join([f"{k} = ?" for k in kwargs.keys()])
+    values = list(kwargs.values()) + [stage_id]
+    cursor.execute(f"UPDATE interview_stages SET {updates} WHERE id = ?", values)
+    conn.commit()
+    conn.close()
+
+# === PIPELINE ANALYTICS ===
+def get_pipeline_stats():
+    """Get aggregate pipeline statistics"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    stats = {}
+    
+    # Total deals by stage
+    cursor.execute("""
+        SELECT stage, COUNT(*) as count 
+        FROM crm_deals 
+        GROUP BY stage
+    """)
+    stats['by_stage'] = {row['stage']: row['count'] for row in cursor.fetchall()}
+    
+    # Deals by priority
+    cursor.execute("""
+        SELECT priority, COUNT(*) as count 
+        FROM crm_deals 
+        GROUP BY priority
+    """)
+    stats['by_priority'] = {row['priority']: row['count'] for row in cursor.fetchall()}
+    
+    # Avg time in pipeline (for deals with created_at)
+    cursor.execute("""
+        SELECT AVG(julianday('now') - julianday(created_at)) as avg_days
+        FROM crm_deals 
+        WHERE stage NOT IN ('Closed Won', 'Closed Lost')
+    """)
+    result = cursor.fetchone()
+    stats['avg_days_in_pipeline'] = round(result['avg_days'], 1) if result['avg_days'] else 0
+    
+    # Total contacts
+    cursor.execute("SELECT COUNT(*) as count FROM crm_contacts")
+    stats['total_contacts'] = cursor.fetchone()['count']
+    
+    # Total activities last 7 days
+    cursor.execute("""
+        SELECT COUNT(*) as count FROM crm_activities 
+        WHERE created_at >= DATE('now', '-7 days')
+    """)
+    stats['activities_7d'] = cursor.fetchone()['count']
+    
+    conn.close()
+    return stats
+
+
 
 # === VOICE SESSIONS ===
 def save_voice_session(drill, transcript="", words=0, fillers=0, has_metric=False, wpm=0, score=0, feedback=""):
