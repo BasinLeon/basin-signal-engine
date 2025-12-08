@@ -17,8 +17,9 @@ load_dotenv()
 from logic.ingest import extract_text_from_upload, validate_resume_content
 from logic.prompt_engine import construct_basin_prompt, get_persona_options, get_persona_description
 from logic.generator import generate_signal_output, estimate_tokens, get_model_options, MOCK_MODE
-from logic.voice import transcribe_audio, generate_speech, get_voice_options
+from logic.voice import transcribe_audio, generate_speech, get_voice_options, save_transcript_to_asset
 from logic.video import analyze_video_pitch, validate_video, get_video_info
+from logic.oracle_search import render_oracle_search
 
 # Note: Using native st.audio_input instead of audio_recorder_streamlit for Cloud compatibility
 
@@ -1165,6 +1166,7 @@ with st.sidebar:
     with st.expander("🛰️ ORACLE ARRAY"):
         mode_oracle = st.radio("Select:", 
             ["🎯 HUNT MODE",
+             "🔍 ORACLE SEARCH",
              "📡 MARKET RADAR", 
              "📊 ANALYTICS", 
              "🔬 COMPANY INTEL", 
@@ -1205,6 +1207,7 @@ with st.sidebar:
         "🎤 VOICE LAB": "🎤 Voice",
         "🛡️ OBJECTIONS": "🛡️ Objection Bank",
         "🎯 HUNT MODE": "🎯 Hunt",
+        "🔍 ORACLE SEARCH": "🔍 Oracle Search",
         "📡 MARKET RADAR": "📡 Market Radar",
         "📊 ANALYTICS": "📊 Analytics",
         "🔬 COMPANY INTEL": "🔬 Company Intel",
@@ -1285,126 +1288,135 @@ show_dashboard = input_mode == "📄 Intel" and not st.session_state.get('resume
 
 if show_dashboard:
     # ═══════════════════════════════════════════════════════════════
-    # 🎬 NETFLIX-STYLE DASHBOARD (SEASON 1: THE PIVOT)
+    # 🎬 COMMAND CENTER (THE NEXUS DASHBOARD)
     # ═══════════════════════════════════════════════════════════════
     
-    # 1. GAMIFICATION ENGINE (LOC & BUILD TRACKER)
-    try:
-        from logic.integrations import count_project_lines, get_build_stats, squash_bug, calculate_possibilities
-        
-        # Scan current directory for LOC
-        loc_stats = count_project_lines(".")
-        # Load RPG Save File
-        build_stats = get_build_stats()
-        # Calculate Branching Factor
-        possibility_metric = calculate_possibilities(loc_stats.get('total_lines', 0), loc_stats.get('file_count', 0))
-        
-    except ImportError:
-        loc_stats = {"level": 1, "total_lines": 0, "xp_current": 0, "xp_needed": 500, "progress": 0}
-        build_stats = {"hours_coded": 17.5, "bugs_squashed": 0, "level": 1}
-        possibility_metric = "∞"
-
+    # 1. LIVE SYSTEM TELEMETRY
+    from logic.database import get_all_deals, get_all_contacts, get_next_interviews
+    
+    # Fetch Real-Time Data
+    all_deals = get_all_deals()
+    all_contacts = get_all_contacts()
+    next_interviews = get_next_interviews()
+    
+    total_deals = len(all_deals)
+    active_deals = len([d for d in all_deals if d['stage'] in ["2. Applied", "2. Under Review", "3. Screen", "4. Technical", "5. Onsite"]])
+    total_contacts = len(all_contacts)
+    linked_contacts = len([c for c in all_contacts if c.get('deal_id')])
+    
+    # Calculate "Network Velocity" (Simulated based on contact growth/interactions)
+    velocity = f"{total_contacts * 1.5:.1f} Mbps" 
+    
     # MISSION BRIEFING HEADER (Gold/Black)
     st.markdown(f"""
-        <div style="background:linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1550751827-4bd374c3f58b'); background-size: cover; border-radius: 16px; padding: 40px; margin-bottom: 30px; border: 1px solid #FFD700;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="background:linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1451187580459-43490279c0fa'); background-size: cover; border-radius: 16px; padding: 40px; margin-bottom: 30px; border: 1px solid #FFD700; box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
                 <div>
-                    <h1 style="color: #FFD700; font-size: 3.5rem; margin: 0; text-shadow: 0 4px 20px rgba(0,0,0,0.8); font-weight: 800;">BASIN::NEXUS</h1>
-                    <p style="color: #fff; font-size: 1.2rem; font-family: monospace;">
-                        <span style="color: #00ff88;">● ONLINE</span> | 
-                        <span style="color: #FFD700;">📡 NETWORK VELOCITY: 12.5 TB/s</span>
+                    <h1 style="color: #FFD700; font-size: 3rem; margin: 0; text-shadow: 0 4px 20px rgba(0,0,0,0.8); font-family: 'Orbitron', sans-serif;">BASIN::NEXUS</h1>
+                    <p style="color: #ccc; font-size: 1.1rem; font-family: monospace; letter-spacing: 1px;">
+                        <span style="color: #00ff88; text-shadow: 0 0 10px #00ff88;">● SYSTEM ONLINE</span> | 
+                        <span style="color: #FFD700;">📡 UPLINK: {velocity}</span> |
+                        <span style="color: #00d4ff;">💾 MEMORY: {total_deals + total_contacts} NODES</span>
                     </p>
                 </div>
                 
-                <div style="text-align: right; background: rgba(0,0,0,0.6); padding: 20px; border-radius: 8px; backdrop-filter: blur(5px); border: 1px solid #FFD700;">
-                     <div style="color: #888; font-size: 0.8rem; letter-spacing: 2px;">JOB PROBABILITY</div>
-                     <div style="color: #FFD700; font-size: 2.5rem; font-weight: 800;">85%</div>
-                     <div style="color: #00ff88; font-size: 0.8rem;">CALCULATED WIN RATE</div>
+                <div style="text-align: right; background: rgba(20, 20, 25, 0.8); padding: 20px 30px; border-radius: 12px; backdrop-filter: blur(10px); border: 1px solid #333;">
+                     <div style="color: #888; font-size: 0.8rem; letter-spacing: 2px;">ACTIVE PIPELINE</div>
+                     <div style="color: #fff; font-size: 2.8rem; font-weight: 800; line-height: 1;">{active_deals}</div>
+                     <div style="color: #00ff88; font-size: 0.8rem; margin-top: 5px;">LIVE OPPORTUNITIES</div>
                 </div>
             </div>
             
-            <div style="margin-top: 30px; display: flex; gap: 20px;">
-                <div style="background: rgba(255, 255, 255, 0.05); padding: 15px 25px; border-radius: 8px; border: 1px solid #333;">
-                    <div style="color: #888; font-size: 0.8rem;">TOTAL DEALS</div>
-                    <div style="color: #fff; font-size: 1.5rem; font-weight: bold;">12 ↗</div>
+            <div style="margin-top: 40px; display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 15px 25px; border-radius: 8px; border: 1px solid #333; min-width: 140px;">
+                    <div style="color: #888; font-size: 0.75rem; letter-spacing: 1px;">TOTAL APPLICATIONS</div>
+                    <div style="color: #fff; font-size: 1.4rem; font-weight: bold;">{total_deals} 📄</div>
                 </div>
-                 <div style="background: rgba(255, 255, 255, 0.05); padding: 15px 25px; border-radius: 8px; border: 1px solid #333;">
-                    <div style="color: #888; font-size: 0.8rem;">ACTIVE / HOT</div>
-                    <div style="color: #FF4B4B; font-size: 1.5rem; font-weight: bold;">5 🔥</div>
+                 <div style="background: rgba(255, 255, 255, 0.05); padding: 15px 25px; border-radius: 8px; border: 1px solid #333; min-width: 140px;">
+                    <div style="color: #888; font-size: 0.75rem; letter-spacing: 1px;">NETWORK NODES</div>
+                    <div style="color: #00d4ff; font-size: 1.4rem; font-weight: bold;">{total_contacts} 👥</div>
+                </div>
+                <div style="background: rgba(255, 255, 255, 0.05); padding: 15px 25px; border-radius: 8px; border: 1px solid #333; min-width: 140px;">
+                    <div style="color: #888; font-size: 0.75rem; letter-spacing: 1px;">LINKED AGENTS</div>
+                    <div style="color: #FFD700; font-size: 1.4rem; font-weight: bold;">{linked_contacts} 🔗</div>
                 </div>
             </div>
         </div>
     """, unsafe_allow_html=True)
     
-    # GAMIFICATION INTERACTION (Hidden Controls)
-    with st.expander("🎮 BUILDER CONTROLS", expanded=True):
-        g_col1, g_col2 = st.columns(2)
-        with g_col1:
-            if st.button("🐛 SQUASH BUG (+1 XP)"):
-                new_count = squash_bug()
-                st.toast(f"💥 BUG SQUASHED! Total: {new_count}", icon="🦟")
-                st.rerun()
-        with g_col2:
-            st.caption(f"Current Session: {build_stats['hours_coded']} Hours Logged")
+    # 2. THE TREE OF LIFE (Visualizing Connections)
+    st.markdown("### 🌳 TREE OF KNOWLEDGE (Active Connections)")
+    
+    # Simple algorithm to find "Clusters" (Companies with both Deals and Contracts)
+    clusters = {}
+    for contact in all_contacts:
+        amt = contact.get('company', 'Unknown')
+        if amt and amt != "Unknown":
+            if amt not in clusters: clusters[amt] = {"contacts": [], "deal": None}
+            clusters[amt]["contacts"].append(contact)
+            
+    for deal in all_deals:
+        amt = deal.get('company')
+        if amt:
+            if amt not in clusters: clusters[amt] = {"contacts": [], "deal": None}
+            clusters[amt]["deal"] = deal
+            
+    # Filter for "High Value" Clusters (Has Deal AND Contacts)
+    high_value_clusters = {k:v for k,v in clusters.items() if v['deal'] and v['contacts']}
+    
+    if high_value_clusters:
+        c1, c2, c3 = st.columns(3)
+        cols = [c1, c2, c3]
+        
+        for i, (company, data) in enumerate(list(high_value_clusters.items())[:6]):
+            with cols[i % 3]:
+                contact_names = ", ".join([c['name'].split()[0] for c in data['contacts'][:2]])
+                if len(data['contacts']) > 2: contact_names += f" +{len(data['contacts'])-2} others"
+                
+                st.markdown(f"""
+                <div style="background: #111; border: 1px solid #333; border-radius: 10px; padding: 15px; margin-bottom: 15px; border-left: 3px solid #00ff88;">
+                    <div style="display:flex; justify-content:space-between;">
+                        <div style="color: #fff; font-weight: bold;">{company}</div>
+                        <div style="color: #00ff88; font-size: 0.8rem;">ACTIVE</div>
+                    </div>
+                    <div style="color: #888; font-size: 0.8rem; margin-top: 5px;">{data['deal']['role']}</div>
+                    <div style="background: rgba(0, 212, 255, 0.1); color: #00d4ff; font-size: 0.75rem; padding: 5px 10px; border-radius: 4px; margin-top: 10px;">
+                        🔗 Linked: {contact_names}
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+    else:
+        st.info("Ingest more connections to see the Tree of Life bloom. (No overlaps found yet between Deals and Contacts)")
 
-
-    # EPISODE CARDS (Tools)
-    st.markdown("### 📺 CONTINUE WATCHING")
-    
-    ep_col1, ep_col2, ep_col3, ep_col4 = st.columns(4)
-    
-    with ep_col1:
-        st.info("EPISODE 1: THE HUNT")
-        st.caption("Use 'Sniper Prospecting' to find high-value targets.")
-        
-    with ep_col2:
-        st.success("EPISODE 2: THE BUILD")
-        st.caption("Craft your narrative in the 'Post Forge'.")
-        
-    with ep_col3:
-        st.warning("EPISODE 3: THE PITCH")
-        st.caption("Practice voice drills in the 'Combat Simulator'.")
-        
-    with ep_col4:
-        st.error("EPISODE 4: THE CLOSE")
-        st.caption("Manage pipeline deals in the 'CRM'.")
-        
-    st.markdown("---")
-    
-    # "Trending Now" Row
-    st.markdown("### 🔥 TRENDING NOW")
-    trend_col1, trend_col2 = st.columns(2)
-    
-    with trend_col1:
-        st.markdown(f"""
-        <div style="background: #141414; padding: 20px; border-radius: 8px; border-left: 4px solid #FFD700;">
-            <h4 style="color: white; margin: 0;">VIBE CODING COMMUNITY</h4>
-            <p style="color: #999; font-size: 0.9rem;">New Strategy: "Shipping Velocity"</p>
-            <p style="color: #FFD700; font-size: 0.8rem;">98% MATCH FOR YOU</p>
-        </div>
-        """, unsafe_allow_html=True)
-        
-    with trend_col2:
-        st.markdown(f"""
-        <div style="background: #141414; padding: 20px; border-radius: 8px; border-left: 4px solid #00ff88;">
-            <h4 style="color: white; margin: 0;">MARKET RADAR</h4>
-            <p style="color: #999; font-size: 0.9rem;">Signal: Fintech Hiring Surge</p>
-            <p style="color: #00ff88; font-size: 0.8rem;">NEW INTEL DROPPED</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-    # --- FIRST RUN ONBOARDING (Hidden usually, logic kept for safety) ---
-    if st.session_state.first_run:
-        st.session_state.first_run = False # Auto-acknowledge
-
-    
     st.markdown("---")
 
+    # 3. QUICK ACTIONS GRID
+    st.markdown("### ⚡ QUICK PROTOCOLS")
     
-    # --- 1. THE 4-PHASE PIPELINE (Strategic Navigation) ---
-    st.markdown("### 🧭 WHERE ARE YOU IN THE HUNT?")
+    qa1, qa2, qa3, qa4 = st.columns(4)
     
-    c1, c2, c3, c4 = st.columns(4)
+    with qa1:
+        if st.button("🔍 ORACLE SEARCH", use_container_width=True):
+            st.session_state.oracle = "🔍 ORACLE SEARCH"
+            st.rerun()
+            
+    with qa2:
+        if st.button("📈 CRM PIPELINE", use_container_width=True):
+            st.session_state.builder = "📈 PIPELINE CRM"
+            st.rerun()
+            
+    with qa3:
+        if st.button("🎤 VOICE LAB", use_container_width=True):
+            st.session_state.battle = "🎤 VOICE LAB"
+            st.rerun()
+            
+    with qa4:
+        if st.button("📄 UPLOAD DATA", use_container_width=True):
+            st.session_state.battle = "📄 INTEL AGENT"
+            st.rerun()
+            
+    st.markdown("---")
+
     
     with c1:
         st.markdown("""
@@ -2058,6 +2070,14 @@ if show_dashboard:
     st.stop()
 
 # ═══════════════════════════════════════════════════════════════
+# FULL PAGE MODES (Bypass Two-Column Layout)
+# ═══════════════════════════════════════════════════════════════
+
+if input_mode == "🔍 Oracle Search":
+    render_oracle_search()
+    st.stop()
+
+# ═══════════════════════════════════════════════════════════════
 # NORMAL MODE FLOW (Two-column layout)
 # ═══════════════════════════════════════════════════════════════
 col1, col2 = st.columns([1, 1], gap="large")
@@ -2703,6 +2723,24 @@ with col1:
                                 filler_count=speech_analysis.get('filler_count', 0),
                                 has_metrics=speech_analysis.get('has_metric', False)
                             )
+                            
+                            # Save to Assets for Oracle Memory
+                            if transcript:
+                                try:
+                                    save_transcript_to_asset(
+                                        transcript, 
+                                        f"Combat Sim - {company} - {role}",
+                                        metadata={
+                                            "Type": "Interview Practice",
+                                            "Company": company,
+                                            "Role": role,
+                                            "Question": selected_question,
+                                            "Score": score
+                                        }
+                                    )
+                                    st.toast("🧠 Saved to Oracle Memory", icon="💾")
+                                except Exception as e:
+                                    print(f"Error saving to assets: {e}")
                             
                             # Update question performance
                             update_question_performance(selected_question, score, transcript if score > 80 else None)
@@ -6728,542 +6766,228 @@ Best,
                         st.rerun()
         
         # ═══════════════════════════════════════════════════════════════
-        # TAB 3: DEAL PIPELINE
-        # ═══════════════════════════════════════════════════════════════
-        with crm_tab7:
-            st.markdown("### 📈 DEAL PIPELINE")
+    # 📣 SOCIAL HQ (THE BUILDER DECK)
+    # ═══════════════════════════════════════════════════════════════
+    st.markdown("""
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h1 style="font-size: 3rem; margin-bottom: 10px;">📣 SOCIAL HQ</h1>
+        <p style="color: #888;">NARRATIVE ARCHITECTURE & OUTREACH ENGINE</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    tab1, tab2, tab3 = st.tabs(["Strategy Agent", "Post Forge", "Asset Library"])
+    
+    with tab1:
+        st.markdown("### ♟️ CONNECTION STRATEGY AGENT")
+        st.caption("Select a Deal to generate a multi-vector entry strategy.")
+        
+        from logic.database import get_all_deals, get_all_contacts
+        deals = get_all_deals()
+        contacts = get_all_contacts()
+        
+        # 1. Select Target
+        target_companies = sorted(list(set([d['company'] for d in deals])))
+        selected_company = st.selectbox("Select Target Company", target_companies)
+        
+        if selected_company:
+            # 2. Analyze Vector
+            company_deal = next((d for d in deals if d['company'] == selected_company), None)
+            company_contacts = [c for c in contacts if c.get('company') and c['company'].lower() == selected_company.lower()]
             
-            deals = st.session_state['crm_deals']
+            # Classify Assets
+            recruiters = [c for c in company_contacts if "Recruiter" in c.get('contact_type', '')]
+            vips = [c for c in company_contacts if "VIP" in c.get('contact_type', '')]
+            peers = [c for c in company_contacts if c not in recruiters and c not in vips]
             
-            # Pipeline Metrics
-            k1, k2, k3, k4 = st.columns(4)
-            stages = [d.get("Stage", "") for d in deals]
-            k1.metric("TOTAL DEALS", len(deals))
-            k2.metric("INTERVIEWS", sum(1 for s in stages if 'Interview' in s))
-            k3.metric("UNDER REVIEW", sum(1 for s in stages if 'Review' in s))
-            k4.metric("ACTIVE", sum(1 for s in stages if s == 'Active'))
+            c1, c2, c3 = st.columns(3)
+            with c1: st.metric("Recruiters", len(recruiters))
+            with c2: st.metric("VIPs (Founders/Execs)", len(vips))
+            with c3: st.metric("Peers", len(peers))
             
             st.markdown("---")
             
-            # Editable Deal Table
-            edited_deals = st.data_editor(
-                deals,
-                num_rows="dynamic",
-                use_container_width=True,
-                column_config={
-                    "Stage": st.column_config.SelectboxColumn(
-                        options=["Outreach Sent", "Under Review", "Under Review (HM)", "Interview Scheduled", "Final Round", "Active", "Offer", "Closed Won", "Closed Lost"]
-                    ),
-                    "Priority": st.column_config.NumberColumn(min_value=1, max_value=3),
-                    "Signal": st.column_config.SelectboxColumn(
-                        options=["Very High", "High", "Medium", "Low"]
-                    )
-                }
-            )
-            st.session_state['crm_deals'] = edited_deals
+            # 3. Generate Strategy
+            st.subheader("🚀 EXECUTION PROTOCOL")
             
-            st.markdown("---")
+            if not company_contacts:
+                st.warning("⚠️ No internal contacts detected.")
+                st.info("💡 STRATEGY: COLD BREACH")
+                st.markdown(f"**Action**: Find the Hiring Manager for *{company_deal['role']}* on LinkedIn.")
+                st.code(f"Subject: Question about {company_deal['role']} role\n\nHi [Name],\n\nI saw you're hiring for the {company_deal['role']} position. I've built systems that [mention 1 relevant achievement]. connecting to see if you're open to a brief chat?", language="text")
             
-            # ═══════════════════════════════════════════════════════════════
-            # v15: WIN/LOSS FEEDBACK LOOP (NEURAL LEARNING)
-            # ═══════════════════════════════════════════════════════════════
-            st.markdown("### 🧠 WIN/LOSS FEEDBACK (Neural Learning)")
-            st.caption("Teach the system what works. It will suggest high-yield tactics in future sessions.")
-            
-            # Initialize Win/Loss Memory
-            if 'win_loss_memory' not in st.session_state:
-                st.session_state['win_loss_memory'] = {
-                    'wins': [],
-                    'losses': [],
-                    'high_yield_tactics': []
-                }
-            
-            # Log a Win
-            with st.expander("🏆 LOG A WIN (Deal Advanced)"):
-                win_company = st.selectbox("Which company?", [d['Company'] for d in deals], key="win_company")
-                win_stage = st.selectbox("What stage did you reach?", ["Interview Scheduled", "Final Round", "Offer", "Closed Won"], key="win_stage")
-                win_what_worked = st.text_area("What worked? (metrics, stories, tactics)", placeholder="e.g., 'Used 160% YoY metric', 'Partner Architecture story landed'", key="win_worked")
+            else:
+                # Prioritize VIP -> Recruiter -> Peer
+                target_contact = None
+                strategy_type = ""
                 
-                if st.button("💾 LOG WIN", type="primary", key="log_win"):
-                    if win_company and win_what_worked:
-                        st.session_state['win_loss_memory']['wins'].append({
-                            "company": win_company,
-                            "stage": win_stage,
-                            "what_worked": win_what_worked,
-                            "date": datetime.now().strftime("%m/%d/%Y")
-                        })
-                        # Extract tactics
-                        if "160%" in win_what_worked or "percent" in win_what_worked.lower():
-                            if "160% YoY metric" not in st.session_state['win_loss_memory']['high_yield_tactics']:
-                                st.session_state['win_loss_memory']['high_yield_tactics'].append("160% YoY metric")
-                        if "partner" in win_what_worked.lower():
-                            if "Partner Architecture story" not in st.session_state['win_loss_memory']['high_yield_tactics']:
-                                st.session_state['win_loss_memory']['high_yield_tactics'].append("Partner Architecture story")
-                        if "$10M" in win_what_worked or "pipeline" in win_what_worked.lower():
-                            if "$10M Pipeline proof" not in st.session_state['win_loss_memory']['high_yield_tactics']:
-                                st.session_state['win_loss_memory']['high_yield_tactics'].append("$10M Pipeline proof")
-                        
-                        st.success(f"🧠 WIN LOGGED! The system is learning from {win_company}.")
-                        st.balloons()
+                if vips:
+                    target_contact = vips[0]
+                    strategy_type = "VIP ASSAULT"
+                    st.success(f"🔥 STRATEGY: {strategy_type}")
+                    st.markdown(f"**Target**: {target_contact['name']} ({target_contact['role']})")
+                    st.markdown("**Angle**: Founder-to-Founder / High Strategic Value")
+                    
+                    msg = f"Subject: Thoughts on {selected_company}'s growth\n\n{target_contact['name'].split()[0]},\n\nI've been following {selected_company}'s trajectory in [Sector]. I previously led [Project] which scaled [Metric].\n\nI applied for the {company_deal['role']} role, but wanted to connect directly given our shared interest in [Topic]. Open to a 5-min chat?"
+                    st.text_area("Draft Message", msg, height=200)
+                    
+                elif recruiters:
+                    target_contact = recruiters[0]
+                    strategy_type = "DIRECT RECRUITER PITCH"
+                    st.info(f"🎯 STRATEGY: {strategy_type}")
+                    st.markdown(f"**Target**: {target_contact['name']} ({target_contact['role']})")
+                    
+                    msg = f"Subject: Application for {company_deal['role']}\n\nHi {target_contact['name'].split()[0]},\n\nI just applied for the {company_deal['role']} position and wanted to introduce myself.\n\nMy background in [Skill 1] & [Skill 2] seems like a strong fit for what you're building. Would love to ensure my application landed on your radar.\n\nBest,\nLeon"
+                    st.text_area("Draft Message", msg, height=200)
+                    
+                elif peers:
+                     target_contact = peers[0]
+                     strategy_type = "TROJAN HORSE (REFERRAL)"
+                     st.warning(f"🛡️ STRATEGY: {strategy_type}")
+                     st.markdown(f"**Target**: {target_contact['name']} ({target_contact['role']})")
+                     
+                     msg = f"Subject: Quick question about {selected_company}\n\nHi {target_contact['name'].split()[0]},\n\nI see you're working at {selected_company} as a {target_contact['role']}. I'm looking at the {company_deal['role']} opening and would love a brutally honest take on the engineering culture there.\n\nOpen to a virtual coffee?\nLeon"
+                     st.text_area("Draft Message", msg, height=200)
+    
+    with tab2:
+        st.markdown("### 🏢 MARKET RADAR (Company Intelligence)")
+        st.caption("Filter the market. Identify high-value targets based on your ICP.")
+        
+        # 1. ICP CONFIGURATION (Ideal Customer Profile)
+        st.markdown("#### 🎯 DEFINE YOUR TARGET (ICP)")
+        icp_c1, icp_c2, icp_c3 = st.columns(3)
+        with icp_c1:
+            icp_stage = st.multiselect("Growth Stage", ["Seed", "Series A", "Series B", "Series C+", "Public"], default=["Series B", "Series C+"])
+        with icp_c2:
+            icp_signal = st.multiselect("Hiring Signal", ["Aggressively Hiring", "Stable", "Layoffs (Talent Grab)", "Key Role Open"], default=["Aggressively Hiring"])
+        with icp_c3:
+            icp_sector = st.multiselect("Sector / Vertical", ["B2B SaaS", "Cybersecurity", "Fintech", "Healthtech", "DevTools"], default=["B2B SaaS", "Cybersecurity"])
+        
+        st.markdown("---")
+        
+        # 2. MARKET SCAN (Mock Data + CRM Data)
+        # Combine real CRM deals with 'Market' data (mocked for now)
+        market_data = [
+            {"Company": "Anthropic", "Stage": "Series C+", "Signal": "Aggressively Hiring", "Sector": "AI/ML", "Match": "98%"},
+            {"Company": "Databricks", "Stage": "Series C+", "Signal": "Aggressively Hiring", "Sector": "Data", "Match": "95%"},
+            {"Company": "Wiz", "Stage": "Series C+", "Signal": "Aggressively Hiring", "Sector": "Cybersecurity", "Match": "92%"},
+            {"Company": "Rippling", "Stage": "Series B", "Signal": "Key Role Open", "Sector": "B2B SaaS", "Match": "88%"},
+            {"Company": "Linear", "Stage": "Series A", "Signal": "Stable", "Sector": "DevTools", "Match": "85%"}
+        ]
+        
+        # Filter Logic (Simple mock filter)
+        filtered_market = [m for m in market_data if m['Stage'] in icp_stage and m['Signal'] in icp_signal]
+        
+        c1, c2 = st.columns([2, 1])
+        
+        with c1:
+            st.subheader(f"📡 RADAR HITS ({len(filtered_market)})")
+            for co in filtered_market:
+                with st.container():
+                    st.markdown(f"""
+                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 16px; margin-bottom: 12px; border-left: 4px solid #00ff88;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <h3 style="margin: 0; color: #fff;">{co['Company']}</h3>
+                            <span style="background: #00ff88; color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold;">{co['Match']} Match</span>
+                        </div>
+                        <p style="margin: 4px 0; color: #8892b0;">{co['Sector']} • {co['Stage']} • {co['Signal']}</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                     
+        with c2:
+            st.subheader("🔍 ORACLE SCOUT")
+            st.info("Don't see your dream role? Task the Oracle to find it.")
+            if st.button("RUN DEEP MARKET SEARCH", type="primary", use_container_width=True):
+                st.session_state['oracle_query'] = f"Find B2B SaaS companies in {', '.join(icp_stage)} stage that are {', '.join(icp_signal)} in {', '.join(icp_sector)}."
+                st.toast("Oracle Search Initiated...", icon="🔮")
+                # Logic to trigger Oracle Search would go here
+                 
+            st.markdown("### 📊 INSIGHTS")
+            st.caption("Market Trends based on your ICP")
+            st.progress(0.8, text="AI/ML Hiring Velocity")
+            st.progress(0.4, text="Cybersecurity Budgets")
+            st.progress(0.6, text="Series B Funding Activity")
+
+
             
-            # Log a Loss
-            with st.expander("📉 LOG A LOSS (Deal Lost)"):
-                loss_company = st.selectbox("Which company?", [d['Company'] for d in deals], key="loss_company")
-                loss_reason = st.text_area("What didn't work?", placeholder="e.g., 'They wanted more SMB experience', 'Salary mismatch'", key="loss_reason")
+    with tab3:
+         st.info("📚 Asset Library (Templates & Scripts) - Coming Soon")
+
+
+            
+
+
                 
-                if st.button("💾 LOG LOSS", key="log_loss"):
-                    if loss_company and loss_reason:
-                        st.session_state['win_loss_memory']['losses'].append({
-                            "company": loss_company,
-                            "reason": loss_reason,
-                            "date": datetime.now().strftime("%m/%d/%Y")
-                        })
-                        st.info(f"📊 LOSS LOGGED. The system will learn to avoid this pattern.")
-            
-            # Show High-Yield Tactics
-            if st.session_state['win_loss_memory']['high_yield_tactics']:
-                st.markdown("---")
-                st.markdown("#### ⚡ HIGH-YIELD TACTICS (What's Working)")
-                for tactic in st.session_state['win_loss_memory']['high_yield_tactics']:
-                    st.success(f"✅ **{tactic}** — Use this in your next interview!")
-            
-            # Show Win/Loss History
-            wins = st.session_state['win_loss_memory']['wins']
-            losses = st.session_state['win_loss_memory']['losses']
-            
-            if wins or losses:
-                st.markdown("---")
-                st.markdown("#### 📊 WIN/LOSS HISTORY")
-                
-                hist_cols = st.columns(2)
-                with hist_cols[0]:
-                    st.markdown("**🏆 WINS**")
-                    for w in wins[-5:]:
-                        st.caption(f"{w['company']} → {w['stage']}")
-                        st.write(f"*{w['what_worked'][:50]}...*" if len(w['what_worked']) > 50 else f"*{w['what_worked']}*")
-                
-                with hist_cols[1]:
-                    st.markdown("**📉 LOSSES**")
-                    for l in losses[-5:]:
-                        st.caption(f"{l['company']}")
-                        st.write(f"*{l['reason'][:50]}...*" if len(l['reason']) > 50 else f"*{l['reason']}*")
+
         
         # ═══════════════════════════════════════════════════════════════
         # TAB 4: NETWORK BUILDER (NEW!)
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab8:
-            st.markdown("### 🔗 NETWORK BUILDER")
-            st.caption("Strengthen relationships. Get warm intros. Build your network systematically.")
+        # with crm_tab8:
+        #     st.markdown("### 🔗 NETWORK BUILDER")
+        #     st.caption("Strengthen relationships. Get warm intros. Build your network systematically.")
             
-            network_sub_tab1, network_sub_tab2, network_sub_tab3 = st.tabs([
-                "📊 NETWORK HEALTH", "📝 OUTREACH TEMPLATES", "🚀 INTRO REQUESTS"
-            ])
+        #     network_sub_tab1, network_sub_tab2, network_sub_tab3 = st.tabs([
+        #         "📊 NETWORK HEALTH", "📝 OUTREACH TEMPLATES", "🚀 INTRO REQUESTS"
+        #     ])
             
-            # --- NETWORK HEALTH ---
-            with network_sub_tab1:
-                st.markdown("#### 📊 RELATIONSHIP STRENGTH ANALYSIS")
-                
-                contacts = st.session_state.get('crm_contacts', [])
-                
-                # Count by strength
-                strength_counts = {
-                    "❄️ Cold (🔗)": sum(1 for c in contacts if c.get('Strength', '🔗') == '🔗'),
-                    "🌤️ Warm (🔗🔗)": sum(1 for c in contacts if c.get('Strength', '') == '🔗🔗'),
-                    "🔥 Strong (🔗🔗🔗)": sum(1 for c in contacts if '🔗🔗🔗' in c.get('Strength', '') and '🔗🔗🔗🔗' not in c.get('Strength', '')),
-                    "💪 Very Strong (🔗🔗🔗🔗)": sum(1 for c in contacts if '🔗🔗🔗🔗' in c.get('Strength', '') and '🔗🔗🔗🔗🔗' not in c.get('Strength', '')),
-                    "👑 Champion (🔗🔗🔗🔗🔗)": sum(1 for c in contacts if '🔗🔗🔗🔗🔗' in c.get('Strength', '')),
-                }
-                
-                for level, count in strength_counts.items():
-                    st.metric(level, count)
-                
-                st.markdown("---")
-                
-                # Contacts needing attention
-                st.markdown("#### ⚠️ NEEDS ATTENTION (Cold Contacts)")
-                cold_contacts = [c for c in contacts if c.get('Strength', '🔗') == '🔗']
-                
-                if cold_contacts:
-                    for c in cold_contacts[:5]:
-                        col1, col2 = st.columns([3, 1])
-                        with col1:
-                            st.write(f"**{c['Name']}** @ {c['Company']}")
-                            st.caption(f"Last: {c.get('Last Touch', 'Never')}")
-                        with col2:
-                            if st.button(f"📧 Warm Up", key=f"warm_{c['Name']}"):
-                                st.session_state['warmup_target'] = c
-                else:
-                    st.success("✅ No cold contacts! Great networking.")
-                
-                st.markdown("---")
-                
-                # Champions who can help
-                st.markdown("#### 👑 YOUR CHAMPIONS")
-                champions = [c for c in contacts if '🔗🔗🔗🔗🔗' in c.get('Strength', '')]
-                
-                if champions:
-                    for c in champions:
-                        st.markdown(f"""
-                        <div style="background: linear-gradient(135deg, #1a1a2e, #0a0a1a); border: 1px solid #ffd700; border-radius: 8px; padding: 12px; margin: 8px 0;">
-                            <p style="color: #ffd700; margin: 0;"><b>{c['Name']}</b> @ {c['Company']}</p>
-                            <p style="color: #8892b0; font-size: 0.8rem; margin: 4px 0 0 0;">Can intro you to: {c.get('Sector', 'General')} companies</p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                else:
-                    st.info("Build your first champion by strengthening 1 relationship to 🔗🔗🔗🔗🔗")
-            
-            # --- OUTREACH TEMPLATES ---
-            # --- COMMS STUDIO (Formerly Outreach Templates) ---
-            with network_sub_tab2:
-                st.markdown("#### 📣 COMMS STUDIO")
-                st.caption("Precision-engineered scripts for every channel.")
-                
-                # 1. STRATEGY CONFIGURATION
-                c_conf1, c_conf2 = st.columns(2)
-                with c_conf1:
-                    comms_channel = st.selectbox("📡 Channel", ["🟦 LinkedIn", "📧 Email", "📞 Phone / Voice", "📱 SMS / Text", "🚁 Guerrilla / Creative"])
-                with c_conf2:
-                    comms_tone = st.selectbox("🎭 Tone", ["Professional (Safe)", "Casual (Startup)", "The Challenger (Bold)"])
+        #     # --- NETWORK HEALTH ---
+        #     with network_sub_tab1:
 
-                # 2. SCENARIO SELECTION (Dynamic)
-                scenarios = []
-                if comms_channel == "🟦 LinkedIn":
-                    scenarios = ["🤝 Connection Request (Active Hiring)", "👋 Connection Request (Peer)", "💬 DM: Reconnect (Warm)", "📣 Comment Strategy (Thought Leadership)"]
-                elif comms_channel == "📧 Email":
-                    scenarios = ["🧊 Cold Outreach (Hiring Manager)", "👻 Follow Up (Post-Ghosting)", "🙏 Thank You (Post-Interview)", "💼 Resignation / Transition"]
-                elif comms_channel == "📞 Phone / Voice":
-                    scenarios = ["⚡ Cold Call Opener (30s)", "📼 Voicemail Drop", "🛡️ Gatekeeper Bypass"]
-                elif comms_channel == "📱 SMS / Text":
-                    scenarios = ["📅 Confirm Meeting", "👋 Post-Event Follow Up", "👀 Quick Check-in (Warm)", "🚀 Update/News Share"]
-                elif comms_channel == "🚁 Guerrilla / Creative":
-                    scenarios = ["📹 Loom Video Pitch (60s)", "🕵️ The 'Audit' (Value Add)", "🧪 User Testing Feedback", "🎁 The 'Gift' Strategy"]
-                
-                comms_scenario = st.selectbox("🎯 Scenario", scenarios)
-                
-                # 3. INPUTS
-                st.markdown('<div class="divider-solid"></div>', unsafe_allow_html=True)
-                
-                # NEW: ICP Persona Selector
-                i0_col1, i0_col2 = st.columns(2)
-                with i0_col1:
-                    target_persona = st.selectbox("👤 Target Persona (ICP)", [
-                        "🎯 Hiring Manager",
-                        "🔍 Recruiter / Talent Acquisition", 
-                        "👔 CEO / Founder",
-                        "📈 VP of Sales / CRO",
-                        "⚙️ RevOps / GTM Ops",
-                        "🤝 HR / People Ops",
-                        "🏗️ Investor / Board Member"
-                    ])
-                with i0_col2:
-                    st.caption("Persona adjusts tone and talking points automatically.")
-                    persona_tips = {
-                        "🎯 Hiring Manager": "Focus on solving THEIR problems. Lead with outcomes.",
-                        "🔍 Recruiter / Talent Acquisition": "Make THEIR job easy. Be clear on fit.",
-                        "👔 CEO / Founder": "Time is precious. Lead with impact. Bold claims OK.",
-                        "📈 VP of Sales / CRO": "Talk revenue. Use numbers. Peer language.",
-                        "⚙️ RevOps / GTM Ops": "Talk systems, efficiency, scale. Technical credibility.",
-                        "🤝 HR / People Ops": "Culture fit, team dynamics, long-term value.",
-                        "🏗️ Investor / Board Member": "Strategic vision, market timing, unfair advantages."
-                    }
-                    st.info(f"💡 {persona_tips.get(target_persona, '')}")
-                
-                i1, i2 = st.columns(2)
-                target_name = i1.text_input("Target Name", placeholder="e.g. Sarah Chen")
-                target_company = i2.text_input("Target Company", placeholder="e.g. Anthropic")
-                
-                extra_context = st.text_area("Specific Context / Key Details", height=100, placeholder="e.g. They just raised Series B, I saw them on a podcast, or I want to highlight my 160% growth metric.")
 
-                # 4. GENERATION
-                if st.button("⚡ GENERATE SCRIPT", type="primary", use_container_width=True):
-                    if target_name:
-                        from logic.generator import generate_plain_text
-                        
-                        comms_prompt = f"""
-                        ACT AS: Leon Basin, Director of GTM Systems (Top 1% Revenue Architect).
-                        TASK: Write a {comms_channel} script for the scenario: "{comms_scenario}".
-                        
-                        TARGET: {target_name} at {target_company}.
-                        TARGET PERSONA: {target_persona}
-                        MY CONTEXT: {extra_context}
-                        MY CORE STATS: 160% Pipeline Growth, $10M+ Pipeline Built.
-                        
-                        TONE: {comms_tone}.
-                        
-                        PERSONA-SPECIFIC GUIDANCE:
-                        - If targeting Hiring Manager: Focus on solving their specific pain. Lead with outcomes, not credentials.
-                        - If targeting Recruiter: Make it easy for them to pitch you internally. Clear value prop.
-                        - If targeting CEO/Founder: Be bold. Time is precious. Lead with strategic impact.
-                        - If targeting VP Sales/CRO: Speak their language. Revenue, pipeline, conversion.
-                        - If targeting RevOps: Talk systems, scalability, efficiency gains.
-                        
-                        CONSTRAINTS:
-                        - If LinkedIn Connection: Under 300 chars.
-                        - If Email: Subject Line + Body. Short paragraphs.
-                        - If Phone: Script format with [Pause] indicators.
-                        - If SMS: Under 160 chars. Casual but crisp. No "Dear [Name]".
-                        - If Guerrilla: Creative instructions + script. Focus on pattern interruption.
-                        - "The Challenger" tone should be direct, quantifying the cost of inaction.
-                        
-                        Write only the final output. No fluff.
-                        """
-                        
-                        model_id = st.session_state.get('selected_model_id', "llama-3.3-70b-versatile")
-                        comms_output = generate_plain_text(comms_prompt, model_name=model_id)
-                        st.session_state.comms_output = comms_output
-                        st.session_state.comms_target_name = target_name
-                        st.session_state.comms_target_company = target_company
-                        st.toast(f"✨ Script generated for {target_name}!", icon="🎯")
+
                 
-                # 5. OUTPUT DISPLAY
-                if st.session_state.comms_output:
-                    st.markdown("---")
-                    st.markdown("#### 📤 READY TO SEND")
-                    
-                    # Calculate character count for validation
-                    char_count = len(st.session_state.comms_output)
-                    
-                    if comms_channel == "🟦 LinkedIn" and char_count > 300:
-                        st.warning(f"⚠️ Character count: {char_count}/300 - Consider trimming for LinkedIn connection request limit.")
-                    elif comms_channel == "📱 SMS / Text" and char_count > 160:
-                        st.warning(f"⚠️ Character count: {char_count}/160 - May be split into multiple messages.")
-                    else:
-                        st.caption(f"📊 Characters: {char_count}")
-                    
-                    st.code(st.session_state.comms_output, language="markdown" if comms_channel != "📧 Email" else "text")
-                    
-                    # ACTION BUTTONS
-                    action_cols = st.columns([1, 1, 1])
-                    
-                    with action_cols[0]:
-                        # COPY TO CLIPBOARD (JavaScript Injection)
-                        copy_js = f"""
-                        <script>
-                        function copyToClipboard() {{
-                            const text = `{st.session_state.comms_output.replace('`', "'")}`;
-                            navigator.clipboard.writeText(text).then(() => {{
-                                alert('Copied to clipboard!');
-                            }});
-                        }}
-                        </script>
-                        <button onclick="copyToClipboard()" style="background: #FFBF00; color: black; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%;">📋 COPY</button>
-                        """
-                        st.markdown(copy_js, unsafe_allow_html=True)
-                    
-                    with action_cols[1]:
-                        # OPEN IN GMAIL (mailto: link)
-                        if comms_channel == "📧 Email":
-                            import urllib.parse
-                            subject = f"Quick question for {st.session_state.get('comms_target_name', 'you')}"
-                            body = urllib.parse.quote(st.session_state.comms_output)
-                            mailto_link = f"mailto:?subject={urllib.parse.quote(subject)}&body={body}"
-                            st.markdown(f'<a href="{mailto_link}" target="_blank" style="display: block; background: #4285F4; color: white; text-align: center; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold;">📧 OPEN IN GMAIL</a>', unsafe_allow_html=True)
-                        else:
-                            st.caption("📧 Gmail (Email only)")
-                    
-                    with action_cols[2]:
-                        # SCHEDULE MEETING (Google Calendar)
-                        import urllib.parse
-                        cal_title = urllib.parse.quote(f"Meeting with {st.session_state.get('comms_target_name', 'Contact')}")
-                        cal_details = urllib.parse.quote(f"Follow-up on {st.session_state.get('comms_target_company', 'opportunity')}")
-                        gcal_link = f"https://calendar.google.com/calendar/render?action=TEMPLATE&text={cal_title}&details={cal_details}"
-                        st.markdown(f'<a href="{gcal_link}" target="_blank" style="display: block; background: #34A853; color: white; text-align: center; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold;">📅 SCHEDULE</a>', unsafe_allow_html=True)
-                    
-                    if comms_channel == "📧 Email":
-                        st.info("💡 **Tip:** Subject lines like 'Quick question regarding [Goal]' often convert best.")
+
+
             
             # --- INTRO REQUESTS ---
-            with network_sub_tab3:
-                st.markdown("#### 🚀 INTRO REQUEST TRACKER")
-                st.caption("Track who you've asked for intros and outcomes.")
-                
-                if 'intro_requests' not in st.session_state:
-                    st.session_state['intro_requests'] = [
-                        {"Asker": "Virginia Bowers", "Target_Company": "Mistral AI", "Status": "Pending", "Date": "Dec 1", "Outcome": ""},
-                        {"Asker": "Christine Covert", "Target_Company": "OpenAI", "Status": "Intro Made", "Date": "Nov 28", "Outcome": "Got meeting with Head of Partnerships"},
-                    ]
-                
-                st.dataframe(st.session_state['intro_requests'], use_container_width=True)
-                
-                st.markdown("---")
-                
-                # Add new intro request
-                st.markdown("**➕ ADD NEW INTRO REQUEST**")
-                ir_cols = st.columns([2, 2, 2])
-                with ir_cols[0]:
-                    new_asker = st.text_input("Who are you asking?", placeholder="e.g., Sarah Chen")
-                with ir_cols[1]:
-                    new_target = st.text_input("Target Company/Person", placeholder="e.g., Anthropic")
-                with ir_cols[2]:
-                    new_date = st.text_input("Date", placeholder="e.g., Dec 6")
-                
-                if st.button("➕ ADD REQUEST"):
-                    if new_asker and new_target:
-                        st.session_state['intro_requests'].append({
-                            "Asker": new_asker,
-                            "Target_Company": new_target,
-                            "Status": "Pending",
-                            "Date": new_date or "Today",
-                            "Outcome": ""
-                        })
-                        st.success(f"Intro request to {new_target} via {new_asker} added!")
-                        st.rerun()
-        
-        # ═══════════════════════════════════════════════════════════════
-        # TAB 5: RECRUITERS & NETWORK (was TAB 4)
-        # ═══════════════════════════════════════════════════════════════
-        with crm_tab9:
-            st.markdown("### 👥 RECRUITERS & NETWORK")
-            st.caption("Track your recruiter relationships and network contacts.")
-            
-            # Initialize Recruiters
-            if 'crm_recruiters' not in st.session_state:
-                st.session_state['crm_recruiters'] = [
-                    {"Name": "Virginia Bowers", "Agency": "Sellers Hub", "Specialty": "Enterprise SaaS", "Quality": "⭐⭐⭐⭐", "Status": "Active", "Notes": "Very responsive, quality leads"},
-                    {"Name": "Gia Thomas", "Agency": "Neuco", "Specialty": "Cybersecurity", "Quality": "⭐⭐⭐⭐", "Status": "Active", "Notes": "Cyber niche recruiter"},
-                    {"Name": "Luca Browning", "Agency": "Rise Technical", "Specialty": "SaaS", "Quality": "⭐⭐⭐", "Status": "Active", "Notes": "Good recruiter, candidate-first"},
-                    {"Name": "Kayleigh", "Agency": "Aikido Security", "Specialty": "Internal", "Quality": "⭐⭐⭐⭐⭐", "Status": "Active", "Notes": "Internal, strong process"},
-                    {"Name": "Nicole Ceranna", "Agency": "Ambient.ai", "Specialty": "Internal", "Quality": "⭐⭐⭐⭐", "Status": "Active", "Notes": "Forwarded to CFO"},
-                    {"Name": "Justin Dedrickson", "Agency": "Verkada", "Specialty": "Internal", "Quality": "⭐⭐⭐", "Status": "Active", "Notes": "High volume hiring"},
-                    {"Name": "Christine Covert", "Agency": "Independent", "Specialty": "GTM", "Quality": "⭐⭐⭐⭐", "Status": "Replied", "Notes": "Senior Mgr / 0-to-1 qualification"},
-                    {"Name": "Kelli Hrivnak", "Agency": "Knak Digital", "Specialty": "SMB", "Quality": "⭐⭐⭐", "Status": "Connection", "Notes": "GTM Architect for SMBs"},
-                ]
-            
-            st.dataframe(st.session_state['crm_recruiters'], use_container_width=True)
-            
-            st.markdown("---")
-            st.markdown("#### ➕ ADD RECRUITER")
-            r1, r2, r3 = st.columns(3)
-            new_rec_name = r1.text_input("Recruiter Name", key="new_rec_name")
-            new_rec_agency = r2.text_input("Agency/Company", key="new_rec_agency")
-            new_rec_spec = r3.text_input("Specialty", key="new_rec_spec")
-            
-            if st.button("ADD RECRUITER", key="add_rec_btn"):
-                if new_rec_name:
-                    st.session_state['crm_recruiters'].append({
-                        "Name": new_rec_name,
-                        "Agency": new_rec_agency,
-                        "Specialty": new_rec_spec,
-                        "Quality": "⭐⭐⭐",
-                        "Status": "New",
-                        "Notes": ""
-                    })
-                    st.success(f"✅ Added {new_rec_name}")
-                    st.rerun()
-        
+
         # ═══════════════════════════════════════════════════════════════
         # TAB 6: COMPANY ENRICHMENT (AI AUTO-FILL) - was TAB 5
         # ═══════════════════════════════════════════════════════════════
-        with crm_tab10:
-            st.markdown("### 🏢 COMPANY ENRICHMENT (AI AUTO-FILL)")
-            st.caption("Paste a company name or website URL → AI fills in key intel.")
+        # with crm_tab10:
+
+        #     st.markdown("### 🏢 COMPANY ENRICHMENT (AI AUTO-FILL)")
+        #     st.caption("Paste a company name or website URL → AI fills in key intel.")
             
-            enrich_input = st.text_input("Company Name or Website URL", placeholder="e.g., 'Mistral AI' or 'https://mistral.ai'")
+        #     enrich_input = st.text_input("Company Name or Website URL", placeholder="e.g., 'Mistral AI' or 'https://mistral.ai'")
             
-            if st.button("🔍 ENRICH COMPANY", type="primary", use_container_width=True):
-                if enrich_input:
-                    with st.spinner("Gathering intel..."):
-                        from logic.generator import generate_plain_text
+        #     if st.button("🔍 ENRICH COMPANY", type="primary", use_container_width=True):
+        #         if enrich_input:
+        #             with st.spinner("Gathering intel..."):
+        #                 from logic.generator import generate_plain_text
                         
-                        prompt = f"""
-                        ACT AS: A research analyst gathering company intelligence.
+        #                 prompt = f"""
+        #                 ACT AS: A research analyst gathering company intelligence.
                         
-                        TARGET: {enrich_input}
+        #                 TARGET: {enrich_input}
                         
-                        Provide a structured intel brief with:
+        #                 Provide a structured intel brief with:
                         
-                        **COMPANY:** [Name]
-                        **SECTOR:** [Industry/vertical]
-                        **STAGE:** [Seed/Series A/B/C/Public]
-                        **SIZE:** [Employee count estimate]
-                        **HQ:** [Location]
-                        **RECENT FUNDING:** [Amount if known, or "Unknown"]
-                        **KEY PAIN POINTS:** [What problems do they solve? What internal challenges might they have?]
-                        **GTM SIGNAL:** [Are they hiring? Expanding? Product launch?]
-                        **DECISION MAKERS TO TARGET:** [Likely titles: VP Sales, CRO, Head of GTM, etc.]
-                        **TALKING POINTS FOR INTERVIEW:** [3 bullet points on how to pitch yourself]
+        #                 **COMPANY:** [Name]
+        #                 **SECTOR:** [Industry/vertical]
+        #                 **STAGE:** [Seed/Series A/B/C/Public]
+        #                 **SIZE:** [Employee count estimate]
+        #                 **HQ:** [Location]
+        #                 **RECENT FUNDING:** [Amount if known, or "Unknown"]
+        #                 **KEY PAIN POINTS:** [What problems do they solve? What internal challenges might they have?]
+        #                 **GTM SIGNAL:** [Are they hiring? Expanding? Product launch?]
+        #                 **DECISION MAKERS TO TARGET:** [Likely titles: VP Sales, CRO, Head of GTM, etc.]
+        #                 **TALKING POINTS FOR INTERVIEW:** [3 bullet points on how to pitch yourself]
                         
-                        Be concise. Use real data if you know it.
-                        """
+        #                 Be concise. Use real data if you know it.
+        #                 """
                         
-                        result = generate_plain_text(prompt, model_name=st.session_state.get('selected_model_id', 'llama-3.3-70b-versatile'))
+        #                 result = generate_plain_text(prompt, model_name=st.session_state.get('selected_model_id', 'llama-3.3-70b-versatile'))
                         
-                        st.markdown("---")
-                        st.markdown("### 📊 COMPANY INTEL BRIEF")
-                        st.markdown(result)
+        #                 st.markdown("---")
+        #                 st.markdown("### 📊 COMPANY INTEL BRIEF")
+        #                 st.markdown(result)
                         
-                        # Option to add to contacts
-                        if st.button("➕ ADD TO CRM FROM THIS INTEL"):
-                            st.info("Use the Contact tab to add a new contact with this company.")
+        #                 # Option to add to contacts
+        #                 if st.button("➕ ADD TO CRM FROM THIS INTEL"):
+        #                     st.info("Use the Contact tab to add a new contact with this company.")
         
-        # ═══════════════════════════════════════════════════════════════
-        # TAB 7: ARCHIVE & CLOSED - was TAB 6
-        # ═══════════════════════════════════════════════════════════════
-        with crm_tab11:
-            st.markdown("### 📦 ARCHIVE & CLOSED")
-            st.caption("Closed opportunities and archived contacts.")
-            
-            # Initialize Archive
-            if 'crm_archive' not in st.session_state:
-                st.session_state['crm_archive'] = [
-                    {"Company": "Pallet", "Role": "Founding AE", "Status": "Closed", "Reason": "Candidates at offer stage"},
-                    {"Company": "Valerie Health", "Role": "Founding AE", "Status": "Closed", "Reason": "Late-stage candidates"},
-                    {"Company": "Serval", "Role": "AE", "Status": "Closed", "Reason": "Security requirement mismatch"},
-                    {"Company": "Anthropic", "Role": "Enterprise AE", "Status": "Rejected", "Reason": "Did not pass screen"},
-                    {"Company": "One Workplace", "Role": "Enterprise MDM", "Status": "Closed", "Reason": "Role expired"},
-                    {"Company": "Andreessen Horowitz", "Role": "GTM Partner", "Status": "Closed", "Reason": "Requisition removed"},
-                    {"Company": "Soteria", "Role": "Strategic AE", "Status": "Closed", "Reason": "No response after 3 cycles"},
-                    {"Company": "Thrively", "Role": "Enterprise AE", "Status": "Archived", "Reason": "No movement after 3 weeks"},
-                    {"Company": "WilsonAI", "Role": "Founding Sales Lead", "Status": "Archived", "Reason": "Founder silent"},
-                    {"Company": "Whatfix", "Role": "Enterprise AE", "Status": "Archived", "Reason": "No movement after 3 weeks"},
-                ]
-            
-            st.dataframe(st.session_state['crm_archive'], use_container_width=True)
-            
-            st.markdown("---")
-            
-            # Move to Archive from Contacts
-            st.markdown("#### 🗑️ ARCHIVE A CONTACT")
-            contacts = st.session_state.get('crm_contacts', [])
-            contact_names = [c['Name'] for c in contacts]
-            
-            if contact_names:
-                contact_to_archive = st.selectbox("Select contact to archive:", contact_names, key="archive_select")
-                archive_reason = st.text_input("Reason for archiving:", key="archive_reason")
-                
-                if st.button("ARCHIVE CONTACT", type="secondary", key="archive_btn"):
-                    if contact_to_archive:
-                        # Find and move contact
-                        for i, c in enumerate(st.session_state['crm_contacts']):
-                            if c['Name'] == contact_to_archive:
-                                st.session_state['crm_archive'].append({
-                                    "Company": c['Company'],
-                                    "Role": c['Role'],
-                                    "Status": "Archived",
-                                    "Reason": archive_reason or "Manually archived"
-                                })
-                                st.session_state['crm_contacts'].pop(i)
-                                st.success(f"✅ Archived {contact_to_archive}")
-                                st.rerun()
-                                break
-            
-            st.markdown("---")
-            
-            # Export Option
-            if st.button("📥 EXPORT ALL CRM DATA (JSON)", use_container_width=True):
-                import json
-                export_data = {
-                    "contacts": st.session_state.get('crm_contacts', []),
-                    "deals": st.session_state.get('crm_deals', []),
-                    "recruiters": st.session_state.get('crm_recruiters', []),
-                    "archive": st.session_state.get('crm_archive', [])
-                }
-                st.download_button(
-                    "💾 Download Full CRM Export",
-                    data=json.dumps(export_data, indent=2),
-                    file_name="basin_nexus_crm_full_export.json",
-                    mime="application/json"
-                )
+
 
     # ==============================================================================
     # 🛡️ MODE 9: OBJECTION BANK (INTERVIEW ARMOR)

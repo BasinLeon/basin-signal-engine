@@ -160,3 +160,50 @@ def get_audio_size_info(audio_bytes: bytes) -> dict:
         "size_kb": size_bytes / 1024,
         "estimated_duration_seconds": estimated_duration
     }
+
+
+def save_transcript_to_asset(transcript: str, title: str, metadata: dict = None) -> str:
+    """
+    Save a transcript as a markdown file in the assets directory for Oracle indexing.
+    
+    Args:
+        transcript: The text content
+        title: Title for the filename (e.g. "Mock Interview NVIDIA")
+        metadata: Optional dict of metadata to add as frontmatter
+        
+    Returns:
+        str: Path to the saved file
+    """
+    import datetime
+    import re
+    
+    # Clean title for filename
+    safe_title = re.sub(r'[^\w\s-]', '', title).strip().lower()
+    safe_title = re.sub(r'[-\s]+', '-', safe_title)
+    
+    date_str = datetime.datetime.now().strftime("%Y-%m-%d")
+    filename = f"TRANSCRIPT_{date_str}_{safe_title}.md"
+    
+    # Resolve assets dir
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    assets_dir = os.path.join(base_dir, "assets")
+    os.makedirs(assets_dir, exist_ok=True)
+    
+    filepath = os.path.join(assets_dir, filename)
+    
+    # Construct content
+    content = f"# {title}\n"
+    content += f"**Date:** {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}\n"
+    
+    if metadata:
+        for k, v in metadata.items():
+            content += f"**{k}:** {v}\n"
+            
+    content += "\n---\n\n"
+    content += "## Transcript\n\n"
+    content += transcript
+    
+    with open(filepath, "w", encoding="utf-8") as f:
+        f.write(content)
+        
+    return filepath
