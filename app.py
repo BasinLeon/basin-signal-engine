@@ -6766,228 +6766,6 @@ Best,
                         st.rerun()
         
         # ═══════════════════════════════════════════════════════════════
-    # 📣 SOCIAL HQ (THE BUILDER DECK)
-    # ═══════════════════════════════════════════════════════════════
-    st.markdown("""
-    <div style="text-align: center; margin-bottom: 30px;">
-        <h1 style="font-size: 3rem; margin-bottom: 10px;">📣 SOCIAL HQ</h1>
-        <p style="color: #888;">NARRATIVE ARCHITECTURE & OUTREACH ENGINE</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    tab1, tab2, tab3 = st.tabs(["Strategy Agent", "Post Forge", "Asset Library"])
-    
-    with tab1:
-        st.markdown("### ♟️ CONNECTION STRATEGY AGENT")
-        st.caption("Select a Deal to generate a multi-vector entry strategy.")
-        
-        from logic.database import get_all_deals, get_all_contacts
-        deals = get_all_deals()
-        contacts = get_all_contacts()
-        
-        # 1. Select Target
-        target_companies = sorted(list(set([d['company'] for d in deals])))
-        selected_company = st.selectbox("Select Target Company", target_companies)
-        
-        if selected_company:
-            # 2. Analyze Vector
-            company_deal = next((d for d in deals if d['company'] == selected_company), None)
-            company_contacts = [c for c in contacts if c.get('company') and c['company'].lower() == selected_company.lower()]
-            
-            # Classify Assets
-            recruiters = [c for c in company_contacts if "Recruiter" in c.get('contact_type', '')]
-            vips = [c for c in company_contacts if "VIP" in c.get('contact_type', '')]
-            peers = [c for c in company_contacts if c not in recruiters and c not in vips]
-            
-            c1, c2, c3 = st.columns(3)
-            with c1: st.metric("Recruiters", len(recruiters))
-            with c2: st.metric("VIPs (Founders/Execs)", len(vips))
-            with c3: st.metric("Peers", len(peers))
-            
-            st.markdown("---")
-            
-            # 3. Generate Strategy
-            st.subheader("🚀 EXECUTION PROTOCOL")
-            
-            if not company_contacts:
-                st.warning("⚠️ No internal contacts detected.")
-                st.info("💡 STRATEGY: COLD BREACH")
-                st.markdown(f"**Action**: Find the Hiring Manager for *{company_deal['role']}* on LinkedIn.")
-                st.code(f"Subject: Question about {company_deal['role']} role\n\nHi [Name],\n\nI saw you're hiring for the {company_deal['role']} position. I've built systems that [mention 1 relevant achievement]. connecting to see if you're open to a brief chat?", language="text")
-            
-            else:
-                # Prioritize VIP -> Recruiter -> Peer
-                target_contact = None
-                strategy_type = ""
-                
-                if vips:
-                    target_contact = vips[0]
-                    strategy_type = "VIP ASSAULT"
-                    st.success(f"🔥 STRATEGY: {strategy_type}")
-                    st.markdown(f"**Target**: {target_contact['name']} ({target_contact['role']})")
-                    st.markdown("**Angle**: Founder-to-Founder / High Strategic Value")
-                    
-                    msg = f"Subject: Thoughts on {selected_company}'s growth\n\n{target_contact['name'].split()[0]},\n\nI've been following {selected_company}'s trajectory in [Sector]. I previously led [Project] which scaled [Metric].\n\nI applied for the {company_deal['role']} role, but wanted to connect directly given our shared interest in [Topic]. Open to a 5-min chat?"
-                    st.text_area("Draft Message", msg, height=200)
-                    
-                elif recruiters:
-                    target_contact = recruiters[0]
-                    strategy_type = "DIRECT RECRUITER PITCH"
-                    st.info(f"🎯 STRATEGY: {strategy_type}")
-                    st.markdown(f"**Target**: {target_contact['name']} ({target_contact['role']})")
-                    
-                    msg = f"Subject: Application for {company_deal['role']}\n\nHi {target_contact['name'].split()[0]},\n\nI just applied for the {company_deal['role']} position and wanted to introduce myself.\n\nMy background in [Skill 1] & [Skill 2] seems like a strong fit for what you're building. Would love to ensure my application landed on your radar.\n\nBest,\nLeon"
-                    st.text_area("Draft Message", msg, height=200)
-                    
-                elif peers:
-                     target_contact = peers[0]
-                     strategy_type = "TROJAN HORSE (REFERRAL)"
-                     st.warning(f"🛡️ STRATEGY: {strategy_type}")
-                     st.markdown(f"**Target**: {target_contact['name']} ({target_contact['role']})")
-                     
-                     msg = f"Subject: Quick question about {selected_company}\n\nHi {target_contact['name'].split()[0]},\n\nI see you're working at {selected_company} as a {target_contact['role']}. I'm looking at the {company_deal['role']} opening and would love a brutally honest take on the engineering culture there.\n\nOpen to a virtual coffee?\nLeon"
-                     st.text_area("Draft Message", msg, height=200)
-    
-    with tab2:
-        st.markdown("### 🏢 MARKET RADAR (Company Intelligence)")
-        st.caption("Filter the market. Identify high-value targets based on your ICP.")
-        
-        # 1. ICP CONFIGURATION (Ideal Customer Profile)
-        st.markdown("#### 🎯 DEFINE YOUR TARGET (ICP)")
-        icp_c1, icp_c2, icp_c3 = st.columns(3)
-        with icp_c1:
-            icp_stage = st.multiselect("Growth Stage", ["Seed", "Series A", "Series B", "Series C+", "Public"], default=["Series B", "Series C+"])
-        with icp_c2:
-            icp_signal = st.multiselect("Hiring Signal", ["Aggressively Hiring", "Stable", "Layoffs (Talent Grab)", "Key Role Open"], default=["Aggressively Hiring"])
-        with icp_c3:
-            icp_sector = st.multiselect("Sector / Vertical", ["B2B SaaS", "Cybersecurity", "Fintech", "Healthtech", "DevTools"], default=["B2B SaaS", "Cybersecurity"])
-        
-        st.markdown("---")
-        
-        # 2. MARKET SCAN (Mock Data + CRM Data)
-        # Combine real CRM deals with 'Market' data (mocked for now)
-        market_data = [
-            {"Company": "Anthropic", "Stage": "Series C+", "Signal": "Aggressively Hiring", "Sector": "AI/ML", "Match": "98%"},
-            {"Company": "Databricks", "Stage": "Series C+", "Signal": "Aggressively Hiring", "Sector": "Data", "Match": "95%"},
-            {"Company": "Wiz", "Stage": "Series C+", "Signal": "Aggressively Hiring", "Sector": "Cybersecurity", "Match": "92%"},
-            {"Company": "Rippling", "Stage": "Series B", "Signal": "Key Role Open", "Sector": "B2B SaaS", "Match": "88%"},
-            {"Company": "Linear", "Stage": "Series A", "Signal": "Stable", "Sector": "DevTools", "Match": "85%"}
-        ]
-        
-        # Filter Logic (Simple mock filter)
-        filtered_market = [m for m in market_data if m['Stage'] in icp_stage and m['Signal'] in icp_signal]
-        
-        c1, c2 = st.columns([2, 1])
-        
-        with c1:
-            st.subheader(f"📡 RADAR HITS ({len(filtered_market)})")
-            for co in filtered_market:
-                with st.container():
-                    st.markdown(f"""
-                    <div style="background: rgba(255, 255, 255, 0.05); border-radius: 8px; padding: 16px; margin-bottom: 12px; border-left: 4px solid #00ff88;">
-                        <div style="display: flex; justify-content: space-between; align-items: center;">
-                            <h3 style="margin: 0; color: #fff;">{co['Company']}</h3>
-                            <span style="background: #00ff88; color: #000; padding: 2px 8px; border-radius: 4px; font-weight: bold;">{co['Match']} Match</span>
-                        </div>
-                        <p style="margin: 4px 0; color: #8892b0;">{co['Sector']} • {co['Stage']} • {co['Signal']}</p>
-                    </div>
-                    """, unsafe_allow_html=True)
-                     
-        with c2:
-            st.subheader("🔍 ORACLE SCOUT")
-            st.info("Don't see your dream role? Task the Oracle to find it.")
-            if st.button("RUN DEEP MARKET SEARCH", type="primary", use_container_width=True):
-                st.session_state['oracle_query'] = f"Find B2B SaaS companies in {', '.join(icp_stage)} stage that are {', '.join(icp_signal)} in {', '.join(icp_sector)}."
-                st.toast("Oracle Search Initiated...", icon="🔮")
-                # Logic to trigger Oracle Search would go here
-                 
-            st.markdown("### 📊 INSIGHTS")
-            st.caption("Market Trends based on your ICP")
-            st.progress(0.8, text="AI/ML Hiring Velocity")
-            st.progress(0.4, text="Cybersecurity Budgets")
-            st.progress(0.6, text="Series B Funding Activity")
-
-
-            
-    with tab3:
-         st.info("📚 Asset Library (Templates & Scripts) - Coming Soon")
-
-
-            
-
-
-                
-
-        
-        # ═══════════════════════════════════════════════════════════════
-        # TAB 4: NETWORK BUILDER (NEW!)
-        # ═══════════════════════════════════════════════════════════════
-        # with crm_tab8:
-        #     st.markdown("### 🔗 NETWORK BUILDER")
-        #     st.caption("Strengthen relationships. Get warm intros. Build your network systematically.")
-            
-        #     network_sub_tab1, network_sub_tab2, network_sub_tab3 = st.tabs([
-        #         "📊 NETWORK HEALTH", "📝 OUTREACH TEMPLATES", "🚀 INTRO REQUESTS"
-        #     ])
-            
-        #     # --- NETWORK HEALTH ---
-        #     with network_sub_tab1:
-
-
-
-                
-
-
-            
-            # --- INTRO REQUESTS ---
-
-        # ═══════════════════════════════════════════════════════════════
-        # TAB 6: COMPANY ENRICHMENT (AI AUTO-FILL) - was TAB 5
-        # ═══════════════════════════════════════════════════════════════
-        # with crm_tab10:
-
-        #     st.markdown("### 🏢 COMPANY ENRICHMENT (AI AUTO-FILL)")
-        #     st.caption("Paste a company name or website URL → AI fills in key intel.")
-            
-        #     enrich_input = st.text_input("Company Name or Website URL", placeholder="e.g., 'Mistral AI' or 'https://mistral.ai'")
-            
-        #     if st.button("🔍 ENRICH COMPANY", type="primary", use_container_width=True):
-        #         if enrich_input:
-        #             with st.spinner("Gathering intel..."):
-        #                 from logic.generator import generate_plain_text
-                        
-        #                 prompt = f"""
-        #                 ACT AS: A research analyst gathering company intelligence.
-                        
-        #                 TARGET: {enrich_input}
-                        
-        #                 Provide a structured intel brief with:
-                        
-        #                 **COMPANY:** [Name]
-        #                 **SECTOR:** [Industry/vertical]
-        #                 **STAGE:** [Seed/Series A/B/C/Public]
-        #                 **SIZE:** [Employee count estimate]
-        #                 **HQ:** [Location]
-        #                 **RECENT FUNDING:** [Amount if known, or "Unknown"]
-        #                 **KEY PAIN POINTS:** [What problems do they solve? What internal challenges might they have?]
-        #                 **GTM SIGNAL:** [Are they hiring? Expanding? Product launch?]
-        #                 **DECISION MAKERS TO TARGET:** [Likely titles: VP Sales, CRO, Head of GTM, etc.]
-        #                 **TALKING POINTS FOR INTERVIEW:** [3 bullet points on how to pitch yourself]
-                        
-        #                 Be concise. Use real data if you know it.
-        #                 """
-                        
-        #                 result = generate_plain_text(prompt, model_name=st.session_state.get('selected_model_id', 'llama-3.3-70b-versatile'))
-                        
-        #                 st.markdown("---")
-        #                 st.markdown("### 📊 COMPANY INTEL BRIEF")
-        #                 st.markdown(result)
-                        
-        #                 # Option to add to contacts
-        #                 if st.button("➕ ADD TO CRM FROM THIS INTEL"):
-        #                     st.info("Use the Contact tab to add a new contact with this company.")
-        
-
 
     # ==============================================================================
     # 🛡️ MODE 9: OBJECTION BANK (INTERVIEW ARMOR)
@@ -8168,7 +7946,7 @@ Curious if this resonates?""", height=150)
     # ═══════════════════════════════════════════════════════════════
     elif input_mode == "📣 Social Command Center":
         st.markdown("## 📣 SOCIAL COMMAND CENTER")
-        st.caption("PROTOCOL: X-First Distribution · Global Vibe Network · Audience Building")
+        st.caption("PROTOCOL: Connection Strategy · Market Radar · Content Operations")
         
         # Import integrations
         try:
@@ -8184,39 +7962,96 @@ Curious if this resonates?""", height=150)
             )
             integrations_loaded = True
         except ImportError:
-            st.error("⚠️ Signal Engine Integrations not found. Some features may be limited.")
+            st.error("⚠️ Signal Engine Integrations not found. Main features active.")
             integrations_loaded = False
             
         if integrations_loaded:
-            # Load real stats
-            real_stats = get_build_stats()
-            
-            # Stats & Overview
-            st.markdown("### 📊 SIGNAL STRENGTH")
-            stat_cols = st.columns(4)
-            stat_cols[0].metric("Build Time", f"{real_stats['hours_coded']}h", "ACTIVE")
-            stat_cols[1].metric("X Vibe Score", "High", "🔥")
-            stat_cols[2].metric("Global Reach", len(ALL_COUNTRIES), "Countries")
-            stat_cols[3].metric("Waitlist", "Beta", "Open")
-            
-            st.markdown("---")
-            
             # Main Tabs
             social_tabs = st.tabs([
+                "♟️ STRATEGY AGENT",
+                "🏢 MARKET RADAR",
                 "🖤 POST FORGE",
                 "♟️ GRANDMASTER",
                 "🧵 THREAD WEAVER", 
                 "📡 OMNI-CHANNEL", 
-                "✨ VIBE NETWORK", 
-                "🏘️ COMMUNITY",
-                "🗣️ VOICE & REP",
-                "📧 JOIN BETA", 
-                "🌍 GLOBAL HQ",
-                "🛡️ RED TEAM"
+                "✨ VIBE NETWORK"
             ])
             
-            # TAB 0: BASIN POST FORGE
+            # TAB 1: STRATEGY AGENT (New Prospecting Tool)
             with social_tabs[0]:
+                st.markdown("### ♟️ CONNECTION STRATEGY AGENT")
+                st.caption("Select a Deal to generate a multi-vector entry strategy.")
+                
+                from logic.database import get_all_deals, get_all_contacts
+                deals = get_all_deals()
+                contacts = get_all_contacts()
+                
+                # 1. Select Target
+                target_companies = sorted(list(set([d['company'] for d in deals])))
+                selected_company = st.selectbox("Select Target Company", target_companies, key="strat_company_select")
+                
+                if selected_company:
+                    # 2. Analyze Vector
+                    company_deal = next((d for d in deals if d['company'] == selected_company), None)
+                    company_contacts = [c for c in contacts if c.get('company') and c['company'].lower() == selected_company.lower()]
+                    
+                    # Classify Assets
+                    recruiters = [c for c in company_contacts if "Recruiter" in c.get('contact_type', '')]
+                    vips = [c for c in company_contacts if "VIP" in c.get('contact_type', '')]
+                    peers = [c for c in company_contacts if c not in recruiters and c not in vips]
+                    
+                    c1, c2, c3 = st.columns(3)
+                    c1.metric("Recruiters", len(recruiters))
+                    c2.metric("VIPs (Founders/Execs)", len(vips))
+                    c3.metric("Peers/Engineers", len(peers))
+                    
+                    st.markdown("---")
+                    
+                    # 3. Choose Strategy
+                    if not company_contacts:
+                        st.warning("⚠️ No internal contacts detected.")
+                        st.info("💡 STRATEGY: COLD BREACH")
+                        st.code(f"Subject: Question about {company_deal['role']} role\\n\\nHi [Name],\\n\\nI saw you're hiring for the {company_deal['role']} position. I've built systems that [mention 1 relevant achievement]. connecting to see if you're open to a brief chat?", language="text")
+                    
+                    elif vips:
+                         target_contact = vips[0]
+                         st.success(f"🔥 STRATEGY: VIP ASSAULT")
+                         st.markdown(f"**Target**: {target_contact['name']} ({target_contact['role']})")
+                         msg = f"Subject: Thoughts on {selected_company}'s growth\\n\\n{target_contact['name'].split()[0]},\\n\\nI've been following {selected_company}'s trajectory. I built a Revenue OS that scaled my last org 160%. Open to a 5-min chat about your GTM architecture?\\n\\nLeon"
+                         st.text_area("Draft Message", msg, height=200, key="strat_msg_vip")
+                         
+                    elif recruiters:
+                         target_contact = recruiters[0]
+                         st.info(f"🎯 STRATEGY: RECRUITER PITCH")
+                         st.markdown(f"**Target**: {target_contact['name']} ({target_contact['role']})")
+                         msg = f"Subject: Application for {company_deal['role']}\\n\\nHi {target_contact['name'].split()[0]},\\n\\nApplied for {company_deal['role']}. My background in Revenue Architecture seems like a perfect fit. Attached my dossier.\\n\\nBest,\\nLeon"
+                         st.text_area("Draft Message", msg, height=200, key="strat_msg_rec")
+
+            # TAB 2: MARKET RADAR (New Intelligence Tool)
+            with social_tabs[1]:
+                st.markdown("### 🏢 MARKET RADAR")
+                st.caption("Filter the market. Identify high-value targets based on your ICP.")
+                
+                icp_c1, icp_c2, icp_c3 = st.columns(3)
+                with icp_c1:
+                    icp_stage = st.multiselect("Growth Stage", ["Seed", "Series A", "Series B", "Series C+", "Public"], default=["Series B"], key="mr_stage")
+                with icp_c2:
+                    icp_signal = st.multiselect("Hiring Signal", ["Aggressively Hiring", "Stable", "Layoffs", "Key Role Open"], default=["Aggressively Hiring"], key="mr_signal")
+                with icp_c3:
+                    icp_sector = st.multiselect("Sector", ["B2B SaaS", "Cybersecurity", "Fintech", "DevTools"], default=["B2B SaaS"], key="mr_sector")
+                
+                # Mock Data Display
+                st.info("📡 Market Scan Active... (Mock Data Loaded)")
+                market_data = [
+                    {"Company": "Anthropic", "Stage": "Series C+", "Signal": "Aggressively Hiring", "Sector": "AI/ML", "Match": "98%"},
+                    {"Company": "Databricks", "Stage": "Series C+", "Signal": "Aggressively Hiring", "Sector": "Data", "Match": "95%"},
+                    {"Company": "Wiz", "Stage": "Series C+", "Signal": "Aggressively Hiring", "Sector": "Cybersecurity", "Match": "92%"},
+                ]
+                for co in market_data:
+                     st.markdown(f"**{co['Company']}** ({co['Stage']}) - {co['Signal']} - {co['Match']} Match")
+
+            # TAB 3: POST FORGE (Existing)
+            with social_tabs[2]:
                 st.markdown("#### 🖤 BASIN POST FORGE (SCROLLSMITH)")
                 st.caption("Generate artifacts in the exact @basin_leon voice.")
                 
