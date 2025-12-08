@@ -153,6 +153,123 @@ init_session_state()
 
 
 # ═══════════════════════════════════════════════════════════════
+# RESUME vs JD ANALYSIS ENGINE
+# ═══════════════════════════════════════════════════════════════
+
+def analyze_resume_vs_jd(resume_text: str, jd_text: str) -> dict:
+    """
+    Analyze resume against job description to find matches, gaps, and recommendations.
+    Returns a comprehensive analysis dictionary.
+    """
+    import re
+    from collections import Counter
+    
+    # Common skill keywords to look for (case-insensitive matching)
+    SKILL_KEYWORDS = {
+        # Technical
+        'python', 'javascript', 'typescript', 'react', 'node', 'sql', 'aws', 'gcp', 'azure',
+        'docker', 'kubernetes', 'api', 'rest', 'graphql', 'machine learning', 'ai', 'data',
+        'analytics', 'tableau', 'power bi', 'salesforce', 'hubspot', 'marketo', 'segment',
+        'looker', 'snowflake', 'databricks', 'excel', 'crm', 'erp', 'saas',
+        # GTM/Sales
+        'pipeline', 'quota', 'revenue', 'arr', 'mrr', 'enterprise', 'smb', 'mid-market',
+        'outbound', 'inbound', 'prospecting', 'cold calling', 'discovery', 'demo', 'closing',
+        'negotiation', 'stakeholder', 'c-suite', 'executive', 'vp', 'director', 'manager',
+        'account executive', 'ae', 'sdr', 'bdr', 'account manager', 'csm', 'customer success',
+        'sales ops', 'revops', 'gtm', 'go-to-market', 'partner', 'channel', 'alliances',
+        'forecast', 'quota attainment', 'deal size', 'sales cycle', 'win rate',
+        # Leadership & Strategy
+        'leadership', 'management', 'team', 'strategy', 'planning', 'coaching', 'mentoring',
+        'hiring', 'scaling', 'growth', 'optimization', 'process', 'playbook', 'enablement',
+        'cross-functional', 'stakeholder management', 'executive presence', 'presentation',
+        # Metrics & Results
+        'yoy', 'growth', 'increase', 'improvement', 'reduction', 'efficiency', 'roi', 'ltv',
+        'cac', 'churn', 'retention', 'conversion', 'cycle time', 'kpi', 'okr', 'metrics'
+    }
+    
+    # Normalize text for matching
+    resume_lower = resume_text.lower()
+    jd_lower = jd_text.lower()
+    
+    # Extract keywords from JD
+    jd_keywords = set()
+    for keyword in SKILL_KEYWORDS:
+        if keyword in jd_lower:
+            jd_keywords.add(keyword)
+    
+    # Extract keywords from Resume
+    resume_keywords = set()
+    for keyword in SKILL_KEYWORDS:
+        if keyword in resume_lower:
+            resume_keywords.add(keyword)
+    
+    # Calculate matches and gaps
+    matched_keywords = jd_keywords & resume_keywords
+    missing_keywords = jd_keywords - resume_keywords
+    bonus_keywords = resume_keywords - jd_keywords
+    
+    # Calculate match score
+    if len(jd_keywords) > 0:
+        match_score = int((len(matched_keywords) / len(jd_keywords)) * 100)
+    else:
+        match_score = 50  # Default if no keywords detected in JD
+    
+    # Extract years of experience mentioned
+    exp_pattern = r'(\d+)\+?\s*(?:years?|yrs?)'
+    jd_exp = re.findall(exp_pattern, jd_lower)
+    resume_exp = re.findall(exp_pattern, resume_lower)
+    
+    jd_years = max([int(y) for y in jd_exp]) if jd_exp else None
+    resume_years = max([int(y) for y in resume_exp]) if resume_exp else None
+    
+    # Extract numbers/metrics from resume (looking for quantifiable achievements)
+    metrics_pattern = r'(\d+(?:\.\d+)?)\s*(%|percent|million|m\b|k\b|x\b|\$|growth|increase|reduction)'
+    resume_metrics = re.findall(metrics_pattern, resume_lower)
+    
+    # Count action verbs (strong vs weak)
+    strong_verbs = ['built', 'led', 'drove', 'generated', 'scaled', 'architected', 'launched', 
+                    'increased', 'reduced', 'optimized', 'transformed', 'delivered', 'exceeded',
+                    'pioneered', 'spearheaded', 'orchestrated', 'negotiated', 'closed']
+    strong_verb_count = sum(1 for verb in strong_verbs if verb in resume_lower)
+    
+    # Determine fit level with visual indicators
+    if match_score >= 80:
+        fit_level = "🟢 STRONG FIT"
+        fit_color = "#00ff88"
+        fit_message = "Excellent alignment! Your profile matches the core requirements."
+    elif match_score >= 60:
+        fit_level = "🟡 GOOD FIT"
+        fit_color = "#FFD700"
+        fit_message = "Solid match with room to emphasize missing keywords."
+    elif match_score >= 40:
+        fit_level = "🟠 MODERATE FIT"
+        fit_color = "#ff9500"
+        fit_message = "Some alignment - focus on bridging the gaps."
+    else:
+        fit_level = "🔴 STRETCH ROLE"
+        fit_color = "#ff4444"
+        fit_message = "Significant gaps - consider if this role is right for you."
+    
+    return {
+        "match_score": match_score,
+        "fit_level": fit_level,
+        "fit_color": fit_color,
+        "fit_message": fit_message,
+        "matched_keywords": sorted(matched_keywords),
+        "missing_keywords": sorted(missing_keywords),
+        "bonus_keywords": sorted(bonus_keywords),
+        "jd_keywords_count": len(jd_keywords),
+        "resume_keywords_count": len(resume_keywords),
+        "jd_years_required": jd_years,
+        "resume_years_mentioned": resume_years,
+        "metrics_found": len(resume_metrics),
+        "strong_verbs": strong_verb_count,
+        "resume_word_count": len(resume_text.split()),
+        "jd_word_count": len(jd_text.split())
+    }
+
+
+# ═══════════════════════════════════════════════════════════════
 # PAGE CONFIGURATION
 # ═══════════════════════════════════════════════════════════════
 
@@ -609,6 +726,30 @@ st.markdown("""
         display: none !important;
     }
     
+    /* CRITICAL: Hide garbled Material Icons (keyboard_arrow_right renders as keyḃ̈a͠) */
+    /* This targets the span that contains the broken icon text */
+    [data-testid="stExpander"] summary > div > div:first-child > span:first-child,
+    .streamlit-expanderHeader > div > span:first-child {
+        font-size: 0 !important;
+        width: 0 !important;
+        overflow: hidden !important;
+    }
+    
+    /* Hide Material Icons font entirely in expanders */
+    [data-testid="stExpander"] [class*="material-icons"],
+    [data-testid="stExpander"] [class*="material-symbols"],
+    .streamlit-expanderHeader [class*="material-icons"],
+    .streamlit-expanderHeader [class*="material-symbols"] {
+        display: none !important;
+        font-size: 0 !important;
+    }
+    
+    /* Hide any text that starts with 'key' pattern (the garbled icon) */
+    [data-testid="stExpander"] summary::before {
+        content: "" !important;
+        display: none !important;
+    }
+    
     /* Hide any stray icon text like 'keyboard_arrow_right' */
     [data-testid="stExpander"] span[data-testid="stMarkdownContainer"] p {
         display: inline !important;
@@ -619,6 +760,13 @@ st.markdown("""
         margin: 0 !important;
         display: inline !important;
     }
+    
+    /* Force the proper font on expander header text */
+    [data-testid="stExpander"] summary p,
+    [data-testid="stExpander"] summary span {
+        font-family: 'Orbitron', sans-serif !important;
+    }
+
     
     /* === TABS (Mission Control) === */
     .stTabs [data-baseweb="tab-list"] {
@@ -2966,11 +3114,140 @@ with col1:
             else:
                 st.info("📝 Add both to continue")
         
+        # ═══════════════════════════════════════════════════════════════
+        # AUTOMATIC RESUME vs JD ANALYSIS
+        # ═══════════════════════════════════════════════════════════════
+        if resume_text_input and jd_text_input:
+            analysis = analyze_resume_vs_jd(resume_text_input, jd_text_input)
+            
+            st.markdown("---")
+            st.markdown("### 🎯 RESUME vs JD ANALYSIS")
+            
+            # Main Score Card with premium styling
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0a0a0f 100%); 
+                        border: 2px solid {analysis['fit_color']}; border-radius: 15px; 
+                        padding: 30px; margin: 20px 0; text-align: center;
+                        box-shadow: 0 0 30px {analysis['fit_color']}40;">
+                <h1 style="color: {analysis['fit_color']}; margin: 0; font-size: 4rem; 
+                           font-family: 'Orbitron', sans-serif; text-shadow: 0 0 20px {analysis['fit_color']}80;">
+                    {analysis['match_score']}%
+                </h1>
+                <p style="color: {analysis['fit_color']}; font-size: 1.5rem; margin: 15px 0; 
+                          font-family: 'Orbitron', sans-serif; letter-spacing: 2px;">
+                    {analysis['fit_level']}
+                </p>
+                <p style="color: #8892b0; margin: 0; font-size: 0.95rem;">
+                    {analysis['fit_message']}
+                </p>
+                <p style="color: #5a6270; margin-top: 15px; font-size: 0.85rem;">
+                    {len(analysis['matched_keywords'])} of {analysis['jd_keywords_count']} key requirements matched
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Detailed Breakdown in 3 columns
+            col_a1, col_a2, col_a3 = st.columns(3)
+            
+            with col_a1:
+                st.markdown("#### ✅ MATCHED SKILLS")
+                if analysis['matched_keywords']:
+                    for kw in analysis['matched_keywords'][:12]:
+                        st.markdown(f"<span style='color: #00ff88; font-size: 0.9rem;'>✓ {kw.title()}</span>", unsafe_allow_html=True)
+                    if len(analysis['matched_keywords']) > 12:
+                        st.caption(f"+{len(analysis['matched_keywords']) - 12} more...")
+                else:
+                    st.caption("No direct keyword matches found")
+            
+            with col_a2:
+                st.markdown("#### ⚠️ GAPS TO ADDRESS")
+                if analysis['missing_keywords']:
+                    for kw in analysis['missing_keywords'][:12]:
+                        st.markdown(f"<span style='color: #ff6b6b; font-size: 0.9rem;'>✗ {kw.title()}</span>", unsafe_allow_html=True)
+                    if len(analysis['missing_keywords']) > 12:
+                        st.caption(f"+{len(analysis['missing_keywords']) - 12} more...")
+                    st.caption("💡 Consider adding these to your resume")
+                else:
+                    st.success("No critical gaps detected!")
+            
+            with col_a3:
+                st.markdown("#### 💎 YOUR DIFFERENTIATORS")
+                if analysis['bonus_keywords']:
+                    for kw in analysis['bonus_keywords'][:12]:
+                        st.markdown(f"<span style='color: #00d4ff; font-size: 0.9rem;'>★ {kw.title()}</span>", unsafe_allow_html=True)
+                    if len(analysis['bonus_keywords']) > 12:
+                        st.caption(f"+{len(analysis['bonus_keywords']) - 12} more...")
+                    st.caption("🎯 Highlight these as differentiators")
+                else:
+                    st.caption("All your keywords are JD-aligned")
+            
+            # Experience & Metrics Intel
+            st.markdown("---")
+            st.markdown("#### 📊 QUICK INTEL")
+            
+            intel_col1, intel_col2, intel_col3, intel_col4 = st.columns(4)
+            
+            with intel_col1:
+                if analysis['jd_years_required']:
+                    st.metric("JD Requires", f"{analysis['jd_years_required']}+ years")
+                else:
+                    st.metric("JD Requires", "Not specified")
+            
+            with intel_col2:
+                if analysis['resume_years_mentioned']:
+                    st.metric("Your Experience", f"{analysis['resume_years_mentioned']}+ years")
+                else:
+                    st.metric("Your Experience", "Add metrics!")
+            
+            with intel_col3:
+                st.metric("Metrics in Resume", analysis['metrics_found'])
+            
+            with intel_col4:
+                st.metric("Strong Verbs", analysis['strong_verbs'])
+            
+            # Action Items / Recommendations
+            st.markdown("---")
+            st.markdown("#### 🎯 ACTION ITEMS")
+            
+            recommendations = []
+            
+            if analysis['match_score'] < 50:
+                recommendations.append("🔴 **Low Match Alert**: This role may be a significant stretch. Consider targeting roles more aligned with your current skills.")
+            elif analysis['match_score'] < 70:
+                recommendations.append("🟡 **Gap Work Needed**: Add missing keywords to your resume where you have genuine experience.")
+            
+            if analysis['missing_keywords']:
+                top_missing = ', '.join([kw.title() for kw in analysis['missing_keywords'][:3]])
+                recommendations.append(f"📝 **Priority Keywords to Add**: {top_missing}")
+            
+            if analysis['metrics_found'] < 5:
+                recommendations.append("📊 **Add More Metrics**: Include quantifiable achievements (%, $, x improvement) to stand out.")
+            
+            if analysis['strong_verbs'] < 5:
+                recommendations.append("💪 **Strengthen Language**: Use more action verbs like 'built', 'led', 'drove', 'scaled', 'architected'.")
+            
+            if analysis['resume_word_count'] < 300:
+                recommendations.append("📄 **Resume Too Brief**: Consider expanding with more details about your achievements.")
+            elif analysis['resume_word_count'] > 1000:
+                recommendations.append("✂️ **Consider Trimming**: Focus on the most relevant experiences for this specific role.")
+            
+            # Experience gap check
+            if analysis['jd_years_required'] and analysis['resume_years_mentioned']:
+                if analysis['resume_years_mentioned'] < analysis['jd_years_required']:
+                    recommendations.append(f"⏰ **Experience Gap**: JD requires {analysis['jd_years_required']}+ years, you mention {analysis['resume_years_mentioned']}. Emphasize depth of impact over duration.")
+            
+            if not recommendations:
+                recommendations.append("✅ **Strong Position**: Your resume aligns well with this JD! Focus on networking and interview prep.")
+            
+            for rec in recommendations:
+                st.markdown(rec)
+        
         # Store for backwards compatibility
         jd_text = jd_text_input
         active_assets = [resume_text_input] if resume_text_input else []
         
         st.markdown("---")
+
         
         # ═══════════════════════════════════════════════════════════════
         # BLACK OPS AGENT (OSINT) - Keep existing section
