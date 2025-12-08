@@ -35,9 +35,11 @@ Traditional job searching is **linear**: Apply → Wait → Reject → Repeat.
 | Module | Function |
 |--------|----------|
 | **📋 Interview Prep** | Full pre-interview checklist, company intel, kill questions |
-| **🥊 Dojo** | Duolingo-style practice with XP leveling |
-| **🎤 Voice Lab** | Record, transcribe, analyze with voice telemetry |
-| **🛡️ Objections** | Dynamic defense matrix for tough questions |
+| **🧩 Deal Intelligence** | Auto-link contacts to deals, track stage velocity, and manage pipeline. |
+| **📡 Market Radar** | Advanced prospecting tool to filter companies by ICP (Growth Stage, Hiring Signal, Sector) and identify high-value targets. |
+| **🤖 Strategy Agent** | AI-driven connection strategist that generates "VIP Assault", "Trajan Horse", and "Recruiter Pitch" scripts tailored to the contact's persona. |
+| **🔮 Oracle Search** | RAG-powered semantic search to query your entire network and deal history naturally (e.g., "Who do I know at Series B AI companies?"). |
+| **🎙️ Voice Lab** | Practice interview answers with AI coaching and sentiment analysis. |
 
 ### 🛰️ ORACLE ARRAY (Search)
 
