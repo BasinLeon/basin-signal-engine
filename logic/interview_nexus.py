@@ -505,12 +505,27 @@ def render_interview_nexus():
     if 'signal_bridge_content' not in st.session_state:
         st.session_state.signal_bridge_content = ""
     
+    # Try to import gamification
+    try:
+        from logic.gamification import render_market_timing_banner, render_daily_quote, get_user_badges, get_next_badge
+        GAMIFICATION_AVAILABLE = True
+    except ImportError:
+        GAMIFICATION_AVAILABLE = False
+    
+    # Market Timing Banner
+    if GAMIFICATION_AVAILABLE:
+        render_market_timing_banner()
+    
+    # Daily Quote
+    if GAMIFICATION_AVAILABLE:
+        render_daily_quote()
+    
     st.markdown("---")
     
     # Navigation
     nexus_mode = st.radio(
         "Select Mode",
-        ["📄 Resume + JD Setup", "🎯 11-Layer Gauntlet", "📝 Story Bank", "🧬 Bio-Optimization", "📊 Performance"],
+        ["📄 Resume + JD Setup", "🎯 11-Layer Gauntlet", "📝 Story Bank", "🧬 Bio-Optimization", "🏆 Badges", "📊 Performance"],
         horizontal=True,
         key="nexus_mode_v3"
     )
@@ -526,6 +541,8 @@ def render_interview_nexus():
         render_story_bank_mode()
     elif nexus_mode == "🧬 Bio-Optimization":
         render_bio_mode()
+    elif nexus_mode == "🏆 Badges":
+        render_badges_mode()
     elif nexus_mode == "📊 Performance":
         render_performance_mode()
 
@@ -937,8 +954,100 @@ def render_bio_mode():
         st.info(f"{completed}/{len(items)} completed")
 
 
+def render_badges_mode():
+    """Badges and Achievements"""
+    
+    st.subheader("🏆 Achievements & Progress")
+    st.caption("Track your progress and earn badges as you practice!")
+    
+    # Calculate stats from session
+    total_sessions = len(st.session_state.get('interview_log', []))
+    scores = [s.get('score', 0) for s in st.session_state.get('interview_log', [])]
+    max_score = max(scores) if scores else 0
+    avg_score = sum(scores) / len(scores) if scores else 0
+    
+    # Display stats
+    col1, col2, col3, col4 = st.columns(4)
+    
+    col1.markdown(f"""
+    <div style="background: linear-gradient(135deg, #0f0f15, #1a1a2e); border: 1px solid #D4AF37; 
+                border-radius: 10px; padding: 15px; text-align: center;">
+        <p style="color: #888; margin: 0; font-size: 0.7rem;">SESSIONS</p>
+        <h2 style="color: #D4AF37; margin: 5px 0;">{total_sessions}</h2>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col2.markdown(f"""
+    <div style="background: linear-gradient(135deg, #0f0f15, #1a1a2e); border: 1px solid #4ade80; 
+                border-radius: 10px; padding: 15px; text-align: center;">
+        <p style="color: #888; margin: 0; font-size: 0.7rem;">BEST SCORE</p>
+        <h2 style="color: #4ade80; margin: 5px 0;">{max_score}</h2>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col3.markdown(f"""
+    <div style="background: linear-gradient(135deg, #0f0f15, #1a1a2e); border: 1px solid #fbbf24; 
+                border-radius: 10px; padding: 15px; text-align: center;">
+        <p style="color: #888; margin: 0; font-size: 0.7rem;">AVG SCORE</p>
+        <h2 style="color: #fbbf24; margin: 5px 0;">{avg_score:.0f}</h2>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Streak placeholder
+    col4.markdown(f"""
+    <div style="background: linear-gradient(135deg, #0f0f15, #1a1a2e); border: 1px solid #f87171; 
+                border-radius: 10px; padding: 15px; text-align: center;">
+        <p style="color: #888; margin: 0; font-size: 0.7rem;">STREAK</p>
+        <h2 style="color: #f87171; margin: 5px 0;">🔥 1</h2>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Try to use gamification module
+    try:
+        from logic.gamification import render_badges_display, BADGES, get_user_badges, get_next_badge
+        
+        stats = {
+            "total_sessions": total_sessions,
+            "max_score": max_score,
+            "current_streak": 1  # Placeholder
+        }
+        
+        render_badges_display(stats)
+        
+    except ImportError:
+        # Fallback badge display
+        st.markdown("### 🎖️ Your Badges")
+        
+        if total_sessions >= 1:
+            st.markdown("🩸 **First Blood** - Completed first session")
+        if total_sessions >= 5:
+            st.markdown("🔥 **Warming Up** - 5 sessions complete")
+        if total_sessions >= 10:
+            st.markdown("💪 **Getting Serious** - 10 sessions complete")
+        if max_score >= 70:
+            st.markdown("🎯 **Solid Foundation** - Scored 70+")
+        if max_score >= 80:
+            st.markdown("🏹 **Sharpshooter** - Scored 80+")
+        if max_score >= 90:
+            st.markdown("💎 **Elite** - Scored 90+")
+        
+        if total_sessions == 0:
+            st.info("Complete your first practice session to start earning badges!")
+    
+    st.markdown("---")
+    
+    # Progress Ring
+    st.markdown("### 📈 Journey to Your Next Role")
+    
+    preparation_score = min(100, (total_sessions * 5) + (avg_score if avg_score else 0) / 2)
+    
+    st.progress(preparation_score / 100)
+    st.caption(f"Preparation Level: {preparation_score:.0f}% | Keep practicing to increase your readiness!")
+
+
 def render_performance_mode():
-    """Performance Analytics"""
     
     st.subheader("📊 Performance Analytics")
     

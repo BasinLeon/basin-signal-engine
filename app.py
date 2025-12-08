@@ -291,10 +291,10 @@ st.set_page_config(
 # Note: Streamlit doesn't support direct head injection, using components.html
 import streamlit.components.v1 as components
 
-# PWA Support - Inject meta tags via JavaScript
+# PWA Support + Material Icons Killer - Inject via JavaScript
 components.html("""
 <script>
-    // Inject PWA meta tags into document head
+    // === PWA META TAGS ===
     const head = document.getElementsByTagName('head')[0];
     
     // Apple Mobile Web App
@@ -316,26 +316,106 @@ components.html("""
     // Theme Color
     const meta4 = document.createElement('meta');
     meta4.name = 'theme-color';
-    meta4.content = '#FFD700';
+    meta4.content = '#D4AF37';
     head.appendChild(meta4);
     
-    // Manifest link
-    const manifest = document.createElement('link');
-    manifest.rel = 'manifest';
-    manifest.href = '.streamlit/manifest.json';
-    head.appendChild(manifest);
+    // === MATERIAL ICONS KILLER ===
+    // This removes the garbled 'keyboard_arrow_right' text
+    function killMaterialIcons() {
+        // Find all text nodes that contain 'keyboard' or material icon names
+        const badPatterns = ['keyboard_arrow', 'keyboard', 'arrow_right', 'expand_more', 'expand_less', 'chevron', 'navigate_'];
+        
+        // Walk through all text nodes
+        const walker = document.createTreeWalker(
+            document.body,
+            NodeFilter.SHOW_TEXT,
+            null,
+            false
+        );
+        
+        const nodesToModify = [];
+        while(walker.nextNode()) {
+            const node = walker.currentNode;
+            const text = node.textContent;
+            for (const pattern of badPatterns) {
+                if (text && text.includes(pattern)) {
+                    nodesToModify.push(node);
+                    break;
+                }
+            }
+        }
+        
+        // Remove the bad text
+        nodesToModify.forEach(node => {
+            node.textContent = '';
+        });
+        
+        // Also hide any elements with Material Icons font
+        document.querySelectorAll('[style*="Material Icons"], [style*="material"]').forEach(el => {
+            el.style.display = 'none';
+        });
+    }
+    
+    // Run immediately and then every 500ms to catch dynamically added elements
+    killMaterialIcons();
+    setInterval(killMaterialIcons, 500);
+    
+    // Also run on DOM changes
+    const observer = new MutationObserver(killMaterialIcons);
+    observer.observe(document.body, { childList: true, subtree: true });
 </script>
 """, height=0)
 
 st.markdown("""
 <style>
     /* ═══════════════════════════════════════════════════════════════
-       BASIN::NEXUS EXECUTIVE OS — GOLDEN PROTOCOL v2.0
-       Luxurious Command Center Aesthetic
+       BASIN::NEXUS EXECUTIVE OS — GOLDEN PROTOCOL v3.0
+       Complete UI Overhaul with Material Icons Fix
     ═══════════════════════════════════════════════════════════════ */
     
-    /* === TYPOGRAPHY IMPORTS === */
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+    /* === CRITICAL: KILL MATERIAL ICONS COMPLETELY === */
+    /* This prevents the garbled 'keyboard_arrow_right' text */
+    @font-face {
+        font-family: 'Material Icons';
+        src: local('__no_such_font__');
+        font-display: block;
+    }
+    @font-face {
+        font-family: 'Material Symbols Rounded';
+        src: local('__no_such_font__');
+    }
+    @font-face {
+        font-family: 'Material Symbols Outlined';
+        src: local('__no_such_font__');
+    }
+    @font-face {
+        font-family: 'Material Icons Round';
+        src: local('__no_such_font__');
+    }
+    @font-face {
+        font-family: 'Material Icons Sharp';
+        src: local('__no_such_font__');
+    }
+    
+    /* Hide ANY element that tries to use Material Icons */
+    [style*="Material Icons"],
+    [style*="material-icons"],
+    [class*="material-icons"],
+    [class*="material-symbols"] {
+        font-size: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    /* Kill the keyboard_arrow text that appears */
+    *:not(script):not(style) {
+        font-feature-settings: normal !important;
+    }
+    
+    /* === TYPOGRAPHY IMPORTS (Use Inter for cleaner look) === */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
     
     /* === ROOT VARIABLES === */
     :root {
@@ -387,17 +467,20 @@ st.markdown("""
         max-width: 1400px;
     }
     
-    /* === GLOBAL TYPOGRAPHY === */
+    /* === GLOBAL TYPOGRAPHY (Clean, Modern Look) === */
     .stApp, .stApp p, .stApp span, .stApp div, .stApp li {
         color: var(--text-primary) !important;
-        font-family: 'JetBrains Mono', 'SF Mono', monospace !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+        font-size: 14px;
+        line-height: 1.6;
     }
     
     h1, h2, h3, h4, h5, h6 {
-        font-family: 'Orbitron', sans-serif !important;
+        font-family: 'Space Grotesk', 'Inter', sans-serif !important;
         color: var(--gold-primary) !important;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
+        font-weight: 600;
     }
     
     h1 {
