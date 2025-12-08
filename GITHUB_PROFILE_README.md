@@ -1,6 +1,6 @@
 # 🎯 The Revenue Architect
 
-**Director of GTM Systems | 160% Pipeline Growth | Python/AI Builder | Ex-Google & Fudo Security | MBA**
+> **Director of GTM Systems | 160% Pipeline Growth | Python/AI Builder | Ex-Google & Fudo Security | MBA**
 
 > I build data-driven GTM systems that bridge engineering complexity with commercial velocity.
 
@@ -26,20 +26,20 @@
 
 ---
 
-## 💻 Current Lab: BASIN::NEXUS v11:11
+## 💻 Current Lab: BASIN::NEXUS v0.5
 
-My live GTM intelligence platform. **1617 lines of Python** demonstrating how I think about career strategy as a **Revenue OS**.
+My live GTM intelligence platform. **8,400+ lines of Python** demonstrating how I think about career strategy as a **Revenue OS**.
 
 | Feature | Purpose |
 |---------|---------|
-| **Prescient Targeting** | 5-vector job sweep (LinkedIn, ATS, VC, Social) |
-| **Boardroom Simulator** | Real-time XP scoring for interview prep |
-| **Live Assist** | Digital Twin for real-time interview coaching |
-| **Pipeline CRM** | Treat job search like a sales pipeline |
+| **⚔️ BATTLESTATION** | Interview prep, Dojo practice, Voice Lab with Telemetry |
+| **🛰️ ORACLE ARRAY** | 7-vector job sweep (LinkedIn, ATS, VC, Social) |
+| **🏗️ BUILDER DECK** | Pipeline CRM, Comp Negotiation, G-Suite Sync |
+| **🧠 INTEL AGENT** | Resume vs JD Analysis & Gap Identification |
 
-**LLM Fleet:** Llama 3.3 (Groq) • Mixtral • Gemini Pro • Claude 3.5 Sonnet
+**LLM Fleet:** Llama 3.3 (Groq) • Gemini Pro • Claude 3.5 Sonnet • GPT-4
 
-[![basin-signal-engine](https://img.shields.io/badge/🚀_BASIN::NEXUS-v11:11-blue?style=for-the-badge)](https://github.com/BasinLeon/basin-signal-engine)
+[![basin-signal-engine](https://img.shields.io/badge/🚀_BASIN::NEXUS-v0.5-blue?style=for-the-badge)](https://github.com/BasinLeon/basin-signal-engine)
 
 ---
 
