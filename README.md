@@ -35,10 +35,8 @@ Traditional job searching is **linear**: Apply → Wait → Reject → Repeat.
 | Module | Function |
 |--------|----------|
 | **📋 Interview Prep** | Full pre-interview checklist, company intel, kill questions |
-| **🧩 Deal Intelligence** | Auto-link contacts to deals, track stage velocity, and manage pipeline. |
-| **📡 Market Radar** | Advanced prospecting tool to filter companies by ICP (Growth Stage, Hiring Signal, Sector) and identify high-value targets. |
-| **🤖 Strategy Agent** | AI-driven connection strategist that generates "VIP Assault", "Trajan Horse", and "Recruiter Pitch" scripts tailored to the contact's persona. |
-| **🔮 Oracle Search** | RAG-powered semantic search to query your entire network and deal history naturally (e.g., "Who do I know at Series B AI companies?"). |
+| **🥊 Deal Intelligence** | Auto-link contacts to deals, track stage velocity, and manage pipeline. |
+| **🔮 Oracle Search** | RAG-powered semantic search to query your entire network and deal history naturally. |
 | **🎙️ Voice Lab** | Practice interview answers with AI coaching and sentiment analysis. |
 
 ### 🛰️ ORACLE ARRAY (Search)
@@ -46,17 +44,17 @@ Traditional job searching is **linear**: Apply → Wait → Reject → Repeat.
 | Module | Function |
 |--------|----------|
 | **🎯 Hunt Mode** | 7-vector job sweep (LinkedIn, ATS, VC, Twitter, Reddit, HN, news) |
-| **📡 Market Radar** | Real-time funding news and signal detection |
 | **🔬 Company Intel** | Deep research synthesis on target companies |
 
-### 🏗️ BUILDER DECK (Close)
+### 🏗️ BUILDER DECK (Social Command Center)
 
 | Module | Function |
 |--------|----------|
-| **📈 Pipeline CRM** | Deal tracking with stage probability scoring |
-| **💰 Comp Calc** | Negotiation architect for $200k+ roles |
-| **🚀 First 90 Days** | Role-specific 30-60-90 day plans |
-| **☁️ G-Suite Sync** | Google Sheets/Docs integration |
+| **📣 Social HQ** | The central hub for network operations. |
+| **♟️ Strategy Agent** | AI-driven connection strategist (VIP Assault, Trojan Horse, Recruiter Pitch). |
+| **🏢 Market Radar** | ICP Prospecting tool with "Data Supply Chain" export (CSV) for outreach tools (PhantomBuster/HeyReach). |
+| **📈 Pipeline CRM** | Deal tracking with stage probability scoring. |
+| **🚀 First 90 Days** | Role-specific 30-60-90 day plans. |
 
 ---
 
