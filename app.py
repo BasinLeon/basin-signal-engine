@@ -8020,12 +8020,28 @@ Curious if this resonates?""", height=150)
                          msg = f"Subject: Thoughts on {selected_company}'s growth\\n\\n{target_contact['name'].split()[0]},\\n\\nI've been following {selected_company}'s trajectory. I built a Revenue OS that scaled my last org 160%. Open to a 5-min chat about your GTM architecture?\\n\\nLeon"
                          st.text_area("Draft Message", msg, height=200, key="strat_msg_vip")
                          
+                         # Export Script
+                         st.download_button(
+                            label="📄 Download Script",
+                            data=msg,
+                            file_name=f"strategy_{target_contact['name'].replace(' ', '_')}.txt",
+                            mime="text/plain"
+                         )
+                         
                     elif recruiters:
                          target_contact = recruiters[0]
                          st.info(f"🎯 STRATEGY: RECRUITER PITCH")
                          st.markdown(f"**Target**: {target_contact['name']} ({target_contact['role']})")
                          msg = f"Subject: Application for {company_deal['role']}\\n\\nHi {target_contact['name'].split()[0]},\\n\\nApplied for {company_deal['role']}. My background in Revenue Architecture seems like a perfect fit. Attached my dossier.\\n\\nBest,\\nLeon"
                          st.text_area("Draft Message", msg, height=200, key="strat_msg_rec")
+                         
+                         # Export Script
+                         st.download_button(
+                            label="📄 Download Script",
+                            data=msg,
+                            file_name=f"strategy_{target_contact['name'].replace(' ', '_')}.txt",
+                            mime="text/plain"
+                         )
 
             # TAB 2: MARKET RADAR (New Intelligence Tool)
             with social_tabs[1]:
@@ -8040,15 +8056,45 @@ Curious if this resonates?""", height=150)
                 with icp_c3:
                     icp_sector = st.multiselect("Sector", ["B2B SaaS", "Cybersecurity", "Fintech", "DevTools"], default=["B2B SaaS"], key="mr_sector")
                 
-                # Mock Data Display
-                st.info("📡 Market Scan Active... (Mock Data Loaded)")
+                # Market Scan Logic
                 market_data = [
                     {"Company": "Anthropic", "Stage": "Series C+", "Signal": "Aggressively Hiring", "Sector": "AI/ML", "Match": "98%"},
                     {"Company": "Databricks", "Stage": "Series C+", "Signal": "Aggressively Hiring", "Sector": "Data", "Match": "95%"},
                     {"Company": "Wiz", "Stage": "Series C+", "Signal": "Aggressively Hiring", "Sector": "Cybersecurity", "Match": "92%"},
+                    {"Company": "Rippling", "Stage": "Series B", "Signal": "Key Role Open", "Sector": "B2B SaaS", "Match": "88%"},
+                    {"Company": "Linear", "Stage": "Series A", "Signal": "Stable", "Sector": "DevTools", "Match": "85%"}
                 ]
-                for co in market_data:
-                     st.markdown(f"**{co['Company']}** ({co['Stage']}) - {co['Signal']} - {co['Match']} Match")
+                
+                # Filter Mock Data
+                filtered_market = [m for m in market_data if m['Stage'] in icp_stage and m['Signal'] in icp_signal and (not icp_sector or m['Sector'] in icp_sector)]
+                
+                if filtered_market:
+                     st.info(f"📡 RADAR LOCKED: {len(filtered_market)} TARGETS FOUND")
+                     import pandas as pd
+                     df_market = pd.DataFrame(filtered_market)
+                     st.dataframe(df_market, use_container_width=True)
+                     
+                     # Export for PhantomBuster/HeyReach
+                     csv = df_market.to_csv(index=False).encode('utf-8')
+                     st.download_button(
+                        label="⬇️ EXPORT FOR OUTREACH (CSV)",
+                        data=csv,
+                        file_name='market_radar_targets.csv',
+                        mime='text/csv',
+                        type="primary"
+                     )
+                
+                # Oracle Handoff (Deep Search)
+                st.markdown("---")
+                col_oracle, col_spacer = st.columns([1, 2])
+                with col_oracle:
+                    if st.button("🔮 RUN DEEP MARKET SEARCH", use_container_width=True):
+                         st.session_state['oracle_query'] = f"Find B2B SaaS companies in {', '.join(icp_stage)} stage that are {', '.join(icp_signal)} in {', '.join(icp_sector)}."
+                         st.session_state.selected_tool_label = "🔍 Oracle Search"
+                         st.rerun()
+
+                if not filtered_market:
+                    st.warning("No targets match your scan criteria. Widen your aperture.")
 
             # TAB 3: POST FORGE (Existing)
             with social_tabs[2]:
