@@ -527,10 +527,28 @@ st.markdown("""
         word-break: normal !important;
     }
     
-    /* Fix Material icons showing as text */
-    [data-testid="stSidebar"] .material-icons,
-    [data-testid="stSidebar"] [class*="icon"] {
-        font-family: 'Material Icons', sans-serif !important;
+    /* FIX: Hide Material icon text (keyboard_arrow_right) that renders incorrectly */
+    [data-testid="stSidebar"] svg[data-testid="stExpanderToggleIcon"] {
+        display: none !important;
+    }
+    
+    /* Hide any stray 'keyboard' text that appears */
+    [data-testid="stExpander"] [data-testid="stMarkdownContainer"] {
+        font-size: 0.85rem !important;
+    }
+    
+    /* Force expander headers to not break words */
+    .streamlit-expanderHeader {
+        word-break: normal !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    
+    /* Make sure expander content text is readable */
+    .streamlit-expanderContent * {
+        font-size: 0.85rem !important;
+        line-height: 1.5 !important;
     }
     
     /* Prevent header text from breaking mid-word */
