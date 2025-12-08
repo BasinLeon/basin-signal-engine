@@ -19,3 +19,11 @@ Thumbs.db
 # Temp files
 *.tmp
 *.log
+
+# Data & Secrets (PROTECTED)
+*.db
+*.sqlite
+*.sqlite3
+assets/linkedin_*_raw.txt
+assets/*.mp3
+assets/*.wav
