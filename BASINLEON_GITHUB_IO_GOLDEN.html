@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Leon Basin - Revenue Architect & GTM Strategy</title>
-    <meta name="description" content="15+ years GTM leadership. Google, NetApp, HP, Fudo Security. I build AI-powered revenue systems that find leads, score signals, and close while I sleep.">
-    <meta name="keywords" content="GTM, Revenue Operations, AI, Sales, Business Development, Leon Basin">
+    <title>Leon Basin - Director of GTM Systems | Revenue Architect | Python/AI Builder</title>
+    <meta name="description" content="15+ years GTM leadership. Google, Fudo Security, SurveyMonkey. I build AI-powered revenue systems that find leads, score signals, and close while I sleep.">
+    <meta name="keywords" content="GTM, Revenue Operations, AI, Sales, Business Development, Leon Basin, Revenue Architect, Python">
     
     <!-- Open Graph -->
-    <meta property="og:title" content="Leon Basin - Revenue Architect">
+    <meta property="og:title" content="Leon Basin - Revenue Architect & Python/AI Builder">
     <meta property="og:description" content="I don't just sell technology. I build it. 15+ years GTM leadership building autonomous revenue systems.">
     <meta property="og:image" content="https://basinleon.github.io/assets/og-image.png">
     <meta property="og:url" content="https://basinleon.github.io">
@@ -384,6 +384,51 @@
         }
         
         /* ═══════════════════════════════════════════════════════════════
+           THE ARCHITECT TRIAD
+        ═══════════════════════════════════════════════════════════════ */
+        
+        .triad-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .triad-card {
+            background: linear-gradient(145deg, var(--bg-card), var(--bg-deep));
+            border: 1px solid var(--gold-border);
+            border-radius: 12px;
+            padding: 32px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .triad-card:hover {
+            border-color: var(--gold-primary);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.15);
+        }
+        
+        .triad-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+        
+        .triad-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--gold-primary);
+            margin-bottom: 12px;
+        }
+        
+        .triad-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+        
+        /* ═══════════════════════════════════════════════════════════════
            CAREER JOURNEY
         ═══════════════════════════════════════════════════════════════ */
         
@@ -426,6 +471,12 @@
         .timeline-role {
             font-size: 0.85rem;
             color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .timeline-date {
+            font-size: 0.75rem;
+            color: var(--text-muted);
             margin-bottom: 8px;
         }
         
@@ -433,6 +484,18 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
             line-height: 1.7;
+        }
+        
+        .timeline-metric {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gold-border);
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 0.75rem;
+            color: var(--gold-primary);
+            margin-top: 8px;
+            font-family: 'Orbitron', sans-serif;
         }
         
         /* ═══════════════════════════════════════════════════════════════
@@ -465,18 +528,18 @@
         }
         
         /* ═══════════════════════════════════════════════════════════════
-           NEWSLETTERS
+           EDUCATION
         ═══════════════════════════════════════════════════════════════ */
         
-        .newsletters-grid {
+        .education-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
         }
         
-        .newsletter-card {
+        .education-card {
             background: linear-gradient(145deg, var(--bg-card), var(--bg-deep));
             border: 1px solid var(--gold-border);
             border-radius: 12px;
@@ -484,31 +547,73 @@
             transition: all 0.3s ease;
         }
         
-        .newsletter-card:hover {
+        .education-card:hover {
+            border-color: var(--gold-primary);
+        }
+        
+        .education-school {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            color: var(--gold-primary);
+            margin-bottom: 8px;
+        }
+        
+        .education-degree {
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+        
+        .education-year {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+        
+        /* ═══════════════════════════════════════════════════════════════
+           PUBLICATIONS
+        ═══════════════════════════════════════════════════════════════ */
+        
+        .publications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .publication-card {
+            background: linear-gradient(145deg, var(--bg-card), var(--bg-deep));
+            border: 1px solid var(--gold-border);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+        
+        .publication-card:hover {
             border-color: var(--gold-primary);
             transform: translateY(-4px);
         }
         
-        .newsletter-title {
+        .publication-title {
             font-family: 'Orbitron', sans-serif;
             font-size: 0.95rem;
             color: var(--gold-primary);
             margin-bottom: 8px;
         }
         
-        .newsletter-desc {
+        .publication-desc {
             font-size: 0.8rem;
             color: var(--text-secondary);
             margin-bottom: 16px;
         }
         
-        .newsletter-link {
+        .publication-link {
             font-size: 0.75rem;
             color: var(--gold-primary);
             text-decoration: none;
         }
         
-        .newsletter-link:hover {
+        .publication-link:hover {
             color: var(--gold-light);
         }
         
@@ -585,7 +690,7 @@
     <!-- HERO -->
     <section class="hero">
         <div class="container">
-            <div class="status-badge">BASIN::NEXUS ONLINE // 8,297 lines deployed</div>
+            <div class="status-badge">BASIN::NEXUS v0.5 // 8,297 Lines Deployed</div>
             
             <h1 class="hero-title">
                 I Don't Just Sell Tech—<br>
@@ -593,8 +698,8 @@
             </h1>
             
             <p class="hero-subtitle">
-                <strong>15+ years GTM leadership.</strong> Google, NetApp, HP, Fudo Security.<br>
-                Now I code autonomous systems that find leads, score signals, and close while I sleep.
+                <strong>15+ years GTM leadership.</strong> Google, Fudo Security, SurveyMonkey, HP, NetApp.<br>
+                Now I build autonomous systems that find leads, score signals, and close while I sleep.
             </p>
             
             <div class="stats-row">
@@ -603,17 +708,21 @@
                     <div class="stat-label">Pipeline Growth</div>
                 </div>
                 <div class="stat">
-                    <div class="stat-value">$2M+</div>
-                    <div class="stat-label">Net New Pipeline</div>
+                    <div class="stat-value">$11M+</div>
+                    <div class="stat-label">Pipeline Generated</div>
                 </div>
                 <div class="stat">
                     <div class="stat-value">5</div>
                     <div class="stat-label">LLMs Orchestrated</div>
                 </div>
+                <div class="stat">
+                    <div class="stat-value">15+</div>
+                    <div class="stat-label">Years Experience</div>
+                </div>
             </div>
             
             <div class="cta-row">
-                <a href="#nexus" class="btn btn-primary">🔬 See Basin::Nexus</a>
+                <a href="#nexus" class="btn btn-primary">🔬 See BASIN::NEXUS</a>
                 <a href="https://github.com/BasinLeon/basin-signal-engine" class="btn btn-secondary" target="_blank">📦 Source Code</a>
             </div>
             <div class="cta-row">
@@ -622,6 +731,34 @@
             </div>
             
             <p class="hero-note">// Hiring managers: scroll down for <span>proof of work</span>, not promises.</p>
+        </div>
+    </section>
+    
+    <!-- THE ARCHITECT TRIAD -->
+    <section id="triad">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">The Architect Triad</h2>
+                <p class="section-subtitle">The three pillars of my Revenue Architecture philosophy</p>
+            </div>
+            
+            <div class="triad-grid">
+                <div class="triad-card">
+                    <div class="triad-icon">🧠</div>
+                    <div class="triad-title">The Operator's Mind</div>
+                    <div class="triad-desc">15 years of process rigor (Google, NetApp, HP) applied to CRM/Sales systems that reduce friction.</div>
+                </div>
+                <div class="triad-card">
+                    <div class="triad-icon">🌐</div>
+                    <div class="triad-title">The Ecosystem Builder</div>
+                    <div class="triad-desc">I operationalize partner channels (US & LATAM) and turn "paper partners" into active revenue streams.</div>
+                </div>
+                <div class="triad-card">
+                    <div class="triad-icon">🎯</div>
+                    <div class="triad-title">The Strategist's Eye</div>
+                    <div class="triad-desc">MBA-trained to create GTM narratives and pipeline architecture that delivers predictable growth.</div>
+                </div>
+            </div>
         </div>
     </section>
     
@@ -653,6 +790,16 @@
                         <div class="feature-title">PIPELINE CRM</div>
                         <div class="feature-desc">Track opportunities with stage probability, comp negotiation, and 90-day planning.</div>
                     </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔬</div>
+                        <div class="feature-title">INTEL AGENT</div>
+                        <div class="feature-desc">Resume vs JD analysis with skill matching, gap identification, and fit scoring.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">✍️</div>
+                        <div class="feature-title">COMMS STUDIO</div>
+                        <div class="feature-desc">LLM-powered outreach generation with persona-targeted messaging.</div>
+                    </div>
                 </div>
                 
                 <div class="nexus-meta">
@@ -671,39 +818,49 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Career Journey</h2>
-                <p class="section-subtitle">15+ years building GTM systems</p>
+                <p class="section-subtitle">15+ years building GTM systems across enterprise tech</p>
             </div>
             
             <div class="timeline">
                 <div class="timeline-item">
                     <div class="timeline-company">Fudo Security</div>
-                    <div class="timeline-role">Enterprise GTM Lead & Strategic Accounts</div>
-                    <div class="timeline-desc">Led GTM expansion across U.S. and LATAM. $2M+ pipeline. Coached SDRs. RSA 2024 & 2025.</div>
+                    <div class="timeline-role">Senior Manager, Business Development & GTM (Americas)</div>
+                    <div class="timeline-date">Feb 2024 - Nov 2025</div>
+                    <div class="timeline-desc">Led Americas GTM strategy. Operationalized partner channel across NA & LATAM. Zero Trust / PAM positioning.</div>
+                    <span class="timeline-metric">160% YoY Pipeline</span>
                 </div>
                 <div class="timeline-item">
-                    <div class="timeline-company">Basin and Associates</div>
-                    <div class="timeline-role">Founder / GTM Consultant</div>
-                    <div class="timeline-desc">Boutique consultancy for early-stage startups. ICP frameworks, messaging, playbooks.</div>
+                    <div class="timeline-company">Basin & Associates</div>
+                    <div class="timeline-role">Principal Consultant (GTM & Pipeline Strategy)</div>
+                    <div class="timeline-date">Aug 2023 - Present</div>
+                    <div class="timeline-desc">Advising early-stage AI & Cyber teams. Built BASIN::NEXUS v0.5 with 8,000+ lines of Python.</div>
+                    <span class="timeline-metric">$621K Active Pipeline</span>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-company">Sense</div>
-                    <div class="timeline-role">Group Manager, Global BD</div>
-                    <div class="timeline-desc">Led international expansion for AI recruitment platform. Enterprise acceleration.</div>
+                    <div class="timeline-role">Group Manager, Global Business Development</div>
+                    <div class="timeline-date">Jul 2022 - Apr 2023</div>
+                    <div class="timeline-desc">Managed BDR team. Built "Social Selling" playbook. Automated retention workflows.</div>
+                    <span class="timeline-metric">$11M Pipeline | 12% Churn Reduction</span>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-company">SurveyMonkey</div>
                     <div class="timeline-role">Enterprise Business Development</div>
-                    <div class="timeline-desc">Fortune 500 adoption. Multi-channel sales engagement.</div>
+                    <div class="timeline-date">Feb 2019 - Jan 2021</div>
+                    <div class="timeline-desc">Managed $300M+ enterprise portfolio. Fortune 500 adoption.</div>
+                    <span class="timeline-metric">$300K Expansion Revenue</span>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-company">Google</div>
                     <div class="timeline-role">Operations Specialist</div>
-                    <div class="timeline-desc">Wallet risk, trust, safety, compliance. Data-driven security ops.</div>
+                    <div class="timeline-date">Aug 2014 - Jan 2015</div>
+                    <div class="timeline-desc">Google Wallet & Compliance. Data-driven security ops and user trend analysis.</div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-company">NetApp / HP</div>
                     <div class="timeline-role">Operations & Field Sales</div>
-                    <div class="timeline-desc">Enterprise storage infrastructure. Team of 20+.</div>
+                    <div class="timeline-date">2010 - 2014</div>
+                    <div class="timeline-desc">Enterprise storage infrastructure. Team management (20+ associates).</div>
                 </div>
             </div>
         </div>
@@ -714,7 +871,7 @@
         <div class="container">
             <div class="section-header">
                 <h2 class="section-title">Technical Stack</h2>
-                <p class="section-subtitle">The tools I use to build</p>
+                <p class="section-subtitle">The tools I use to build revenue systems</p>
             </div>
             
             <div class="skills-grid">
@@ -737,24 +894,57 @@
         </div>
     </section>
     
-    <!-- THOUGHT LEADERSHIP -->
-    <section id="newsletters">
+    <!-- EDUCATION -->
+    <section id="education">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title">Thought Leadership</h2>
-                <p class="section-subtitle">35 editions published</p>
+                <h2 class="section-title">Education</h2>
+                <p class="section-subtitle">Formal credentials that ground my architectural approach</p>
             </div>
             
-            <div class="newsletters-grid">
-                <div class="newsletter-card">
-                    <div class="newsletter-title">Emerging Leadership Labyrinth</div>
-                    <div class="newsletter-desc">GTM strategy, leadership development, and career growth for revenue professionals.</div>
-                    <a href="https://www.linkedin.com/newsletters/emerging-leadership-labyrinth-7103486442881880065/" class="newsletter-link" target="_blank">→ View Publication</a>
+            <div class="education-grid">
+                <div class="education-card">
+                    <div class="education-school">Santa Clara University</div>
+                    <div class="education-degree">Executive MBA</div>
+                    <div class="education-year">Leavey School of Business | 2021 - 2023</div>
                 </div>
-                <div class="newsletter-card">
-                    <div class="newsletter-title">The Secure Strategist</div>
-                    <div class="newsletter-desc">Cybersecurity insights on Zero Trust, AI security, and strategic defense.</div>
-                    <a href="https://www.linkedin.com/newsletters/the-secure-strategist-7222321933533470720/" class="newsletter-link" target="_blank">→ View Publication</a>
+                <div class="education-card">
+                    <div class="education-school">University of Phoenix</div>
+                    <div class="education-degree">Bachelor of Science, Psychology</div>
+                    <div class="education-year"></div>
+                </div>
+                <div class="education-card">
+                    <div class="education-school">De Anza College</div>
+                    <div class="education-degree">Certificate, Technical Writing & Speech Communication</div>
+                    <div class="education-year"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- PUBLICATIONS -->
+    <section id="publications">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Publications & Thought Leadership</h2>
+                <p class="section-subtitle">35 newsletter editions + 3 published books</p>
+            </div>
+            
+            <div class="publications-grid">
+                <div class="publication-card">
+                    <div class="publication-title">Emerging Leadership Labyrinth</div>
+                    <div class="publication-desc">GTM strategy, leadership development, and career growth. 1,884+ subscribers.</div>
+                    <a href="https://www.linkedin.com/newsletters/emerging-leadership-labyrinth-7103486442881880065/" class="publication-link" target="_blank">→ View Newsletter</a>
+                </div>
+                <div class="publication-card">
+                    <div class="publication-title">Unlock the Power of Storytelling</div>
+                    <div class="publication-desc">A Cybersecurity Saga That Inspires Change (Amazon, 2024)</div>
+                    <a href="https://amazon.com" class="publication-link" target="_blank">→ View on Amazon</a>
+                </div>
+                <div class="publication-card">
+                    <div class="publication-title">Sam & Ink Story</div>
+                    <div class="publication-desc">The fusion of human spirit and AI innovation (Amazon, 2023)</div>
+                    <a href="https://amazon.com" class="publication-link" target="_blank">→ View on Amazon</a>
                 </div>
             </div>
         </div>
@@ -780,3 +970,5 @@
 
 </body>
 </html>
+</CodeContent>
+<parameter name="Complexity">5
