@@ -284,6 +284,43 @@ Stop ignoring this. The market is shifting. 📉📈
 #GTM #Sales #RevenueOps"""
 
 
+def generate_next_step(name: str, company: str, topic: str, stage: str) -> dict:
+    """Generate a strategic recommended next step based on relationship stage."""
+    import random
+    
+    next_steps = {
+        "❄️ COLD": [
+            {"action": f"Send {name} a relevant article about {topic} to warm up the relationship", "type": "value_add"},
+            {"action": f"Comment on {name}'s recent LinkedIn post before sending a DM", "type": "engagement"},
+            {"action": f"Find a mutual connection who can provide a warm intro to {name}", "type": "intro"},
+        ],
+        "🌡️ WARM": [
+            {"action": f"Share a specific case study showing {topic} impact at a similar company", "type": "value_add"},
+            {"action": f"Ask {name} for their perspective on {topic} to deepen the conversation", "type": "engagement"},
+            {"action": f"Offer to send a 2-minute Loom video with a personalized insight for {company}", "type": "value_add"},
+        ],
+        "🔥 HOT": [
+            {"action": f"Propose a 15-minute call to discuss how {topic} applies to {company}", "type": "meeting"},
+            {"action": f"Send a tailored one-pager on implementing {topic} at {company}", "type": "whitepaper"},
+            {"action": f"Introduce {name} to someone in your network who solved this problem", "type": "intro"},
+        ],
+        "⭐ CHAMPION": [
+            {"action": f"Ask {name} for a referral to another leader dealing with {topic}", "type": "referral"},
+            {"action": f"Co-create content with {name} about your {topic} conversation", "type": "collab"},
+            {"action": f"Invite {name} to an exclusive event or community discussion", "type": "community"},
+        ]
+    }
+    
+    options = next_steps.get(stage, next_steps["❄️ COLD"])
+    selected = random.choice(options)
+    
+    return {
+        "action": selected["action"],
+        "type": selected["type"],
+        "stage": stage
+    }
+
+
 def render_content_factory():
     """Content Factory - Turn conversations into gravity."""
     st.subheader("✍️ Content Factory")
@@ -363,6 +400,63 @@ def render_content_factory():
             st.code(x_post, language="text")
             if st.button("📋 Copy X", key="copy_x"):
                 st.info("Copy the text above!")
+        
+        # RECOMMENDED NEXT STEP
+        st.markdown("---")
+        
+        # Get or generate next step
+        if 'current_next_step' not in st.session_state or st.session_state.get('refresh_next_step'):
+            # Determine stage (default to COLD if not set)
+            stage = "❄️ COLD"
+            existing = [c for c in st.session_state.network_contacts if c['name'].lower() == data['name'].lower()]
+            if existing:
+                stage = existing[0].get('stage', '❄️ COLD')
+            
+            next_step = generate_next_step(
+                data['name'], 
+                data['company'], 
+                data['topic'], 
+                stage
+            )
+            st.session_state.current_next_step = next_step
+            st.session_state.refresh_next_step = False
+        
+        next_step = st.session_state.current_next_step
+        
+        # Display next step
+        step_color = {
+            "value_add": "#4ade80",
+            "engagement": "#fbbf24", 
+            "intro": "#60a5fa",
+            "meeting": "#f87171",
+            "whitepaper": "#a78bfa",
+            "referral": "#D4AF37",
+            "collab": "#ec4899",
+            "community": "#14b8a6"
+        }.get(next_step['type'], "#888")
+        
+        st.markdown(f"""
+        <div style="background: #0f0f15; border: 1px solid {step_color}; border-radius: 8px; padding: 20px; margin: 10px 0;">
+            <p style="color: {step_color}; margin: 0 0 10px 0; font-weight: bold;">🎯 Recommended Next Step</p>
+            <p style="color: #f0e6d3; margin: 0; font-size: 1rem; line-height: 1.5;">
+                {next_step['action']}
+            </p>
+            <p style="color: #666; margin: 10px 0 0 0; font-size: 0.75rem;">
+                Type: {next_step['type'].upper()} | Stage: {next_step['stage']}
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        col_btn1, col_btn2 = st.columns(2)
+        with col_btn1:
+            if st.button("✅ Mark Complete", key="complete_step"):
+                st.success("🎉 Great work! Step logged.")
+                st.session_state.refresh_next_step = True
+                st.rerun()
+        with col_btn2:
+            if st.button("🔄 Get Another", key="refresh_step"):
+                st.session_state.refresh_next_step = True
+                st.rerun()
     
     # Recent conversations for content
     st.markdown("---")
