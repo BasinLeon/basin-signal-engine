@@ -1319,7 +1319,8 @@ with st.sidebar:
              "💰 COMP CALC",
              "🚀 FIRST 90", 
              "🔍 TALENT SIGNAL", 
-             "🎙️ DIGITAL TWIN"],
+             "🎙️ DIGITAL TWIN",
+             "🔗 DATA BRIDGE"],
             label_visibility="collapsed", key="builder")
 
     # LOGIC TO HANDLE MULTIPLE RADIOS (One Ring to Rule Them All)
@@ -1356,7 +1357,8 @@ with st.sidebar:
         "💰 COMP CALC": "💰 Negotiation",
         "🚀 FIRST 90": "🚀 First 90 Days",
         "🔍 TALENT SIGNAL": "🔍 Talent Signal",
-        "🎙️ DIGITAL TWIN": "🎙️ Live Assist"
+        "🎙️ DIGITAL TWIN": "🎙️ Live Assist",
+        "🔗 DATA BRIDGE": "🔗 Data Bridge"
     }
     
     # HIDDEN WISDOM
@@ -6963,6 +6965,17 @@ Best,
                         })
                         st.toast(f"{company_name} added to CRM!", icon="✅")
 
+    # ==============================================================================
+    # 🔗 DATA BRIDGE (STREAMLIT ↔ REACT SYNC)
+    # ==============================================================================
+    elif input_mode == "🔗 Data Bridge":
+        try:
+            from logic.data_bridge import render_data_bridge
+            render_data_bridge()
+        except ImportError as e:
+            st.error(f"Data Bridge module not available: {e}")
+            st.info("This module syncs data between Streamlit and React versions of Basin::Nexus.")
+    
     # ==============================================================================
     # 🎙️ MODE 11: LIVE ASSIST (DIGITAL TWIN PROTOCOL)
     # ==============================================================================
