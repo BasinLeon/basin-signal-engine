@@ -240,7 +240,7 @@ def render_network_crm():
     # Navigation
     crm_mode = st.radio(
         "Mode",
-        ["👤 People", "📬 Log Outreach", "🔔 Follow-Ups", "📊 Analytics"],
+        ["👤 People", "📬 Log Outreach", "✍️ Content Factory", "🔔 Follow-Ups", "📊 Analytics"],
         horizontal=True
     )
     
@@ -250,10 +250,162 @@ def render_network_crm():
         render_people_mode()
     elif crm_mode == "📬 Log Outreach":
         render_outreach_mode()
+    elif crm_mode == "✍️ Content Factory":
+        render_content_factory()
     elif crm_mode == "🔔 Follow-Ups":
         render_followups_mode()
     elif crm_mode == "📊 Analytics":
         render_analytics_mode()
+
+
+def generate_linkedin_post(name: str, role: str, company: str, topic: str, insight: str) -> str:
+    """Generate a LinkedIn post from a conversation."""
+    return f"""🚀 Just had a massive signal download with {name} ({role} at {company}).
+
+We went deep on {topic}. The biggest takeaway?
+
+💡 "{insight}"
+
+Most people are still playing the old game. The real operators are shifting to {topic}.
+
+Are you seeing this in your org? 👇
+
+#GTM #RevenueArchitecture #BasinNexus"""
+
+
+def generate_x_post(name: str, topic: str, insight: str) -> str:
+    """Generate an X/Twitter post from a conversation."""
+    return f"""Just spoke with {name} about {topic}.
+
+The alpha: {insight}
+
+Stop ignoring this. The market is shifting. 📉📈
+
+#GTM #Sales #RevenueOps"""
+
+
+def render_content_factory():
+    """Content Factory - Turn conversations into gravity."""
+    st.subheader("✍️ Content Factory")
+    st.caption("Turn every conversation into LinkedIn/X content that creates gravity.")
+    
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #0a0a1a, #1a1a2e); border: 1px solid #D4AF37; 
+                border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+        <p style="color: #D4AF37; margin: 0; font-weight: bold;">THE FLYWHEEL</p>
+        <p style="color: #888; margin: 5px 0 0 0; font-size: 0.85rem;">
+            Conversation → Log → Content → Engagement → More Conversations → Repeat
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Input form
+    st.markdown("### 📝 Log Conversation & Generate Content")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        name = st.text_input("Who did you talk to?", placeholder="John Smith")
+        role = st.text_input("Their Role", placeholder="VP of Sales")
+        company = st.text_input("Company", placeholder="Tebra")
+        source = st.selectbox("Where?", ["LinkedIn", "X (Twitter)", "Zoom/Call", "IRL Event", "Slack"])
+    
+    with col2:
+        topic = st.text_input("Topic discussed", placeholder="AI SDRs replacing humans")
+        insight = st.text_area("Key Insight / Alpha", 
+                              placeholder="Most companies are still cold calling when AI can pre-qualify leads...",
+                              height=130)
+    
+    if st.button("🚀 Generate Content", type="primary"):
+        if name and insight:
+            # Store in session for display
+            st.session_state['content_gen'] = {
+                "name": name,
+                "role": role,
+                "company": company,
+                "topic": topic,
+                "insight": insight,
+                "source": source
+            }
+            
+            # Also add to contacts if new
+            existing = [c for c in st.session_state.network_contacts if c['name'].lower() == name.lower()]
+            if not existing:
+                add_contact(name, company, role, f"💼 {source}")
+                st.success(f"✅ Added {name} to your Network!")
+            
+            st.success("✅ Content generated!")
+        else:
+            st.error("Name and Insight are required")
+    
+    # Display generated content
+    if st.session_state.get('content_gen'):
+        data = st.session_state['content_gen']
+        
+        st.markdown("---")
+        st.markdown("### 📱 Generated Content")
+        
+        col_li, col_x = st.columns(2)
+        
+        with col_li:
+            st.markdown("##### 💼 LinkedIn Draft")
+            li_post = generate_linkedin_post(
+                data['name'], data['role'], data['company'], 
+                data['topic'], data['insight']
+            )
+            st.code(li_post, language="text")
+            if st.button("📋 Copy LinkedIn", key="copy_li"):
+                st.info("Copy the text above!")
+        
+        with col_x:
+            st.markdown("##### 🐦 X (Twitter) Draft")
+            x_post = generate_x_post(data['name'], data['topic'], data['insight'])
+            st.code(x_post, language="text")
+            if st.button("📋 Copy X", key="copy_x"):
+                st.info("Copy the text above!")
+    
+    # Recent conversations for content
+    st.markdown("---")
+    st.markdown("### 📂 Recent Conversations → Content Ideas")
+    
+    contacts = st.session_state.network_contacts
+    recent = [c for c in contacts if c.get('notes') and len(c['notes']) > 10][-5:]
+    
+    if recent:
+        for contact in reversed(recent):
+            with st.expander(f"💬 {contact['name']} - {contact['company']}"):
+                st.markdown(f"**Notes:** {contact['notes']}")
+                if st.button(f"✍️ Turn into Content", key=f"content_{contact['id']}"):
+                    st.session_state['content_gen'] = {
+                        "name": contact['name'],
+                        "role": contact['title'],
+                        "company": contact['company'],
+                        "topic": "GTM Strategy",
+                        "insight": contact['notes'][:200],
+                        "source": contact['source']
+                    }
+                    st.rerun()
+    else:
+        st.info("Add contacts with notes to see content ideas here.")
+    
+    # Export for website
+    st.markdown("---")
+    st.markdown("### 📤 Export for basinleon.com")
+    st.caption("Use this JSON on your website to show a 'Who I'm Talking To' ticker.")
+    
+    export_data = []
+    for contact in st.session_state.network_contacts[-10:]:
+        export_data.append({
+            "name": contact['name'],
+            "company": contact['company'],
+            "stage": contact['stage'],
+            "date": contact['created_at'][:10] if contact.get('created_at') else "2024-12-01"
+        })
+    
+    if export_data:
+        import json
+        st.code(json.dumps(export_data, indent=2), language="json")
+        st.caption("💡 Copy this to `data/network.json` on your website")
 
 
 def render_people_mode():
