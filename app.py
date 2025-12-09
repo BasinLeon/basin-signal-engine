@@ -1314,6 +1314,7 @@ with st.sidebar:
     with st.expander("🏗️ BUILDER DECK"):
         mode_builder = st.radio("Select:", 
             ["📈 PIPELINE CRM", 
+             "🌐 NETWORK CRM",
              "📣 SOCIAL HQ",
              "💰 COMP CALC",
              "🚀 FIRST 90", 
@@ -1350,6 +1351,7 @@ with st.sidebar:
         "🔥 SWIPE": "🔥 Swipe Mode",
         "☁️ G-SUITE": "☁️ G-Suite Sync",
         "📈 PIPELINE CRM": "📈 Pipeline CRM",
+        "🌐 NETWORK CRM": "🌐 Network CRM",
         "📣 SOCIAL HQ": "📣 Social Command Center",
         "💰 COMP CALC": "💰 Negotiation",
         "🚀 FIRST 90": "🚀 First 90 Days",
@@ -7868,6 +7870,18 @@ Curious if this resonates?""", height=150)
                 else:
                     st.warning("Enter a target sector or company to analyze.")
 
+    # ═══════════════════════════════════════════════════════════════
+    # ═══════════════════════════════════════════════════════════════
+    # MODE: 🌐 NETWORK CRM (RELATIONSHIP INTELLIGENCE)
+    # ═══════════════════════════════════════════════════════════════
+    elif input_mode == "🌐 Network CRM":
+        try:
+            from logic.network_crm import render_network_crm
+            render_network_crm()
+        except ImportError as e:
+            st.error(f"Network CRM module not available: {e}")
+            st.info("This module tracks your X/LinkedIn connections and networking activities.")
+    
     # ═══════════════════════════════════════════════════════════════
     # ═══════════════════════════════════════════════════════════════
     # MODE: 📣 SOCIAL COMMAND CENTER
