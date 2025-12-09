@@ -615,6 +615,65 @@ def render_setup_mode():
     col_s2.metric("JD", "✅ Set" if st.session_state.get('jd_text') else "❌ Missing")
     col_s3.metric("Signal Bridge", "✅ Connected" if st.session_state.get('signal_bridge_content') else "Optional")
     
+    # AI QUESTION PREDICTOR
+    st.markdown("---")
+    st.markdown("### 🔮 AI Question Predictor")
+    st.caption("Based on the JD, predict the exact questions you'll face in interviews.")
+    
+    if st.session_state.get('jd_text'):
+        if st.button("🎯 Predict Interview Questions", type="secondary"):
+            with st.spinner("Analyzing JD and predicting questions..."):
+                try:
+                    jd = st.session_state.get('jd_text', '')[:3000]
+                    company = st.session_state.get('target_company', 'This company')
+                    role = st.session_state.get('target_role', 'This role')
+                    
+                    prompt = f"""Based on this job description for {role} at {company}, predict the 10 most likely interview questions.
+
+JOB DESCRIPTION:
+{jd}
+
+For each question, provide:
+1. The exact question they'll ask
+2. WHY they'll ask it (what they're testing for)
+3. Key points your answer should hit
+
+Format each as:
+Q1: [Question]
+WHY: [Reason]
+HIT: [Key points]
+
+Focus on:
+- Behavioral questions (Tell me about a time...)
+- Technical/role-specific questions
+- Culture fit questions
+- Potential "gotcha" questions based on gaps
+
+Be specific to the role and company, not generic."""
+
+                    from logic.generator import generate_plain_text
+                    response = generate_plain_text(prompt)
+                    
+                    st.session_state['predicted_questions'] = response
+                    
+                except Exception as e:
+                    st.error(f"Prediction failed: {e}")
+        
+        # Display predicted questions
+        if st.session_state.get('predicted_questions'):
+            st.markdown("#### 🎯 Predicted Questions")
+            st.markdown("""
+            <div style="background: #0f0f15; border: 1px solid #D4AF37; border-radius: 8px; padding: 20px; margin: 10px 0;">
+            """, unsafe_allow_html=True)
+            st.markdown(st.session_state.get('predicted_questions', ''))
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+            st.info("💡 Use these to prepare STAR stories for each question!")
+    else:
+        st.info("Paste a JD above to unlock question prediction.")
+    
+    st.markdown("---")
+    
     if st.button("🚀 GO TO GAUNTLET", type="primary", use_container_width=True):
         if st.session_state.get('resume_text') and st.session_state.get('jd_text'):
             st.session_state.nexus_mode_v3 = "🎯 11-Layer Gauntlet"
