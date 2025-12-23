@@ -7,9 +7,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&labelColor=020617)
 ![Gemini](https://img.shields.io/badge/Gemini-AI-00E5FF?style=for-the-badge&logo=google&labelColor=020617)
 
-**Sovereign GTM Intelligence OS**
-
-*Unlike traditional sales leaders, I build the tooling I use.*
+**AI-powered career intelligence platform for GTM professionals.**
 
 [Live Demo](https://basin-nexus.vercel.app) • [Portfolio](https://basinleon.github.io) • [LinkedIn](https://linkedin.com/in/leonbasin)
 
@@ -17,71 +15,58 @@
 
 ---
 
-## 🌟 What is BASIN::NEXUS?
+## 🎯 TL;DR
 
-BASIN::NEXUS is an AI-powered career intelligence platform built by a revenue professional, for revenue professionals. It's the OS I use to manage my job hunt, interview prep, and networking—architected to find leads, score signals, and craft outreach autonomously.
-
-### Core Modules
-
-| Module | Purpose |
-|--------|---------|
-| **War Room** | Executive dashboard with pipeline metrics & AI signals |
-| **Pipeline Tracker** | Revenue opportunity management |
-| **Network CRM** | Identity-based relationship intelligence |
-| **The Dojo** | AI-powered interview simulation with live voice |
-| **Identity Engine** | 22-layer neural knowledge base |
-| **Agent Hub** | Autonomous AI agents for outreach & research |
-| **Data Vault** | Secure storage & export |
-| **Visionary Studio** | Content generation & strategy |
+> **I'm a GTM leader who builds.** BASIN::NEXUS is the AI system I built to manage my job search: interview prep, pipeline tracking, and network intelligence. 10,500+ lines of code. Not a template—a working product.
 
 ---
 
-## 🚀 Quick Start
-
-### Prerequisites
-
-- Node.js 18+
-- npm or yarn
-- Gemini API key
-
-### Installation
+## ⚡ Quick Start (2 minutes)
 
 ```bash
-# Clone the repository
 git clone https://github.com/BasinLeon/basin-signal-engine.git
 cd basin-signal-engine
-
-# Install dependencies
 npm install
-
-# Set up environment
-cp .env.example .env
-# Add your VITE_GEMINI_API_KEY to .env
-
-# Start development server
-npm run dev
+cp .env.example .env   # Add your VITE_GEMINI_API_KEY
+npm run dev            # Opens at localhost:5173
 ```
 
-### Build for Production
+**Requirements:** Node.js 18+, Gemini API key ([get one free](https://ai.google.dev/))
 
-```bash
-npm run build
-npm run preview
-```
+---
+
+## 📸 Screenshots
+
+| War Room Dashboard | Interview Dojo |
+|:------------------:|:--------------:|
+| Pipeline metrics, AI signals | Live voice simulation |
+
+*Screenshots in `/screenshots/` folder*
+
+---
+
+## 🧠 What It Does
+
+| Module | One-Line Description |
+|--------|---------------------|
+| **War Room** | Executive dashboard with AI market signals |
+| **Pipeline Tracker** | Kanban board for job opportunities |
+| **Network CRM** | Contact intelligence with relationship scoring |
+| **The Dojo** | Interview simulation with Gemini AI |
+| **Identity Engine** | 22-layer professional knowledge base |
+| **Agent Hub** | Autonomous AI agents for research |
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| **Frontend** | React 18 + TypeScript |
-| **Build** | Vite |
-| **Styling** | TailwindCSS |
-| **AI** | Google Gemini API |
-| **Charts** | Recharts |
-| **Icons** | Lucide React |
-| **Data** | Local Storage + XLSX |
+| Layer | Tech |
+|-------|------|
+| Frontend | React 18 + TypeScript |
+| Build | Vite |
+| Styling | TailwindCSS |
+| AI | Google Gemini API |
+| Charts | Recharts |
 
 ---
 
@@ -95,44 +80,29 @@ npm run preview
 
 ---
 
-## 🏗️ Project Structure
+## 📁 Project Structure
 
 ```
 src/
-├── components/         # React components
-│   ├── Dashboard.tsx   # War Room
-│   ├── Sidebar.tsx     # Navigation
-│   └── ...
-├── services/           # API & storage
-│   ├── geminiService.ts
-│   └── storageService.ts
-├── App.tsx             # Main app
-├── types.ts            # TypeScript types
-├── constants.ts        # Default state
-└── index.css           # Tailwind + custom styles
+├── components/       # React components (Dashboard, Dojo, etc.)
+├── services/         # Gemini AI + localStorage
+├── App.tsx           # Main app with routing
+├── types.ts          # TypeScript interfaces
+└── constants.ts      # Default state + user data
 ```
-
----
-
-## 📜 Archive
-
-The original Streamlit version (v0.5) is preserved in `/archive/streamlit-v1/` for reference.
 
 ---
 
 ## 👤 Author
 
-**Leon Basin**  
-Revenue Architect | AI Builder | 15+ Years GTM  
+**Leon Basin** — Revenue Architect | AI Builder | 15+ Years GTM
 
-- 🌐 [basinleon.github.io](https://basinleon.github.io)
-- 💼 [LinkedIn](https://linkedin.com/in/leonbasin)
-- 🐙 [GitHub](https://github.com/BasinLeon)
+🌐 [basinleon.github.io](https://basinleon.github.io) • 💼 [LinkedIn](https://linkedin.com/in/leonbasin) • 🐙 [GitHub](https://github.com/BasinLeon)
 
 ---
 
 <div align="center">
 
-*Built with [Vite](https://vitejs.dev/) + [React](https://react.dev/) + [Gemini](https://ai.google.dev/)*
+*Built with Vite + React + Gemini*
 
 </div>
