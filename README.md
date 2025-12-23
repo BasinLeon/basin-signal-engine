@@ -1,140 +1,138 @@
-# ⚡ BASIN::NEXUS v0.5 | Executive Career Intelligence OS
+# BASIN::NEXUS v9.0
 
-<p align="center">
-  <img src="https://img.shields.io/badge/VERSION-0.5_EXECUTIVE_OS-D4AF37?style=for-the-badge&labelColor=050508" alt="Version"/>
-  <img src="https://img.shields.io/badge/LINES-8,400+-00ff88?style=for-the-badge&labelColor=050508" alt="Lines"/>
-  <img src="https://img.shields.io/badge/STATUS-LIVE-4ade80?style=for-the-badge&labelColor=050508" alt="Status"/>
-</p>
+<div align="center">
 
-<p align="center">
-  <a href="https://basin-nexus.streamlit.app">🚀 Live Demo</a> •
-  <a href="https://basinleon.github.io">🌐 Portfolio</a> •
-  <a href="https://linkedin.com/in/leonbasin">💼 LinkedIn</a>
-</p>
+![BASIN::NEXUS](https://img.shields.io/badge/BASIN::NEXUS-v9.0-D4AF37?style=for-the-badge&labelColor=020617)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&labelColor=020617)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&labelColor=020617)
+![Gemini](https://img.shields.io/badge/Gemini-AI-00E5FF?style=for-the-badge&logo=google&labelColor=020617)
 
----
+**Sovereign GTM Intelligence OS**
 
-## 🏛️ THE THESIS
+*Unlike traditional sales leaders, I build the tooling I use.*
 
-> *"I don't apply for jobs. I architect revenue systems—including the one that gets me hired."*
+[Live Demo](https://basin-nexus.vercel.app) • [Portfolio](https://basinleon.github.io) • [LinkedIn](https://linkedin.com/in/leonbasin)
 
-Traditional job searching is **linear**: Apply → Wait → Reject → Repeat.
-
-**BASIN::NEXUS** transforms it into a **closed-loop intelligence system**:
-
-1. **ORACLE ARRAY (Discovery)** — Signal detection, VC portfolio scanning, predictive market analysis
-2. **BATTLESTATION (Preparation)** — AI interview simulation, voice telemetry, objection handling
-3. **BUILDER DECK (Execution)** — Pipeline CRM, negotiation scripts, first-90-day plans
+</div>
 
 ---
 
-## 🎯 CORE MODULES
+## 🌟 What is BASIN::NEXUS?
 
-### ⚔️ BATTLESTATION (Prep)
+BASIN::NEXUS is an AI-powered career intelligence platform built by a revenue professional, for revenue professionals. It's the OS I use to manage my job hunt, interview prep, and networking—architected to find leads, score signals, and craft outreach autonomously.
 
-| Module | Function |
-|--------|----------|
-| **📋 Interview Prep** | Full pre-interview checklist, company intel, kill questions |
-| **🥊 Deal Intelligence** | Auto-link contacts to deals, track stage velocity, and manage pipeline. |
-| **🔮 Oracle Search** | RAG-powered semantic search to query your entire network and deal history naturally. |
-| **🎙️ Voice Lab** | Practice interview answers with AI coaching and sentiment analysis. |
+### Core Modules
 
-### 🛰️ ORACLE ARRAY (Search)
-
-| Module | Function |
-|--------|----------|
-| **🎯 Hunt Mode** | 7-vector job sweep (LinkedIn, ATS, VC, Twitter, Reddit, HN, news) |
-| **🔬 Company Intel** | Deep research synthesis on target companies |
-
-### 🏗️ BUILDER DECK (Social Command Center)
-
-| Module | Function |
-|--------|----------|
-| **📣 Social HQ** | The central hub for network operations. |
-| **♟️ Strategy Agent** | AI-driven connection strategist (VIP Assault, Trojan Horse, Recruiter Pitch). |
-| **🏢 Market Radar** | ICP Prospecting tool with "Data Supply Chain" export (CSV) for outreach tools (PhantomBuster/HeyReach). |
-| **📈 Pipeline CRM** | Deal tracking with stage probability scoring. |
-| **🚀 First 90 Days** | Role-specific 30-60-90 day plans. |
+| Module | Purpose |
+|--------|---------|
+| **War Room** | Executive dashboard with pipeline metrics & AI signals |
+| **Pipeline Tracker** | Revenue opportunity management |
+| **Network CRM** | Identity-based relationship intelligence |
+| **The Dojo** | AI-powered interview simulation with live voice |
+| **Identity Engine** | 22-layer neural knowledge base |
+| **Agent Hub** | Autonomous AI agents for outreach & research |
+| **Data Vault** | Secure storage & export |
+| **Visionary Studio** | Content generation & strategy |
 
 ---
 
-## 📊 KEY METRICS
+## 🚀 Quick Start
 
-| Metric | Value |
-|--------|-------|
-| **Lines of Code** | 8,400+ |
-| **Production Modules** | 18 |
-| **LLMs Orchestrated** | 5 |
-| **Agent Personas** | 4 |
-| **Database Tables** | 10 |
+### Prerequisites
 
----
+- Node.js 18+
+- npm or yarn
+- Gemini API key
 
-## 🚀 QUICK START
+### Installation
 
 ```bash
-# Clone the repo
+# Clone the repository
 git clone https://github.com/BasinLeon/basin-signal-engine.git
 cd basin-signal-engine
 
 # Install dependencies
-pip install -r requirements.txt
+npm install
 
-# Set your API key
-export GROQ_API_KEY="your-key-here"
+# Set up environment
+cp .env.example .env
+# Add your VITE_GEMINI_API_KEY to .env
 
-# Run the system
-streamlit run app.py
+# Start development server
+npm run dev
 ```
 
-**Get a free Groq API key:** [console.groq.com](https://console.groq.com)
+### Build for Production
+
+```bash
+npm run build
+npm run preview
+```
 
 ---
 
-## 🛠️ TECH STACK
+## 🛠️ Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| **Core** | Python 3.11+, Streamlit |
-| **LLM** | Groq (Llama 3.3 70B, GPT-OSS 120B), OpenAI, Gemini |
-| **Voice** | Whisper (STT), gTTS (TTS), PlayAI |
-| **Data** | SQLite, Pandas, Feedparser |
-| **Styling** | Custom CSS (Golden Executive OS theme) |
+| **Frontend** | React 18 + TypeScript |
+| **Build** | Vite |
+| **Styling** | TailwindCSS |
+| **AI** | Google Gemini API |
+| **Charts** | Recharts |
+| **Icons** | Lucide React |
+| **Data** | Local Storage + XLSX |
 
 ---
 
-## 🏆 PROOF OF WORK
+## 📊 By The Numbers
 
-This system demonstrates:
-
-| Trait | Evidence |
-|-------|----------|
-| **Systems Thinking** | 18-module integrated platform |
-| **Technical Execution** | 8,400+ lines of production Python |
-| **GTM Expertise** | Enterprise sales methodology applied to career |
-| **Bias to Action** | Shipped live while in transition |
+| Career Impact | Technical Output |
+|:-------------:|:----------------:|
+| **160%** Pipeline Growth | **10,500+** Lines of Code |
+| **$10M+** Pipeline Generated | **21** Modules |
+| **105%** Quota Attainment | **9** Views |
 
 ---
 
-## 👤 THE ARCHITECT
+## 🏗️ Project Structure
 
-**Leon Basin** — Revenue Architect & GTM Systems Builder
-
-- 15+ years building GTM infrastructure for high-growth startups
-- 160% pipeline growth through systems engineering (Fudo Security)
-- Expert in RevOps, Partner Ecosystems, and AI-augmented Sales
-- Executive MBA, Santa Clara University
-
-**This is my operating system. It's also my resume.**
+```
+src/
+├── components/         # React components
+│   ├── Dashboard.tsx   # War Room
+│   ├── Sidebar.tsx     # Navigation
+│   └── ...
+├── services/           # API & storage
+│   ├── geminiService.ts
+│   └── storageService.ts
+├── App.tsx             # Main app
+├── types.ts            # TypeScript types
+├── constants.ts        # Default state
+└── index.css           # Tailwind + custom styles
+```
 
 ---
 
-## 📜 LICENSE
+## 📜 Archive
 
-MIT License — Build on this. Make it yours.
+The original Streamlit version (v0.5) is preserved in `/archive/streamlit-v1/` for reference.
 
 ---
 
-<p align="center">
-  <strong>#IWriteICode</strong>
-</p>
+## 👤 Author
+
+**Leon Basin**  
+Revenue Architect | AI Builder | 15+ Years GTM  
+
+- 🌐 [basinleon.github.io](https://basinleon.github.io)
+- 💼 [LinkedIn](https://linkedin.com/in/leonbasin)
+- 🐙 [GitHub](https://github.com/BasinLeon)
+
+---
+
+<div align="center">
+
+*Built with [Vite](https://vitejs.dev/) + [React](https://react.dev/) + [Gemini](https://ai.google.dev/)*
+
+</div>
