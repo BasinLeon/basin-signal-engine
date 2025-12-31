@@ -2,6 +2,8 @@
 
 <div align="center">
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/BasinLeon/basin-signal-engine)
+
 ![BASIN::NEXUS](https://img.shields.io/badge/BASIN::NEXUS-v9.0-D4AF37?style=for-the-badge&labelColor=020617)
 ![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&labelColor=020617)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&labelColor=020617)
@@ -9,7 +11,7 @@
 
 **AI-powered career intelligence platform for GTM professionals.**
 
-[Live Demo](https://basin-nexus.vercel.app) • [Portfolio](https://basinleon.github.io) • [LinkedIn](https://linkedin.com/in/leonbasin)
+[🚀 Live Demo](https://basin-nexus.vercel.app) • [💼 Portfolio](https://basinleon.github.io) • [🔗 LinkedIn](https://linkedin.com/in/leonbasin)
 
 </div>
 
@@ -21,8 +23,12 @@
 
 ---
 
-## ⚡ Quick Start (2 minutes)
+## ⚡ Try It Now (One Click!)
 
+**Option 1: Gitpod (Recommended for Hiring Managers)**
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/BasinLeon/basin-signal-engine)
+
+**Option 2: Local Setup (2 minutes)**
 ```bash
 git clone https://github.com/BasinLeon/basin-signal-engine.git
 cd basin-signal-engine
@@ -32,8 +38,6 @@ npm run dev            # Opens at localhost:5173
 ```
 
 **Requirements:** Node.js 18+, Gemini API key ([get one free](https://ai.google.dev/))
-
----
 
 ## 📸 Screenshots
 
