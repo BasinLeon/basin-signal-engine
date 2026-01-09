@@ -2,7 +2,7 @@ import React, { useState, useRef, useMemo } from 'react';
 import { UserState, DojoSessionConfig, DossierReport } from '../types';
 import { INTERVIEW_STAGES } from '../constants';
 import {
-    Mic, MicOff, Play, Square, Activity,
+    Play, Square,
     Terminal, Medal, Target, Volume2
 } from 'lucide-react';
 import { generateDossier } from '../services/geminiService';
@@ -31,7 +31,6 @@ export const Dojo: React.FC<DojoProps> = ({ userState, initialConfig, updateUser
     });
 
     const [isActive, setIsActive] = useState(false);
-    const [isMuted, setIsMuted] = useState(false);
     const [dossier, setDossier] = useState<DossierReport | null>(null);
     const [transcript, setTranscript] = useState<{ source: 'AI' | 'YOU'; text: string; timestamp: string }[]>([]);
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -165,8 +164,8 @@ export const Dojo: React.FC<DojoProps> = ({ userState, initialConfig, updateUser
                                             key={mode.id}
                                             onClick={() => setSessionConfig({ ...sessionConfig, mode: mode.id as any })}
                                             className={`p-3 rounded-xl border text-left transition-all ${sessionConfig.mode === mode.id
-                                                    ? 'bg-[#D4AF37]/20 border-[#D4AF37]'
-                                                    : 'bg-slate-900 border-slate-700 hover:border-slate-600'
+                                                ? 'bg-[#D4AF37]/20 border-[#D4AF37]'
+                                                : 'bg-slate-900 border-slate-700 hover:border-slate-600'
                                                 }`}
                                         >
                                             <div className={`text-xs font-black uppercase ${sessionConfig.mode === mode.id ? 'text-[#D4AF37]' : 'text-white'}`}>
@@ -189,8 +188,8 @@ export const Dojo: React.FC<DojoProps> = ({ userState, initialConfig, updateUser
                             <div
                                 key={i}
                                 className={`p-4 rounded-xl text-xs font-mono leading-relaxed ${t.source === 'YOU'
-                                        ? 'bg-slate-900 text-slate-400 border-l-2 border-cyan-500 ml-4'
-                                        : 'bg-[#D4AF37]/10 text-white border-l-2 border-[#D4AF37] mr-4'
+                                    ? 'bg-slate-900 text-slate-400 border-l-2 border-cyan-500 ml-4'
+                                    : 'bg-[#D4AF37]/10 text-white border-l-2 border-[#D4AF37] mr-4'
                                     }`}
                             >
                                 <div className="text-[8px] font-black uppercase mb-1 opacity-50">{t.source} // {t.timestamp}</div>

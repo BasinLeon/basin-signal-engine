@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UserState, NexusAgent, AgentTask } from '../types';
 import {
-    Bot, Zap, Send, Globe, Mail, Share2,
+    Bot, Zap, Globe, Mail, Share2,
     Terminal, Activity, RefreshCw
 } from 'lucide-react';
 

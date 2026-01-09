@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { UserState, JobDeal, JobStage, AppView } from '../types';
+import { UserState, JobDeal, JobStage } from '../types';
 import {
-    Target, Plus, ChevronRight, TrendingUp, DollarSign,
-    Building, Calendar, X, Zap, Activity, GripVertical
+    Target, Plus,
+    Building, X, Zap, GripVertical
 } from 'lucide-react';
 
 interface PipelineTrackerProps {
@@ -24,10 +24,10 @@ export const PipelineTracker: React.FC<PipelineTrackerProps> = ({
     userState,
     updateUserState,
     addNotification,
-    onPrepJob
+    onPrepJob: _onPrepJob
 }) => {
     const [showAddModal, setShowAddModal] = useState(false);
-    const [selectedDeal, setSelectedDeal] = useState<JobDeal | null>(null);
+    const [_selectedDeal, setSelectedDeal] = useState<JobDeal | null>(null);
     const [newDeal, setNewDeal] = useState<Partial<JobDeal>>({
         company: '', role: '', stage: JobStage.TARGET, value: 200000, probability: 20
     });
@@ -74,15 +74,7 @@ export const PipelineTracker: React.FC<PipelineTrackerProps> = ({
         setNewDeal({ company: '', role: '', stage: JobStage.TARGET, value: 200000, probability: 20 });
     };
 
-    const moveToStage = (deal: JobDeal, newStage: JobStage) => {
-        const updated = pipeline.map(d =>
-            d.id === deal.id
-                ? { ...d, stage: newStage, updatedAt: new Date().toISOString() }
-                : d
-        );
-        updateUserState({ pipeline: updated, xp: userState.xp + 50 });
-        addNotification('SUCCESS', 'Stage Updated', `${deal.company} moved to ${STAGE_CONFIG[newStage].label}`);
-    };
+    // moveToStage will be used for drag-and-drop kanban functionality
 
     return (
         <div className="p-8 h-full flex flex-col bg-[#020617] relative animate-in fade-in duration-700">

@@ -1,4 +1,4 @@
-"""Basin::Nexus v5.1 - Core package initialization"""
+"""Basin::Nexus v11.0 - Core package initialization"""
 
 from core.ingestion.engine import (
     IngestionEngine,

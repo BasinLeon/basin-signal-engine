@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { UserState, NeuralCore } from '../types';
 import {
-    Save, Fingerprint, Award, BookOpen, Settings, Binary, Cpu, Zap, Map, Hexagon, Network, Eye, Scale, Building, Users, Landmark, Activity, Shield, Terminal, Sparkles, Layers, RefreshCw
+    Fingerprint, Award, BookOpen, Settings, Binary, Cpu, Zap, Map, Hexagon, Network, Eye, Scale, Building, Users, Landmark, Activity, Shield, Terminal, Sparkles, RefreshCw
 } from 'lucide-react';
 
 interface KnowledgeBaseProps {
@@ -87,8 +87,8 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ userState, updateU
                                     key={layer.id}
                                     onClick={() => setActiveLayer(layer.id)}
                                     className={`p-4 rounded-xl border transition-all flex items-center gap-4 text-left group ${activeLayer === layer.id
-                                            ? 'bg-[#D4AF37]/10 border-[#D4AF37]/50 shadow-[0_0_20px_rgba(212,175,55,0.1)]'
-                                            : 'bg-slate-900/30 border-slate-800/50 hover:border-slate-600'
+                                        ? 'bg-[#D4AF37]/10 border-[#D4AF37]/50 shadow-[0_0_20px_rgba(212,175,55,0.1)]'
+                                        : 'bg-slate-900/30 border-slate-800/50 hover:border-slate-600'
                                         }`}
                                 >
                                     <div className={`p-2 rounded-lg transition-colors ${activeLayer === layer.id ? 'bg-[#D4AF37] text-black' : 'bg-slate-800 text-slate-500'
@@ -112,8 +112,8 @@ export const KnowledgeBase: React.FC<KnowledgeBaseProps> = ({ userState, updateU
                                     key={layer.id}
                                     onClick={() => setActiveLayer(layer.id)}
                                     className={`p-4 rounded-xl border transition-all flex items-center gap-4 text-left group ${activeLayer === layer.id
-                                            ? 'bg-blue-500/10 border-blue-500/50'
-                                            : 'bg-slate-900/30 border-slate-800/50 hover:border-slate-600'
+                                        ? 'bg-blue-500/10 border-blue-500/50'
+                                        : 'bg-slate-900/30 border-slate-800/50 hover:border-slate-600'
                                         }`}
                                 >
                                     <div className={`p-2 rounded-lg transition-colors ${activeLayer === layer.id ? 'bg-blue-500 text-white' : 'bg-slate-800 text-slate-500'

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basin::Nexus — Revenue Signal Architecture</title>
+    <title>Basin::Nexus — Revenue Signal Architecture v10</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
@@ -16,18 +16,30 @@
 
         body {
             font-family: 'Inter', -apple-system, sans-serif;
-            background: linear-gradient(135deg, #0a0a0f 0%, #12121a 100%);
+            background: #0a0a0f;
             color: #ffffff;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
         .page {
             width: 8.5in;
             min-height: 11in;
             margin: 0 auto;
-            padding: 0.5in;
-            background: linear-gradient(135deg, #0a0a0f 0%, #12121a 100%);
+            padding: 0.4in;
+            background: linear-gradient(145deg, #0a0a0f 0%, #0f1419 50%, #0a0a0f 100%);
             page-break-after: always;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #f4c430 0%, #ff6b35 50%, #f4c430 100%);
         }
 
         .page:last-child {
@@ -38,167 +50,156 @@
         .header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding-bottom: 0.25in;
-            border-bottom: 2px solid #f4c430;
-            margin-bottom: 0.25in;
+            align-items: flex-start;
+            padding-bottom: 0.2in;
+            border-bottom: 1px solid rgba(244, 196, 48, 0.3);
+            margin-bottom: 0.2in;
         }
 
         .logo {
-            font-size: 0.7rem;
-            letter-spacing: 3px;
-            color: #f4c430;
-            font-weight: 600;
+            font-size: 0.6rem;
+            letter-spacing: 4px;
+            color: rgba(244, 196, 48, 0.8);
+            font-weight: 500;
+            text-transform: uppercase;
         }
 
         .title {
-            font-size: 1.75rem;
+            font-size: 1.6rem;
             font-weight: 800;
-            background: linear-gradient(90deg, #f4c430, #ffffff);
+            background: linear-gradient(90deg, #f4c430, #ffd700);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-top: 0.15in;
+            margin-top: 0.05in;
+            letter-spacing: -0.5px;
         }
 
         .subtitle {
-            font-size: 0.9rem;
-            color: #a1a1aa;
-            margin-top: 0.05in;
+            font-size: 0.8rem;
+            color: #71717a;
+            margin-top: 0.03in;
+            font-weight: 400;
+        }
+
+        .version-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
         }
 
         .version {
-            background: rgba(244, 196, 48, 0.15);
+            background: linear-gradient(135deg, rgba(244, 196, 48, 0.2) 0%, rgba(244, 196, 48, 0.1) 100%);
             color: #f4c430;
-            padding: 0.15rem 0.5rem;
-            border-radius: 12px;
-            font-size: 0.65rem;
-            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            border: 1px solid rgba(244, 196, 48, 0.3);
         }
 
-        /* Architecture Diagram */
-        .architecture-section {
-            margin: 0.2in 0;
-        }
-
-        .section-title {
-            font-size: 0.75rem;
+        .status {
+            font-size: 0.55rem;
+            color: #10b981;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #71717a;
-            margin-bottom: 0.15in;
+            letter-spacing: 1px;
         }
 
-        .diagram-container {
-            background: #1a1a24;
-            border-radius: 12px;
-            padding: 0.15in;
-            border: 1px solid #27272a;
-        }
-
-        .diagram-container img {
-            width: 100%;
-            border-radius: 8px;
-        }
-
-        /* Metrics Grid */
-        .metrics-grid {
+        /* Key Metrics */
+        .metrics-row {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 0.15in;
-            margin: 0.2in 0;
+            gap: 0.12in;
+            margin: 0.15in 0;
         }
 
         .metric-card {
             background: linear-gradient(135deg, #1a1a24 0%, #12121a 100%);
             border: 1px solid #27272a;
-            border-radius: 10px;
-            padding: 0.15in;
+            border-radius: 8px;
+            padding: 0.12in;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #f4c430, transparent);
         }
 
         .metric-value {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 800;
-            color: #f4c430;
+            background: linear-gradient(135deg, #f4c430 0%, #ffd700 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .metric-label {
-            font-size: 0.6rem;
+            font-size: 0.5rem;
             color: #71717a;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-top: 0.05in;
+            margin-top: 2px;
         }
 
-        /* Problem/Solution */
-        .two-column {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.2in;
-            margin: 0.2in 0;
+        /* Screenshot Grid */
+        .section-title {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(244, 196, 48, 0.7);
+            margin-bottom: 0.1in;
+            font-weight: 600;
         }
 
-        .column-card {
+        .hero-screenshot {
             background: #1a1a24;
             border-radius: 10px;
-            padding: 0.2in;
+            overflow: hidden;
             border: 1px solid #27272a;
+            margin: 0.1in 0;
         }
 
-        .column-card.problem {
-            border-left: 3px solid #ef4444;
+        .hero-screenshot img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
-        .column-card.solution {
-            border-left: 3px solid #10b981;
+        .hero-label {
+            padding: 0.08in 0.12in;
+            font-size: 0.6rem;
+            color: #a1a1aa;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .column-title {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.1in;
+        .hero-label .highlight {
+            color: #f4c430;
+            font-weight: 600;
         }
 
-        .column-card.problem .column-title {
-            color: #ef4444;
-        }
-
-        .column-card.solution .column-title {
-            color: #10b981;
-        }
-
-        .column-card ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .column-card li {
-            font-size: 0.7rem;
-            color: #d4d4d8;
-            padding: 0.05in 0;
-            padding-left: 0.15in;
-            position: relative;
-        }
-
-        .column-card li::before {
-            content: "→";
-            position: absolute;
-            left: 0;
-            color: #71717a;
-        }
-
-        /* Screenshots Grid */
         .screenshots-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 0.15in;
-            margin: 0.15in 0;
+            gap: 0.1in;
+            margin: 0.1in 0;
         }
 
         .screenshot-card {
             background: #1a1a24;
-            border-radius: 10px;
+            border-radius: 8px;
             overflow: hidden;
             border: 1px solid #27272a;
         }
@@ -210,62 +211,148 @@
         }
 
         .screenshot-label {
-            padding: 0.1in;
-            font-size: 0.6rem;
+            padding: 0.06in 0.1in;
+            font-size: 0.55rem;
             color: #a1a1aa;
             text-align: center;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Two Column Layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.15in;
+            margin: 0.15in 0;
+        }
+
+        .column-card {
+            background: linear-gradient(135deg, #1a1a24 0%, #12121a 100%);
+            border-radius: 8px;
+            padding: 0.15in;
+            border: 1px solid #27272a;
+        }
+
+        .column-card.problem {
+            border-left: 3px solid #ef4444;
+        }
+
+        .column-card.solution {
+            border-left: 3px solid #10b981;
+        }
+
+        .column-card.gold {
+            border-left: 3px solid #f4c430;
+        }
+
+        .column-title {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.08in;
+            font-weight: 700;
+        }
+
+        .column-card.problem .column-title {
+            color: #ef4444;
+        }
+
+        .column-card.solution .column-title {
+            color: #10b981;
+        }
+
+        .column-card.gold .column-title {
+            color: #f4c430;
+        }
+
+        .column-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .column-card li {
+            font-size: 0.6rem;
+            color: #d4d4d8;
+            padding: 0.03in 0;
+            padding-left: 0.12in;
+            position: relative;
+        }
+
+        .column-card li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #52525b;
         }
 
         /* Unit Economics Table */
         .economics-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 0.15in 0;
-            font-size: 0.65rem;
+            margin: 0.1in 0;
+            font-size: 0.55rem;
         }
 
         .economics-table th {
-            background: #1a1a24;
+            background: linear-gradient(135deg, #1a1a24 0%, #0f0f14 100%);
             color: #f4c430;
-            padding: 0.1in;
+            padding: 0.08in;
             text-align: left;
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 600;
-            border-bottom: 1px solid #27272a;
+            border-bottom: 2px solid rgba(244, 196, 48, 0.3);
         }
 
         .economics-table td {
-            padding: 0.08in 0.1in;
-            border-bottom: 1px solid #27272a;
+            padding: 0.06in 0.08in;
+            border-bottom: 1px solid #1f1f28;
             color: #d4d4d8;
+        }
+
+        .economics-table tr:hover {
+            background: rgba(244, 196, 48, 0.03);
         }
 
         .economics-table .delta {
             color: #10b981;
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        /* Quote */
+        /* Quote Box */
         .quote-box {
-            background: linear-gradient(135deg, rgba(244, 196, 48, 0.1) 0%, rgba(244, 196, 48, 0.05) 100%);
+            background: linear-gradient(135deg, rgba(244, 196, 48, 0.08) 0%, rgba(244, 196, 48, 0.02) 100%);
             border-left: 3px solid #f4c430;
-            padding: 0.15in 0.2in;
-            margin: 0.2in 0;
+            padding: 0.12in 0.15in;
+            margin: 0.15in 0;
             border-radius: 0 8px 8px 0;
         }
 
         .quote-text {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-style: italic;
             color: #ffffff;
+            font-weight: 500;
         }
 
         .quote-author {
-            font-size: 0.65rem;
-            color: #f4c430;
-            margin-top: 0.1in;
+            font-size: 0.55rem;
+            color: rgba(244, 196, 48, 0.8);
+            margin-top: 0.06in;
+        }
+
+        /* Architecture Section */
+        .architecture-container {
+            background: #0f0f14;
+            border-radius: 10px;
+            padding: 0.12in;
+            border: 1px solid #27272a;
+            margin: 0.1in 0;
+        }
+
+        .architecture-container img {
+            width: 100%;
+            border-radius: 6px;
         }
 
         /* Footer */
@@ -273,16 +360,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 0.15in;
+            padding-top: 0.1in;
             border-top: 1px solid #27272a;
-            margin-top: 0.2in;
-            font-size: 0.6rem;
-            color: #71717a;
+            margin-top: auto;
+            font-size: 0.55rem;
+            color: #52525b;
+            position: absolute;
+            bottom: 0.3in;
+            left: 0.4in;
+            right: 0.4in;
         }
 
         .footer a {
             color: #f4c430;
             text-decoration: none;
+        }
+
+        .footer .contact {
+            display: flex;
+            gap: 0.2in;
         }
 
         /* Print Styles */
@@ -303,40 +399,45 @@
 
 <body>
 
-    <!-- PAGE 1: Architecture Overview -->
+    <!-- PAGE 1: System Overview -->
     <div class="page">
         <div class="header">
             <div>
-                <div class="logo">BASIN :: NEXUS</div>
+                <div class="logo">Basin :: Nexus</div>
                 <h1 class="title">Agentic Revenue Engine</h1>
-                <p class="subtitle">The Signal-to-Execution Pipeline</p>
+                <p class="subtitle">The Signal-to-Execution Pipeline for GTM Teams</p>
             </div>
-            <span class="version">v5.1</span>
-        </div>
-
-        <div class="architecture-section">
-            <div class="section-title">System Architecture</div>
-            <div class="diagram-container">
-                <img src="assets/agentic_architecture.png" alt="Basin::Nexus Architecture">
+            <div class="version-badge">
+                <span class="version">v10.0</span>
+                <span class="status">● System Online</span>
             </div>
         </div>
 
-        <div class="metrics-grid">
+        <div class="metrics-row">
             <div class="metric-card">
                 <div class="metric-value">160%</div>
-                <div class="metric-label">Pipeline Growth</div>
+                <div class="metric-label">Pipeline Velocity</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">50k</div>
-                <div class="metric-label">Signals/Day</div>
+                <div class="metric-value">$11M</div>
+                <div class="metric-label">Generated Pipeline</div>
             </div>
             <div class="metric-card">
                 <div class="metric-value">-92%</div>
                 <div class="metric-label">Manual Toil</div>
             </div>
             <div class="metric-card">
-                <div class="metric-value">4hr</div>
+                <div class="metric-value">&lt;5min</div>
                 <div class="metric-label">Signal→Outreach</div>
+            </div>
+        </div>
+
+        <div class="section-title">System Dashboard — Nexus Home</div>
+        <div class="hero-screenshot">
+            <img src="assets/screenshot_nexus_home_v10.png" alt="Basin::Nexus Home">
+            <div class="hero-label">
+                <span>Command Center • Pipeline Tracker • The Dojo • Network CRM • Sniper Scope</span>
+                <span class="highlight">All Modules Operational</span>
             </div>
         </div>
 
@@ -347,12 +448,12 @@
                     <li>CRMs store data but don't interpret it</li>
                     <li>40+ hrs/week spent mining for intent</li>
                     <li>24-48 hour gap between signal and action</li>
-                    <li>SDRs are "human search engines"</li>
+                    <li>SDRs operate as "human search engines"</li>
                     <li>PMMs deliver dictionaries, not signals</li>
                 </ul>
             </div>
             <div class="column-card solution">
-                <div class="column-title">The Solution: Agentic Signal Detection</div>
+                <div class="column-title">The Solution: Bifurcated GTM</div>
                 <ul>
                     <li>LLM Reasoning Agent scores every signal</li>
                     <li>>0.8 score = immediate human handoff</li>
@@ -370,8 +471,10 @@
 
         <div class="footer">
             <span>Leon Basin | Revenue Architect</span>
-            <span>basinleon.com</span>
-            <a href="https://github.com/BasinLeon/basin-signal-engine">GitHub: basin-signal-engine</a>
+            <div class="contact">
+                <span>basinleon.com</span>
+                <a href="https://github.com/BasinLeon/basin-signal-engine">GitHub: basin-signal-engine</a>
+            </div>
         </div>
     </div>
 
@@ -379,30 +482,32 @@
     <div class="page">
         <div class="header">
             <div>
-                <div class="logo">BASIN :: NEXUS</div>
+                <div class="logo">Basin :: Nexus</div>
                 <h1 class="title">The System in Action</h1>
-                <p class="subtitle">Production Implementation — Fudo Security Case Study</p>
+                <p class="subtitle">Production Implementation — Live Screenshots</p>
             </div>
-            <span class="version">v5.1</span>
+            <div class="version-badge">
+                <span class="version">v10.0</span>
+            </div>
         </div>
 
-        <div class="section-title">Live Dashboard Views</div>
+        <div class="section-title">Operational Dashboards</div>
         <div class="screenshots-grid">
             <div class="screenshot-card">
-                <img src="assets/screenshot_war_room.png" alt="War Room">
-                <div class="screenshot-label">War Room: Market Pulse & Pipeline</div>
+                <img src="assets/screenshot_war_room_new.png" alt="War Room">
+                <div class="screenshot-label">War Room — $3.0M Target • Market Pulse • Corridor Distribution</div>
             </div>
             <div class="screenshot-card">
-                <img src="assets/screenshot_command_center.png" alt="Command Center">
-                <div class="screenshot-label">Command Center: Signal Intelligence</div>
+                <img src="assets/screenshot_command_center_new.png" alt="Command Center">
+                <div class="screenshot-label">Command Center — $433k Forecast • ~42 Days • Market Signals</div>
             </div>
             <div class="screenshot-card">
-                <img src="assets/screenshot_nexus_home.png" alt="Nexus Home">
-                <div class="screenshot-label">Nexus Home: System Overview</div>
+                <img src="assets/screenshot_projection_engine.png" alt="Financial Projection">
+                <div class="screenshot-label">Financial Projection Engine — $768,500 Pipeline Value</div>
             </div>
             <div class="screenshot-card">
-                <img src="assets/screenshot_pipeline.png" alt="Pipeline">
-                <div class="screenshot-label">Financial Projection Engine</div>
+                <img src="assets/screenshot_media_ops_new.png" alt="Media Ops">
+                <div class="screenshot-label">Media Ops — Intelligence Bureau & Asset Production</div>
             </div>
         </div>
 
@@ -442,23 +547,17 @@
                     <td class="delta">+50% output</td>
                 </tr>
                 <tr>
-                    <td>Cost Per Meeting</td>
-                    <td>$670</td>
-                    <td>$211</td>
-                    <td class="delta">-68% CAC</td>
-                </tr>
-                <tr>
-                    <td>Annual Cost</td>
-                    <td>$804k</td>
-                    <td>$380k</td>
-                    <td class="delta">$424k saved</td>
+                    <td>Annual Savings</td>
+                    <td>$804k baseline</td>
+                    <td>$380k total cost</td>
+                    <td class="delta">$424k saved/yr</td>
                 </tr>
             </tbody>
         </table>
 
         <div class="two-column">
             <div class="column-card solution">
-                <div class="column-title">The Machine Handles</div>
+                <div class="column-title">Machine Handles</div>
                 <ul>
                     <li>Signal detection (GitHub, LinkedIn, funding)</li>
                     <li>LLM-powered ICP scoring</li>
@@ -467,8 +566,8 @@
                     <li>CRM sync and data normalization</li>
                 </ul>
             </div>
-            <div class="column-card problem" style="border-left-color: #f4c430;">
-                <div class="column-title" style="color: #f4c430;">The Human Handles</div>
+            <div class="column-card gold">
+                <div class="column-title">Human Handles</div>
                 <ul>
                     <li>Executive ghostwriting</li>
                     <li>Complex objection handling</li>
@@ -487,8 +586,10 @@
 
         <div class="footer">
             <span>Leon Basin | Revenue Architect</span>
-            <span>linkedin.com/in/leonbasin</span>
-            <a href="https://github.com/BasinLeon/basin-signal-engine">GitHub: basin-signal-engine</a>
+            <div class="contact">
+                <span>linkedin.com/in/leonbasin</span>
+                <a href="https://github.com/BasinLeon/basin-signal-engine">GitHub: basin-signal-engine</a>
+            </div>
         </div>
     </div>
 

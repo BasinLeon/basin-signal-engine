@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { UserState, Contact, JobDeal, AppView } from '../types';
+import { UserState, Contact } from '../types';
 import {
-    Users, Search, UploadCloud,
+    Search, UploadCloud,
     Phone, Plus, X,
     Brain, Activity, Fingerprint, ShieldCheck,
     Zap, Flame
@@ -135,8 +135,8 @@ export const NetworkCRM: React.FC<NetworkCRMProps> = ({
                                     >
                                         <td className="p-6">
                                             <div className={`px-2 py-1 rounded text-[8px] font-black text-center border inline-block tracking-tighter ${contact.securityTier === 'SOVEREIGN_ADMIN' ? 'bg-purple-900/30 border-purple-500 text-purple-400' :
-                                                    contact.securityTier === 'T3_EXECUTIVE' ? 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]' :
-                                                        'bg-slate-900 border-slate-700 text-slate-500'
+                                                contact.securityTier === 'T3_EXECUTIVE' ? 'bg-[#D4AF37]/20 border-[#D4AF37] text-[#D4AF37]' :
+                                                    'bg-slate-900 border-slate-700 text-slate-500'
                                                 }`}>
                                                 {contact.securityTier?.replace('_', ' ') || 'T1'}
                                             </div>
