@@ -1,1 +1,32 @@
-streamlit>=1.29.0
+# Basin::Nexus v5.1 - Production Dependencies
+
+# Core Framework
+pydantic>=2.5.0
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
+python-dotenv>=1.0.0
+
+# AI/LLM Integration
+langchain>=0.1.0
+langchain-google-genai>=0.0.6
+openai>=1.0.0
+
+# Data & Storage
+sqlalchemy>=2.0.0
+alembic>=1.11.0
+
+# HTTP & APIs
+httpx>=0.24.0
+requests>=2.31.0
+
+# Scraping & Automation (Optional)
+beautifulsoup4>=4.12.0
+# selenium>=4.10.0  # Uncomment for browser automation
+# playwright>=1.35.0  # Uncomment for advanced scraping
+
+# CRM Integration (Optional)
+# salesforce-bulk>=2.2.0  # Uncomment for Salesforce sync
+# hubspot-api-client>=8.0.0  # Uncomment for HubSpot sync
+
+# Frontend (Existing Streamlit app)
+streamlit==1.29.0

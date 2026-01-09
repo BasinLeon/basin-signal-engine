@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basin::Nexus — Revenue Signal Architecture</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #12121a 100%);
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .page {
+            width: 8.5in;
+            min-height: 11in;
+            margin: 0 auto;
+            padding: 0.5in;
+            background: linear-gradient(135deg, #0a0a0f 0%, #12121a 100%);
+            page-break-after: always;
+        }
+
+        .page:last-child {
+            page-break-after: avoid;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.25in;
+            border-bottom: 2px solid #f4c430;
+            margin-bottom: 0.25in;
+        }
+
+        .logo {
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            color: #f4c430;
+            font-weight: 600;
+        }
+
+        .title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, #f4c430, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 0.15in;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: #a1a1aa;
+            margin-top: 0.05in;
+        }
+
+        .version {
+            background: rgba(244, 196, 48, 0.15);
+            color: #f4c430;
+            padding: 0.15rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        /* Architecture Diagram */
+        .architecture-section {
+            margin: 0.2in 0;
+        }
+
+        .section-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #71717a;
+            margin-bottom: 0.15in;
+        }
+
+        .diagram-container {
+            background: #1a1a24;
+            border-radius: 12px;
+            padding: 0.15in;
+            border: 1px solid #27272a;
+        }
+
+        .diagram-container img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.15in;
+            margin: 0.2in 0;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, #1a1a24 0%, #12121a 100%);
+            border: 1px solid #27272a;
+            border-radius: 10px;
+            padding: 0.15in;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #f4c430;
+        }
+
+        .metric-label {
+            font-size: 0.6rem;
+            color: #71717a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.05in;
+        }
+
+        /* Problem/Solution */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.2in;
+            margin: 0.2in 0;
+        }
+
+        .column-card {
+            background: #1a1a24;
+            border-radius: 10px;
+            padding: 0.2in;
+            border: 1px solid #27272a;
+        }
+
+        .column-card.problem {
+            border-left: 3px solid #ef4444;
+        }
+
+        .column-card.solution {
+            border-left: 3px solid #10b981;
+        }
+
+        .column-title {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.1in;
+        }
+
+        .column-card.problem .column-title {
+            color: #ef4444;
+        }
+
+        .column-card.solution .column-title {
+            color: #10b981;
+        }
+
+        .column-card ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .column-card li {
+            font-size: 0.7rem;
+            color: #d4d4d8;
+            padding: 0.05in 0;
+            padding-left: 0.15in;
+            position: relative;
+        }
+
+        .column-card li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: #71717a;
+        }
+
+        /* Screenshots Grid */
+        .screenshots-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.15in;
+            margin: 0.15in 0;
+        }
+
+        .screenshot-card {
+            background: #1a1a24;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #27272a;
+        }
+
+        .screenshot-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .screenshot-label {
+            padding: 0.1in;
+            font-size: 0.6rem;
+            color: #a1a1aa;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        /* Unit Economics Table */
+        .economics-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.15in 0;
+            font-size: 0.65rem;
+        }
+
+        .economics-table th {
+            background: #1a1a24;
+            color: #f4c430;
+            padding: 0.1in;
+            text-align: left;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            border-bottom: 1px solid #27272a;
+        }
+
+        .economics-table td {
+            padding: 0.08in 0.1in;
+            border-bottom: 1px solid #27272a;
+            color: #d4d4d8;
+        }
+
+        .economics-table .delta {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        /* Quote */
+        .quote-box {
+            background: linear-gradient(135deg, rgba(244, 196, 48, 0.1) 0%, rgba(244, 196, 48, 0.05) 100%);
+            border-left: 3px solid #f4c430;
+            padding: 0.15in 0.2in;
+            margin: 0.2in 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .quote-text {
+            font-size: 0.85rem;
+            font-style: italic;
+            color: #ffffff;
+        }
+
+        .quote-author {
+            font-size: 0.65rem;
+            color: #f4c430;
+            margin-top: 0.1in;
+        }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 0.15in;
+            border-top: 1px solid #27272a;
+            margin-top: 0.2in;
+            font-size: 0.6rem;
+            color: #71717a;
+        }
+
+        .footer a {
+            color: #f4c430;
+            text-decoration: none;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: #0a0a0f;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .page {
+                margin: 0;
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- PAGE 1: Architecture Overview -->
+    <div class="page">
+        <div class="header">
+            <div>
+                <div class="logo">BASIN :: NEXUS</div>
+                <h1 class="title">Agentic Revenue Engine</h1>
+                <p class="subtitle">The Signal-to-Execution Pipeline</p>
+            </div>
+            <span class="version">v5.1</span>
+        </div>
+
+        <div class="architecture-section">
+            <div class="section-title">System Architecture</div>
+            <div class="diagram-container">
+                <img src="assets/agentic_architecture.png" alt="Basin::Nexus Architecture">
+            </div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value">160%</div>
+                <div class="metric-label">Pipeline Growth</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">50k</div>
+                <div class="metric-label">Signals/Day</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">-92%</div>
+                <div class="metric-label">Manual Toil</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">4hr</div>
+                <div class="metric-label">Signal→Outreach</div>
+            </div>
+        </div>
+
+        <div class="two-column">
+            <div class="column-card problem">
+                <div class="column-title">The Problem: Dictionary vs. Signal</div>
+                <ul>
+                    <li>CRMs store data but don't interpret it</li>
+                    <li>40+ hrs/week spent mining for intent</li>
+                    <li>24-48 hour gap between signal and action</li>
+                    <li>SDRs are "human search engines"</li>
+                    <li>PMMs deliver dictionaries, not signals</li>
+                </ul>
+            </div>
+            <div class="column-card solution">
+                <div class="column-title">The Solution: Agentic Signal Detection</div>
+                <ul>
+                    <li>LLM Reasoning Agent scores every signal</li>
+                    <li>>0.8 score = immediate human handoff</li>
+                    <li>5 words, not a dictionary</li>
+                    <li>n8n orchestrates Slack/CRM sync</li>
+                    <li>Humans only touch high-probability leads</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="quote-box">
+            <div class="quote-text">"Most teams solve GTM with headcount. I solve it with architecture."</div>
+            <div class="quote-author">— Leon Basin, Revenue Architect</div>
+        </div>
+
+        <div class="footer">
+            <span>Leon Basin | Revenue Architect</span>
+            <span>basinleon.com</span>
+            <a href="https://github.com/BasinLeon/basin-signal-engine">GitHub: basin-signal-engine</a>
+        </div>
+    </div>
+
+    <!-- PAGE 2: The System in Action -->
+    <div class="page">
+        <div class="header">
+            <div>
+                <div class="logo">BASIN :: NEXUS</div>
+                <h1 class="title">The System in Action</h1>
+                <p class="subtitle">Production Implementation — Fudo Security Case Study</p>
+            </div>
+            <span class="version">v5.1</span>
+        </div>
+
+        <div class="section-title">Live Dashboard Views</div>
+        <div class="screenshots-grid">
+            <div class="screenshot-card">
+                <img src="assets/screenshot_war_room.png" alt="War Room">
+                <div class="screenshot-label">War Room: Market Pulse & Pipeline</div>
+            </div>
+            <div class="screenshot-card">
+                <img src="assets/screenshot_command_center.png" alt="Command Center">
+                <div class="screenshot-label">Command Center: Signal Intelligence</div>
+            </div>
+            <div class="screenshot-card">
+                <img src="assets/screenshot_nexus_home.png" alt="Nexus Home">
+                <div class="screenshot-label">Nexus Home: System Overview</div>
+            </div>
+            <div class="screenshot-card">
+                <img src="assets/screenshot_pipeline.png" alt="Pipeline">
+                <div class="screenshot-label">Financial Projection Engine</div>
+            </div>
+        </div>
+
+        <div class="section-title">Unit Economics: Traditional vs. Bifurcated Model</div>
+        <table class="economics-table">
+            <thead>
+                <tr>
+                    <th>Metric</th>
+                    <th>Traditional SDR</th>
+                    <th>Bifurcated (Nexus)</th>
+                    <th>Delta</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Team Size</td>
+                    <td>10 SDRs ($800k OTE)</td>
+                    <td>1 GTM Eng + 3 SDRs ($560k)</td>
+                    <td class="delta">-70% headcount</td>
+                </tr>
+                <tr>
+                    <td>Manual Work (weekly)</td>
+                    <td>400 hrs (40 × 10)</td>
+                    <td>30 hrs (10 × 3)</td>
+                    <td class="delta">-92% toil</td>
+                </tr>
+                <tr>
+                    <td>Signal→Outreach</td>
+                    <td>24-48 hours</td>
+                    <td>&lt;5 minutes</td>
+                    <td class="delta">-99.7% latency</td>
+                </tr>
+                <tr>
+                    <td>Qualified Meetings/Mo</td>
+                    <td>100 (10/SDR)</td>
+                    <td>150 (50/SDR)</td>
+                    <td class="delta">+50% output</td>
+                </tr>
+                <tr>
+                    <td>Cost Per Meeting</td>
+                    <td>$670</td>
+                    <td>$211</td>
+                    <td class="delta">-68% CAC</td>
+                </tr>
+                <tr>
+                    <td>Annual Cost</td>
+                    <td>$804k</td>
+                    <td>$380k</td>
+                    <td class="delta">$424k saved</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="two-column">
+            <div class="column-card solution">
+                <div class="column-title">The Machine Handles</div>
+                <ul>
+                    <li>Signal detection (GitHub, LinkedIn, funding)</li>
+                    <li>LLM-powered ICP scoring</li>
+                    <li>Contextual enrichment via Clay</li>
+                    <li>Initial outreach (low-complexity)</li>
+                    <li>CRM sync and data normalization</li>
+                </ul>
+            </div>
+            <div class="column-card problem" style="border-left-color: #f4c430;">
+                <div class="column-title" style="color: #f4c430;">The Human Handles</div>
+                <ul>
+                    <li>Executive ghostwriting</li>
+                    <li>Complex objection handling</li>
+                    <li>Multi-threaded deal navigation</li>
+                    <li>Trust-building and closing</li>
+                    <li>High-stakes meeting orchestration</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="quote-box">
+            <div class="quote-text">"Code is the new revenue capacity. Headcount is no longer a proxy for growth."</div>
+            <div class="quote-author">— Fudo Security Implementation: 160% Pipeline Growth, Zero Additional Headcount
+            </div>
+        </div>
+
+        <div class="footer">
+            <span>Leon Basin | Revenue Architect</span>
+            <span>linkedin.com/in/leonbasin</span>
+            <a href="https://github.com/BasinLeon/basin-signal-engine">GitHub: basin-signal-engine</a>
+        </div>
+    </div>
+
+</body>
+
+</html>
