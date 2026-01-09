@@ -1,291 +1,381 @@
 """
-Basin::Nexus CRM Data
-Seeded from LeonOS CRM export - January 2026
+LeonOS GTM CRM: Master State Data
+Updated: January 9, 2026
+
+This module contains the seeded CRM data synchronized with LeonOS.
+Contains War Room targets, Pipeline screening, Fractional deals,
+Freezer accounts, and Network contacts.
 """
 
-from datetime import datetime
-from core.crm.models import (
-    Priority,
-    DealStatus,
-    WarRoomTarget,
-    FractionalDeal,
-    FreezerAccount,
-    ContactTier,
-    NetworkContact,
-    CRMSnapshot
+from datetime import datetime, date
+from typing import List
+from .models import (
+    WarRoomTarget, PipelineTarget, FractionalDeal, 
+    FreezerAccount, NetworkContact, CRMSnapshot, CommandCenterMetrics
 )
 
 
-# =============================================================================
-# WAR ROOM - Active Combat (4 High-Value Targets)
-# =============================================================================
+# ============================================================================
+# 1. THE WAR ROOM (Active Combat)
+# Focus: P1 Opportunities with "High Velocity" status
+# ============================================================================
 
-WAR_ROOM_TARGETS = [
+WAR_ROOM_TARGETS: List[WarRoomTarget] = [
     WarRoomTarget(
-        id="wr-001",
+        id="wr-liveramp",
         company="LiveRamp",
         role="Lead PMM",
-        priority=Priority.P1,
-        status=DealStatus.URGENT,
-        contact_name="Samantha Lopez",
-        next_move="Execute 'Insurance Policy' play - secure next round",
-        notes="Finalist Stage - RED ZONE. Career-defining opportunity."
+        gatekeeper="Tammy (HM)",
+        priority=1,  # P1 - FINALIST
+        status="FINALIST",
+        next_move="Wait: Tammy advancing you to Samantha Lopez (Marketplace/Commercial). 'Insurance Policy' narrative landed.",
+        last_activity=datetime(2026, 1, 9, 10, 0),
+        signal_strength=95,
+        velocity_score=9.5,
+        notes="Multiple rounds complete. Final decision stage. Samantha Lopez intro pending."
     ),
     WarRoomTarget(
-        id="wr-002",
+        id="wr-fastino",
+        company="Fastino",
+        role="Founding Sales",
+        gatekeeper="Allison/Founders",
+        priority=1,  # P1 - ACTIVE
+        status="ACTIVE",
+        next_move="Wait: Sent 'Agentic Architecture' to George & Ash. Used LiveRamp as leverage to force urgency.",
+        last_activity=datetime(2026, 1, 9, 9, 30),
+        signal_strength=88,
+        velocity_score=8.5,
+        notes="Founders engaged. Agentic Architecture deck deployed. LiveRamp leverage play active."
+    ),
+    WarRoomTarget(
+        id="wr-okta",
+        company="Okta",
+        role="Tech PMM",
+        gatekeeper="Anthony Walsh",
+        priority=1,  # P1 - NEW REFERRAL
+        status="REFERRAL",
+        next_move="Wait: Anthony is vouching for you with the team. 'Playdate' bond secured.",
+        last_activity=datetime(2026, 1, 9, 12, 0),
+        signal_strength=85,
+        velocity_score=8.0,
+        notes="Warm referral from Anthony Walsh. Personal connection established. Awaiting team intro."
+    ),
+    WarRoomTarget(
+        id="wr-quantumscape",
         company="QuantumScape",
         role="PMM",
-        priority=Priority.P1,
-        status=DealStatus.ACTIVE,
-        contact_name="Smita",
-        contact_phone="408-849-2907",
-        next_move="Call Smita directly - lock the screen",
-        notes="Direct line available. High urgency."
+        gatekeeper="Smita",
+        priority=1,  # P1 - ADVANCING
+        status="ADVANCING",
+        next_move="Drafting: Creating the 'Translation Layer' brief Smita requested.",
+        last_activity=datetime(2026, 1, 9, 8, 0),
+        signal_strength=78,
+        velocity_score=7.5,
+        notes="Smita requested Translation Layer brief. Actively engaged."
     ),
     WarRoomTarget(
-        id="wr-003",
+        id="wr-sendbird",
         company="Sendbird",
         role="SDR Manager",
-        priority=Priority.P2,
-        status=DealStatus.WAITING,
-        contact_name="Peter / Charles",
-        next_move="Bump Peter - check for 'Agentic Framework' feedback",
-        notes="Waiting on internal feedback."
+        gatekeeper="Peter/Charles",
+        priority=2,  # P2 - ADVANCING
+        status="ADVANCING",
+        next_move="Monitor: Sent 'SDR Transition Playbook' to Peter. Awaiting feedback.",
+        last_activity=datetime(2026, 1, 8, 16, 0),
+        signal_strength=72,
+        velocity_score=7.0,
+        notes="SDR Transition Playbook deployed. Peter reviewing."
     ),
-    WarRoomTarget(
-        id="wr-004",
+]
+
+
+# ============================================================================
+# 2. THE PIPELINE (Screening & Backups)
+# Focus: Insurance policies and "Safety Net" interviews
+# ============================================================================
+
+PIPELINE_TARGETS: List[PipelineTarget] = [
+    PipelineTarget(
+        id="pl-mastech",
+        company="Mastech",
+        role="Sales Lead",
+        priority=2,  # P2
+        status="Screening",
+        next_step="Call Monday: Confirmed $320k+ OTE. 'Hunter' profile. Good leverage/backup.",
+        last_activity=datetime(2026, 1, 9, 11, 0),
+        notes="High OTE confirmed. Strong backup option."
+    ),
+    PipelineTarget(
+        id="pl-variacode",
+        company="Variacode",
+        role="Sales",
+        priority=3,  # P3
+        status="Screening",
+        next_step="Pending: Sent 'Comp/JD' filter email. Low tier until proven otherwise.",
+        last_activity=datetime(2026, 1, 7, 14, 0),
+        notes="Awaiting comp/JD details. Low priority."
+    ),
+    PipelineTarget(
+        id="pl-nvidia",
         company="NVIDIA",
         role="DevRel",
-        priority=Priority.P2,
-        status=DealStatus.REFERRAL,
-        contact_name="Minh Pham",
-        next_move="Confirm formal referral submission",
-        notes="Referral pathway - confirm Minh has submitted."
+        priority=3,  # P3
+        status="Referral",
+        next_step="Check: Confirm Minh Pham submitted the formal referral.",
+        last_activity=datetime(2026, 1, 6, 10, 0),
+        notes="Minh Pham referral pending confirmation."
     ),
 ]
 
 
-# =============================================================================
-# FRACTIONAL PIPELINE - The "Octopus" Revenue
-# =============================================================================
-# Total Monthly Potential: ~$16,000/mo
-# Weighted Pipeline (Probability Adjusted): ~$8,350/mo
+# ============================================================================
+# 3. FRACTIONAL PIPELINE (The "Octopus" Revenue)
+# Focus: Cash Flow Stabilization (~$18k/mo Potential)
+# ============================================================================
 
-FRACTIONAL_DEALS = [
+FRACTIONAL_DEALS: List[FractionalDeal] = [
     FractionalDeal(
-        id="frac-001",
+        id="frac-fym",
         client="FYM Partners",
-        monthly_value=5000.0,
-        probability=0.70,
-        status=DealStatus.ACTIVE,
-        next_step="Deliver Tiered System Doc",
-        notes="High confidence close"
+        monthly_value=5000,
+        probability=70,
+        status="Active",
+        next_step="Deliver Tiered System Doc.",
+        last_contact=date(2026, 1, 9),
+        scope="GTM Strategy + Sales Process Optimization",
+        contract_type="Retainer"
     ),
     FractionalDeal(
-        id="frac-002",
+        id="frac-nexusai",
         client="Nexus AI",
-        monthly_value=2500.0,
-        probability=0.60,
-        status=DealStatus.PROPOSAL,
-        next_step="Finalize Scope of Work",
-        notes=""
+        monthly_value=2500,
+        probability=60,
+        status="Proposal",
+        next_step="Finalize Scope of Work.",
+        last_contact=date(2026, 1, 8),
+        scope="Product Marketing Strategy",
+        contract_type="Project"
     ),
     FractionalDeal(
-        id="frac-003",
+        id="frac-techflow",
         client="TechFlow",
-        monthly_value=1500.0,
-        probability=0.50,
-        status=DealStatus.SCOPING,
-        next_step="Send Project Outline",
-        notes="Initial call completed"
+        monthly_value=1500,
+        probability=50,
+        status="Initial Call",
+        next_step="Send Project Outline.",
+        last_contact=date(2026, 1, 7),
+        scope="Sales Enablement",
+        contract_type="Project"
     ),
     FractionalDeal(
-        id="frac-004",
+        id="frac-solvejet",
         client="SolveJet",
-        monthly_value=3000.0,
-        probability=0.40,
-        status=DealStatus.PROPOSAL,
-        next_step="Follow up on Contract",
-        notes=""
+        monthly_value=3000,
+        probability=40,
+        status="Proposal",
+        next_step="Follow up on Contract.",
+        last_contact=date(2026, 1, 6),
+        scope="Enterprise Pipeline Development",
+        contract_type="Retainer"
     ),
     FractionalDeal(
-        id="frac-005",
+        id="frac-spray",
         client="Spray.io",
-        monthly_value=2000.0,
-        probability=0.30,
-        status=DealStatus.SCOPING,
-        next_step="Define Deliverables",
-        notes=""
-    ),
-    FractionalDeal(
-        id="frac-006",
-        client="AlphaCorp",
-        monthly_value=4000.0,
-        probability=0.20,
-        status=DealStatus.LEAD,
-        next_step="Schedule Discovery",
-        notes=""
+        monthly_value=2000,
+        probability=30,
+        status="Scoping",
+        next_step="Define Deliverables.",
+        last_contact=date(2026, 1, 5),
+        scope="Outbound Strategy",
+        contract_type="Project"
     ),
 ]
 
 
-# =============================================================================
-# FREEZER - Stalled / Low Signal (Do not spend Prime Time here)
-# =============================================================================
+# ============================================================================
+# 4. THE FREEZER (Stalled / Low Signal)
+# Verdict: Do not spend "Prime Time" energy here
+# ============================================================================
 
-FREEZER_ACCOUNTS = [
+FREEZER_ACCOUNTS: List[FreezerAccount] = [
     FreezerAccount(
-        id="freeze-001",
+        id="frz-snapmagic",
         company="SnapMagic",
-        last_activity=datetime(2025, 11, 20),
-        stalled_since=datetime(2025, 11, 20),
+        last_signal=date(2025, 11, 20),
+        days_cold=50,
         verdict="Purge or 'Hail Mary' to Ryan",
-        notes="Stalled since 11/20"
+        potential_value=0,
+        reactivation_strategy="Final Hail Mary email to Ryan, then archive"
     ),
     FreezerAccount(
-        id="freeze-002",
+        id="frz-aikido",
         company="Aikido Security",
-        last_activity=datetime(2025, 11, 15),
-        stalled_since=datetime(2025, 11, 15),
+        last_signal=date(2025, 11, 25),
+        days_cold=45,
         verdict="Archive",
-        notes="No movement"
+        potential_value=0,
+        reactivation_strategy="None - Archive"
     ),
     FreezerAccount(
-        id="freeze-003",
+        id="frz-hightouch",
         company="Hightouch",
-        last_activity=datetime(2025, 11, 21),
-        stalled_since=datetime(2025, 11, 21),
+        last_signal=date(2025, 11, 21),
+        days_cold=49,
         verdict="Dead",
-        notes="Stalled Nov 21"
+        potential_value=0,
+        reactivation_strategy="None - Dead"
     ),
     FreezerAccount(
-        id="freeze-004",
+        id="frz-mistral",
         company="Mistral",
-        last_activity=datetime(2025, 11, 21),
-        stalled_since=datetime(2025, 11, 21),
+        last_signal=date(2025, 11, 21),
+        days_cold=49,
         verdict="Dead",
-        notes="Stalled Nov 21"
+        potential_value=0,
+        reactivation_strategy="None - Dead"
     ),
     FreezerAccount(
-        id="freeze-005",
-        company="Andromeda",
-        last_activity=datetime(2025, 11, 21),
-        stalled_since=datetime(2025, 11, 21),
-        verdict="Dead",
-        notes="Stalled Nov 21"
-    ),
-    FreezerAccount(
-        id="freeze-006",
+        id="frz-skypoint",
         company="Skypoint",
-        last_activity=datetime(2025, 12, 4),
-        stalled_since=datetime(2025, 12, 4),
+        last_signal=date(2025, 12, 4),
+        days_cold=36,
         verdict="One final bump, then archive",
-        notes="Zero Trust pitch sent Dec 4"
-    ),
-    FreezerAccount(
-        id="freeze-007",
-        company="Verkada",
-        last_activity=datetime(2025, 11, 10),
-        stalled_since=datetime(2025, 11, 10),
-        verdict="Archive",
-        notes=""
-    ),
-    FreezerAccount(
-        id="freeze-008",
-        company="LinkedIn",
-        last_activity=datetime(2025, 11, 8),
-        stalled_since=datetime(2025, 11, 8),
-        verdict="Archive",
-        notes=""
+        potential_value=0,
+        reactivation_strategy="'Zero Trust' pitch sent Dec 4. One final bump."
     ),
 ]
 
 
-# =============================================================================
-# NETWORK PULSE - Champions and Revivals
-# =============================================================================
+# ============================================================================
+# 5. NETWORK CHAMPIONS
+# Key contacts and referral sources
+# ============================================================================
 
-NETWORK_CONTACTS = [
+NETWORK_CONTACTS: List[NetworkContact] = [
     NetworkContact(
-        id="net-001",
-        name="Ryan Richardson",
-        company="SnapMagic / Source",
-        tier=ContactTier.CHAMPION,
-        relationship="Referral Source",
-        notes="Top champion"
+        id="net-anthony",
+        name="Anthony Walsh",
+        company="Okta",
+        relationship_strength=95,
+        last_interaction=date(2026, 1, 9),
+        value_exchanged="Okta team intro + vouching",
+        next_touchpoint="Monitor for 'Coffee' text or team intro",
+        is_champion=True
     ),
     NetworkContact(
-        id="net-002",
+        id="net-ryan",
+        name="Ryan Richardson",
+        company="SnapMagic",
+        relationship_strength=65,
+        last_interaction=date(2025, 11, 20),
+        value_exchanged="Previous engagement",
+        next_touchpoint="Hail Mary email if SnapMagic worth pursuing",
+        is_champion=False
+    ),
+    NetworkContact(
+        id="net-minh",
         name="Minh Pham",
         company="NVIDIA",
-        tier=ContactTier.CHAMPION,
-        relationship="Direct Referral",
-        next_action="Confirm referral submitted",
-        notes="NVIDIA pathway"
+        relationship_strength=80,
+        last_interaction=date(2026, 1, 6),
+        value_exchanged="NVIDIA referral pending",
+        next_touchpoint="Confirm formal referral submitted",
+        is_champion=True
     ),
     NetworkContact(
-        id="net-003",
-        name="Oliver Perry",
-        company="Trust in Soda",
-        tier=ContactTier.CHAMPION,
-        relationship="Strategic Partner",
-        notes="Successfully re-engaged"
+        id="net-smita",
+        name="Smita",
+        company="QuantumScape",
+        relationship_strength=75,
+        last_interaction=date(2026, 1, 9),
+        value_exchanged="Translation Layer brief request",
+        next_touchpoint="Deliver Translation Layer brief",
+        is_champion=True
     ),
     NetworkContact(
-        id="net-004",
-        name="Ed Carr",
-        company="Elite Cyber GTM",
-        tier=ContactTier.REVIVAL,
-        relationship="Revival",
-        notes="Re-engaged with Reg + AI pitch"
-    ),
-    NetworkContact(
-        id="net-005",
+        id="net-samantha",
         name="Samantha Lopez",
         company="LiveRamp",
-        tier=ContactTier.TIER_1,
-        relationship="Decision Maker",
-        next_action="Execute Insurance Policy play",
-        notes="Critical relationship for P1 deal"
+        relationship_strength=70,
+        last_interaction=date(2026, 1, 9),
+        value_exchanged="Marketplace/Commercial intro pending",
+        next_touchpoint="Await intro from Tammy",
+        is_champion=True
     ),
 ]
 
 
-# =============================================================================
-# COMMAND CENTER SNAPSHOT
-# =============================================================================
+# ============================================================================
+# 6. TECHNICAL PROJECTS (The "Builder" Narrative)
+# ============================================================================
 
-def get_current_snapshot() -> CRMSnapshot:
-    """Get current CRM state as a snapshot"""
-    return CRMSnapshot(
-        war_room=WAR_ROOM_TARGETS,
-        fractional=FRACTIONAL_DEALS,
-        freezer=FREEZER_ACCOUNTS,
-        network=NETWORK_CONTACTS
+TECHNICAL_PROJECTS = {
+    "n8n_docker": {
+        "name": "n8n on Docker",
+        "status": "Deploying",
+        "port": 5678,
+        "narrative": "'Eating your own dog food' story for Fastino/Okta"
+    },
+    "basin_nexus": {
+        "name": "Basin::Nexus v11",
+        "status": "Live",
+        "deployments": ["Fastino", "LiveRamp", "Anthony Walsh"],
+        "narrative": "PDF deployed to key stakeholders"
+    }
+}
+
+
+# ============================================================================
+# AGGREGATE METRICS
+# ============================================================================
+
+def calculate_metrics() -> CommandCenterMetrics:
+    """Calculate real-time Command Center metrics from CRM data."""
+    
+    # War Room stats
+    active_war_room = len([t for t in WAR_ROOM_TARGETS if t.priority == 1])
+    
+    # Fractional pipeline
+    total_mrr = sum(d.monthly_value for d in FRACTIONAL_DEALS)
+    weighted_pipeline = sum(
+        d.monthly_value * (d.probability / 100) 
+        for d in FRACTIONAL_DEALS
+    )
+    
+    # Freezer count
+    zombie_count = len(FREEZER_ACCOUNTS)
+    
+    # Velocity (average of war room targets)
+    avg_velocity = sum(t.velocity_score for t in WAR_ROOM_TARGETS) / len(WAR_ROOM_TARGETS) if WAR_ROOM_TARGETS else 0
+    
+    return CommandCenterMetrics(
+        active_war_room=active_war_room,
+        fractional_mrr=total_mrr,
+        weighted_pipeline=weighted_pipeline,
+        zombie_count=zombie_count,
+        pipeline_velocity=avg_velocity,
+        last_updated=datetime.now()
     )
 
 
-def get_metrics_summary() -> dict:
-    """Get formatted metrics for display"""
-    snapshot = get_current_snapshot()
-    metrics = snapshot.metrics
-    
-    return {
-        "active_war_room": metrics.active_war_room,
-        "fractional_mrr": f"${metrics.fractional_mrr:,.0f}/mo",
-        "weighted_pipeline": f"${metrics.weighted_pipeline:,.0f}/mo",
-        "pipeline_velocity": metrics.pipeline_velocity,
-        "network_heat": metrics.network_heat,
-        "zombie_count": metrics.zombie_count
-    }
+def get_crm_snapshot() -> CRMSnapshot:
+    """Get complete CRM snapshot for dashboard."""
+    return CRMSnapshot(
+        war_room=WAR_ROOM_TARGETS,
+        fractional_pipeline=FRACTIONAL_DEALS,
+        freezer=FREEZER_ACCOUNTS,
+        network=NETWORK_CONTACTS,
+        metrics=calculate_metrics(),
+        snapshot_time=datetime.now()
+    )
 
 
-# Quick access for templates
-METRICS_SUMMARY = {
-    "active_war_room": 4,
-    "fractional_mrr": "$16,000/mo",
-    "weighted_pipeline": "$8,350/mo",
-    "pipeline_velocity": "Urgent",
-    "network_heat": "High",
-    "zombie_count": 8
+# ============================================================================
+# WEEKEND PROTOCOL - NEXT STEPS
+# ============================================================================
+
+WEEKEND_PROTOCOL = {
+    "monitor": "Watch for Anthony's 'Okta Intro' or 'Coffee' text.",
+    "build": "Get your first n8n workflow live (e.g., 'Email to Slack').",
+    "rest": "You have 3 major deals (LiveRamp, Fastino, Okta) in the 'Red Zone.' Clear your head for closing week."
 }

@@ -1,11 +1,12 @@
 """
 Basin::Nexus CRM Models
-Pydantic models for War Room, Fractional Pipeline, and Network tracking.
+Pydantic models for War Room, Pipeline, Fractional, Freezer, and Network tracking.
+Updated: January 9, 2026
 """
 
 from pydantic import BaseModel, Field
 from typing import Optional, List
-from datetime import datetime
+from datetime import datetime, date
 from enum import Enum
 
 
@@ -17,86 +18,76 @@ class Priority(str, Enum):
     COLD = "COLD"  # Freezer
 
 
-class DealStatus(str, Enum):
-    """Deal lifecycle status"""
-    URGENT = "URGENT"
-    ACTIVE = "ACTIVE"
-    WAITING = "WAITING"
-    REFERRAL = "REFERRAL"
-    PROPOSAL = "PROPOSAL"
-    SCOPING = "SCOPING"
-    LEAD = "LEAD"
-    STALLED = "STALLED"
-    DEAD = "DEAD"
-
-
 class WarRoomTarget(BaseModel):
     """Active combat deal in the War Room"""
     id: str
     company: str
     role: str
-    priority: Priority
-    status: DealStatus
-    contact_name: Optional[str] = None
-    contact_phone: Optional[str] = None
+    gatekeeper: str
+    priority: int  # 1 = P1, 2 = P2, 3 = P3
+    status: str  # FINALIST, ACTIVE, REFERRAL, ADVANCING
     next_move: str
     last_activity: datetime = Field(default_factory=datetime.now)
+    signal_strength: int = 50  # 0-100
+    velocity_score: float = 5.0  # 0-10
     notes: Optional[str] = None
     
     @property
     def is_hot(self) -> bool:
-        return self.priority == Priority.P1 and self.status in [DealStatus.URGENT, DealStatus.ACTIVE]
+        return self.priority == 1 and self.status in ["FINALIST", "ACTIVE", "REFERRAL"]
+
+
+class PipelineTarget(BaseModel):
+    """Screening/backup pipeline target"""
+    id: str
+    company: str
+    role: str
+    priority: int  # 2 = P2, 3 = P3
+    status: str  # Screening, Referral
+    next_step: str
+    last_activity: datetime = Field(default_factory=datetime.now)
+    notes: Optional[str] = None
 
 
 class FractionalDeal(BaseModel):
     """Fractional/Octopus revenue deal"""
     id: str
     client: str
-    monthly_value: float  # MRR
-    probability: float  # 0.0 - 1.0
-    status: DealStatus
+    monthly_value: float  # MRR in dollars
+    probability: int  # 0-100 percentage
+    status: str  # Active, Proposal, Initial Call, Scoping
     next_step: str
-    last_activity: datetime = Field(default_factory=datetime.now)
-    notes: Optional[str] = None
+    last_contact: date = Field(default_factory=date.today)
+    scope: Optional[str] = None
+    contract_type: Optional[str] = None  # Retainer, Project
     
     @property
     def weighted_value(self) -> float:
         """Probability-adjusted monthly value"""
-        return self.monthly_value * self.probability
+        return self.monthly_value * (self.probability / 100)
 
 
 class FreezerAccount(BaseModel):
     """Stalled/zombie deal in the Freezer"""
     id: str
     company: str
-    last_activity: datetime
-    stalled_since: datetime
-    verdict: str  # "Purge", "Archive", "Hail Mary", "One Final Bump"
-    notes: Optional[str] = None
-    
-    @property
-    def days_stalled(self) -> int:
-        return (datetime.now() - self.stalled_since).days
-
-
-class ContactTier(str, Enum):
-    """Network contact tier"""
-    CHAMPION = "CHAMPION"
-    TIER_1 = "TIER_1"
-    TIER_2 = "TIER_2"
-    REVIVAL = "REVIVAL"
+    last_signal: date
+    days_cold: int
+    verdict: str  # "Purge", "Archive", "Dead", "One final bump"
+    potential_value: float = 0
+    reactivation_strategy: Optional[str] = None
 
 
 class NetworkContact(BaseModel):
-    """Network CRM contact"""
+    """Network CRM contact / Champion"""
     id: str
     name: str
     company: str
-    tier: ContactTier
-    relationship: str  # e.g., "Direct Line", "Referral Source", "Champion"
-    last_contact: Optional[datetime] = None
-    next_action: Optional[str] = None
-    notes: Optional[str] = None
+    relationship_strength: int  # 0-100
+    last_interaction: date = Field(default_factory=date.today)
+    value_exchanged: Optional[str] = None
+    next_touchpoint: Optional[str] = None
+    is_champion: bool = False
 
 
 class CommandCenterMetrics(BaseModel):
@@ -104,36 +95,16 @@ class CommandCenterMetrics(BaseModel):
     active_war_room: int
     fractional_mrr: float
     weighted_pipeline: float
-    network_heat: str  # "High", "Medium", "Low"
     zombie_count: int
-    
-    # Computed
-    @property
-    def pipeline_velocity(self) -> str:
-        if self.active_war_room >= 3:
-            return "Urgent"
-        elif self.active_war_room >= 1:
-            return "Active"
-        return "Cold"
+    pipeline_velocity: float  # Average velocity score
+    last_updated: datetime = Field(default_factory=datetime.now)
 
 
 class CRMSnapshot(BaseModel):
     """Full CRM state snapshot"""
-    timestamp: datetime = Field(default_factory=datetime.now)
     war_room: List[WarRoomTarget] = []
-    fractional: List[FractionalDeal] = []
+    fractional_pipeline: List[FractionalDeal] = []
     freezer: List[FreezerAccount] = []
     network: List[NetworkContact] = []
-    
-    @property
-    def metrics(self) -> CommandCenterMetrics:
-        total_mrr = sum(d.monthly_value for d in self.fractional)
-        weighted = sum(d.weighted_value for d in self.fractional)
-        
-        return CommandCenterMetrics(
-            active_war_room=len(self.war_room),
-            fractional_mrr=total_mrr,
-            weighted_pipeline=weighted,
-            network_heat="High" if len([c for c in self.network if c.tier == ContactTier.CHAMPION]) >= 3 else "Medium",
-            zombie_count=len(self.freezer)
-        )
+    metrics: Optional[CommandCenterMetrics] = None
+    snapshot_time: datetime = Field(default_factory=datetime.now)

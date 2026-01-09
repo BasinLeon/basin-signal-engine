@@ -1,19 +1,34 @@
 /**
  * Basin::Nexus CRM Service
- * TypeScript service for managing War Room, Fractional Pipeline, and Network data
+ * TypeScript service for CRM data - synced with LeonOS Master State
+ * Updated: January 9, 2026
  */
 
-// Types matching Python models
+// ============================================================================
+// TYPE DEFINITIONS
+// ============================================================================
+
 export interface WarRoomTarget {
     id: string;
     company: string;
     role: string;
-    priority: 'P1' | 'P2' | 'P3' | 'COLD';
-    status: 'URGENT' | 'ACTIVE' | 'WAITING' | 'REFERRAL' | 'PROPOSAL' | 'SCOPING' | 'LEAD' | 'STALLED' | 'DEAD';
-    contactName?: string;
-    contactPhone?: string;
+    gatekeeper: string;
+    priority: number; // 1 = P1, 2 = P2
+    status: 'FINALIST' | 'ACTIVE' | 'REFERRAL' | 'ADVANCING';
     nextMove: string;
-    lastActivity: string;
+    lastActivity: Date;
+    signalStrength: number; // 0-100
+    velocityScore: number; // 0-10
+    notes?: string;
+}
+
+export interface PipelineTarget {
+    id: string;
+    company: string;
+    role: string;
+    priority: number;
+    status: string;
+    nextStep: string;
     notes?: string;
 }
 
@@ -21,160 +36,374 @@ export interface FractionalDeal {
     id: string;
     client: string;
     monthlyValue: number;
-    probability: number; // 0.0 - 1.0
-    status: string;
+    probability: number; // 0-100
+    status: 'Active' | 'Proposal' | 'Initial Call' | 'Scoping';
     nextStep: string;
-    lastActivity: string;
-    notes?: string;
+    scope?: string;
+    contractType?: string;
 }
 
 export interface FreezerAccount {
     id: string;
     company: string;
-    lastActivity: string;
-    stalledSince: string;
+    lastSignal: Date;
+    daysCold: number;
     verdict: string;
-    notes?: string;
+    reactivationStrategy?: string;
 }
 
 export interface NetworkContact {
     id: string;
     name: string;
     company: string;
-    tier: 'CHAMPION' | 'TIER_1' | 'TIER_2' | 'REVIVAL';
-    relationship: string;
-    lastContact?: string;
-    nextAction?: string;
-    notes?: string;
+    relationshipStrength: number;
+    lastInteraction: Date;
+    valueExchanged?: string;
+    nextTouchpoint?: string;
+    isChampion: boolean;
 }
 
 export interface CommandCenterMetrics {
     activeWarRoom: number;
     fractionalMRR: number;
     weightedPipeline: number;
-    networkHeat: 'High' | 'Medium' | 'Low';
     zombieCount: number;
-    pipelineVelocity: 'Urgent' | 'Active' | 'Cold';
+    pipelineVelocity: number;
+    lastUpdated: Date;
 }
 
-// Seeded data matching Python core/crm/data.py - REAL-TIME as of Jan 9, 2026
+// ============================================================================
+// 1. THE WAR ROOM (Active Combat)
+// ============================================================================
+
 export const WAR_ROOM_TARGETS: WarRoomTarget[] = [
     {
-        id: 'wr-001',
+        id: 'wr-liveramp',
         company: 'LiveRamp',
         role: 'Lead PMM',
-        priority: 'P1',
-        status: 'URGENT',
-        contactName: 'Samantha Lopez',
-        nextMove: "Execute 'Insurance Policy' - awaiting schedule with Samantha",
-        lastActivity: new Date().toISOString(),
-        notes: 'FINALIST STAGE - Career-defining opportunity.'
+        gatekeeper: 'Tammy (HM)',
+        priority: 1,
+        status: 'FINALIST',
+        nextMove: "Wait: Tammy advancing you to Samantha Lopez (Marketplace/Commercial). 'Insurance Policy' narrative landed.",
+        lastActivity: new Date('2026-01-09T10:00:00'),
+        signalStrength: 95,
+        velocityScore: 9.5,
+        notes: 'Multiple rounds complete. Final decision stage. Samantha Lopez intro pending.'
     },
     {
-        id: 'wr-002',
+        id: 'wr-fastino',
         company: 'Fastino',
         role: 'Founding Sales',
-        priority: 'P1',
+        gatekeeper: 'Allison/Founders',
+        priority: 1,
         status: 'ACTIVE',
-        contactName: 'Allison → George/Ash (Founders)',
-        nextMove: "Sent 'Agentic Architecture' to Allison for Founders",
-        lastActivity: new Date().toISOString(),
-        notes: 'Founder sync pending. High priority.'
+        nextMove: "Wait: Sent 'Agentic Architecture' to George & Ash. Used LiveRamp as leverage to force urgency.",
+        lastActivity: new Date('2026-01-09T09:30:00'),
+        signalStrength: 88,
+        velocityScore: 8.5,
+        notes: 'Founders engaged. Agentic Architecture deck deployed. LiveRamp leverage play active.'
     },
     {
-        id: 'wr-003',
+        id: 'wr-okta',
+        company: 'Okta',
+        role: 'Tech PMM',
+        gatekeeper: 'Anthony Walsh',
+        priority: 1,
+        status: 'REFERRAL',
+        nextMove: "Wait: Anthony is vouching for you with the team. 'Playdate' bond secured.",
+        lastActivity: new Date('2026-01-09T12:00:00'),
+        signalStrength: 85,
+        velocityScore: 8.0,
+        notes: 'Warm referral from Anthony Walsh. Personal connection established.'
+    },
+    {
+        id: 'wr-quantumscape',
         company: 'QuantumScape',
         role: 'PMM',
-        priority: 'P1',
-        status: 'ACTIVE',
-        contactName: 'Smita',
-        contactPhone: '408-849-2907',
-        nextMove: "Draft 'Translation Layer' brief requested by Smita",
-        lastActivity: new Date().toISOString(),
-        notes: 'ADVANCING - Spoke Jan 8, discussed Internal Agent concept.'
+        gatekeeper: 'Smita',
+        priority: 1,
+        status: 'ADVANCING',
+        nextMove: "Drafting: Creating the 'Translation Layer' brief Smita requested.",
+        lastActivity: new Date('2026-01-09T08:00:00'),
+        signalStrength: 78,
+        velocityScore: 7.5,
+        notes: 'Smita requested Translation Layer brief. Actively engaged.'
     },
     {
-        id: 'wr-004',
+        id: 'wr-sendbird',
         company: 'Sendbird',
         role: 'SDR Manager',
-        priority: 'P2',
-        status: 'ACTIVE',
-        contactName: 'Peter / Charles',
-        nextMove: "Monitor: Sent 'SDR Transition Playbook' to Peter",
-        lastActivity: new Date().toISOString(),
-        notes: 'ADVANCING - Awaiting feedback on PDF artifacts.'
-    },
+        gatekeeper: 'Peter/Charles',
+        priority: 2,
+        status: 'ADVANCING',
+        nextMove: "Monitor: Sent 'SDR Transition Playbook' to Peter. Awaiting feedback.",
+        lastActivity: new Date('2026-01-08T16:00:00'),
+        signalStrength: 72,
+        velocityScore: 7.0,
+        notes: 'SDR Transition Playbook deployed. Peter reviewing.'
+    }
 ];
+
+// ============================================================================
+// 2. THE PIPELINE (Screening & Backups)
+// ============================================================================
+
+export const PIPELINE_TARGETS: PipelineTarget[] = [
+    {
+        id: 'pl-mastech',
+        company: 'Mastech',
+        role: 'Sales Lead',
+        priority: 2,
+        status: 'Screening',
+        nextStep: "Call Monday: Confirmed $320k+ OTE. 'Hunter' profile.",
+        notes: 'High OTE confirmed. Strong backup option.'
+    },
+    {
+        id: 'pl-variacode',
+        company: 'Variacode',
+        role: 'Sales',
+        priority: 3,
+        status: 'Screening',
+        nextStep: "Pending: Sent 'Comp/JD' filter email.",
+        notes: 'Awaiting comp/JD details. Low priority.'
+    },
+    {
+        id: 'pl-nvidia',
+        company: 'NVIDIA',
+        role: 'DevRel',
+        priority: 3,
+        status: 'Referral',
+        nextStep: 'Check: Confirm Minh Pham submitted the formal referral.',
+        notes: 'Minh Pham referral pending confirmation.'
+    }
+];
+
+// ============================================================================
+// 3. FRACTIONAL PIPELINE (~$18k/mo Potential)
+// ============================================================================
 
 export const FRACTIONAL_DEALS: FractionalDeal[] = [
-    { id: 'frac-001', client: 'FYM Partners', monthlyValue: 5000, probability: 0.70, status: 'ACTIVE', nextStep: 'Deliver Tiered System Doc', lastActivity: new Date().toISOString(), notes: 'High confidence close' },
-    { id: 'frac-002', client: 'Nexus AI', monthlyValue: 2500, probability: 0.60, status: 'PROPOSAL', nextStep: 'Finalize Scope of Work', lastActivity: new Date().toISOString() },
-    { id: 'frac-003', client: 'TechFlow', monthlyValue: 1500, probability: 0.50, status: 'SCOPING', nextStep: 'Send Project Outline', lastActivity: new Date().toISOString(), notes: 'Initial call completed' },
-    { id: 'frac-004', client: 'SolveJet', monthlyValue: 3000, probability: 0.40, status: 'PROPOSAL', nextStep: 'Follow up on Contract', lastActivity: new Date().toISOString() },
-    { id: 'frac-005', client: 'Spray.io', monthlyValue: 2000, probability: 0.30, status: 'SCOPING', nextStep: 'Define Deliverables', lastActivity: new Date().toISOString() },
-    { id: 'frac-006', client: 'AlphaCorp', monthlyValue: 4000, probability: 0.20, status: 'LEAD', nextStep: 'Schedule Discovery', lastActivity: new Date().toISOString() },
+    {
+        id: 'frac-fym',
+        client: 'FYM Partners',
+        monthlyValue: 5000,
+        probability: 70,
+        status: 'Active',
+        nextStep: 'Deliver Tiered System Doc.',
+        scope: 'GTM Strategy + Sales Process Optimization',
+        contractType: 'Retainer'
+    },
+    {
+        id: 'frac-nexusai',
+        client: 'Nexus AI',
+        monthlyValue: 2500,
+        probability: 60,
+        status: 'Proposal',
+        nextStep: 'Finalize Scope of Work.',
+        scope: 'Product Marketing Strategy',
+        contractType: 'Project'
+    },
+    {
+        id: 'frac-techflow',
+        client: 'TechFlow',
+        monthlyValue: 1500,
+        probability: 50,
+        status: 'Initial Call',
+        nextStep: 'Send Project Outline.',
+        scope: 'Sales Enablement',
+        contractType: 'Project'
+    },
+    {
+        id: 'frac-solvejet',
+        client: 'SolveJet',
+        monthlyValue: 3000,
+        probability: 40,
+        status: 'Proposal',
+        nextStep: 'Follow up on Contract.',
+        scope: 'Enterprise Pipeline Development',
+        contractType: 'Retainer'
+    },
+    {
+        id: 'frac-spray',
+        client: 'Spray.io',
+        monthlyValue: 2000,
+        probability: 30,
+        status: 'Scoping',
+        nextStep: 'Define Deliverables.',
+        scope: 'Outbound Strategy',
+        contractType: 'Project'
+    }
 ];
+
+// ============================================================================
+// 4. THE FREEZER (Stalled / Low Signal)
+// ============================================================================
 
 export const FREEZER_ACCOUNTS: FreezerAccount[] = [
-    { id: 'freeze-001', company: 'SnapMagic', lastActivity: '2025-11-20', stalledSince: '2025-11-20', verdict: "Purge or 'Hail Mary' to Ryan" },
-    { id: 'freeze-002', company: 'Aikido Security', lastActivity: '2025-11-15', stalledSince: '2025-11-15', verdict: 'Archive' },
-    { id: 'freeze-003', company: 'Hightouch', lastActivity: '2025-11-21', stalledSince: '2025-11-21', verdict: 'Dead' },
-    { id: 'freeze-004', company: 'Mistral', lastActivity: '2025-11-21', stalledSince: '2025-11-21', verdict: 'Dead' },
-    { id: 'freeze-005', company: 'Andromeda', lastActivity: '2025-11-21', stalledSince: '2025-11-21', verdict: 'Dead' },
-    { id: 'freeze-006', company: 'Skypoint', lastActivity: '2025-12-04', stalledSince: '2025-12-04', verdict: 'One final bump, then archive' },
-    { id: 'freeze-007', company: 'Verkada', lastActivity: '2025-11-10', stalledSince: '2025-11-10', verdict: 'Archive' },
-    { id: 'freeze-008', company: 'LinkedIn', lastActivity: '2025-11-08', stalledSince: '2025-11-08', verdict: 'Archive' },
+    {
+        id: 'frz-snapmagic',
+        company: 'SnapMagic',
+        lastSignal: new Date('2025-11-20'),
+        daysCold: 50,
+        verdict: "Purge or 'Hail Mary' to Ryan",
+        reactivationStrategy: 'Final Hail Mary email to Ryan, then archive'
+    },
+    {
+        id: 'frz-aikido',
+        company: 'Aikido Security',
+        lastSignal: new Date('2025-11-25'),
+        daysCold: 45,
+        verdict: 'Archive',
+        reactivationStrategy: 'None - Archive'
+    },
+    {
+        id: 'frz-hightouch',
+        company: 'Hightouch',
+        lastSignal: new Date('2025-11-21'),
+        daysCold: 49,
+        verdict: 'Dead',
+        reactivationStrategy: 'None - Dead'
+    },
+    {
+        id: 'frz-mistral',
+        company: 'Mistral',
+        lastSignal: new Date('2025-11-21'),
+        daysCold: 49,
+        verdict: 'Dead',
+        reactivationStrategy: 'None - Dead'
+    },
+    {
+        id: 'frz-skypoint',
+        company: 'Skypoint',
+        lastSignal: new Date('2025-12-04'),
+        daysCold: 36,
+        verdict: 'One final bump, then archive',
+        reactivationStrategy: "'Zero Trust' pitch sent Dec 4. One final bump."
+    }
 ];
+
+// ============================================================================
+// 5. NETWORK CHAMPIONS
+// ============================================================================
 
 export const NETWORK_CONTACTS: NetworkContact[] = [
-    { id: 'net-001', name: 'Ryan Richardson', company: 'SnapMagic / Source', tier: 'CHAMPION', relationship: 'Referral Source', notes: 'Top champion' },
-    { id: 'net-002', name: 'Minh Pham', company: 'NVIDIA', tier: 'CHAMPION', relationship: 'Direct Referral', nextAction: 'Confirm referral submitted', notes: 'NVIDIA pathway' },
-    { id: 'net-003', name: 'Oliver Perry', company: 'Trust in Soda', tier: 'CHAMPION', relationship: 'Strategic Partner', notes: 'Successfully re-engaged' },
-    { id: 'net-004', name: 'Ed Carr', company: 'Elite Cyber GTM', tier: 'REVIVAL', relationship: 'Revival', notes: 'Re-engaged with Reg + AI pitch' },
-    { id: 'net-005', name: 'Samantha Lopez', company: 'LiveRamp', tier: 'TIER_1', relationship: 'Decision Maker', nextAction: 'Execute Insurance Policy play', notes: 'Critical relationship for P1 deal' },
+    {
+        id: 'net-anthony',
+        name: 'Anthony Walsh',
+        company: 'Okta',
+        relationshipStrength: 95,
+        lastInteraction: new Date('2026-01-09'),
+        valueExchanged: 'Okta team intro + vouching',
+        nextTouchpoint: "Monitor for 'Coffee' text or team intro",
+        isChampion: true
+    },
+    {
+        id: 'net-minh',
+        name: 'Minh Pham',
+        company: 'NVIDIA',
+        relationshipStrength: 80,
+        lastInteraction: new Date('2026-01-06'),
+        valueExchanged: 'NVIDIA referral pending',
+        nextTouchpoint: 'Confirm formal referral submitted',
+        isChampion: true
+    },
+    {
+        id: 'net-smita',
+        name: 'Smita',
+        company: 'QuantumScape',
+        relationshipStrength: 75,
+        lastInteraction: new Date('2026-01-09'),
+        valueExchanged: 'Translation Layer brief request',
+        nextTouchpoint: 'Deliver Translation Layer brief',
+        isChampion: true
+    },
+    {
+        id: 'net-samantha',
+        name: 'Samantha Lopez',
+        company: 'LiveRamp',
+        relationshipStrength: 70,
+        lastInteraction: new Date('2026-01-09'),
+        valueExchanged: 'Marketplace/Commercial intro pending',
+        nextTouchpoint: 'Await intro from Tammy',
+        isChampion: true
+    },
+    {
+        id: 'net-ryan',
+        name: 'Ryan Richardson',
+        company: 'SnapMagic',
+        relationshipStrength: 65,
+        lastInteraction: new Date('2025-11-20'),
+        valueExchanged: 'Previous engagement',
+        nextTouchpoint: 'Hail Mary email if SnapMagic worth pursuing',
+        isChampion: false
+    }
 ];
 
-// Computed metrics
-export function getCommandCenterMetrics(): CommandCenterMetrics {
-    const totalMRR = FRACTIONAL_DEALS.reduce((acc, d) => acc + d.monthlyValue, 0);
-    const weightedPipeline = FRACTIONAL_DEALS.reduce((acc, d) => acc + (d.monthlyValue * d.probability), 0);
-    const champions = NETWORK_CONTACTS.filter(c => c.tier === 'CHAMPION').length;
+// ============================================================================
+// METRICS CALCULATION
+// ============================================================================
+
+export function calculateMetrics(): CommandCenterMetrics {
+    const activeWarRoom = WAR_ROOM_TARGETS.filter(t => t.priority === 1).length;
+    const fractionalMRR = FRACTIONAL_DEALS.reduce((sum, d) => sum + d.monthlyValue, 0);
+    const weightedPipeline = FRACTIONAL_DEALS.reduce(
+        (sum, d) => sum + (d.monthlyValue * d.probability / 100), 0
+    );
+    const zombieCount = FREEZER_ACCOUNTS.length;
+    const avgVelocity = WAR_ROOM_TARGETS.reduce((sum, t) => sum + t.velocityScore, 0) / WAR_ROOM_TARGETS.length;
 
     return {
-        activeWarRoom: WAR_ROOM_TARGETS.length,
-        fractionalMRR: totalMRR,
-        weightedPipeline: weightedPipeline,
-        networkHeat: champions >= 3 ? 'High' : 'Medium',
-        zombieCount: FREEZER_ACCOUNTS.length,
-        pipelineVelocity: WAR_ROOM_TARGETS.length >= 3 ? 'Urgent' : WAR_ROOM_TARGETS.length >= 1 ? 'Active' : 'Cold'
+        activeWarRoom,
+        fractionalMRR,
+        weightedPipeline,
+        zombieCount,
+        pipelineVelocity: avgVelocity,
+        lastUpdated: new Date()
     };
 }
 
-// Format helpers
+// ============================================================================
+// UTILITY FUNCTIONS
+// ============================================================================
+
 export function formatCurrency(value: number): string {
-    return `$${value.toLocaleString()}`;
-}
-
-export function formatMRR(value: number): string {
-    return `$${value.toLocaleString()}/mo`;
-}
-
-export function getPriorityColor(priority: string): string {
-    switch (priority) {
-        case 'P1': return '#ef4444'; // red
-        case 'P2': return '#f59e0b'; // amber  
-        case 'P3': return '#10b981'; // green
-        default: return '#64748b';   // slate
-    }
+    return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+    }).format(value);
 }
 
 export function getStatusColor(status: string): string {
-    switch (status) {
-        case 'URGENT': return '#ef4444';
-        case 'ACTIVE': return '#10b981';
-        case 'WAITING': return '#f59e0b';
-        case 'REFERRAL': return '#8b5cf6';
-        case 'PROPOSAL': return '#00E5FF';
-        default: return '#64748b';
+    const colors: Record<string, string> = {
+        FINALIST: '#10b981',    // Green
+        ACTIVE: '#f59e0b',      // Orange
+        REFERRAL: '#8b5cf6',    // Purple
+        ADVANCING: '#3b82f6',   // Blue
+        Active: '#10b981',
+        Proposal: '#f59e0b',
+        'Initial Call': '#3b82f6',
+        Scoping: '#6b7280'
+    };
+    return colors[status] || '#6b7280';
+}
+
+export function getPriorityEmoji(priority: number): string {
+    switch (priority) {
+        case 1: return '🚨';
+        case 2: return '🟡';
+        case 3: return '⚪';
+        default: return '❄️';
     }
 }
+
+// ============================================================================
+// WEEKEND PROTOCOL
+// ============================================================================
+
+export const WEEKEND_PROTOCOL = {
+    monitor: "Watch for Anthony's 'Okta Intro' or 'Coffee' text.",
+    build: "Get your first n8n workflow live (e.g., 'Email to Slack').",
+    rest: "You have 3 major deals (LiveRamp, Fastino, Okta) in the 'Red Zone.' Clear your head for closing week."
+};
