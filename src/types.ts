@@ -1,6 +1,7 @@
-// BASIN::NEXUS v9.0 - Type Definitions
+// BASIN::NEXUS v11.0 - Type Definitions
 
 export enum AppView {
+    COMMAND_CENTER = 'COMMAND_CENTER',
     DASHBOARD = 'DASHBOARD',
     PIPELINE = 'PIPELINE',
     NETWORK = 'NETWORK',

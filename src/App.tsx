@@ -9,10 +9,11 @@ import { KnowledgeBase } from './components/KnowledgeBase';
 import { NetworkCRM } from './components/NetworkCRM';
 import { PipelineTracker } from './components/PipelineTracker';
 import { Dojo } from './components/Dojo';
+import { CommandCenter } from './components/CommandCenter';
 
 const App: React.FC = () => {
     const [userState, setUserState] = useState<UserState>(INITIAL_USER_STATE);
-    const [currentView, setCurrentView] = useState<AppView>(AppView.DASHBOARD);
+    const [currentView, setCurrentView] = useState<AppView>(AppView.COMMAND_CENTER);
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
     // Load state on mount
@@ -66,6 +67,12 @@ const App: React.FC = () => {
 
     const renderView = () => {
         switch (currentView) {
+            case AppView.COMMAND_CENTER:
+                return (
+                    <CommandCenter
+                        addNotification={addNotification}
+                    />
+                );
             case AppView.DASHBOARD:
                 return (
                     <Dashboard
