@@ -29,7 +29,6 @@
             background: linear-gradient(145deg, #0a0a0f 0%, #0f1419 50%, #0a0a0f 100%);
             page-break-after: always;
             position: relative;
-            overflow: hidden;
         }
 
         .page::before {
@@ -73,6 +72,7 @@
             -webkit-text-fill-color: transparent;
             margin-top: 0.05in;
             letter-spacing: -0.5px;
+            white-space: nowrap;
         }
 
         .subtitle {
@@ -80,6 +80,28 @@
             color: #71717a;
             margin-top: 0.03in;
             font-weight: 400;
+        }
+
+        /* Print-specific styles for PDF export */
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            .page {
+                page-break-inside: avoid;
+            }
+
+            .title {
+                color: #f4c430 !important;
+                -webkit-text-fill-color: #f4c430 !important;
+            }
+        }
+
+        @page {
+            size: 8.5in 11in;
+            margin: 0;
         }
 
         .version-badge {
